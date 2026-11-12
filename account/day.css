@@ -1,0 +1,75 @@
+/* 3dtrading · account pages, day theme. The website owns the choice (localStorage '3dt.theme'); html[data-theme=day] turns this on.
+   Night stays the default. The Binance excerpt keeps its black stage in both themes (bind-bn.css is untouched). */
+.bar .logo .lg-d{display:none}
+html[data-theme=day] .bar .logo .lg-n{display:none}
+html[data-theme=day] .bar .logo .lg-d{display:block}
+
+html[data-theme=day]{--bg:#e6eaee;--sf:#ffffff;--sf2:#f5f7f8;--sf3:#e8ecef;--line:rgba(15,23,30,.08);--line2:rgba(15,23,30,.16);
+  --ink:#11161a;--ink2:#46505a;--ink3:#69727b;--brand:#2fdcbc;--brandD:#0a8a73;--ok:#12874a;--warn:#a87400;--bad:#d1343c;color-scheme:light}
+html[data-theme=day] :focus-visible{outline-color:var(--brandD)}
+html[data-theme=day] .bar{background:rgba(230,234,238,.9)}
+html[data-theme=day] .bar::before{background:#e6eaee}
+html[data-theme=day] .demo-pill{background:rgba(168,116,0,.1);color:#865d00}
+html[data-theme=day] .av-btn{box-shadow:0 0 0 1px rgba(15,23,30,.1),0 8px 22px rgba(10,138,115,.16)}
+html[data-theme=day] .av-btn:hover{box-shadow:0 0 0 1px rgba(15,23,30,.2),0 10px 26px rgba(10,138,115,.24)}
+html[data-theme=day] .link,html[data-theme=day] .eyebrow{color:var(--brandD)}
+html[data-theme=day] .hero h1 em,html[data-theme=day] .intro h1 em{background:linear-gradient(92deg,#b37f10 0%,#c08a12 30%,#0a8a73 75%);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-theme=day] .hero p.lede,html[data-theme=day] .lede{color:var(--ink2)}
+
+/* fields */
+html[data-theme=day] .inp input,html[data-theme=day] .card .inp input{background:#fff;border-color:rgba(15,23,30,.16)}
+html[data-theme=day] .inp input::placeholder{color:#9aa3ab}
+html[data-theme=day] .inp input:hover{border-color:rgba(15,23,30,.3)}
+html[data-theme=day] .inp input:focus{background:#fff;border-color:var(--brandD);box-shadow:0 0 0 3px rgba(10,138,115,.16)}
+html[data-theme=day] .fld.err .inp input{border-color:var(--bad);box-shadow:0 0 0 3px rgba(209,52,60,.12)}
+html[data-theme=day] .chk input{background:#fff;border-color:rgba(15,23,30,.28)}
+html[data-theme=day] .chk input:checked{background:var(--brand);border-color:var(--brandD)}
+html[data-theme=day] .inp .eye:hover{background:var(--sf3)}
+
+/* notes */
+html[data-theme=day] .note{background:rgba(168,116,0,.09);color:#6f4d00}
+html[data-theme=day] .note.info{background:rgba(17,120,140,.08);color:#0f5d6b}
+html[data-theme=day] .note.bad{background:rgba(209,52,60,.08);color:#a8232b}
+html[data-theme=day] .note.good{background:rgba(18,135,74,.09);color:#0f6b3b}
+html[data-theme=day] .btn.pri{box-shadow:none}
+
+/* the glass card turns into a white card with a soft shadow */
+html[data-theme=day] .card{background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(251,252,253,.96));box-shadow:0 0 0 1px rgba(15,23,30,.05),0 30px 80px -32px rgba(15,23,30,.28)}
+html[data-theme=day] .card::before{background:linear-gradient(90deg,transparent,rgba(10,138,115,.5),rgba(192,138,18,.45),transparent)}
+
+/* sign-in / sign-up */
+html[data-theme=day] body::after{background:radial-gradient(120% 80% at 80% 10%,rgba(47,220,188,.12),transparent 55%),linear-gradient(180deg,transparent 60%,rgba(255,255,255,.35))}
+html[data-theme=day] .hero .dodo{box-shadow:0 0 0 1px rgba(15,23,30,.08),0 18px 44px -10px rgba(10,138,115,.4)}
+html[data-theme=day] .pts li{background:rgba(255,255,255,.7);box-shadow:0 0 0 1px rgba(15,23,30,.06),0 12px 30px -20px rgba(15,23,30,.25)}
+html[data-theme=day] .pts li:hover{box-shadow:0 0 0 1px rgba(10,138,115,.3),0 12px 30px -20px rgba(15,23,30,.25)}
+html[data-theme=day] .pts .k{background:rgba(10,138,115,.1);color:var(--brandD)}
+html[data-theme=day] .pts li:nth-child(2) .k{background:rgba(192,138,18,.12);color:#a3740b}
+html[data-theme=day] .tabs{background:rgba(15,23,30,.05);box-shadow:inset 0 0 0 1px rgba(15,23,30,.06)}
+html[data-theme=day] .tabs .ink{box-shadow:0 6px 16px -8px rgba(10,138,115,.6)}
+html[data-theme=day] #go{box-shadow:0 12px 26px -14px rgba(10,138,115,.7)}
+html[data-theme=day] .done .who{background:var(--sf2);box-shadow:inset 0 0 0 1px var(--line)}
+
+/* Binance binding page: the frame around the excerpt goes light, the stage itself stays black */
+html[data-theme=day] body::before{background:radial-gradient(90% 60% at 88% 0%,rgba(47,220,188,.14),transparent 60%),radial-gradient(70% 55% at 0% 100%,rgba(232,184,74,.1),transparent 60%)}
+html[data-theme=day] .clip{background:#fff;box-shadow:0 0 0 1px rgba(15,23,30,.05),0 30px 70px -36px rgba(15,23,30,.35)}
+html[data-theme=day] .cb{background:rgba(15,23,30,.05)}
+html[data-theme=day] .cb:hover{background:rgba(15,23,30,.09)}
+html[data-theme=day] .acc{background:var(--sf2)}
+html[data-theme=day] .acc .cur.dm{color:#6b7787}
+html[data-theme=day] .arow{background:var(--sf2);box-shadow:inset 0 0 0 1px var(--line)}
+html[data-theme=day] .arow.bad{box-shadow:inset 0 0 0 1.5px rgba(209,52,60,.55)}
+html[data-theme=day] .rerr{color:#a8232b}
+html[data-theme=day] .addrow{border-color:rgba(15,23,30,.2)}
+html[data-theme=day] .addrow:hover{border-color:var(--brandD)}
+html[data-theme=day] .mini-ips button{background:var(--sf3)}
+html[data-theme=day] .mini-ips button:hover{background:#dde2e6}
+html[data-theme=day] .tag,html[data-theme=day] .bl li em{color:#865d00}
+html[data-theme=day] .tag{background:rgba(168,116,0,.1)}
+html[data-theme=day] .icb.sure{background:rgba(209,52,60,.1)}
+html[data-theme=day] .kv,html[data-theme=day] .bl li{background:var(--sf2)}
+html[data-theme=day] .rhd .ic{background:rgba(168,116,0,.1);color:#865d00}
+html[data-theme=day] .rhd .ic.verified{background:rgba(18,135,74,.1)}
+html[data-theme=day] .rhd .ic.failed{background:rgba(209,52,60,.1)}
+html[data-theme=day] .flow li.w i{background:rgba(168,116,0,.12);color:#865d00}
+html[data-theme=day] .sim{border-color:rgba(168,116,0,.4);background:rgba(168,116,0,.04)}
+html[data-theme=day] .sim h4{color:#865d00}

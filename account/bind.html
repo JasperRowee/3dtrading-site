@@ -1,0 +1,764 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="robots" content="noindex">
+<title>3dtrading · 连接币安子账户</title>
+<script>/* day / night follows the website (localStorage '3dt.theme'); night is the default */
+try{document.documentElement.dataset.theme=localStorage.getItem('3dt.theme')==='day'?'day':'night'}catch(e){document.documentElement.dataset.theme='night'}</script>
+<link rel="stylesheet" href="page.css?v=20261112-r21">
+<link rel="stylesheet" href="bind-bn.css?v=20261111-3">
+<style>
+/* same world as the sign-in page: dark ground, soft mint/gold glow, a glass card on the right */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(90% 60% at 88% 0%,rgba(47,220,188,.10),transparent 60%),radial-gradient(70% 55% at 0% 100%,rgba(232,184,74,.07),transparent 60%)}
+.bar{background:rgba(7,9,10,.88)}
+.bd{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,460px);gap:clamp(28px,4vw,64px);max-width:1360px;margin:0 auto;padding:clamp(24px,5vh,56px) clamp(20px,4vw,56px) 72px}
+
+/* left: headline + one short looping excerpt of the Binance setup */
+.intro{position:sticky;top:calc(var(--barH) + env(safe-area-inset-top) + clamp(24px,5vh,56px));align-self:start;min-width:0}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin:0 0 14px}
+.eyebrow::before{content:"";width:18px;height:2px;border-radius:2px;background:linear-gradient(90deg,#e8b84a,var(--brand))}
+.intro h1{font-size:clamp(30px,3.1vw,46px);line-height:1.08;letter-spacing:-.025em;margin:0 0 14px;font-weight:780;max-width:14em}
+.intro h1 em{font-style:normal;background:linear-gradient(92deg,#f5d27a 0%,#e8b84a 30%,var(--brand) 75%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:15.5px;line-height:1.65;color:var(--ink2);margin:0 0 26px;max-width:34em}
+.clip{border-radius:22px;padding:8px;background:linear-gradient(180deg,rgba(22,27,30,.7),rgba(12,15,17,.75));box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 30px 80px -36px rgba(47,220,188,.35)}
+.stage{position:relative;height:clamp(300px,44vh,440px);overflow:hidden;border-radius:16px;background:#000;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.stage .bn{transition:transform .7s cubic-bezier(.45,0,.2,1)}
+.cap{display:flex;align-items:center;gap:12px;padding:12px 8px 6px 10px}
+.cap-tx{flex:1;min-width:0;transition:opacity .3s}
+.cap-tx.fade{opacity:0}
+.cap-tx strong{display:block;font-size:15px;font-weight:700;line-height:1.35}
+.cap-tx span{display:block;font-size:13px;line-height:1.5;color:var(--ink2)}
+.cap .tagx{flex:none;font-size:11px;font-weight:650;color:var(--ink3);letter-spacing:.04em}
+.cb{appearance:none;border:0;flex:none;width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.06);color:var(--ink2);cursor:pointer;display:grid;place-items:center}
+.cb:hover{color:var(--ink);background:rgba(255,255,255,.1)}
+.cb svg{width:15px;height:15px;fill:currentColor}
+.srcl{margin:10px 2px 0;font-size:11.5px;line-height:1.5;color:var(--ink3)}
+
+/* right: the card, as on the sign-in page */
+.card{position:relative;min-width:0;padding:28px 28px 24px;border-radius:28px;background:linear-gradient(180deg,rgba(22,27,30,.8),rgba(12,15,17,.85));-webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3);box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),inset 0 1px 0 rgba(255,255,255,.06),0 40px 90px -40px rgba(0,0,0,.8)}
+.card::before{content:"";position:absolute;left:28px;right:28px;top:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(47,220,188,.7),rgba(232,184,74,.6),transparent)}
+.phd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
+.phd h2{font-size:22px;letter-spacing:-.015em;margin:0 0 6px;font-weight:740}
+.phd p{margin:0;color:var(--ink3);font-size:13.5px;line-height:1.55}
+.skip{flex:none;height:36px;padding:0 12px;border-radius:10px;font-size:13px;font-weight:650;white-space:nowrap}
+.welcome{display:none;margin:0 0 14px}
+.welcome.on{display:flex}
+.list{margin:0 0 16px;display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
+.list:empty{display:none}
+.lh{display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:650;color:var(--ink3);margin:0 0 2px}
+.acc{display:flex;align-items:center;gap:10px;padding:8px 8px 8px 12px;border-radius:12px;background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer}
+.acc:hover{box-shadow:inset 0 0 0 1px var(--line2)}
+.acc.sel{box-shadow:inset 0 0 0 1.5px var(--brand)}
+.dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--warn)}
+.dot.verified{background:var(--ok)}.dot.failed{background:var(--bad)}.dot.demo{background:#6b7a8c}
+.acc .tx{flex:1;min-width:0}
+.acc .tx b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acc .tx small{display:block;font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acc .cur{font-size:11px;font-weight:700;color:var(--brand)}.acc .cur.dm{color:#a9b4c2}
+.icb{appearance:none;border:0;background:none;width:32px;height:32px;border-radius:9px;color:var(--ink3);cursor:pointer;display:grid;place-items:center;flex:none}
+.icb:hover{background:var(--sf3);color:var(--ink)}
+.icb.rm:hover{color:var(--bad)}
+.icb svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.icb.sure{width:auto;padding:0 10px;background:rgba(255,99,105,.14);color:var(--bad);font-size:12px;font-weight:700}
+.card .inp input{background:rgba(0,0,0,.32);height:44px}
+
+/* several sub-accounts at once: one block per sub-account, each with its own errors */
+.rows{display:grid;gap:12px;margin:0 0 10px}
+.arow{padding:14px 14px 4px;border-radius:16px;background:rgba(0,0,0,.24);box-shadow:inset 0 0 0 1px var(--line)}
+.arow.bad{box-shadow:inset 0 0 0 1.5px rgba(255,99,105,.55)}
+.arow-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-2px 0 10px}
+.arow-h b{font-size:12.5px;font-weight:700;color:var(--ink3);letter-spacing:.02em}
+.arow-h .icb{width:30px;height:30px}
+.arow .fld{margin-bottom:10px}
+.rerr{display:none;margin:-2px 0 10px;font-size:12.5px;line-height:1.5;color:#ff9a9e}
+.arow.bad .rerr{display:block}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.addrow{appearance:none;width:100%;height:44px;border:1.5px dashed rgba(255,255,255,.16);border-radius:13px;background:none;color:var(--ink2);font-size:13.5px;font-weight:650;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 6px}
+.addrow:hover{border-color:rgba(47,220,188,.55);color:var(--ink)}
+.addrow svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.addrow[hidden]{display:none}
+.sum{margin:0 0 12px}
+.sec{font-size:11.5px;font-weight:700;color:var(--ink3);letter-spacing:.05em;text-transform:uppercase;margin:16px 0 9px}
+.checks{display:grid;gap:9px;margin-bottom:14px}
+.checks .chk{font-size:13px}
+.checks.err .chk input:not(:checked){border-color:var(--bad)}
+.ckmsg{display:none;margin:-6px 0 12px;font-size:12.5px;color:var(--bad)}
+.checks.err+.ckmsg{display:block}
+.mini-ips{display:inline-flex;gap:5px;flex-wrap:wrap;margin:4px 0 0}
+.mini-ips button{appearance:none;border:0;font-family:var(--mono);font-size:11.5px;padding:2px 7px;border-radius:6px;background:var(--sf3);color:var(--ink);cursor:pointer}
+.mini-ips button:hover{background:#262d31}
+.tag{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;font-size:11px;font-weight:650;background:rgba(240,177,0,.14);color:#f5c84b;white-space:nowrap}
+#go{height:50px;font-size:15.5px;box-shadow:0 12px 30px -10px rgba(47,220,188,.65)}
+.safe{margin:12px 0 0;font-size:12px;padding:10px 12px}
+
+/* result */
+#resView{display:none}
+.card.res #formView,.card.boot #formView{display:none}
+.card.res #resView{display:block}
+.card.res .lh{display:none}
+.bootErr{padding:20px 0;font-size:14px;line-height:1.6;color:var(--ink2)}
+.rhd{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
+.rhd .ic{flex:none;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(240,177,0,.14);color:#f5c84b}
+.rhd .ic.verified{background:rgba(34,197,94,.14);color:var(--ok)}
+.rhd .ic.failed{background:rgba(255,99,105,.14);color:var(--bad)}
+.rhd .ic svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.rhd h3{margin:2px 0 4px;font-size:18px}
+.rhd p{margin:0;color:var(--ink2);font-size:13px;line-height:1.55}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:7px 16px;padding:12px 14px;border-radius:12px;background:rgba(0,0,0,.28);font-size:13px;margin-bottom:12px}
+.kv dt{color:var(--ink3)}.kv dd{margin:0;text-align:right;word-break:break-all}
+.bl{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:6px}
+.bl li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.28);font-size:13px}
+.bl li b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bl li small{color:var(--ink3);font-family:var(--mono);font-size:12px}
+.bl li em{font-style:normal;font-size:11.5px;font-weight:650;color:#f5c84b;white-space:nowrap}
+.flow{list-style:none;margin:0 0 12px;padding:0;display:grid;gap:7px;font-size:13px}
+.flow li{display:flex;gap:10px;align-items:flex-start;line-height:1.5;color:var(--ink2)}
+.flow li i{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;margin-top:1px;background:var(--sf3);color:var(--ink3);font-style:normal;font-size:11px;font-weight:800}
+.flow li.y i{background:var(--brand);color:var(--onb)}
+.flow li.n i{background:rgba(255,99,105,.16);color:var(--bad)}
+.flow li.w i{background:rgba(240,177,0,.16);color:#f5c84b}
+.flow li b{color:var(--ink);font-weight:600}
+.sim{margin:14px 0 0;padding:14px;border-radius:14px;border:1.5px dashed rgba(240,177,0,.45);background:rgba(240,177,0,.04)}
+.sim h4{display:flex;align-items:center;gap:8px;margin:0 0 4px;font-size:13px;color:#f5c84b}
+.sim p{margin:0 0 10px;font-size:12px;line-height:1.55;color:var(--ink3)}
+.sim .b3{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sim .btn{justify-content:flex-start;height:38px;font-size:12.5px;padding:0 10px}
+.ract{display:grid;gap:10px;margin-top:14px}
+.fixl{margin:12px 0;padding-left:18px;display:grid;gap:6px;font-size:13px;line-height:1.55;color:var(--ink2)}
+.toast{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);font-weight:650;font-size:13.5px;padding:10px 16px;border-radius:11px;transition:.25s var(--ease);z-index:50;max-width:calc(100vw - 32px)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+[hidden]{display:none!important}
+
+@media (max-width:1180px) and (min-width:901px){.bd{grid-template-columns:minmax(0,1fr) 400px}}
+/* phone / tablet: one column, same excerpt on top, normal page scroll so the keyboard never hides a field */
+@media (max-width:900px){
+  :root{--barH:56px}
+  .bar{padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+  .bar .logo img{height:19px}
+  .demo-pill{display:none}
+  .bd{display:block;padding:20px max(14px,env(safe-area-inset-right)) max(32px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
+  .intro{position:static;padding:0 6px}
+  .eyebrow{font-size:11.5px;margin-bottom:8px}
+  .intro h1{font-size:27px;margin-bottom:8px}
+  .lede{font-size:14.5px;margin-bottom:16px;color:#c8d1ce}
+  .clip{margin:0 -6px;border-radius:20px;padding:6px}
+  .stage{height:clamp(210px,62vw,330px);border-radius:14px}
+  .cap{padding:10px 6px 4px 8px}
+  .cap-tx strong{font-size:14.5px}.cap-tx span{font-size:12.5px}
+  .card{margin-top:18px;padding:22px 16px 18px;border-radius:24px}
+  .phd h2{font-size:20px}
+  .inp input{font-size:16px}
+  .arow{padding:12px 12px 2px}
+}
+@media (max-width:400px){.r2{grid-template-columns:1fr;gap:0}.skip{padding:0 10px}.cap .tagx{display:none}}
+@media (orientation:landscape) and (max-height:500px) and (max-width:900px){.stage{height:min(70vh,300px)}}
+@media (prefers-reduced-motion:reduce){.cap-tx{transition:none}}
+</style>
+<link rel="stylesheet" href="day.css?v=20261112-r21">
+<link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
+<link rel="apple-touch-icon" sizes="180x180" href="../icons/dodo-180.png?v=20261112">
+<link rel="manifest" href="../manifest.webmanifest?v=20261112">
+<meta name="application-name" content="3dtrading">
+<meta name="apple-mobile-web-app-title" content="3dtrading">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#06090b">
+<script>(function(){function tc(){var m=document.querySelector('meta[name=theme-color]');if(m)m.content=document.documentElement.dataset.theme==='day'?'#e6eaee':'#06090b'}tc();addEventListener('td:theme',tc)})()</script>
+</head>
+<body>
+<header class="bar">
+  <a class="logo" href="#" data-href="site" data-i18n-attr="aria-label:acct.toSite"><img class="lg-n" src="assets/3dtrading-logo-white.svg" alt="3dtrading" width="91" height="22"><img class="lg-d" src="assets/3dtrading-logo.svg" alt="3dtrading" width="91" height="22"></a>
+  <span class="sp"></span>
+  <span class="demo-pill" data-i18n="bind.pill">演示 · 未连接币安</span>
+  <div id="lang"></div>
+  <button type="button" class="av-btn ini" id="av"></button>
+</header>
+
+<main class="bd">
+  <section class="intro" aria-labelledby="hh">
+    <p class="eyebrow" data-i18n="bind.eyebrow">第 2 步 · 连接子账户</p>
+    <h1 id="hh" data-i18n-html="bind.h1">把币安子账户<br><em>交给策略运行</em></h1>
+    <p class="lede" data-i18n="bind.lede">每个子账户一组独立 API。可以一次连接多个，也可以先跳过。</p>
+    <div class="clip" id="car" data-i18n-attr="aria-label:bind.carL" role="region">
+      <div class="stage" id="stage" aria-hidden="true"><div class="bn" id="bn"></div></div>
+      <div class="cap">
+        <div class="cap-tx" id="capTx" aria-live="off"><strong id="ct"></strong><span id="cx"></span></div>
+        <span class="tagx" data-i18n="bind.excerpt">节选 · 自动播放</span>
+        <button type="button" class="cb" id="cPlay"></button>
+      </div>
+    </div>
+    <p class="srcl" id="srcl"></p>
+  </section>
+
+  <section class="card boot" id="panel" aria-labelledby="formH">
+    <div class="note good welcome" id="welcome" role="status"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="bind.welcome">演示账号已创建。</span></div>
+    <div class="phd">
+      <div><h2 id="formH"></h2><p id="formS"></p></div>
+      <a class="btn ghost skip" id="skipBtn" href="#"></a>
+    </div>
+    <div class="list" id="list"></div>
+
+    <div id="formView">
+      <form id="f" novalidate autocomplete="off">
+        <div class="note bad sum" id="sum" role="alert" hidden><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg><span id="sumT"></span></div>
+        <div class="rows" id="rows"></div>
+        <button type="button" class="addrow" id="addRow"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="bind.addRow">再添加一个子账户</span></button>
+
+        <div class="sec" data-i18n="bind.checkH">已在币安完成</div>
+        <div class="checks" id="checks" data-scroll-pad>
+          <label class="chk"><input type="checkbox" data-ck><span data-i18n-html="bind.ck1">子账户已允许合约，并已开通统一账户</span></label>
+          <label class="chk"><input type="checkbox" data-ck><span><span data-i18n-html="bind.ck2">只访问受信任的 IP，两个 IP 已保存</span><br><span class="mini-ips" id="miniIps"></span></span></label>
+          <label class="chk"><input type="checkbox" data-ck><span data-i18n-html="bind.ck3">已核对最小权限边界</span></label>
+        </div>
+        <div class="ckmsg" data-i18n="bind.e.checks">请在币安里完成这三项，再勾选确认。</div>
+
+        <button class="btn pri block" type="submit" id="go"></button>
+        <button class="btn ghost block" type="button" id="cancel" style="margin-top:8px" data-i18n="bind.cancel" hidden>取消</button>
+        <div class="note safe"><svg viewBox="0 0 24 24"><path d="M12 3.5 5 6.5v5c0 4.3 3 7.8 7 9 4-1.2 7-4.7 7-9v-5z"/></svg><span data-i18n="bind.safe">演示：只在本页检查格式，不连接币安。</span></div>
+      </form>
+    </div>
+
+    <div id="resView" aria-live="polite"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="td-account.js?v=20261112-r21"></script>
+<script src="bind-steps.js?v=20261111-3"></script>
+<script src="bind-bn.js?v=20261111-3"></script>
+<script>
+(function () {
+  'use strict';
+  var A = TDAccount, B = window.TD_BIND, BN = window.TD_BN, $ = function (s) { return document.querySelector(s); };
+  /* Compat: a cached older td-account.js may lack the demo helpers. Fill them locally so the
+     demo sub-account still shows its notice card (never the API form). */
+  var DEMO_ID = A.DEMO_ID || 'demo-binance';
+  if (typeof A.isDemo !== 'function' || typeof A.accountName !== 'function' || typeof A.accountSub !== 'function') {
+    var T = A;
+    A = Object.create(T);
+    A.DEMO_ID = DEMO_ID;
+    A.isDemo = function (a) { return !!a && (a === DEMO_ID || a.id === DEMO_ID); };
+    A.accountName = function (a) { return A.isDemo(a) ? T.t('acct.demo.name') : (a && a.name) || ''; };
+    A.accountSub = function (a) { return A.isDemo(a) ? T.t('acct.demo.sub') : (a && a.uid ? 'UID ' + a.uid + ' · ' : '') + T.statusText(a && a.status); };
+    A.compat = true;
+  }
+  if (!A.requireUser()) return;
+
+  A.i18n({
+    zh: {
+      'bind.bootErr': '页面没有完整加载，请刷新后再试。已绑定的账户不会受影响。', 'acct.demo.name': '示例账户', 'acct.demo.sub': '示例数据 · 未连接币安', 'acct.demo.st': '示例数据 · 未连接币安', 'bind.demoTag': '演示',
+      'bind.title': '3dtrading · 连接币安子账户', 'bind.pill': '演示 · 未连接币安',
+      'bind.eyebrow': '连接币安子账户', 'bind.h1': '把币安子账户<br><em>交给策略运行</em>',
+      'bind.lede': '每个子账户使用一组独立 API，策略只在子账户内运行，与主账户其他资产隔离。可以一次连接多个，也可以先跳过。',
+      'bind.welcome': '演示账号已创建。可以现在连接，也可以先跳过。',
+      'bind.skip': '暂时跳过', 'bind.back': '返回后台',
+      'bind.carL': '币安 API 设置示意（节选，自动播放）', 'bind.excerpt': '节选 · 自动播放', 'bind.cPlay': '继续播放', 'bind.cPause': '暂停播放',
+      'bind.srcl': '代码复刻的币安网页示意（节选），非实时页面；名称、UID 与密钥均为虚构示例。依据 {g} 配置指南与币安官方 FAQ，{d} 核对。',
+      'bind.ipPend': '示例白名单 IP',
+      'bind.listH': '已连接 {n} 个子账户', 'bind.current': '当前', 'bind.recheck': '重新校验', 'bind.remove': '移除', 'bind.sure': '确认移除', 'bind.removed': '已移除 {name}',
+      'bind.newT': '连接币安子账户', 'bind.newS': '填写子账户和它的 API。有多个子账户时，点「再添加一个」一起提交。',
+      'bind.addT': '再连接子账户', 'bind.addS': '每个子账户使用自己的 API，可以一次添加多个。',
+      'bind.demoP': '这是后台为你准备的示例账户：收益、持仓和交易全部是模拟数据，没有连接币安，也不会下单。它不需要也不能填写 API。',
+      'bind.demoKeys': '无（示例账户不使用 API）', 'bind.demoNote': '示例账户不能做接入测试或重新校验。想看真实数据，请连接你自己的币安子账户；不需要时可以删除它。', 'bind.demoReal': '连接真实子账户',
+      'bind.reT': '重新校验 {name}', 'bind.reS': '我们不保存密钥，所以需要重新填写 API Key 和 Secret Key。',
+      'bind.rowH': '子账户 {n}', 'bind.rowRm': '删除子账户 {n} 这一组', 'bind.addRow': '再添加一个子账户', 'bind.maxRows': '一次最多 {n} 个',
+      'bind.fName': '子账户名称', 'bind.fNamePh': '例如 3dtUSDT01', 'bind.fUid': '子账户 UID', 'bind.fUidPh': '用户 ID',
+      'bind.fLabel': 'API 标签', 'bind.optional': '选填',
+      'bind.fKey': 'API Key', 'bind.fKeyPh': '在币安点 Copy 后粘贴', 'bind.fSec': 'Secret Key', 'bind.fSecPh': '只显示一次，点 Copy 后粘贴', 'bind.show': '显示或隐藏 Secret Key',
+      'bind.checkH': '已在币安完成（对以上所有子账户）',
+      'bind.ck1': '子账户已 <b>允许合约</b>，并已 <b>开通统一账户</b>',
+      'bind.ck2': '<b>只访问受信任的 IP</b>，两个 IP 已保存',
+      'bind.ck3': '已核对最小权限边界：<b>提款与跨账户转账已关闭</b>（申赎操作权限按协议另行确认）',
+      'bind.go': '检查并保存', 'bind.goN': '检查并保存这 {n} 个', 'bind.cancel': '取消',
+      'bind.safe': '演示：只在本页检查格式，不连接币安。密钥不发送、不保存，检查后立即清空；保存的子账户状态为「待接入测试」。',
+      'bind.e.name': '请填写子账户名称。', 'bind.e.uid': 'UID 是 6–12 位数字。', 'bind.e.dup': '这个子账户已经连接过了。要更新密钥，请在上面的列表里点「重新校验」。',
+      'bind.e.dupName': '和本次填写的另一个子账户重名。', 'bind.e.dupUid': '和本次填写的另一个子账户 UID 相同。', 'bind.e.keyRow': '这组密钥在另一个子账户里已经用过。每个子账户要用它自己的 API。',
+      'bind.e.key': 'API Key 应为 64 位字母和数字。请用币安页面上的 Copy 按钮完整复制。', 'bind.e.sec': 'Secret Key 应为 64 位字母和数字。只显示一次，丢了需要重建 API。',
+      'bind.e.same': 'API Key 和 Secret Key 不能相同，看看是不是粘贴了两次同一项。', 'bind.e.checks': '请在币安里完成这三项，再勾选确认。',
+      'bind.e.rowKeys': '这一组没有保存。为安全起见两项密钥已清空，改好后请重新粘贴。',
+      'bind.sum.part': '已保存 {ok} 个（待接入测试）。还有 {bad} 个没有保存，请按红色提示修改。', 'bind.sum.none': '{bad} 个子账户都没有保存，请按红色提示修改。',
+      'bind.r.pendT': '格式检查通过 · 待接入测试', 'bind.r.pendP': '已保存子账户「{name}」。这一步只检查了格式：没有连接币安，API Key 和 Secret 没有发送，也没有保存，表单已清空。',
+      'bind.r.batchT': '已保存 {n} 个子账户 · 待接入测试', 'bind.r.batchP': '只检查了格式：没有连接币安，密钥没有发送，也没有保存。接入测试需要服务端，演示环境里它们会一直是「待接入测试」。',
+      'bind.r.okT': '接入测试通过（演示）', 'bind.r.okP': '这是模拟结果，用来预览成功后的流程。币安并没有被连接。',
+      'bind.r.badT': '接入测试未通过（演示）', 'bind.r.badP': '这是模拟结果，用来预览失败时的提示。',
+      'bind.kv.name': '子账户', 'bind.kv.uid': 'UID', 'bind.kv.label': 'API 标签', 'bind.kv.status': '状态', 'bind.kv.keys': '密钥', 'bind.kv.keysV': '未保存（已清空）',
+      'bind.st.s1': '子账户已选择', 'bind.st.s1P': '：已填写名称和 UID（你自报，未经币安核对）', 'bind.st.s2': 'API 已创建', 'bind.st.s2P': '：两项密钥格式检查通过', 'bind.st.s3': '密钥已安全保存', 'bind.st.s3P': '：由你自行保存；本页提交后已清空，不保存', 'bind.st.s4': '权限与 IP 已保存', 'bind.st.s4P': '：你已在币安自查勾选，需服务端核实', 'bind.st.s5': '服务端验证通过', 'bind.st.s5P': '：演示环境未接通后端，尚未验证', 'bind.st.s5simP': '：仅为下方演示按钮的模拟结果，并未真实连接币安',
+      'bind.simH': '演示：模拟接入测试结果', 'bind.simP': '没有后端，下面的按钮只用来预览界面，不代表真实结果。',
+      'bind.simOk': '模拟：测试通过', 'bind.simIp': '模拟：IP 不在白名单', 'bind.simPerm': '模拟：权限不对', 'bind.simKey': '模拟：Key 无效',
+      'bind.fail.ip': '币安拒绝了请求：这个 API 没有把我们的服务器 IP 加入白名单。', 'bind.fail.perm': '权限不一致：缺少交易权限，或开启了提现或万向划转。', 'bind.fail.key': 'API Key 无效，可能已被删除，或和 Secret 不属于同一个子账户。',
+      'bind.fix.ip': '在币安打开这个 API，选「只访问受信任的IP」，确认两个 IP 都已保存。', 'bind.fix.perm': '在币安打开这个 API，按左侧「权限与 IP 白名单」示意勾选权限，关闭提现与万向划转，然后保存。', 'bind.fix.key': '在币安重新创建 API，并确认两项密钥来自同一个子账户。', 'bind.fix.again': '改完以后点「重新校验」，重新填写两项密钥。',
+      'bind.seeStep': '看权限与 IP 示意', 'bind.again': '重新校验', 'bind.toApp': '进入后台', 'bind.addMore': '再连接子账户',
+      'bind.saved': '已保存 {name}', 'bind.savedN': '已保存 {n} 个子账户', 'bind.copied': '已复制 {ip}', 'bind.copy': '复制',
+      'bind.c1t': '创建子账户', 'bind.c1x': '子账户 → 账户管理 → 创建子账户（虚拟邮箱）',
+      'bind.c2t': '创建 API', 'bind.c2x': 'API 管理 → 创建 API → 系统生成',
+      'bind.c3t': '复制两项密钥', 'bind.c3x': 'Secret Key 只显示一次，马上复制',
+      'bind.c4t': '权限与 IP 白名单', 'bind.c4x': '只开读取与交易、关闭提现；只访问受信任的 IP'
+    },
+    en: {
+      'bind.bootErr': 'The page did not finish loading. Please refresh and try again. Your linked accounts are not affected.', 'acct.demo.name': 'Sample account', 'acct.demo.sub': 'Sample data · not connected to Binance', 'acct.demo.st': 'Sample data · not connected to Binance', 'bind.demoTag': 'Demo',
+      'bind.title': '3dtrading · Connect Binance sub-accounts', 'bind.pill': 'Demo · Binance not connected',
+      'bind.eyebrow': 'Connect Binance sub-accounts', 'bind.h1': 'Let the strategy run<br><em>in your sub-account</em>',
+      'bind.lede': 'Each sub-account uses its own API key, and the strategy stays inside it, apart from the rest of your main account. Connect several at once, or skip for now.',
+      'bind.welcome': 'Demo account created. Connect now, or skip for now.',
+      'bind.skip': 'Skip for now', 'bind.back': 'Back to dashboard',
+      'bind.carL': 'Binance API setup preview (excerpt, plays on its own)', 'bind.excerpt': 'Excerpt · auto-play', 'bind.cPlay': 'Play', 'bind.cPause': 'Pause',
+      'bind.srcl': 'A coded excerpt of Binance’s website, not a live page; names, UIDs and keys are made-up examples. Based on the {g} setup guide and Binance’s FAQs, checked {d}.',
+      'bind.ipPend': 'Example whitelist IPs',
+      'bind.listH': '{n} connected', 'bind.current': 'Current', 'bind.recheck': 'Check again', 'bind.remove': 'Remove', 'bind.sure': 'Remove?', 'bind.removed': 'Removed {name}',
+      'bind.newT': 'Connect Binance sub-accounts', 'bind.newS': 'Enter a sub-account and its API key. Have several? Use “Add another” and submit them together.',
+      'bind.addT': 'Connect more sub-accounts', 'bind.addS': 'Each sub-account uses its own API key. You can add several at once.',
+      'bind.demoP': 'A sample account set up for you in the dashboard. Its returns, positions and trades are all simulated. It is not connected to Binance and places no orders. It needs no API and cannot take one.',
+      'bind.demoKeys': 'None (the sample account uses no API)', 'bind.demoNote': 'The sample account cannot be connection-tested or checked again. To see real data, connect your own Binance sub-account. You can delete the sample account when you no longer need it.', 'bind.demoReal': 'Connect a real sub-account',
+      'bind.reT': 'Check {name} again', 'bind.reS': 'We don’t keep keys, so enter the API Key and Secret Key again.',
+      'bind.rowH': 'Sub-account {n}', 'bind.rowRm': 'Remove sub-account {n}', 'bind.addRow': 'Add another sub-account', 'bind.maxRows': 'Up to {n} at a time',
+      'bind.fName': 'Sub-account name', 'bind.fNamePh': 'e.g. 3dtUSDT01', 'bind.fUid': 'Sub-account UID', 'bind.fUidPh': 'User ID',
+      'bind.fLabel': 'API label', 'bind.optional': 'Optional',
+      'bind.fKey': 'API Key', 'bind.fKeyPh': 'Click Copy on Binance, then paste', 'bind.fSec': 'Secret Key', 'bind.fSecPh': 'Shown once; click Copy, then paste', 'bind.show': 'Show or hide the Secret Key',
+      'bind.checkH': 'Done on Binance (for every sub-account above)',
+      'bind.ck1': 'The sub-account has <b>futures enabled</b> and <b>Portfolio Margin</b> on',
+      'bind.ck2': '<b>Trusted IPs only</b>, both IPs saved',
+      'bind.ck3': 'Minimum permission boundary verified: <b>withdrawals and cross-account transfers are off</b> (subscription/redemption permissions confirmed separately per agreement)',
+      'bind.go': 'Check and save', 'bind.goN': 'Check and save all {n}', 'bind.cancel': 'Cancel',
+      'bind.safe': 'Demo: the format is checked on this page only and Binance is not contacted. Keys are never sent or stored and are cleared right after the check; saved sub-accounts show “Awaiting connection test”.',
+      'bind.e.name': 'Enter the sub-account name.', 'bind.e.uid': 'The UID is 6–12 digits.', 'bind.e.dup': 'This sub-account is already connected. To update its keys, use “Check again” in the list above.',
+      'bind.e.dupName': 'Another sub-account in this form has the same name.', 'bind.e.dupUid': 'Another sub-account in this form has the same UID.', 'bind.e.keyRow': 'These keys are already used by another sub-account here. Each sub-account needs its own API key.',
+      'bind.e.key': 'The API Key is 64 letters and digits. Use the Copy button on Binance to copy all of it.', 'bind.e.sec': 'The Secret Key is 64 letters and digits. It is shown only once; if you lost it, create a new key.',
+      'bind.e.same': 'The API Key and Secret Key can’t be the same. Did you paste one of them twice?', 'bind.e.checks': 'Finish these three on Binance, then tick them.',
+      'bind.e.rowKeys': 'Not saved. For safety both keys were cleared; paste them again after fixing.',
+      'bind.sum.part': 'Saved {ok} (awaiting connection test). {bad} not saved yet; fix the items marked in red.', 'bind.sum.none': 'None of the {bad} sub-accounts were saved; fix the items marked in red.',
+      'bind.r.pendT': 'Format OK · awaiting connection test', 'bind.r.pendP': 'Saved “{name}”. Only the format was checked: Binance was not contacted, and your API Key and Secret were neither sent nor stored. The form is cleared.',
+      'bind.r.batchT': 'Saved {n} sub-accounts · awaiting connection test', 'bind.r.batchP': 'Only the format was checked: Binance was not contacted and the keys were neither sent nor stored. A connection test needs the server; in this demo they stay “Awaiting connection test”.',
+      'bind.r.okT': 'Connection test passed (demo)', 'bind.r.okP': 'This is a simulated result to preview the success flow. Binance was not contacted.',
+      'bind.r.badT': 'Connection test failed (demo)', 'bind.r.badP': 'This is a simulated result to preview the error message.',
+      'bind.kv.name': 'Sub-account', 'bind.kv.uid': 'UID', 'bind.kv.label': 'API label', 'bind.kv.status': 'Status', 'bind.kv.keys': 'Keys', 'bind.kv.keysV': 'Not stored (cleared)',
+      'bind.st.s1': 'Sub-account selected', 'bind.st.s1P': ': name and UID entered (your own entry, not checked with Binance)', 'bind.st.s2': 'API created', 'bind.st.s2P': ': both keys passed the format check', 'bind.st.s3': 'Keys securely saved', 'bind.st.s3P': ': kept by you; this page cleared them on submit and stores nothing', 'bind.st.s4': 'Permissions & IPs saved', 'bind.st.s4P': ': ticked by you after checking on Binance; the server must confirm', 'bind.st.s5': 'Server verified', 'bind.st.s5P': ': not connected in this demo, so not verified', 'bind.st.s5simP': ': simulated by the demo buttons below only; Binance was not contacted',
+      'bind.simH': 'Demo: simulate a test result', 'bind.simP': 'There is no backend. These buttons only preview the screens; they are not real results.',
+      'bind.simOk': 'Simulate: passed', 'bind.simIp': 'Simulate: IP not listed', 'bind.simPerm': 'Simulate: permissions', 'bind.simKey': 'Simulate: bad key',
+      'bind.fail.ip': 'Binance rejected the request: our server IPs are not on this key’s allow-list.', 'bind.fail.perm': 'Permissions don’t match: trading is missing, or withdrawals / universal transfer are on.', 'bind.fail.key': 'The API Key is invalid. It may have been deleted, or it belongs to a different sub-account than the Secret.',
+      'bind.fix.ip': 'On Binance, open this key, choose trusted IPs only and check both IPs are saved.', 'bind.fix.perm': 'On Binance, open this key, tick the permissions shown in “Permissions and trusted IPs” on the left, turn withdrawals and universal transfer off and save.', 'bind.fix.key': 'Create a new key on Binance and check both keys come from the same sub-account.', 'bind.fix.again': 'When you’re done, click “Check again” and enter both keys.',
+      'bind.seeStep': 'Show permissions & IPs', 'bind.again': 'Check again', 'bind.toApp': 'Open dashboard', 'bind.addMore': 'Connect more sub-accounts',
+      'bind.saved': 'Saved {name}', 'bind.savedN': 'Saved {n} sub-accounts', 'bind.copied': 'Copied {ip}', 'bind.copy': 'Copy',
+      'bind.c1t': 'Create a sub-account', 'bind.c1x': 'Sub Accounts → Account Management → Create (virtual email)',
+      'bind.c2t': 'Create an API key', 'bind.c2x': 'API Management → Create API → System generated',
+      'bind.c3t': 'Copy both keys', 'bind.c3x': 'The Secret Key is shown only once; copy it now',
+      'bind.c4t': 'Permissions and trusted IPs', 'bind.c4x': 'Read and trade only, withdrawals off; trusted IPs only'
+    }
+  });
+
+  var IC = {
+    check: '<svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7"/></svg>',
+    redo: '<svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.4-5.7"/><path d="M4 4.5V9h4.5"/></svg>',
+    trash: '<svg viewBox="0 0 24 24"><path d="M4.5 7h15M10 11v6M14 11v6M6.5 7l1 12.5h9l1-12.5M9.5 7V4.5h5V7"/></svg>',
+    clock: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>',
+    bad: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg>',
+    warn: '<svg viewBox="0 0 24 24"><path d="M12 3.5 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.01"/></svg>',
+    flask: '<svg viewBox="0 0 24 24"><path d="M9.5 3.5h5M10.5 3.5v6L5 19a1.5 1.5 0 0 0 1.3 2h11.4a1.5 1.5 0 0 0 1.3-2l-5.5-9.5v-6"/></svg>',
+    eye: '<svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+    play: '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
+    pause: '<svg viewBox="0 0 24 24"><rect x="6.5" y="5" width="4" height="14" rx="1"/><rect x="13.5" y="5" width="4" height="14" rx="1"/></svg>',
+    cursor: '<svg viewBox="0 0 24 24"><path d="M5 2.5v17.2l4.6-4.4 3 6.6 3-1.4-3-6.4h6.3z" fill="#fff" stroke="#000" stroke-width="1.3" stroke-linejoin="round"/></svg>'
+  };
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  var L = function () { return A.lang() === 'en' ? 'en' : 'zh'; };
+  var mobile = window.matchMedia('(max-width:900px)'), RM = window.matchMedia('(prefers-reduced-motion:reduce)');
+  var qs = new URLSearchParams(location.search);
+  var S = { view: 'form', editId: null, resId: null, batch: null, rm: null };
+  var MAX_ROWS = 8;
+
+  /* ---------- excerpt: four key moments of the coded Binance replica, same on phone and desktop ---------- */
+  // s = scene index in bind-bn.js; the full nine-step walkthrough is no longer shown
+  var CLIPS = [{ s: 1, k: 'c1' }, { s: 5, k: 'c2' }, { s: 7, k: 'c3' }, { s: 8, k: 'c4' }].filter(function (c) { return BN && BN.scenes && BN.scenes[c.s]; });
+  var PERM_CLIP = CLIPS.length - 1;
+  var C = { i: 0, playing: true, vis: !document.hidden, timers: [], s: 1, cur: null };
+  var stage = $('#stage'), bn = $('#bn');
+  function later(fn, ms) { C.timers.push(setTimeout(fn, ms)); }
+  function stop() { C.timers.forEach(clearTimeout); C.timers = []; }
+  function running() { return C.playing && C.vis; }
+  var DWELL = 4600;
+  function box(el) { var r = el.getBoundingClientRect(), b = bn.getBoundingClientRect(); return { x: r.left - b.left, y: r.top - b.top, w: r.width, h: r.height }; }
+  function union(a, b) { if (!a) return b; if (!b) return a; var x = Math.min(a.x, b.x), y = Math.min(a.y, b.y); return { x: x, y: y, w: Math.max(a.x + a.w, b.x + b.w) - x, h: Math.max(a.y + a.h, b.y + b.h) - y }; }
+  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+  function camera(f, H) {
+    var W = stage.clientWidth, SH = stage.clientHeight, CW = bn.offsetWidth || BN.width;
+    var s = Math.min(W / CW, SH / Math.min(H, 640));
+    // small stages zoom in on the part being clicked so it stays readable
+    if (s < 0.66 && f) s = Math.min(1, Math.max(s, Math.min((W - 16) / (f.w + 40), (SH - 16) / (f.h + 40))));
+    var cw = CW * s, ch = H * s, fx = f ? (f.x + f.w / 2) * s : cw / 2, fy = f ? (f.y + f.h / 2) * s : ch / 2;
+    var tx = cw <= W ? (W - cw) / 2 : clamp(W / 2 - fx, W - cw, 0);
+    var ty = ch <= SH ? (SH - ch) / 2 : clamp(SH / 2 - fy, SH - ch, 0);
+    C.s = s;
+    return 'translate(' + Math.round(tx) + 'px,' + Math.round(ty) + 'px) scale(' + s.toFixed(4) + ')';
+  }
+  function draw(anim) {
+    if (!CLIPS.length) return;
+    var sc = BN.scenes[CLIPS[C.i].s], prev = bn.style.transform;
+    bn.style.transition = 'none'; bn.style.transform = 'none'; bn.style.width = '';
+    bn.innerHTML = sc.html(L(), B) + '<div class="bn-cur hide" id="bnCur">' + IC.cursor + '</div>';
+    bn.style.height = sc.h + 'px';
+    var tg = bn.querySelector('[data-t]'), fe = bn.querySelector('[data-focus]');
+    var tb = tg && box(tg), f = union(fe && box(fe), tb);
+    var tr = camera(f, sc.h);
+    bn.style.transform = anim ? prev || tr : tr; void bn.offsetWidth; bn.style.transition = ''; bn.style.transform = tr;
+    var cur = $('#bnCur'), to = tb ? { x: tb.x + tb.w / 2, y: tb.y + tb.h / 2 } : null;
+    if (!to) return;
+    var from = anim ? C.cur : (C.cur ? null : { x: bn.offsetWidth / 2, y: Math.min(sc.h, 640) * 0.6 });
+    if (from && !RM.matches) {
+      cur.style.transition = 'none'; cur.style.transform = 'translate(' + from.x + 'px,' + from.y + 'px)'; cur.classList.remove('hide');
+      void cur.offsetWidth; cur.style.transition = '';
+      later(function () { cur.style.transform = 'translate(' + to.x + 'px,' + to.y + 'px)'; }, 650);
+      later(function () { tg.classList.add('hot'); }, 1600);
+    } else {
+      cur.style.transform = 'translate(' + to.x + 'px,' + to.y + 'px)'; cur.classList.remove('hide'); tg.classList.add('hot');
+    }
+    C.cur = to;
+  }
+  function caption() {
+    if (!CLIPS.length) return;
+    var k = CLIPS[C.i].k;
+    $('#ct').textContent = A.t('bind.' + k + 't'); $('#cx').textContent = A.t('bind.' + k + 'x');
+    $('#capTx').setAttribute('aria-live', running() ? 'off' : 'polite');
+    ctl();
+  }
+  function ctl() {
+    var p = $('#cPlay'); p.innerHTML = C.playing ? IC.pause : IC.play; p.setAttribute('aria-label', A.t(C.playing ? 'bind.cPause' : 'bind.cPlay')); p.setAttribute('aria-pressed', String(!C.playing));
+    p.title = p.getAttribute('aria-label');
+  }
+  function show(i, anim) {
+    stop();
+    C.i = (i + CLIPS.length) % CLIPS.length;
+    var tx = $('#capTx');
+    if (anim && !RM.matches) { tx.classList.add('fade'); later(function () { caption(); tx.classList.remove('fade'); }, 260); } else caption();
+    draw(anim); schedule();
+  }
+  function schedule() {
+    if (!running() || CLIPS.length < 1) return;
+    later(function () {
+      var cur = $('#bnCur'), tg = bn.querySelector('[data-t]');
+      if (cur) { cur.classList.remove('tap'); void cur.offsetWidth; cur.classList.add('tap'); }
+      if (tg) tg.classList.add('press');
+      later(function () { show(C.i + 1, true); }, 420);
+    }, DWELL);
+  }
+  // plays on its own and loops; the only control is pause (WCAG 2.2.2). No step numbers, no paging.
+  $('#cPlay').addEventListener('click', function () { C.playing = !C.playing; stop(); caption(); if (C.playing) schedule(); });
+  document.addEventListener('visibilitychange', function () { C.vis = !document.hidden; stop(); if (C.vis) schedule(); });
+  var rz, lastW = window.innerWidth;
+  window.addEventListener('resize', function () {
+    // phones fire resize when the keyboard opens; only a width change needs a new camera
+    if (window.innerWidth === lastW) return; lastW = window.innerWidth;
+    clearTimeout(rz); rz = setTimeout(function () { stop(); draw(false); schedule(); }, 140);
+  });
+
+  /* ---------- account list ---------- */
+  function renderList() {
+    var d = A.accounts(), el = $('#list');
+    if (!d.list.length) { el.innerHTML = ''; return; }
+    el.innerHTML = '<div class="lh"><span>' + esc(A.t('bind.listH', { n: d.list.length })) + '</span></div>' + d.list.map(function (a) {
+      var cur = d.active === a.id, sel = S.view === 'res' && (S.resId === a.id || (S.batch && S.batch.indexOf(a.id) >= 0)), sure = S.rm === a.id;
+      return '<div class="acc' + (sel ? ' sel' : '') + '" data-acc="' + esc(a.id) + '" role="button" tabindex="0">' +
+        '<span class="dot ' + esc(A.isDemo(a) ? 'demo' : (a.status || 'pending')) + '" aria-hidden="true"></span>' +
+        '<span class="tx"><b>' + esc(A.accountName(a)) + (A.isDemo(a) ? ' <span class="cur dm">· ' + esc(A.t('bind.demoTag')) + '</span>' : '') + (cur && d.list.length > 1 ? ' <span class="cur">· ' + esc(A.t('bind.current')) + '</span>' : '') + '</b><small>' + esc(A.accountSub(a)) + '</small></span>' +
+        (A.isDemo(a) ? '' : '<button type="button" class="icb" data-re="' + esc(a.id) + '" title="' + esc(A.t('bind.recheck')) + '" aria-label="' + esc(A.t('bind.recheck') + ' ' + A.accountName(a)) + '">' + IC.redo + '</button>') +
+        '<button type="button" class="icb rm' + (sure ? ' sure' : '') + '" data-rm="' + esc(a.id) + '" title="' + esc(A.t('bind.remove')) + '" aria-label="' + esc(A.t(sure ? 'bind.sure' : 'bind.remove') + ' ' + A.accountName(a)) + '">' + (sure ? esc(A.t('bind.sure')) : IC.trash) + '</button></div>';
+    }).join('');
+  }
+  function find(id) { return A.accounts().list.filter(function (a) { return a.id === id; })[0]; }
+
+  /* ---------- form: one block per sub-account ---------- */
+  var UID = /^\d{6,12}$/, KEY = /^[A-Za-z0-9]{64}$/;
+  var rowSeq = 0;
+  function rows() { return Array.prototype.slice.call(document.querySelectorAll('#rows .arow')); }
+  function rowHtml(id) {
+    var p = 'r' + id + '-';
+    function fld(f, label, input, opt) {
+      return '<label class="fld" data-f="' + f + '"' + (opt ? ' data-opt' : '') + '><span><span data-i18n="' + label + '"></span>' + (opt ? '<em data-i18n="bind.optional"></em>' : '') + '</span>' + input + (opt ? '' : '<div class="msg"></div>') + '</label>';
+    }
+    return '<div class="arow-h"><b class="rn"></b><button type="button" class="icb rm" data-rmrow>' + IC.trash + '</button></div>' +
+      '<div class="r2">' +
+      fld('name', 'bind.fName', '<div class="inp"><input name="' + p + 'name" maxlength="40" autocomplete="off" spellcheck="false" data-i18n-attr="placeholder:bind.fNamePh"></div>') +
+      fld('uid', 'bind.fUid', '<div class="inp"><input name="' + p + 'uid" inputmode="numeric" maxlength="12" autocomplete="off" class="mono" data-i18n-attr="placeholder:bind.fUidPh"></div>') +
+      '</div>' +
+      fld('label', 'bind.fLabel', '<div class="inp"><input name="' + p + 'label" maxlength="40" autocomplete="off" spellcheck="false" placeholder="' + esc(B.labelEx) + '"></div>', true) +
+      fld('key', 'bind.fKey', '<div class="inp"><input name="' + p + 'key" class="mono" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-i18n-attr="placeholder:bind.fKeyPh"></div>') +
+      '<label class="fld has-eye-wrap" data-f="sec"><span><span data-i18n="bind.fSec"></span></span><div class="inp has-eye"><input name="' + p + 'sec" type="password" class="mono" autocomplete="new-password" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-i18n-attr="placeholder:bind.fSecPh"><button type="button" class="eye" data-eye aria-pressed="false" data-i18n-attr="aria-label:bind.show">' + IC.eye + '</button></div><div class="msg"></div></label>' +
+      '<p class="rerr" data-i18n="bind.e.rowKeys"></p>';
+  }
+  function addRow(vals, focus) {
+    if (rows().length >= MAX_ROWS) return null;
+    var el = document.createElement('div'); el.className = 'arow'; el.dataset.row = String(++rowSeq);
+    el.innerHTML = rowHtml(rowSeq);
+    $('#rows').appendChild(el);
+    if (vals) { inp(el, 'name').value = vals.name || ''; inp(el, 'uid').value = vals.uid || ''; inp(el, 'label').value = vals.label || ''; }
+    A.apply(el); numberRows();
+    if (focus) inp(el, 'name').focus();
+    return el;
+  }
+  function inp(row, f) { return row.querySelector('[data-f="' + f + '"] input'); }
+  function numberRows() {
+    var rs = rows(), one = rs.length === 1;
+    rs.forEach(function (r, i) {
+      r.querySelector('.rn').textContent = A.t('bind.rowH', { n: i + 1 });
+      var b = r.querySelector('[data-rmrow]'); b.hidden = one; b.setAttribute('aria-label', A.t('bind.rowRm', { n: i + 1 })); b.title = b.getAttribute('aria-label');
+      r.setAttribute('role', 'group'); r.setAttribute('aria-label', A.t('bind.rowH', { n: i + 1 }));
+    });
+    // header hidden for a single block so the simple case still reads as one plain form
+    rs.forEach(function (r) { r.querySelector('.arow-h').hidden = one && !S.multiSeen; });
+    var ar = $('#addRow'); ar.hidden = !!S.editId; ar.disabled = rs.length >= MAX_ROWS;
+    ar.querySelector('span').textContent = rs.length >= MAX_ROWS ? A.t('bind.maxRows', { n: MAX_ROWS }) : A.t('bind.addRow');
+    var n = rs.length; $('#go').textContent = n > 1 ? A.t('bind.goN', { n: n }) : A.t('bind.go');
+  }
+  function ferr(row, f, key) {
+    var fl = row.querySelector('[data-f="' + f + '"]'), m = fl.querySelector('.msg');
+    fl.classList.add('err'); m.dataset.k = key; m.textContent = A.t(key); fl.querySelector('input').setAttribute('aria-invalid', 'true');
+  }
+  function fok(row, f) { var fl = row.querySelector('[data-f="' + f + '"]'); fl.classList.remove('err'); fl.querySelector('input').removeAttribute('aria-invalid'); }
+  function clearKeys(row) { inp(row, 'key').value = ''; var s = inp(row, 'sec'); s.value = ''; s.type = 'password'; row.querySelector('[data-eye]').setAttribute('aria-pressed', 'false'); }
+  function resetForm(vals) {
+    $('#rows').innerHTML = ''; S.multiSeen = false; addRow(vals);
+    document.querySelectorAll('[data-ck]').forEach(function (c) { c.checked = false; });
+    $('#checks').classList.remove('err'); $('#sum').hidden = true; $('#sumT').textContent = ''; S.sum = null;
+  }
+  function head() {
+    var a = S.editId && find(S.editId), n = A.accounts().list.length, res = S.view === 'res';
+    $('#formH').textContent = a ? A.t('bind.reT', { name: a.name }) : A.t(n ? (res ? 'bind.listH' : 'bind.addT') : 'bind.newT', { n: n });
+    $('#formS').textContent = res ? '' : A.t(a ? 'bind.reS' : n ? 'bind.addS' : 'bind.newS');
+    $('#formS').hidden = res;
+    $('#cancel').hidden = !(a || n);
+    $('#miniIps').innerHTML = B.ips.map(function (ip) { return '<button type="button" data-copy="' + esc(ip) + '" title="' + esc(A.t('bind.copy')) + '">' + esc(ip) + '</button>'; }).join('') + (B.ipsConfirmed ? '' : '<span class="tag">' + esc(A.t('bind.ipPend')) + '</span>');
+    document.querySelectorAll('#rows .fld.err .msg[data-k]').forEach(function (m) { m.textContent = A.t(m.dataset.k); });
+    if (S.sum) $('#sumT').textContent = A.t(S.sum.k, S.sum.p);
+    numberRows();
+  }
+  function showForm(editId) {
+    if (editId && A.isDemo(editId)) { showRes(editId); return; }
+    S.view = 'form'; S.editId = editId || null; S.batch = null; S.sum = null;
+    var a = S.editId && find(S.editId);
+    resetForm(a ? { name: a.name, uid: a.uid, label: a.label } : null);
+    render();
+  }
+  function clean(v) { return String(v || '').replace(/\s+/g, ''); }
+  function blank(r) { return !inp(r, 'name').value.trim() && !clean(inp(r, 'uid').value) && !clean(inp(r, 'key').value) && !clean(inp(r, 'sec').value) && !inp(r, 'label').value.trim(); }
+
+  // Checks every block on its own. Blocks that pass are saved as "pending" and leave the form;
+  // blocks that fail stay with their own messages. Keys are only compared in memory and cleared right after.
+  function submit() {
+    var allCk = Array.prototype.every.call(document.querySelectorAll('[data-ck]'), function (c) { return c.checked; });
+    $('#checks').classList.toggle('err', !allCk);
+    var rs = rows(), filled = rs.filter(function (r) { return !blank(r); });
+    if (!filled.length) filled = [rs[0]];
+    // empty extra blocks are dropped quietly
+    rs.forEach(function (r) { if (filled.indexOf(r) < 0) r.remove(); });
+    if (!allCk) {
+      var c = document.querySelector('[data-ck]:not(:checked)'); c.focus(); if (c.scrollIntoView) c.scrollIntoView({ block: 'center', behavior: RM.matches ? 'auto' : 'smooth' });
+      numberRows(); return;
+    }
+    var others = A.accounts().list.filter(function (a) { return a.id !== S.editId; });
+    var names = {}, uids = {}, keys = {}, good = [], bad = [];
+    filled.forEach(function (r) {
+      var ok = true, name = inp(r, 'name').value.trim(), uid = clean(inp(r, 'uid').value), key = clean(inp(r, 'key').value), sec = clean(inp(r, 'sec').value), ln = name.toLowerCase();
+      if (!name) { ferr(r, 'name', 'bind.e.name'); ok = false; }
+      else if (others.some(function (a) { return (a.name || '').toLowerCase() === ln; })) { ferr(r, 'name', 'bind.e.dup'); ok = false; }
+      else if (names[ln]) { ferr(r, 'name', 'bind.e.dupName'); ok = false; } else fok(r, 'name');
+      if (!UID.test(uid)) { ferr(r, 'uid', 'bind.e.uid'); ok = false; }
+      else if (others.some(function (a) { return a.uid === uid; })) { ferr(r, 'uid', 'bind.e.dup'); ok = false; }
+      else if (uids[uid]) { ferr(r, 'uid', 'bind.e.dupUid'); ok = false; } else fok(r, 'uid');
+      if (!KEY.test(key)) { ferr(r, 'key', 'bind.e.key'); ok = false; }
+      else if (keys[key]) { ferr(r, 'key', 'bind.e.keyRow'); ok = false; } else fok(r, 'key');
+      if (!KEY.test(sec)) { ferr(r, 'sec', 'bind.e.sec'); ok = false; }
+      else if (sec === key) { ferr(r, 'sec', 'bind.e.same'); ok = false; }
+      else if (keys[sec]) { ferr(r, 'sec', 'bind.e.keyRow'); ok = false; } else fok(r, 'sec');
+      if (name) names[ln] = 1; if (UID.test(uid)) uids[uid] = 1; if (KEY.test(key)) keys[key] = 1; if (KEY.test(sec)) keys[sec] = 1;
+      key = sec = ''; clearKeys(r);
+      r.classList.toggle('bad', !ok);
+      (ok ? good : bad).push(ok ? { row: r, name: name.slice(0, 40), uid: uid, label: inp(r, 'label').value.trim().slice(0, 40) } : r);
+    });
+    keys = null;
+    var saved = good.map(function (g) {
+      var a = A.upsertAccount({ id: S.editId || undefined, name: g.name, uid: g.uid, label: g.label, device: 'web', status: 'pending', reason: '', checkedAt: Date.now() });
+      g.row.remove(); return a.id;
+    });
+    if (saved.length) { A.setActive(saved[saved.length - 1]); $('#welcome').classList.remove('on'); }
+    if (bad.length) {
+      S.multiSeen = S.multiSeen || filled.length > 1;
+      S.sum = { k: saved.length ? 'bind.sum.part' : 'bind.sum.none', p: { ok: saved.length, bad: bad.length } };
+      $('#sum').hidden = false; render();
+      if (saved.length) toast(A.t('bind.savedN', { n: saved.length }));
+      var first = document.querySelector('#rows .fld.err input');
+      if (first) { first.focus(); if (first.scrollIntoView) first.scrollIntoView({ block: 'center', behavior: RM.matches ? 'auto' : 'smooth' }); }
+      return;
+    }
+    S.sum = null; $('#sum').hidden = true; $('#sumT').textContent = '';
+    toast(saved.length > 1 ? A.t('bind.savedN', { n: saved.length }) : A.t('bind.saved', { name: good[0].name }));
+    if (saved.length > 1) showBatch(saved); else showRes(saved[0]);
+  }
+  $('#f').addEventListener('submit', function (ev) { ev.preventDefault(); submit(); });
+  $('#rows').addEventListener('input', function (e) {
+    var t = e.target; if (!t.matches('input')) return;
+    if (t.name && /-uid$/.test(t.name)) { var c = t.value.replace(/\D/g, ''); if (c !== t.value) t.value = c; }
+    var f = t.closest('.fld'); if (f && f.classList.contains('err')) { f.classList.remove('err'); t.removeAttribute('aria-invalid'); }
+  });
+  $('#rows').addEventListener('click', function (e) {
+    var t;
+    if ((t = e.target.closest('[data-eye]'))) { var i = t.parentNode.querySelector('input'); i.type = i.type === 'password' ? 'text' : 'password'; t.setAttribute('aria-pressed', String(i.type === 'text')); return; }
+    if ((t = e.target.closest('[data-rmrow]'))) {
+      var r = t.closest('.arow'), next = r.nextElementSibling || r.previousElementSibling; clearKeys(r); r.remove();
+      if (!rows().length) addRow(); numberRows();
+      if (!document.querySelector('#rows .arow.bad')) { $('#sum').hidden = true; S.sum = null; }
+      var nb = (next && next.querySelector('[data-rmrow]:not([hidden])')) || $('#addRow'); nb.focus();
+    }
+  });
+  $('#addRow').addEventListener('click', function () { S.multiSeen = true; addRow(null, true); });
+  $('#checks').addEventListener('change', function () { if (Array.prototype.every.call(document.querySelectorAll('[data-ck]'), function (c) { return c.checked; })) this.classList.remove('err'); });
+  $('#cancel').addEventListener('click', function () { var d = A.accounts(); resetForm(); if (d.list.length) showRes(S.resId && find(S.resId) ? S.resId : d.list[d.list.length - 1].id); });
+  // leaving the page never keeps keys in the form (bfcache)
+  window.addEventListener('pagehide', function () { rows().forEach(clearKeys); });
+
+  /* ---------- result ---------- */
+  function note(kind, html) { return '<div class="note ' + kind + '">' + (kind === 'bad' ? IC.bad : IC.warn) + '<span>' + html + '</span></div>'; }
+  function showRes(id) { S.view = 'res'; S.resId = id; S.batch = null; S.editId = null; render(); scrollCard(); }
+  function showBatch(ids) { S.view = 'res'; S.batch = ids; S.resId = null; S.editId = null; render(); scrollCard(); }
+  function scrollCard() { if (mobile.matches) { var c = $('#panel'); if (c.getBoundingClientRect().top < 0 && c.scrollIntoView) c.scrollIntoView({ block: 'start' }); } }
+  function flow(sim) {
+    return '<ul class="flow">' + [['y', '✓', 's1'], ['y', '✓', 's2'], ['', '·', 's3'], ['', '·', 's4'], [sim ? 'w' : 'n', sim ? '~' : '!', sim ? 's5sim' : 's5']].map(function (f, k) {
+      return '<li class="' + f[0] + '"><i>' + f[1] + '</i><span><b>' + (k + 1) + '. ' + esc(A.t('bind.st.' + f[2].replace('sim', ''))) + '</b>' + esc(A.t('bind.st.' + f[2] + 'P')) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+  function renderRes() {
+    var el = $('#resView');
+    if (S.batch) {
+      var list = S.batch.map(find).filter(Boolean);
+      if (!list.length) { el.innerHTML = ''; return; }
+      el.innerHTML = '<div class="rhd"><span class="ic pending">' + IC.clock + '</span><div><h3>' + esc(A.t('bind.r.batchT', { n: list.length })) + '</h3><p>' + esc(A.t('bind.r.batchP')) + '</p></div></div>' +
+        '<ul class="bl">' + list.map(function (a) { return '<li><b>' + esc(a.name) + '</b><small>' + esc(a.uid) + '</small><em>' + esc(A.statusText(a.status)) + '</em></li>'; }).join('') + '</ul>' +
+        flow(false) +
+        '<div class="ract"><a class="btn pri block" href="' + esc(A.routes.app) + '">' + esc(A.t('bind.toApp')) + '</a><button type="button" class="btn ghost block" data-add>' + esc(A.t('bind.addMore')) + '</button></div>';
+      return;
+    }
+    var a = S.resId && find(S.resId);
+    if (!a) { el.innerHTML = ''; return; }
+    if (A.isDemo(a)) {
+      el.innerHTML = '<div class="rhd"><span class="ic pending">' + IC.flask + '</span><div><h3>' + esc(A.accountName(a)) + '</h3><p>' + esc(A.t('bind.demoP')) + '</p></div></div>' +
+        '<dl class="kv"><dt>' + esc(A.t('bind.kv.name')) + '</dt><dd>' + esc(A.accountName(a)) + '</dd><dt>' + esc(A.t('bind.kv.status')) + '</dt><dd>' + esc(A.t('acct.demo.st')) + '</dd><dt>' + esc(A.t('bind.kv.keys')) + '</dt><dd>' + esc(A.t('bind.demoKeys')) + '</dd></dl>' +
+        note('warn', esc(A.t('bind.demoNote'))) +
+        '<div class="ract"><button type="button" class="btn pri block" data-add>' + esc(A.t('bind.demoReal')) + '</button><a class="btn ghost block" href="' + esc(A.routes.app) + '">' + esc(A.t('bind.toApp')) + '</a></div>';
+      return;
+    }
+    var st = a.status || 'pending', h = '';
+    var hd = st === 'verified' ? ['verified', IC.check, 'bind.r.okT', 'bind.r.okP'] : st === 'failed' ? ['failed', IC.bad, 'bind.r.badT', 'bind.r.badP'] : ['pending', IC.clock, 'bind.r.pendT', 'bind.r.pendP'];
+    h += '<div class="rhd"><span class="ic ' + hd[0] + '">' + hd[1] + '</span><div><h3>' + esc(A.t(hd[2])) + '</h3><p>' + esc(A.t(hd[3], { name: a.name })) + '</p></div></div>';
+    h += '<dl class="kv"><dt>' + esc(A.t('bind.kv.name')) + '</dt><dd>' + esc(a.name) + '</dd><dt>' + esc(A.t('bind.kv.uid')) + '</dt><dd class="mono">' + esc(a.uid) + '</dd>' +
+      (a.label ? '<dt>' + esc(A.t('bind.kv.label')) + '</dt><dd>' + esc(a.label) + '</dd>' : '') +
+      '<dt>' + esc(A.t('bind.kv.status')) + '</dt><dd>' + esc(A.statusText(st)) + '</dd><dt>' + esc(A.t('bind.kv.keys')) + '</dt><dd>' + esc(A.t('bind.kv.keysV')) + '</dd></dl>';
+    if (st === 'failed') {
+      var r = a.reason || 'key';
+      h += note('bad', esc(A.t('bind.fail.' + r)));
+      h += '<ol class="fixl"><li>' + esc(A.t('bind.fix.' + r)) + '</li><li>' + esc(A.t('bind.fix.again')) + '</li></ol>';
+      h += '<div class="ract"><button type="button" class="btn pri block" data-re="' + esc(a.id) + '">' + esc(A.t('bind.again')) + '</button>' +
+        (r === 'key' ? '' : '<button type="button" class="btn ghost block" data-seestep>' + esc(A.t('bind.seeStep')) + '</button>') + '</div>';
+    } else {
+      var sim = st === 'verified';
+      h += flow(sim);
+      h += '<div class="ract">' + (sim ? '<a class="btn pri block" href="' + esc(A.routes.app) + '">' + esc(A.t('bind.toApp')) + '</a>' : '') +
+        '<button type="button" class="btn ' + (sim ? 'ghost' : 'pri') + ' block" data-add>' + esc(A.t('bind.addMore')) + '</button>' +
+        (sim ? '' : '<a class="btn ghost block" href="' + esc(A.routes.app) + '">' + esc(A.t('bind.toApp')) + '</a>') + '</div>';
+    }
+    h += '<div class="sim"><h4>' + IC.flask.replace('<svg', '<svg width="15" height="15" style="fill:none;stroke:currentColor;stroke-width:2"') + esc(A.t('bind.simH')) + '</h4><p>' + esc(A.t('bind.simP')) + '</p><div class="b3">' +
+      ['ok', 'ip', 'perm', 'key'].map(function (k) { return '<button type="button" class="btn sm ghost" data-sim="' + k + '">' + esc(A.t('bind.sim' + k.charAt(0).toUpperCase() + k.slice(1))) + '</button>'; }).join('') + '</div></div>';
+    el.innerHTML = h;
+  }
+
+  /* ---------- render all ---------- */
+  function render() {
+    document.title = A.t('bind.title');
+    A.apply(document);
+    var s = A.session();
+    if (s) $('#av').textContent = (s.name || s.email).slice(0, 1).toUpperCase();
+    $('#panel').classList.toggle('res', S.view === 'res');
+    var n = A.accounts().list.length, sk = $('#skipBtn');
+    sk.href = A.routes.app; sk.textContent = A.t(n ? 'bind.back' : 'bind.skip');
+    $('#srcl').textContent = A.t('bind.srcl', { g: B.source.guide, d: B.source.date });
+    renderList(); head(); renderRes();
+  }
+  function renderAll() { render(); stop(); draw(false); caption(); schedule(); }
+
+  /* ---------- events ---------- */
+  document.addEventListener('click', function (e) {
+    var t;
+    if ((t = e.target.closest('[data-copy]'))) { e.preventDefault(); copy(t.dataset.copy); return; }
+    if ((t = e.target.closest('[data-re]'))) { e.stopPropagation(); if (A.isDemo(t.dataset.re)) { showRes(t.dataset.re); return; } showForm(t.dataset.re); inp(rows()[0], 'key').focus(); return; }
+    if ((t = e.target.closest('[data-rm]'))) {
+      e.stopPropagation();
+      var id = t.dataset.rm;
+      if (S.rm !== id) { S.rm = id; renderList(); var b = document.querySelector('[data-rm="' + id + '"]'); if (b) b.focus(); return; }
+      var a = find(id); A.removeAccount(id); S.rm = null; toast(A.t('bind.removed', { name: a ? A.accountName(a) : '' }));
+      if (S.batch) { S.batch = S.batch.filter(function (x) { return x !== id; }); if (!S.batch.length) { showForm(); return; } }
+      if (S.resId === id || S.editId === id) showForm(); else render();
+      return;
+    }
+    if ((t = e.target.closest('[data-acc]'))) { S.rm = null; A.setActive(t.dataset.acc); showRes(t.dataset.acc); return; }
+    if (e.target.closest('[data-add]')) { showForm(); inp(rows()[0], 'name').focus(); return; }
+    if (e.target.closest('[data-seestep]')) { C.playing = false; show(PERM_CLIP, false); $('#car').scrollIntoView({ block: 'center', behavior: RM.matches ? 'auto' : 'smooth' }); return; }
+    if ((t = e.target.closest('[data-sim]'))) {
+      var sim = t.dataset.sim, cur = find(S.resId); if (!cur || A.isDemo(cur)) return;
+      A.upsertAccount({ id: cur.id, status: sim === 'ok' ? 'verified' : 'failed', reason: sim === 'ok' ? '' : sim, checkedAt: Date.now() });
+      render(); return;
+    }
+    if (S.rm && !e.target.closest('.acc')) { S.rm = null; renderList(); }
+  });
+  document.addEventListener('keydown', function (e) {
+    var t = e.target.closest && e.target.closest('[data-acc]');
+    if (t && e.target === t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); t.click(); }
+  });
+  function copy(text) {
+    var done = function () { toast(A.t('bind.copied', { ip: text })); };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
+    function fallback() { var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove(); }
+  }
+  var tt;
+  function toast(m) { var el = $('#toast'); el.textContent = m; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, 2400); }
+  // phones: a focused field is kept clear of the fixed bar and the keyboard
+  document.addEventListener('focusin', function (e) {
+    if (!mobile.matches || !e.target.matches || !e.target.matches('#f input')) return;
+    var el = e.target.closest('.fld,.chk') || e.target;
+    setTimeout(function () {
+      var vv = window.visualViewport, r = el.getBoundingClientRect(), top = parseFloat(getComputedStyle(document.querySelector('.bar')).height) || 60;
+      var bottom = vv ? vv.height + vv.offsetTop : innerHeight;
+      if (r.top < top + 8 || r.bottom > bottom - 12) el.scrollIntoView({ block: 'center' });
+    }, 300);
+  });
+  window.addEventListener('scroll', function () { document.body.classList.toggle('scrolled', scrollY > 4); }, { passive: true });
+
+  window.addEventListener(A.events.lang, renderAll);
+  window.addEventListener(A.events.accounts, function () { if (!A.session()) return; if (S.resId && !find(S.resId)) { S.resId = null; if (S.view === 'res' && !S.batch) S.view = 'form'; } render(); });
+  window.addEventListener(A.events.session, function () { if (!A.session()) A.requireUser(location.pathname + location.search); });
+
+  /* ---------- boot ---------- */
+  try {
+    if (RM.matches) document.documentElement.classList.add('bn-nomo');
+    $('[data-href="site"]').href = A.routes.site;
+    A.mountLangToggle($('#lang'), { theme: function () { return document.documentElement.dataset.theme === 'day' ? 'light' : 'dark'; } });
+    A.mountMenu($('#av'), { context: 'account', theme: function () { return document.documentElement.dataset.theme === 'day' ? 'light' : 'dark'; }, logoutTo: A.routes.site });
+    if (qs.get('first') === '1') $('#welcome').classList.add('on');
+    var acc = A.accounts(), reId = qs.get('id'), ea = reId && find(reId);
+    if (ea && A.isDemo(reId)) { A.setActive(reId); S.view = 'res'; S.resId = reId; resetForm(); }
+    else if (ea) { S.editId = reId; resetForm({ name: ea.name, uid: ea.uid, label: ea.label }); }
+    else if (qs.get('add') === '1' || !acc.list.length) { resetForm(); }
+    else { resetForm(); S.view = 'res'; S.resId = acc.active !== 'all' && find(acc.active) ? acc.active : acc.list[acc.list.length - 1].id; }
+    // drop one-shot flags from the address bar so a refresh doesn't replay them
+    if (qs.has('first') || qs.has('add') || qs.has('id')) { ['first', 'add', 'id'].forEach(function (k) { qs.delete(k); }); history.replaceState(null, '', location.pathname + (qs.toString() ? '?' + qs : '') + location.hash); }
+    renderAll();
+    $('#panel').classList.remove('boot');
+  } catch (err) {
+    // Never fall back to the API form: keep it hidden and ask for a reload.
+    try { console.error(err); } catch (_) {}
+    var bp = $('#panel'); bp.classList.add('boot'); bp.classList.remove('res');
+    var bv = $('#resView'); bv.style.display = 'block';
+    bv.innerHTML = '<p class="bootErr">' + esc(A.t('bind.bootErr')) + '</p>';
+  }
+})();
+</script>
+</body>
+</html>

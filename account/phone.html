@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>3dtrading</title>
+<script>/* 电脑版 ⇄ 手机版外框已移除（2026-11-12），页面按屏幕宽度自动适配。
+   旧链接 phone.html?u=… 直接打开 u 指向的同源页面，并清掉旧的「手机版」记忆。 */
+(function () {
+  var d = '../site/index.html', u = d;
+  try { var q = new URLSearchParams(location.search).get('u'); if (q) { var x = new URL(q, location.href); if (x.origin === location.origin && !/\/phone\.html$/.test(x.pathname)) u = x.pathname + x.search + x.hash; } } catch (e) {}
+  try { localStorage.removeItem('3dtrading.dash.layout'); } catch (e) {}
+  location.replace(u);
+})();</script>
+</head>
+<body style="background:#07090a"></body>
+</html>

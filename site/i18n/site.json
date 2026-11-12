@@ -1,0 +1,1262 @@
+{
+ "site.hero.aria1": {
+  "zh": "3dtrading 市场监测首屏",
+  "en": "3dtrading market watch, first screen"
+ },
+ "site.hero.2": {
+  "zh": "<i></i>3dtrading <span>· 监测中</span>",
+  "en": "<i></i>3dtrading <span>· watching</span>"
+ },
+ "site.hero.3": {
+  "zh": "<b>01</b><span>监测机会</span>",
+  "en": "<b>01</b><span>Spot the moment</span>"
+ },
+ "site.hero.4": {
+  "zh": "三十个市场，<br><em>同一时刻在看。</em>",
+  "en": "Thirty markets,<br><em>watched at once.</em>"
+ },
+ "site.hero.5": {
+  "zh": "波动出现的一瞬，3dtrading 已经看见。",
+  "en": "The instant a market moves, 3dtrading has already seen it."
+ },
+ "site.hero.aria6": {
+  "zh": "最近监测到的波动（模拟）",
+  "en": "Recently detected moves (simulated)"
+ },
+ "site.hero.7": {
+  "zh": "模拟行情 · 非实时数据",
+  "en": "Simulated prices · not live data"
+ },
+ "site.hero.aria8": {
+  "zh": "下一屏",
+  "en": "Next screen"
+ },
+ "site.story.aria1": {
+  "zh": "一笔钱的路径：02 多空锁仓到 06 核对净值（示意）",
+  "en": "How the money moves: 02 hedged entry to 06 net value check (illustration)"
+ },
+ "site.story.intro.1": {
+  "zh": "从监测到净值 · 六步 · 示意",
+  "en": "From signal to net value · six steps · illustration"
+ },
+ "site.story.intro.2": {
+  "zh": "跟着 Dodo，<em>看一笔钱怎么走。</em>",
+  "en": "Follow Dodo<em> and watch the money move.</em>"
+ },
+ "site.story.intro.3": {
+  "zh": "一个 200,000 USDT 的示意账户。数字均为示意，未计手续费与资金费率。",
+  "en": "An illustrative account of 200,000 USDT. All figures are examples and exclude trading fees and funding rates."
+ },
+ "site.story.intro.aria4": {
+  "zh": "六个步骤",
+  "en": "Six steps"
+ },
+ "site.story.intro.5": {
+  "zh": "<b>01</b>监测机会",
+  "en": "<b>01</b>Spot the moment"
+ },
+ "site.story.intro.6": {
+  "zh": "<b>02</b>多空锁仓",
+  "en": "<b>02</b>Hedged entry"
+ },
+ "site.story.intro.7": {
+  "zh": "<b>03</b>行情变化",
+  "en": "<b>03</b>Price moves"
+ },
+ "site.story.intro.8": {
+  "zh": "<b>04</b>平盈利侧 · 补仓",
+  "en": "<b>04</b>Close the winner · re-open"
+ },
+ "site.story.intro.9": {
+  "zh": "<b>05</b>资金生息",
+  "en": "<b>05</b>Earn yield"
+ },
+ "site.story.intro.10": {
+  "zh": "<b>06</b>核对净值",
+  "en": "<b>06</b>Check net value"
+ },
+ "site.story.a.1": {
+  "zh": "<b>02</b>多空锁仓",
+  "en": "<b>02</b>Hedged entry"
+ },
+ "site.story.a.2": {
+  "zh": "同一个价，<span class=\"l\">多</span>和<span class=\"s\">空</span>各开一仓",
+  "en": "One price, a <span class=\"l\">long</span> and a <span class=\"s\">short</span>"
+ },
+ "site.story.a.3": {
+  "zh": "因为看到了机会，但不赌方向。",
+  "en": "There's an opportunity, but no bet on direction."
+ },
+ "site.story.a.4": {
+  "zh": "BTC/USDT 永续合约的 K 线回到 96,000，Dodo 在这条开仓线上同时插下两面旗：<span class=\"l\">绿旗</span>开 <b>1 BTC 多仓</b>，<span class=\"s\">红旗</span>开 <b>1 BTC 空仓</b>。钱一直在你自己的币安子账户里。",
+  "en": "The BTC/USDT perpetual is back at 96,000. Dodo plants two flags on that entry line: the <span class=\"l\">green flag</span> opens a <b>1 BTC long</b>, the <span class=\"s\">red flag</span> opens a <b>1 BTC short</b>. The money stays in your own Binance sub-account the whole time."
+ },
+ "site.story.a.5": {
+  "zh": "对冲压低的是单边方向风险，不是全部风险。",
+  "en": "Hedging reduces one-way price risk, not all risk."
+ },
+ "site.story.a.6": {
+  "zh": "示意数据 · 非真实行情 · 不会下单",
+  "en": "Example data · not real prices · no orders placed"
+ },
+ "site.story.b.1": {
+  "zh": "<b>03</b>行情变化",
+  "en": "<b>03</b>Price moves"
+ },
+ "site.story.b.2": {
+  "zh": "价格走开，<br>一边赚，一边亏",
+  "en": "The price moves:<br>one side gains, one side loses"
+ },
+ "site.story.b.3": {
+  "zh": "锁住了仓位，所以涨跌两边抵消。",
+  "en": "Both sides are open, so the move cancels out."
+ },
+ "site.story.b.4": {
+  "zh": "BTC 从 96,000 走到 100,800：多仓浮盈约 <b class=\"l\">+4,800</b>，空仓浮亏约 <b class=\"s\">−4,800</b>，净值基本不动。",
+  "en": "BTC goes from 96,000 to 100,800: the long is up about <b class=\"l\">+4,800</b>, the short is down about <b class=\"s\">−4,800</b>, and net value barely moves."
+ },
+ "site.story.b.5": {
+  "zh": "示意价格 · 非真实行情",
+  "en": "Example prices · not real data"
+ },
+ "site.story.c.1": {
+  "zh": "示意 · 净值 = 钱包余额 + 已实现 + 两侧浮动盈亏",
+  "en": "Illustration · net value = wallet balance + realised + unrealised P&amp;L on both sides"
+ },
+ "site.story.c.2": {
+  "zh": "<b>04</b>平盈利侧 · 补仓",
+  "en": "<b>04</b>Close the winner · re-open"
+ },
+ "site.story.c.3": {
+  "zh": "平掉赚钱的一侧，<br>再把仓位补回",
+  "en": "Close the winning side,<br>then open it again"
+ },
+ "site.story.c.4": {
+  "zh": "盈利落袋成已实现，补仓让锁仓恢复。",
+  "en": "The gain becomes realised; re-opening restores the hedge."
+ },
+ "site.story.c.5": {
+  "zh": "高位拔起绿旗、平掉多仓，+4,800 变成一枚<b class=\"gd\">已实现</b>金币；Dodo 再在 100,800 补开新多仓。红旗没动，约 −4,800 的浮亏还在账上。",
+  "en": "At the high, Dodo pulls the green flag and closes the long: +4,800 becomes a <b class=\"gd\">realised</b> gold coin. Dodo then opens a new long at 100,800. The red flag stays put, and its roughly −4,800 unrealised loss is still on the books."
+ },
+ "site.story.c.6": {
+  "zh": "已实现收益 ≠ 账户净增。此刻净值仍约 200,000。",
+  "en": "Realised gains ≠ account growth. Net value is still about 200,000."
+ },
+ "site.story.d.1": {
+  "zh": "<b>05</b>资金生息",
+  "en": "<b>05</b>Earn yield"
+ },
+ "site.story.d.2": {
+  "zh": "已实现的钱，<br>放进生息池",
+  "en": "Realised money<br>goes into the yield pool"
+ },
+ "site.story.d.3": {
+  "zh": "闲着的利润不躺着，开始计息。",
+  "en": "Idle profit doesn't sit still; it starts earning."
+ },
+ "site.story.d.4": {
+  "zh": "4,800 买入生息稳定币，按浮动利率计息；两面旗照常插着。演示按 4% 年化、1 秒约等于 1 天累计。",
+  "en": "The 4,800 buys a yield-bearing stablecoin at a floating rate, while both flags stay planted. The demo assumes 4% a year, with 1 second ≈ 1 day."
+ },
+ "site.story.d.5": {
+  "zh": "利率随市场变化，不承诺固定收益。",
+  "en": "Rates change with the market. No fixed return is promised."
+ },
+ "site.story.d.6": {
+  "zh": "示意 · 利息加速演示",
+  "en": "Illustration · interest sped up"
+ },
+ "site.story.e.1": {
+  "zh": "<b>06</b>核对净值",
+  "en": "<b>06</b>Check net value"
+ },
+ "site.story.e.2": {
+  "zh": "最后，<br>按净值对一遍账",
+  "en": "Finally,<br>check it against net value"
+ },
+ "site.story.e.3": {
+  "zh": "只看已实现会高估，要看净值。",
+  "en": "Realised alone overstates it. Look at net value."
+ },
+ "site.story.e.4": {
+  "zh": "Dodo 逐行核对：这一轮示意里，账户真正多出来的是<b>利息</b>；兑现只是把浮盈换成已实现，空仓的浮亏抵掉了它。",
+  "en": "Dodo checks line by line: in this example, what the account really gained is the <b>interest</b>. Taking profit only turned an unrealised gain into a realised one, and the short's unrealised loss offset it."
+ },
+ "site.story.e.5": {
+  "zh": "两面旗都还插着：行情剧烈或保证金不足时，仍可能被强平。",
+  "en": "Both flags are still planted: in violent markets or with too little margin, positions can still be liquidated."
+ },
+ "site.story.ledger.aria1": {
+  "zh": "账户全貌（示意）",
+  "en": "Account overview (illustration)"
+ },
+ "site.story.ledger.2": {
+  "zh": "钱包余额",
+  "en": "Wallet balance"
+ },
+ "site.story.ledger.3": {
+  "zh": "多仓浮动盈亏<small>入场 100,800</small>",
+  "en": "Long unrealised P&amp;L<small>entry 100,800</small>"
+ },
+ "site.story.ledger.4": {
+  "zh": "空仓浮动盈亏<small>入场 96,000</small>",
+  "en": "Short unrealised P&amp;L<small>entry 96,000</small>"
+ },
+ "site.story.ledger.5": {
+  "zh": "生息部分<small>本金 + 利息</small>",
+  "en": "Yield holding<small>principal + interest</small>"
+ },
+ "site.story.ledger.6": {
+  "zh": "净值",
+  "en": "Net value"
+ },
+ "site.story.ledger.7": {
+  "zh": "未计手续费、资金费率与滑点；利息按 4% 年化加速演示",
+  "en": "Excludes fees, funding and slippage; interest at 4% a year, sped up"
+ },
+ "site.risk.aria1": {
+  "zh": "收益来源与风险",
+  "en": "Where returns come from, and the risks"
+ },
+ "site.risk.2": {
+  "zh": "收益与风险",
+  "en": "Returns and risk"
+ },
+ "site.risk.3": {
+  "zh": "收益从哪里来，<em>风险留在哪里。</em>",
+  "en": "Where returns come from,<em> where the risk stays.</em>"
+ },
+ "site.risk.4": {
+  "zh": "收益来源",
+  "en": "Sources of return"
+ },
+ "site.risk.5": {
+  "zh": "<i>01</i><b>生息部分的利息</b><span>已实现利润转入生息稳定币后计息，利率浮动，可能下降。</span>",
+  "en": "<i>01</i><b>Interest on the yield holding</b><span>Realised profit earns interest once it moves into a yield-bearing stablecoin. The rate floats and can fall.</span>"
+ },
+ "site.risk.6": {
+  "zh": "<i>02</i><b>波动里的兑现与补回</b><span>每次兑现一侧都要和另一侧的浮亏一起看，单看已实现会高估收益。</span>",
+  "en": "<i>02</i><b>Taking profit and re-opening in volatile markets</b><span>Every time one side is closed, read it together with the other side's unrealised loss. Realised alone overstates returns.</span>"
+ },
+ "site.risk.7": {
+  "zh": "仍然存在的风险",
+  "en": "Risks that remain"
+ },
+ "site.risk.8": {
+  "zh": "<i>01</i><b>剧烈行情与强平</b><span>两侧都占用保证金，行情剧烈或保证金不足时仍可能被强平。</span>",
+  "en": "<i>01</i><b>Violent moves and liquidation</b><span>Both sides use margin. In violent markets or with too little margin, positions can still be liquidated.</span>"
+ },
+ "site.risk.9": {
+  "zh": "<i>02</i><b>资金费率</b><span>永续合约按周期收付资金费，长期持仓可能持续侵蚀收益。</span>",
+  "en": "<i>02</i><b>Funding rates</b><span>Perpetuals pay or charge funding on a schedule. Holding for long periods can keep eating into returns.</span>"
+ },
+ "site.risk.10": {
+  "zh": "<i>03</i><b>执行偏差</b><span>滑点、延迟、交易所故障，都可能让成交价偏离预期。</span>",
+  "en": "<i>03</i><b>Execution gaps</b><span>Slippage, latency and exchange outages can all move fills away from the expected price.</span>"
+ },
+ "site.risk.11": {
+  "zh": "<i>04</i><b>利率与平台</b><span>生息利率会变化，稳定币与交易所本身也存在风险。</span>",
+  "en": "<i>04</i><b>Rates and platforms</b><span>Yield rates change, and stablecoins and exchanges carry their own risks.</span>"
+ },
+ "site.risk.12": {
+  "zh": "看净值，不只看已实现",
+  "en": "Look at net value, not just realised"
+ },
+ "site.risk.13": {
+  "zh": "<span class=\"t\"><b>净值</b><em>你账上真正有多少</em></span><span class=\"op\">=</span><span class=\"t\">钱包余额<em>本金与已实现</em></span><span class=\"op\">+</span><span class=\"t l\">多仓浮动盈亏<em>没平，随价格变</em></span><span class=\"op\">+</span><span class=\"t s\">空仓浮动盈亏<em>常常是负的</em></span><span class=\"op\">+</span><span class=\"t gd\">生息部分<em>利率浮动</em></span><span class=\"op\">−</span><span class=\"t\">手续费与资金费<em>持仓期间一直在扣</em></span>",
+  "en": "<span class=\"t\"><b>Net value</b><em>what you really have</em></span><span class=\"op\">=</span><span class=\"t\">Wallet balance<em>principal and realised</em></span><span class=\"op\">+</span><span class=\"t l\">Long unrealised P&amp;L<em>open, moves with price</em></span><span class=\"op\">+</span><span class=\"t s\">Short unrealised P&amp;L<em>often negative</em></span><span class=\"op\">+</span><span class=\"t gd\">Yield holding<em>floating rate</em></span><span class=\"op\">−</span><span class=\"t\">Fees and funding<em>charged while positions are open</em></span>"
+ },
+ "site.risk.14": {
+  "zh": "看收益时看净值，而不只看已实现。合约交易有亏损风险，亏损可能超出预期。",
+  "en": "Judge returns by net value, not only by what's realised. Futures trading can lose money, and losses can be larger than expected."
+ },
+ "site.safe.aria1": {
+  "zh": "资金安全设计：子账户 API、提现权限关闭、交易对白名单",
+  "en": "Fund safety design: sub-account API, withdrawals off, trading-pair whitelist"
+ },
+ "site.safe.2": {
+  "zh": "资金安全设计",
+  "en": "Fund safety design"
+ },
+ "site.safe.3": {
+  "zh": "钱留在你的账户，<em>我们只拿下单权限。</em>",
+  "en": "Your money stays in your account.<em> We only get permission to trade.</em>"
+ },
+ "site.safe.4": {
+  "zh": "通过你币安子账户的 API 接入，提现权限必须关闭。本页不会让你输入任何密钥，也没有连接任何账户。",
+  "en": "We connect through the API of your Binance sub-account, and withdrawals must be switched off. This page never asks for a key and is not connected to any account."
+ },
+ "site.safe.5": {
+  "zh": "<b>子账户，专款专用</b><span>只划入你愿意用于这套策略的资金，两个账户都在你名下。</span>",
+  "en": "<b>A sub-account, just for this</b><span>Move in only the funds you want to use for this strategy. Both accounts are in your name.</span>"
+ },
+ "site.safe.6": {
+  "zh": "<b>API 只开读取与合约交易</b><span>密钥由你在币安创建并保管；提现、划转出子账户都必须关闭。</span>",
+  "en": "<b>API with read and futures trading only</b><span>You create and keep the key on Binance. Withdrawals and transfers out of the sub-account must be off.</span>"
+ },
+ "site.safe.7": {
+  "zh": "<b>提现开着，就拒绝接入</b><span>接入与运行中持续核对权限，任何一项越界就停下并提示你。</span>",
+  "en": "<b>Withdrawals on? We won't connect.</b><span>Permissions are checked at connection and while running. If anything goes beyond scope, we stop and tell you.</span>"
+ },
+ "site.safe.8": {
+  "zh": "<b>交易对白名单，最多 50 个</b><span>只在你勾选的交易对上下单；白名单限制范围，不限制盈亏。</span>",
+  "en": "<b>A whitelist of up to 50 pairs</b><span>Orders only go to the pairs you tick. The whitelist limits scope, not profit or loss.</span>"
+ },
+ "site.safe.9": {
+  "zh": "<b>不能提现 ≠ 没有风险。</b>交易权限本身仍可能带来亏损。取回资金需先平仓，再由你本人在币安里划转。",
+  "en": "<b>No withdrawals ≠ no risk.</b> Trading permission alone can still lose money. To take funds back, close positions first, then transfer them yourself on Binance."
+ },
+ "site.join.aria1": {
+  "zh": "加入我们：参与门槛与常见问题（当前为演示环境）",
+  "en": "Join us: requirements and FAQ (demo environment)"
+ },
+ "site.join.2": {
+  "zh": "加入",
+  "en": "Join"
+ },
+ "site.join.3": {
+  "zh": "规则先看清，<em>再一起出发。</em>",
+  "en": "Read the rules first,<em> then set off together.</em>"
+ },
+ "site.join.4": {
+  "zh": "3dtrading 在你自己的币安子账户里盯盘、下单。先对照门槛和风险，再决定要不要加入。",
+  "en": "3dtrading watches the market and places orders inside your own Binance sub-account. Check the requirements and risks before you decide to join."
+ },
+ "site.join.5": {
+  "zh": "当前为演示环境，真实账户注册尚未开放。",
+  "en": "This is a demo environment. Registration for live accounts is not yet available."
+ },
+ "site.join.aria6": {
+  "zh": "上线前的准备清单",
+  "en": "Checklist before launch"
+ },
+ "site.join.7": {
+  "zh": "<b>演示不会创建真实账户。</b>演示里的注册和绑定资料只保存在这台电脑的浏览器里，不连接币安，也不代表任何认证通过。真实账户注册开放前，可以先准备：",
+  "en": "<b>The demo never creates a live account.</b> Sign-up and linking details in the demo stay in this browser on this computer, never reach Binance, and do not mean anything has been verified. Before live accounts open, you can prepare:"
+ },
+ "site.join.8": {
+  "zh": "币安账户达到 VIP2",
+  "en": "A Binance account at VIP2"
+ },
+ "site.join.9": {
+  "zh": "不少于 20 万 USDT 的参与资金",
+  "en": "At least 200,000 USDT to commit"
+ },
+ "site.join.10": {
+  "zh": "会创建子账户和只开读取、合约交易的 API",
+  "en": "Know how to create a sub-account and an API key with only read and futures trading"
+ },
+ "site.join.11": {
+  "zh": "接受：没有提现权限，交易仍可能亏损",
+  "en": "Accept: no withdrawal permission, and trading can still lose money"
+ },
+ "site.join.12": {
+  "zh": "想好要交易的币对，白名单最多 50 个",
+  "en": "Choose the pairs to trade; the whitelist holds up to 50"
+ },
+ "site.join.13": {
+  "zh": "最低参与资金",
+  "en": "Minimum funds"
+ },
+ "site.join.14": {
+  "zh": "20<small>万 USDT</small>",
+  "en": "200k<small>USDT</small>"
+ },
+ "site.join.15": {
+  "zh": "放在你自己的币安子账户里，不转给 3dtrading",
+  "en": "Kept in your own Binance sub-account, never sent to 3dtrading"
+ },
+ "site.join.16": {
+  "zh": "币安账户等级",
+  "en": "Binance account tier"
+ },
+ "site.join.17": {
+  "zh": "账户等级以币安显示为准",
+  "en": "Your tier is whatever Binance shows"
+ },
+ "site.join.18": {
+  "zh": "交易对白名单",
+  "en": "Pair whitelist"
+ },
+ "site.join.19": {
+  "zh": "≤50<small>个</small>",
+  "en": "≤50<small>pairs</small>"
+ },
+ "site.join.20": {
+  "zh": "只在你勾选的交易对上下单",
+  "en": "Orders only on the pairs you tick"
+ },
+ "site.join.21": {
+  "zh": "以上是 3dtrading 当前方案的要求，不是币安的通用规则。",
+  "en": "These are 3dtrading's current requirements, not general Binance rules."
+ },
+ "site.join.22": {
+  "zh": "常见问题",
+  "en": "FAQ"
+ },
+ "site.join.23": {
+  "zh": "参与门槛是什么？",
+  "en": "What are the requirements?"
+ },
+ "site.join.24": {
+  "zh": "按 3dtrading 当前方案：参与资金不低于 20 万 USDT，币安账户达到 VIP2。这是本方案的参与要求，不是币安的通用规则；方案如有调整，以届时说明为准。",
+  "en": "Under 3dtrading's current plan: at least 200,000 USDT and a Binance account at VIP2. These are this plan's requirements, not general Binance rules; if the plan changes, the updated terms apply."
+ },
+ "site.join.25": {
+  "zh": "钱放在哪里？",
+  "en": "Where is the money kept?"
+ },
+ "site.join.26": {
+  "zh": "一直在你自己的币安子账户里。我们只通过这个子账户的 API 下单，资金不会转到 3dtrading。",
+  "en": "Always in your own Binance sub-account. We only place orders through that sub-account's API; funds never move to 3dtrading."
+ },
+ "site.join.27": {
+  "zh": "多空同时持有，是不是就没风险？",
+  "en": "If I hold a long and a short, is there no risk?"
+ },
+ "site.join.28": {
+  "zh": "不是。对冲压低的是单边方向风险；强平、资金费率、滑点与执行偏差、利率变化和交易所风险都还在，亏损可能超出预期。",
+  "en": "No. Hedging reduces one-way price risk; liquidation, funding, slippage and execution gaps, rate changes and exchange risk all remain, and losses can be larger than expected."
+ },
+ "site.join.29": {
+  "zh": "关闭提现和划转，是不是就安全了？",
+  "en": "With withdrawals and transfers off, am I safe?"
+ },
+ "site.join.30": {
+  "zh": "平台没有直接提走或划出资金的权限，但交易权限仍在，合约交易本身仍可能造成损失。",
+  "en": "The platform can't withdraw or move your funds, but it can still trade, and futures trading itself can lose money."
+ },
+ "site.join.31": {
+  "zh": "想取回资金怎么做？",
+  "en": "How do I take my money back?"
+ },
+ "site.join.32": {
+  "zh": "先把子账户里的持仓全部平掉，再由你自己在币安里把资金从子账户划转回主账户。API 没有划转和提现权限，这一步只能你本人来做。",
+  "en": "Close every position in the sub-account first, then transfer the funds from the sub-account to your main account yourself on Binance. The API has no transfer or withdrawal permission, so only you can do this step."
+ },
+ "site.join.33": {
+  "zh": "官网和演示会收集我的 API 密钥吗？",
+  "en": "Do the website or the demo collect my API key?"
+ },
+ "site.join.34": {
+  "zh": "不会。官网没有输入框，不连接币安或任何后台。演示里的绑定页会让你试填 API 密钥，只在本机浏览器里检查格式，不发送、不保存。",
+  "en": "No. The website has no input fields and connects to neither Binance nor any server. The demo’s linking page lets you try entering an API key; it is only format-checked in this browser, never sent or saved."
+ },
+ "site.foot.1": {
+  "zh": "<b>3DTRADING</b><span>演示页面 · 示意数据 · 不构成投资建议 · 合约交易有亏损风险</span>",
+  "en": "<b>3DTRADING</b><span>Demo page · example data · not investment advice · futures trading can lose money</span>"
+ },
+ "site.nav.auth": {
+  "zh": "体验演示",
+  "en": "Try the demo"
+ },
+ "site.meta.title": {
+  "zh": "3dtrading · 监测",
+  "en": "3dtrading · Watching"
+ },
+ "site.fig.perp": {
+  "zh": "永续 · ",
+  "en": "Perp · "
+ },
+ "site.figA.head": {
+  "zh": "你的子账户 · 200,000 USDT · BTC 1 小时 K 线（示意）",
+  "en": "Your sub-account · 200,000 USDT · BTC 1h candles (illustration)"
+ },
+ "site.figA.entry": {
+  "zh": "开仓价 96,000",
+  "en": "Entry 96,000"
+ },
+ "site.figA.long": {
+  "zh": "开多 1 BTC",
+  "en": "Long 1 BTC"
+ },
+ "site.figA.short": {
+  "zh": "开空 1 BTC",
+  "en": "Short 1 BTC"
+ },
+ "site.figA.footHedged": {
+  "zh": "净值 {v} · 两侧相抵",
+  "en": "Net value {v} · both sides offset"
+ },
+ "site.figA.footIdle": {
+  "zh": "净值 200,000 · 尚未开仓",
+  "en": "Net value 200,000 · no positions yet"
+ },
+ "site.figB.entry": {
+  "zh": "96,000 · 开仓价",
+  "en": "96,000 · entry"
+ },
+ "site.figB.flagBase": {
+  "zh": "开仓时旗高",
+  "en": "Flag height at entry"
+ },
+ "site.fig.shortP": {
+  "zh": "空 ",
+  "en": "Short "
+ },
+ "site.figB.closedS": {
+  "zh": "已平 +4,800",
+  "en": "Closed +4,800"
+ },
+ "site.figB.closed": {
+  "zh": "多仓已平 +4,800",
+  "en": "Long closed +4,800"
+ },
+ "site.fig.longP": {
+  "zh": "多 ",
+  "en": "Long "
+ },
+ "site.figB.equity": {
+  "zh": "净值 {v} USDT",
+  "en": "Net value {v} USDT"
+ },
+ "site.figB.rowReal": {
+  "zh": "BTC {p} · 已实现 +4,800 · 空 {s}",
+  "en": "BTC {p} · realised +4,800 · short {s}"
+ },
+ "site.figB.row": {
+  "zh": "BTC {p} · 多 {l} · 空 {s}",
+  "en": "BTC {p} · long {l} · short {s}"
+ },
+ "site.figC.realised": {
+  "zh": "已实现",
+  "en": "Realised"
+ },
+ "site.figC.entryS": {
+  "zh": "入场 96,000",
+  "en": "Entry 96,000"
+ },
+ "site.figC.entrySHold": {
+  "zh": "入场 96,000 · 不动",
+  "en": "Entry 96,000 · holding"
+ },
+ "site.figC.toYield": {
+  "zh": "4,800 → 生息",
+  "en": "4,800 → yield"
+ },
+ "site.figC.onWay": {
+  "zh": "+4,800 · 在路上",
+  "en": "+4,800 · on its way"
+ },
+ "site.figC.newLong": {
+  "zh": "新多 ",
+  "en": "New long "
+ },
+ "site.figC.longClosed": {
+  "zh": "多仓已平",
+  "en": "Long closed"
+ },
+ "site.figC.entryL2": {
+  "zh": "入场 100,800",
+  "en": "Entry 100,800"
+ },
+ "site.figC.toReal": {
+  "zh": "+4,800 → 已实现",
+  "en": "+4,800 → realised"
+ },
+ "site.figC.eq1": {
+  "zh": "钱包 200,000 + 已实现 {r} + 多 {l} + 空 {s}",
+  "en": "Wallet 200,000 + realised {r} + long {l} + short {s}"
+ },
+ "site.figC.eq2": {
+  "zh": "= 净值 {v}",
+  "en": "= net value {v}"
+ },
+ "site.figD.pool": {
+  "zh": "生息部分 · 浮动利率",
+  "en": "Yield holding · floating rate"
+ },
+ "site.figD.flags": {
+  "zh": "两面旗照常插着",
+  "en": "Both flags stay planted"
+ },
+ "site.figD.wait": {
+  "zh": "等待金币",
+  "en": "Waiting for the coin"
+ },
+ "site.sf.acct": {
+  "zh": "你的币安子账户",
+  "en": "Your Binance sub-account"
+ },
+ "site.sf.here": {
+  "zh": "资金在这里",
+  "en": "Funds stay here"
+ },
+ "site.sf.amt": {
+  "zh": "200,000 USDT · 示意",
+  "en": "200,000 USDT · example"
+ },
+ "site.sf.orders": {
+  "zh": "只发指令 · 0 托管",
+  "en": "Orders only · 0 custody"
+ },
+ "site.sf.cmd": {
+  "zh": "下单 / 平仓指令",
+  "en": "Open / close orders"
+ },
+ "site.sf.noWd": {
+  "zh": "提现 / 划转 · 无权限",
+  "en": "Withdraw / transfer · no access"
+ },
+ "site.sf.perm": {
+  "zh": "API 权限 · 演示",
+  "en": "API PERMISSIONS · DEMO"
+ },
+ "site.sf.read": {
+  "zh": "读取",
+  "en": "Read"
+ },
+ "site.sf.futures": {
+  "zh": "合约交易",
+  "en": "Futures"
+ },
+ "site.sf.withdraw": {
+  "zh": "提现",
+  "en": "Withdraw"
+ },
+ "site.sf.transfer": {
+  "zh": "划转",
+  "en": "Transfer"
+ },
+ "site.nav.account": {
+  "zh": "个人中心",
+  "en": "Account"
+ },
+ "site.join.faqBotQ": {
+  "zh": "3dtrading 是理财产品还是交易机器人？",
+  "en": "Is 3dtrading a savings product or a trading bot?"
+ },
+ "site.join.faqBotA": {
+  "zh": "3dtrading 是运行在你币安子账户上的自动化交易机器人，不是保本理财产品，不归集用户资金，也不承诺固定收益。",
+  "en": "3dtrading is an automated trading bot that runs in your own Binance sub-account. It is not a principal-protected product, never pools user funds, and promises no fixed return."
+ },
+ "site.hero.sig": {
+  "zh": "最近信号",
+  "en": "Latest signals"
+ },
+ "site.hero.online": {
+  "zh": "30 / 30 在线",
+  "en": "30 / 30 online"
+ },
+ "site.story.ledger.head": {
+  "zh": "账户全貌 · 示意",
+  "en": "Whole account · illustration"
+ },
+ "site.story.ledger.extra": {
+  "zh": "这一轮真正多出来的",
+  "en": "What this round actually added"
+ },
+ "site.story.ledger.stamp": {
+  "zh": "已核对",
+  "en": "Checked"
+ },
+ "site.story.ledger.int": {
+  "zh": "USDT 利息",
+  "en": "USDT interest"
+ },
+ "site.join.cta": {
+  "zh": "体验演示",
+  "en": "Try the demo"
+ },
+ "site.join.prep": {
+  "zh": "上线前要准备什么",
+  "en": "What to prepare before launch"
+ },
+ "site.story.replay": {
+  "zh": "↺ 从头重播这一路",
+  "en": "↺ Replay from the start"
+ },
+ "site.quiz3.eb": {
+  "zh": "一道选择题",
+  "en": "One question"
+ },
+ "site.quiz3.h": {
+  "zh": "收益、风险、流动性，<em>你更看重哪两个？</em>",
+  "en": "Return, risk, liquidity: <em>which two matter most to you?</em>"
+ },
+ "site.quiz3.legend": {
+  "zh": "最多选两项 · 可取消重选",
+  "en": "Pick up to two · untick to change"
+ },
+ "site.quiz3.o0": {
+  "zh": "<b>收益</b>：想要更高的回报",
+  "en": "<b>Return</b>: You want a higher payoff"
+ },
+ "site.quiz3.o1": {
+  "zh": "<b>风险</b>：想把波动和回撤控制住",
+  "en": "<b>Risk</b>: You want swings and drawdowns kept in check"
+ },
+ "site.quiz3.o2": {
+  "zh": "<b>流动性</b>：需要时能把钱取回来",
+  "en": "<b>Liquidity</b>: You can get your money back when you need it"
+ },
+ "site.quiz3.go": {
+  "zh": "看看 3dtrading 如何串联三者",
+  "en": "See how 3dtrading links all three"
+ },
+ "site.quiz3.back": {
+  "zh": "回到取舍",
+  "en": "Back to the trade-off"
+ },
+ "site.quiz3.n0": {
+  "zh": "<b>收益</b><span class=\"t\">回报</span><span class=\"m\">交易执行 + 生息</span><span class=\"x\">通常要让出</span>",
+  "en": "<b>Return</b><span class=\"t\">Payoff</span><span class=\"m\">Execution + yield</span><span class=\"x\">Usually given up</span>"
+ },
+ "site.quiz3.n1": {
+  "zh": "<b>风险</b><span class=\"t\">波动 · 回撤</span><span class=\"m\">多空锁仓</span><span class=\"x\">通常要让出</span>",
+  "en": "<b>Risk</b><span class=\"t\">Swings · drawdown</span><span class=\"m\">Long–short lock</span><span class=\"x\">Usually given up</span>"
+ },
+ "site.quiz3.n2": {
+  "zh": "<b>流动性</b><span class=\"t\">取回资金</span><span class=\"m\">平仓后取回</span><span class=\"x\">通常要让出</span>",
+  "en": "<b>Liquidity</b><span class=\"t\">Getting money back</span><span class=\"m\">Close, then withdraw</span><span class=\"x\">Usually given up</span>"
+ },
+ "site.quiz3.ce": {
+  "zh": "<b>全部打通</b>串成一套流程",
+  "en": "<b>All connected</b>One flow"
+ },
+ "site.quiz3.idle": {
+  "zh": "<p>选出你最在意的两项，看看通常要让出什么。</p>",
+  "en": "<p>Pick the two you care about most and see what usually gets given up.</p>"
+ },
+ "site.quiz3.s0": {
+  "zh": "<p>已选<b>收益</b>。再选一项：通常第三项就要让出一些。</p>",
+  "en": "<p>You picked <b>return</b>. Pick one more: the third usually has to give a little.</p>"
+ },
+ "site.quiz3.s1": {
+  "zh": "<p>已选<b>风险</b>。再选一项：通常第三项就要让出一些。</p>",
+  "en": "<p>You picked <b>risk</b>. Pick one more: the third usually has to give a little.</p>"
+ },
+ "site.quiz3.s2": {
+  "zh": "<p>已选<b>流动性</b>。再选一项：通常第三项就要让出一些。</p>",
+  "en": "<p>You picked <b>liquidity</b>. Pick one more: the third usually has to give a little.</p>"
+ },
+ "site.quiz3.p01": {
+  "zh": "<p><b>收益 + 风险可控，通常让出流动性。</b>比如有锁定期的产品：回报和波动都还可以，但钱要先锁住一段时间。</p>",
+  "en": "<p><b>Return + controlled risk usually gives up liquidity.</b> Think of a product with a lock-up: decent payoff, modest swings, but your money is tied up for a while.</p>"
+ },
+ "site.quiz3.p02": {
+  "zh": "<p><b>收益 + 流动性，通常让出风险。</b>比如随时能买卖的高波动资产：可能涨得多，也可能回撤很深。</p>",
+  "en": "<p><b>Return + liquidity usually gives up risk control.</b> Think of a volatile asset you can trade any time: it may rise a lot, and it may fall hard.</p>"
+ },
+ "site.quiz3.p12": {
+  "zh": "<p><b>风险可控 + 流动性，通常让出收益。</b>比如随存随取的活期：波动小、取用方便，但回报通常偏低。</p>",
+  "en": "<p><b>Controlled risk + liquidity usually gives up return.</b> Think of an instant-access savings account: little swing, easy access, but usually a low payoff.</p>"
+ },
+ "site.quiz3.max": {
+  "zh": "<p><b>最多选两项。</b>先取消一项，再换成别的。</p>",
+  "en": "<p><b>Two at most.</b> Untick one first, then pick another.</p>"
+ },
+ "site.quiz3.mech": {
+  "zh": "<ol><li><b>收益来源</b><span>交易执行：平掉盈利一侧兑现利润；生息：已实现部分买入生息稳定币，利率浮动。</span></li><li><b>风险管理</b><span>多空锁仓：同价开多空，对冲方向波动；强平、资金费率和执行风险仍然存在。</span></li><li><b>资金进出</b><span>钱在你本人的子账户；取回前先平仓，再由你在币安里划转，不是随时无条件可取。</span></li></ol><p class=\"cl\"><b>全部打通：</b>把收益来源、风险管理与资金进出串成一套流程。它不是三项同时最优，也不保证收益。</p>",
+  "en": "<ol><li><b>Where return comes from</b><span>Execution: close the winning side to realise profit. Yield: the realised part buys a yield-bearing stablecoin at a floating rate.</span></li><li><b>How risk is managed</b><span>Long–short lock: open long and short at one price to hedge direction. Liquidation, funding-rate and execution risk remain.</span></li><li><b>How money moves in and out</b><span>Funds stay in your own sub-account. To withdraw, positions are closed first, then you transfer on Binance yourself; it is not instant or unconditional.</span></li></ol><p class=\"cl\"><b>All connected:</b> return, risk management and money in and out run as one flow. That doesn’t make all three optimal at once, and returns are not guaranteed.</p>"
+ },
+ "site.quiz3.note": {
+  "zh": "打通流程不消除风险：合约交易仍可能亏损，强平、资金费率和执行风险都还在，生息利率会变，取回资金前需要先平仓。",
+  "en": "Connecting the flow doesn’t remove risk: futures trading can still lose money, liquidation, funding-rate and execution risk remain, yield rates change, and positions must be closed before funds can be withdrawn."
+ },
+ "site.jy.hint0": {
+  "zh": "向下滚动，跟 Dodo 走",
+  "en": "Scroll to follow Dodo"
+ },
+ "site.jy.hint": {
+  "zh": "继续向下",
+  "en": "Keep scrolling"
+ },
+ "site.jy.nav": {
+  "zh": "叙事进度",
+  "en": "Story progress"
+ },
+ "site.jy.fin.1": {
+  "zh": "全程回看 · 示意",
+  "en": "The whole route · illustration"
+ },
+ "site.jy.fin.2": {
+  "zh": "一笔钱走完一圈，<br>真正多出来的是<em>利息</em>",
+  "en": "One full loop.<br>What it really added is the <em>interest</em>"
+ },
+ "site.jy.fin.3": {
+  "zh": "锁仓压住方向，兑现换出已实现，生息让闲钱计息，最后按净值对账。利率浮动，不承诺收益。",
+  "en": "The hedge holds direction flat, closing the winner turns it into realised profit, the yield puts idle cash to work, and the net value settles the account. Rates float; no return is promised."
+ },
+ "site.jy.fin.next": {
+  "zh": "继续往下 · 收益与风险",
+  "en": "Next · returns and risks"
+ },
+ "site.jy.wallet": {
+  "zh": "子账户 200,000 USDT",
+  "en": "Sub-account 200,000 USDT"
+ },
+ "site.jy.rate": {
+  "zh": "4% 年化 · 1 秒 ≈ 1 天 · 第 {d} 天",
+  "en": "4% a year · 1 s ≈ 1 day · day {d}"
+ },
+ "site.jy.newLong": {
+  "zh": "新多 1 BTC · 入场 100,800",
+  "en": "New long 1 BTC · entry 100,800"
+ },
+ "site.jy.real": {
+  "zh": "+4,800 · 已实现",
+  "en": "+4,800 · realised"
+ },
+ "site.jy.board": {
+  "zh": "BTC/USDT 永续 · 1H · 示意",
+  "en": "BTC/USDT perp · 1H · illustration"
+ },
+ "site.jy.st.1": {
+  "zh": "锁仓",
+  "en": "Lock"
+ },
+ "site.jy.st.2": {
+  "zh": "兑现",
+  "en": "Realize"
+ },
+ "site.jy.st.3": {
+  "zh": "生息",
+  "en": "Earn"
+ },
+ "site.jy.st.4": {
+  "zh": "对账",
+  "en": "Reconcile"
+ },
+ "site.bn.aria": {
+  "zh": "一笔钱的路径：02 开仓到 06 对账（示意）",
+  "en": "One account, step by step: 02 open to 06 reconcile (illustrative)"
+ },
+ "site.bn.a.1": {
+  "zh": "<b>02</b>开仓",
+  "en": "<b>02</b>Open"
+ },
+ "site.bn.a.2": {
+  "zh": "同一个价，<span class=\"l\">一只做多</span>，<span class=\"s\">一只做空</span>",
+  "en": "Same price, <span class=\"l\">one goes long</span>, <span class=\"s\">one goes short</span>"
+ },
+ "site.bn.a.3": {
+  "zh": "看到机会，但不赌方向。",
+  "en": "An opportunity, without betting on direction."
+ },
+ "site.bn.a.4": {
+  "zh": "BTCUSDT 永续在 96,000。两只 Dodo 走上各自的柱子：<span class=\"l\">绿旗</span>开多 <b>100 BTC</b>，<span class=\"s\">红旗</span>开空 <b>100 BTC</b>（示意）。资金始终在你自己的币安子账户里。",
+  "en": "BTCUSDT perpetual at 96,000. Two Dodos step onto their pillars: the <span class=\"l\">green flag</span> opens a <b>100 BTC</b> long, the <span class=\"s\">red flag</span> a <b>100 BTC</b> short (illustrative). The money stays in your own Binance sub-account."
+ },
+ "site.bn.a.5": {
+  "zh": "对冲压低的是单边方向风险，不是全部风险。",
+  "en": "A hedge lowers one-way direction risk, not all risk."
+ },
+ "site.bn.a.6": {
+  "zh": "示意数据 · 非真实行情 · 不会下单",
+  "en": "Illustrative · not live market data · no orders placed"
+ },
+ "site.bn.b.1": {
+  "zh": "<b>03</b>上涨",
+  "en": "<b>03</b>The rise"
+ },
+ "site.bn.b.2": {
+  "zh": "K 线向右生长，<br>背后露出两边盈亏",
+  "en": "The chart grows right;<br>behind it, both sides’ P&amp;L"
+ },
+ "site.bn.b.3": {
+  "zh": "一边赚多少，另一边就亏多少。",
+  "en": "What one side gains, the other loses."
+ },
+ "site.bn.b.4": {
+  "zh": "BTC 从 96,000 涨到 104,000：多头浮盈 <b class=\"l\">+800,000</b>，空头浮亏 <b class=\"s\">−800,000</b>，净值仍是 200,000。",
+  "en": "BTC climbs from 96,000 to 104,000: the long is up <b class=\"l\">+800,000</b>, the short down <b class=\"s\">−800,000</b>; net value is still 200,000."
+ },
+ "site.bn.b.5": {
+  "zh": "示意价格 · 非真实行情",
+  "en": "Illustrative prices · not live data"
+ },
+ "site.bn.c.1": {
+  "zh": "<b>04</b>拔旗兑现",
+  "en": "<b>04</b>Take the profit"
+ },
+ "site.bn.c.2": {
+  "zh": "拔掉盈利的旗，<br>在新价位再插一面",
+  "en": "Pull the winning flag,<br>plant a new one at the new price"
+ },
+ "site.bn.c.3": {
+  "zh": "浮盈落袋成已实现，锁仓随即恢复。",
+  "en": "Floating profit becomes realised; the hedge is restored."
+ },
+ "site.bn.c.4": {
+  "zh": "Dodo 爬上柱子平掉多头，+800,000 进入钱包：钱包余额从 200,000 变成 <b class=\"gd\">1,000,000</b>。再在 104,000 开新多。空头的 −800,000 还在账上。",
+  "en": "Dodo climbs up and closes the long; +800,000 lands in the wallet: wallet balance goes from 200,000 to <b class=\"gd\">1,000,000</b>. A new long opens at 104,000. The short’s −800,000 is still on the books."
+ },
+ "site.bn.c.5": {
+  "zh": "钱包余额 1,000,000 ≠ 可用保证金，也不等于净值（仍约 200,000）。",
+  "en": "A 1,000,000 wallet balance ≠ free margin, and ≠ net value (still about 200,000)."
+ },
+ "site.bn.c.6": {
+  "zh": "示意 · 净值 = 钱包余额 + 未实现盈亏",
+  "en": "Illustrative · net value = wallet balance + unrealised P&amp;L"
+ },
+ "site.bn.d.1": {
+  "zh": "<b>05</b>生息",
+  "en": "<b>05</b>Earn"
+ },
+ "site.bn.d.2": {
+  "zh": "可划转的那部分，<br>去稳定币生息区",
+  "en": "The transferable part<br>goes to stablecoin yield"
+ },
+ "site.bn.d.3": {
+  "zh": "托住持仓的保证金留下，其余才计息。",
+  "en": "Margin holding the positions stays; only the rest earns."
+ },
+ "site.bn.d.4": {
+  "zh": "示意划出 40,000 USDT。利息要随时间累计：演示按 4% 年化、1 秒约等于 1 天。",
+  "en": "Illustratively, 40,000 USDT moves out. Interest only builds up over time: the demo uses 4% a year, 1 second ≈ 1 day."
+ },
+ "site.bn.d.5": {
+  "zh": "具体产品与利率以上线时为准；利率浮动，不承诺收益。",
+  "en": "Actual products and rates are set at launch; rates float, no return is promised."
+ },
+ "site.bn.d.6": {
+  "zh": "示意 · 利息加速演示",
+  "en": "Illustrative · interest sped up"
+ },
+ "site.bn.e.1": {
+  "zh": "<b>06</b>对账",
+  "en": "<b>06</b>Reconcile"
+ },
+ "site.bn.e.2": {
+  "zh": "利息回到账上，<br>按净值对一遍",
+  "en": "Interest comes back;<br>check it against net value"
+ },
+ "site.bn.e.3": {
+  "zh": "只看钱包余额会高估，要看净值。",
+  "en": "The wallet balance alone overstates; look at net value."
+ },
+ "site.bn.e.4": {
+  "zh": "已实现 +800,000 与未实现 −800,000 相抵，这一轮真正多出来的是<b>利息</b>，再减去手续费与资金费率。",
+  "en": "Realised +800,000 and unrealised −800,000 cancel out; what this round really adds is the <b>interest</b>, minus fees and funding."
+ },
+ "site.bn.e.5": {
+  "zh": "两面旗都还插着：行情剧烈或保证金不足时，仍可能被强平。",
+  "en": "Both flags are still planted: in sharp moves or with too little margin, liquidation is still possible."
+ },
+ "site.bn.f.1": {
+  "zh": "越来越多 · 示意",
+  "en": "More over time · illustrative"
+ },
+ "site.bn.f.2": {
+  "zh": "每一轮多出来的一点，<br>慢慢铺满<em>整片地面</em>",
+  "en": "What each round adds,<br>slowly covers <em>the whole ground</em>"
+ },
+ "site.bn.f.3": {
+  "zh": "开仓锁住方向，上涨后兑现，可划转的部分去生息，按净值对账，再回到监测。金色只是示意“越来越多”，不代表真实收益；利率浮动，不承诺收益。",
+  "en": "Open hedged, take profit on the rise, send the transferable part to earn, reconcile by net value, then back to monitoring. The gold only illustrates “more over time”, not a real return; rates float and no return is promised."
+ },
+ "site.bn.nav.1": {
+  "zh": "<b>02</b>开仓",
+  "en": "<b>02</b>Open"
+ },
+ "site.bn.nav.2": {
+  "zh": "<b>03</b>上涨",
+  "en": "<b>03</b>Rise"
+ },
+ "site.bn.nav.3": {
+  "zh": "<b>04</b>拔旗兑现",
+  "en": "<b>04</b>Take profit"
+ },
+ "site.bn.nav.4": {
+  "zh": "<b>05</b>生息",
+  "en": "<b>05</b>Earn"
+ },
+ "site.bn.nav.5": {
+  "zh": "<b>06</b>对账",
+  "en": "<b>06</b>Reconcile"
+ },
+ "site.bn.cast": {
+  "zh": "调仓播报",
+  "en": "Position updates"
+ },
+ "site.bn.l.head": {
+  "zh": "账户全貌 · 示意",
+  "en": "Account overview · illustrative"
+ },
+ "site.bn.l.0": {
+  "zh": "钱包余额<small>含已实现 +800,000 · 已划出 40,000</small>",
+  "en": "Wallet balance<small>incl. realised +800,000 · 40,000 moved out</small>"
+ },
+ "site.bn.l.1": {
+  "zh": "多头未实现<small>新多入场 104,000</small>",
+  "en": "Long, unrealised<small>new long at 104,000</small>"
+ },
+ "site.bn.l.2": {
+  "zh": "空头未实现<small>入场 96,000</small>",
+  "en": "Short, unrealised<small>entry 96,000</small>"
+ },
+ "site.bn.l.3": {
+  "zh": "生息部分<small>本金 + 利息</small>",
+  "en": "Earning<small>principal + interest</small>"
+ },
+ "site.bn.l.4": {
+  "zh": "手续费 · 资金费率",
+  "en": "Fees · funding"
+ },
+ "site.bn.l.4v": {
+  "zh": "未计入",
+  "en": "not included"
+ },
+ "site.bn.l.5": {
+  "zh": "净值",
+  "en": "Net value"
+ },
+ "site.bn.l.extra": {
+  "zh": "这一轮真正多出来的",
+  "en": "What this round really adds"
+ },
+ "site.bn.l.cap": {
+  "zh": "净值变化 = 已实现 +800,000 + 未实现 −800,000 + 利息 − 费用 · 示意数字，仅演示账目关系，不代表真实仓位或收益",
+  "en": "Net change = realised +800,000 + unrealised −800,000 + interest − fees · illustrative figures showing how the books relate, not real positions or returns"
+ },
+ "site.bn.pair": {
+  "zh": "永续 · 币安 · 示意",
+  "en": "Perpetual · Binance · illustrative"
+ },
+ "site.bn.entry": {
+  "zh": "开仓价 96,000",
+  "en": "Entry 96,000"
+ },
+ "site.bn.wallet": {
+  "zh": "钱包余额 · USDT",
+  "en": "Wallet balance · USDT"
+ },
+ "site.bn.walletSub": {
+  "zh": "含空头浮亏 {s} · 净值仍约 {e}",
+  "en": "Short still at {s} · net value about {e}"
+ },
+ "site.bn.long": {
+  "zh": "多头 · 浮动盈亏",
+  "en": "Long · floating P&L"
+ },
+ "site.bn.short": {
+  "zh": "空头 · 浮动盈亏",
+  "en": "Short · floating P&L"
+ },
+ "site.bn.realised": {
+  "zh": "已兑现 → 钱包",
+  "en": "Realised → wallet"
+ },
+ "site.bn.yield": {
+  "zh": "稳定币生息区 · 示意",
+  "en": "Stablecoin yield · illustrative"
+ },
+ "site.bn.day": {
+  "zh": "第 {d} 天",
+  "en": "day {d}"
+ },
+ "site.bn.accrue": {
+  "zh": "计息中 · 利息要随时间累计",
+  "en": "Accruing · interest builds over time"
+ },
+ "site.bn.move": {
+  "zh": "可划转部分 {v} USDT → 生息",
+  "en": "Transferable {v} USDT → earn"
+ },
+ "site.bn.hold": {
+  "zh": "托住持仓的保证金留在合约账户",
+  "en": "Margin holding the positions stays in futures"
+ },
+ "site.bn.openL": {
+  "zh": "开多 100 BTC",
+  "en": "Long 100 BTC"
+ },
+ "site.bn.openS": {
+  "zh": "开空 100 BTC",
+  "en": "Short 100 BTC"
+ },
+ "site.bn.newL": {
+  "zh": "新多 100 BTC · 104,000",
+  "en": "New long 100 BTC · 104,000"
+ },
+ "site.bn.eq": {
+  "zh": "净值 {e} · 两边相抵",
+  "en": "Net value {e} · the sides cancel"
+ },
+ "site.bn.eq2": {
+  "zh": "钱包 {b} · 空 {s} · 净值 {e}",
+  "en": "Wallet {b} · short {s} · net {e}"
+ },
+ "site.bn.st.1": {
+  "zh": "开仓",
+  "en": "Open"
+ },
+ "site.bn.st.2": {
+  "zh": "兑现",
+  "en": "Take profit"
+ },
+ "site.bn.st.3": {
+  "zh": "生息",
+  "en": "Earn"
+ },
+ "site.bn.st.4": {
+  "zh": "对账",
+  "en": "Reconcile"
+ },
+ "site.bn.back": {
+  "zh": "其他币种的监测一直在继续",
+  "en": "Monitoring of other coins carries on"
+ },
+ "site.bn.c1": {
+  "zh": "Dodo · 开多 BTCUSDT 100 BTC @ 96,000",
+  "en": "Dodo · long BTCUSDT 100 BTC @ 96,000"
+ },
+ "site.bn.c2": {
+  "zh": "Dodo · 开空 BTCUSDT 100 BTC @ 96,000",
+  "en": "Dodo · short BTCUSDT 100 BTC @ 96,000"
+ },
+ "site.bn.c3": {
+  "zh": "Dodo · 平多 100 BTC @ 104,000 · 已实现 +800,000",
+  "en": "Dodo · closed long 100 BTC @ 104,000 · realised +800,000"
+ },
+ "site.bn.c4": {
+  "zh": "Dodo · 开多 BTCUSDT 100 BTC @ 104,000",
+  "en": "Dodo · long BTCUSDT 100 BTC @ 104,000"
+ },
+ "site.bn.hint": {
+  "zh": "继续向下",
+  "en": "Keep scrolling"
+ },
+ "site.bn.book": {
+  "zh": "订单簿",
+  "en": "Order book"
+ },
+ "site.hero.mods": {
+  "zh": "6 个模型同时监测",
+  "en": "6 models watching at once"
+ },
+ "site.hero.ill": {
+  "zh": "示意",
+  "en": "Illustrative"
+ },
+ "site.hero.demo": {
+  "zh": "示意 · 演示数据，非真实接入",
+  "en": "Illustrative · demo data, not a live feed"
+ },
+ "site.st2.a.1": {
+  "zh": "<b>02</b>互踩开仓",
+  "en": "<b>02</b>Stomp to open"
+ },
+ "site.st2.a.2": {
+  "zh": "两只 Dodo 互踩一下，<br><span class=\"l\">一格变绿</span>，<span class=\"s\">一格变红</span>",
+  "en": "Two Dodos stomp each other,<br><span class=\"l\">one tile turns green</span>, <span class=\"s\">one turns red</span>"
+ },
+ "site.st2.a.4": {
+  "zh": "BTCUSDT 永续在 96,000。两块黑格子升起，两只 Dodo 跳起来互踩一下：<span class=\"l\">绿格子</span>开多 <b>100 BTC</b>，<span class=\"s\">红格子</span>开空 <b>100 BTC</b>（示意）。资金始终在你自己的币安子账户里。",
+  "en": "BTCUSDT perpetual at 96,000. Two black tiles rise and the two Dodos jump and stomp each other: the <span class=\"l\">green tile</span> opens a <b>100 BTC</b> long, the <span class=\"s\">red tile</span> a <b>100 BTC</b> short (illustrative). The funds stay in your own Binance sub-account throughout."
+ },
+ "site.st2.b.1": {
+  "zh": "<b>03</b>涨跌",
+  "en": "<b>03</b>Up and down"
+ },
+ "site.st2.b.2": {
+  "zh": "价格一动，<br>两块格子一升一降",
+  "en": "When price moves,<br>one tile rises, one sinks"
+ },
+ "site.st2.b.4": {
+  "zh": "先跌：<span class=\"s\">红格子</span>升、<span class=\"l\">绿格子</span>降；再涨到 104,000：<span class=\"l\">绿格子</span>升到 <b class=\"l\">+800,000</b>，<span class=\"s\">红格子</span>沉到 <b class=\"s\">−800,000</b>。净值仍是 200,000；地上的金砖一格一格加，是生息的利息。",
+  "en": "First a dip: the <span class=\"s\">red tile</span> rises, the <span class=\"l\">green tile</span> sinks. Then up to 104,000: <span class=\"l\">green</span> climbs to <b class=\"l\">+800,000</b>, <span class=\"s\">red</span> sinks to <b class=\"s\">−800,000</b>. Net value is still 200,000; the gold bricks added one by one on the ground are the interest."
+ },
+ "site.st2.b.5": {
+  "zh": "示意价格 · 非真实行情 · 金砖代表利息，演示按 4% 年化、1 秒约等于 1 天",
+  "en": "Illustrative prices · not live market data · gold bricks are interest, shown at 4% a year, about 1 second = 1 day"
+ },
+ "site.st2.c.1": {
+  "zh": "<b>04</b>平多兑现",
+  "en": "<b>04</b>Close the long"
+ },
+ "site.st2.c.2": {
+  "zh": "绿色柱子降下来，<br>金砖向外扩散",
+  "en": "The green column comes down,<br>gold spreads outward"
+ },
+ "site.st2.c.4": {
+  "zh": "Dodo 踩平多头：<span class=\"l\">绿格子</span>落回原位，+800,000 成为已实现，钱包余额从 200,000 变成 <b class=\"gd\">1,000,000</b>。空头的 −800,000 还在账上。",
+  "en": "Dodo stomps the long closed: the <span class=\"l\">green tile</span> drops back, +800,000 becomes realized, and the wallet balance goes from 200,000 to <b class=\"gd\">1,000,000</b>. The short's −800,000 is still on the books."
+ },
+ "site.st2.d.1": {
+  "zh": "<b>05</b>再开多",
+  "en": "<b>05</b>Long again"
+ },
+ "site.st2.d.2": {
+  "zh": "Dodo 再跳一下，<br>脚下又变成绿色",
+  "en": "Dodo jumps once more,<br>the tile underfoot turns green"
+ },
+ "site.st2.d.3": {
+  "zh": "在新价位重新锁住方向。",
+  "en": "Lock direction again at the new price."
+ },
+ "site.st2.d.4": {
+  "zh": "在 104,000 开新多 <b>100 BTC</b>，和空头再次相抵。可划转的部分（示意 40,000 USDT）留在生息区继续计息。",
+  "en": "A new <b>100 BTC</b> long at 104,000 offsets the short again. The transferable part (illustrative 40,000 USDT) stays in the yield area earning interest."
+ },
+ "site.st2.d.5": {
+  "zh": "具体产品与利率以上线时为准；利率浮动，不承诺收益。",
+  "en": "Actual products and rates are set at launch; rates float and no return is promised."
+ },
+ "site.st2.e.1": {
+  "zh": "<b>06</b>铺满",
+  "en": "<b>06</b>Fill the ground"
+ },
+ "site.st2.e.2": {
+  "zh": "一格一格的金砖，<br>慢慢铺满<em>整片地面</em>",
+  "en": "Brick by brick, the gold<br>slowly covers <em>the whole ground</em>"
+ },
+ "site.st2.e.3": {
+  "zh": "已实现 +800,000 与未实现 −800,000 相抵，这一轮真正多出来的是<b>利息</b>，再减去手续费与资金费率。金色只是示意“越来越多”，不代表真实收益。",
+  "en": "Realized +800,000 and unrealized −800,000 cancel out; what this round really adds is the <b>interest</b>, minus fees and funding. The gold only suggests “more over time” — it is not a real return."
+ },
+ "site.st2.e.5": {
+  "zh": "多空两边都还开着：行情剧烈或保证金不足时，仍可能被强平。",
+  "en": "Both sides are still open: in a violent move or with too little margin, they can still be liquidated."
+ },
+ "site.st2.nav.1": {
+  "zh": "<b>02</b>互踩开仓",
+  "en": "<b>02</b>Stomp to open"
+ },
+ "site.st2.nav.2": {
+  "zh": "<b>03</b>涨跌",
+  "en": "<b>03</b>Up & down"
+ },
+ "site.st2.nav.3": {
+  "zh": "<b>04</b>平多扩散",
+  "en": "<b>04</b>Close & spread"
+ },
+ "site.st2.nav.4": {
+  "zh": "<b>05</b>再开多",
+  "en": "<b>05</b>Long again"
+ },
+ "site.st2.nav.5": {
+  "zh": "<b>06</b>铺满",
+  "en": "<b>06</b>Fill"
+ },
+ "site.faq.eb": {
+  "zh": "FAQ · 7 问",
+  "en": "FAQ · 7 questions"
+ },
+ "site.faq.sub": {
+  "zh": "先把钱在哪、风险在哪、怎么取回问清楚。",
+  "en": "Where the money sits, where the risk is, and how to get it back — answered first."
+ },
+ "site.st2.l": {
+  "zh": "多",
+  "en": "Long"
+ },
+ "site.st2.s": {
+  "zh": "空",
+  "en": "Short"
+ },
+ "site.st2.close": {
+  "zh": "平多 · 已实现 +800,000",
+  "en": "Long closed · realized +800,000"
+ },
+ "site.st2.reopen": {
+  "zh": "开新多 100 BTC @ 104,000",
+  "en": "New long 100 BTC @ 104,000"
+ },
+ "site.st2.int": {
+  "zh": "生息 +{v} USDT · 第 {d} 天",
+  "en": "Yield +{v} USDT · day {d}"
+ }
+}
