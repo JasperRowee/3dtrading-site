@@ -699,6 +699,20 @@ html.rm .bal:hover .mascot .arm-r{animation:none}
 .me-note{font-size:13px;color:var(--ink3);margin:10px 0 0}
 .lvt{overflow-x:auto;margin:10px 0 4px;-webkit-overflow-scrolling:touch}.lvt table{width:100%;font-size:12px;border-collapse:collapse}.lvt th,.lvt td{padding:5px 6px;text-align:left;white-space:nowrap;border-top:1px solid var(--line2)}.lvt th{font-weight:600;color:var(--ink3);border-top:0}.lvt .r{text-align:right}.lvt .td-h{margin:0 0 4px}
 .brief .r.umr b{font-size:18px}
+.brief button.r.umr{appearance:none;border:0;background:none;font:inherit;color:inherit;width:100%;text-align:left;cursor:pointer;border-top:1px solid rgba(255,255,255,.07);border-radius:0}
+.brief button.r.umr:hover .umh-tg,.brief button.r.umr:focus-visible .umh-tg{color:#fff;border-color:rgba(255,255,255,.4)}
+.brief button.r.umr{white-space:nowrap}.brief button.r.umr small{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.brief .umh-tg{flex:none;font-size:11.5px;font-weight:600;color:#9aa3b0;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:1px 8px;line-height:16px;align-self:center}
+.brief .umh-tg::after{content:' ▾';font-size:9px}.brief.umh-on .umh-tg::after{content:' ▴'}
+.brief.umh-on .r:not(.umr),.brief.umh-on .rm{display:none}
+.umh{padding:2px 0 6px}
+.umh-c{display:block;width:100%;height:auto;max-height:118px;overflow:visible}
+.umh-c text{font-size:9px;fill:#7d8794;font-family:inherit}
+.umh-c .th{stroke:#ffb44d;stroke-width:1;stroke-dasharray:3 3;opacity:.7}
+.umh-c circle{fill:#c3c9d2}.umh-c circle.nw{fill:var(--brand);stroke:#0b0f14;stroke-width:1.5}
+.umh-cap{margin:4px 0 0;font-size:11.5px;color:#7d8794;line-height:1.5}.umh-cap .demo{margin-right:6px}
+.umh-empty{display:flex;flex-direction:column;gap:4px;font-size:12px;color:#9aa3b0;line-height:1.5;padding:8px 10px;border:1px dashed rgba(255,255,255,.16);border-radius:10px}
+.umh-empty>b{color:#fff;font-size:12.5px}.umh-empty b.num{color:#fff}
 .dens{display:inline-flex;background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:2px;gap:2px}
 .dens button{appearance:none;border:0;background:none;border-radius:8px;height:28px;padding:0 10px;font-size:13.5px;font-weight:600;color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .dens button svg{width:12px;height:12px}
@@ -1629,6 +1643,131 @@ body.dh-up .hang:not(.chat) .dh-ledge,body[data-page="ai"] .hang:not(.chat) .dh-
   .acc-li li>:last-child>*{flex:1 1 auto;min-width:0;padding-left:10px;padding-right:10px;justify-content:center;text-align:center}
 }
 
+
+/* ================= r23 · Dodo 极简（电脑 + 手机）=================
+   去掉大头像、光晕、浮动动画和每条回答的头像；输入框改成细边、无投影；状态改成灰色小字。会话、历史、上下文、建议问题都保留。 */
+.chat-hd .dd,.hi-bot,.qa .a .av{display:none!important}
+.ai-st{background:none;padding:0;color:var(--ink3);font-weight:500;font-size:12px}
+.ai-st i{width:5px;height:5px;background:#d6a531}
+.chat-hd{border-bottom:1px solid transparent}
+.chat:not(.fresh) .chat-hd{border-bottom-color:var(--line2)}
+.hd-b{height:34px;padding:0 10px;font-size:13.5px;font-weight:500}
+.hello,.chat.fresh .hello{grid-template-columns:minmax(0,1fr);gap:4px;margin-bottom:16px}
+.hello h2{font-size:24px;font-weight:650;letter-spacing:-.015em}
+.hello .sum{font-size:14.5px;line-height:1.65;color:var(--ink3);margin-top:2px}
+.thread{gap:26px;padding-top:18px}
+.qa{gap:8px}
+.qa .q{background:#f4f6f8;border-radius:14px 14px 4px 14px;padding:8px 14px;font-size:15px;line-height:1.6}
+.qa .a{display:block;font-size:15px;line-height:1.72}
+.qa .a .nm{font-size:12px;font-weight:600;color:var(--ink3);margin:0 0 3px;letter-spacing:.02em}
+.qa .src{margin-left:0;font-size:12px}
+.box{border-radius:14px;border-color:#e3e7ec;box-shadow:none;padding:10px 10px 8px 16px}
+.box:focus-within{border-color:#9fdccf;box-shadow:0 0 0 3px rgba(47,220,188,.12)}
+.send{width:34px;height:34px}
+.sugg{gap:6px;margin-top:12px}
+.sugg button{height:32px;padding:0 12px;border-radius:9px;border:0;background:#f4f6f8;font-size:13.5px;color:var(--ink2)}
+.sugg button:hover{background:#eaf7f3;color:var(--ink)}
+.disc{font-size:12px;margin-top:8px}
+.chat.fresh .disc{margin-top:14px}
+.chat.fresh .composer{padding-bottom:18vh}
+.cv-list{border-radius:14px;box-shadow:0 0 0 1px var(--line2),0 18px 44px -22px rgba(11,13,16,.32)}
+@media (max-width:760px){
+  .hello,.chat.fresh .hello{grid-template-columns:minmax(0,1fr);margin-bottom:12px}
+  .hello h2{font-size:19px}
+  .hello .sum{font-size:13.5px;-webkit-line-clamp:3;display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden}
+  .chat-hd{height:46px}
+  .chat-hd h1{font-size:15px}
+  .qa .q,.qa .a{font-size:14.5px}
+  .thread{gap:20px;padding:14px 2px 24px}
+  .box{padding:8px 8px 6px 14px}
+  .sugg{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-left:-14px;margin-right:-14px;padding:0 14px}
+  .sugg::-webkit-scrollbar{display:none}
+  .sugg button{flex:none;height:34px}
+  .disc{font-size:11.5px;text-align:left}
+  .chat.fresh .composer{justify-content:flex-end;padding-bottom:10px}
+}
+
+/* ================= r23 · 手机后台紧凑版（≤760px）=================
+   沿用电脑版的语言：黑色主卡、细分隔线、绿色强调；缩小大卡片的内边距、圆角、字号和段间距，去掉装饰性几何块和吉祥物。
+   五页、全部数据和交互不变，详情仍按「点开再看」渐进展开；可点区域保持 ≥40px。 */
+@media (max-width:760px){
+  #dash{padding:12px 12px 20px}
+  body{padding-bottom:calc(62px + env(safe-area-inset-bottom))}
+  .tnav{padding:4px 8px calc(4px + env(safe-area-inset-bottom));gap:2px}
+  .tnav a{height:48px;font-size:11px;gap:2px;border-radius:12px}
+  .tnav a svg{width:19px;height:19px}
+  .ai{height:calc(100dvh - var(--top) - 56px - env(safe-area-inset-bottom))}
+  .ph{margin-bottom:10px;gap:4px}
+  .ph h1{font-size:20px;letter-spacing:-.01em}
+  .ph p,.ph .vsub{font-size:12px;line-height:1.5;margin-top:1px}
+  /* 黑色主卡：总览 / 交易 / 钱包 / 我的 */
+  .hero,.tx-hero,.bal,.prof{border-radius:16px}
+  .hero .geo,.hero .geo2,.tx-hero .geo,.bal .clip,.bal .mascot{display:none!important}
+  .hero{padding:14px 14px 12px;gap:10px}
+  .hero .k{font-size:12px}
+  .hero .v{font-size:32px;margin-top:2px}
+  .hero .v small{font-size:13px}
+  .hero .d{font-size:12px;line-height:1.5}
+  .hero .d.gnn{font-size:11px;opacity:.8}
+  .hero .chips{gap:6px;margin-top:8px}
+  .hero .nsp{height:96px;top:34px;opacity:.22}
+  .brief .mf-tg{min-height:44px;padding:6px 0}
+  .brief .r{padding:6px 0;font-size:13px}
+  .brief .acts{padding-top:8px;gap:6px}
+  .brief .acts button{height:40px;font-size:13.5px}
+  .ov{gap:12px}
+  .ov-top,.ov-mid{gap:12px}
+  .ov-sh{font-size:15px;margin:2px 0 0}
+  .lg .lh{padding:9px 2px 9px 10px;gap:8px}
+  .lg .k{font-size:12px}
+  .lg .v{font-size:21px}
+  .lg .d{font-size:12px}
+  .lg .lx .in{font-size:12.5px}
+  .cvp{padding:12px 12px 8px;border-radius:16px}
+  .cvp .hd2 h2,.posx .hd h2,.yld .top,.tlx .hd h2{font-size:15px}
+  .cv-flip{height:210px}
+  .yld{padding:14px 12px;border-radius:16px}
+  .posx .hd{margin-bottom:6px}
+  .bf-r .bh{padding:8px 2px;row-gap:3px}
+  /* 交易记录 */
+  .tx-hero{padding:14px 14px 12px;gap:10px}
+  .tx-l .v{font-size:28px}
+  .tx-l .d2{font-size:11.5px}
+  .tx-l .acts{margin-top:10px;gap:6px}
+  .tx-l .acts .btn,.tx-l .acts button{height:40px;font-size:13.5px}
+  .bars{min-height:52px}
+  .tx-coins{padding:4px 12px 8px!important;margin:8px -12px 0!important;gap:6px!important}
+  .tx-coins .ci{flex:0 0 96px;padding:6px 10px}
+  .tx-coins .ci.all{flex-basis:136px}
+  .tx-bar{padding:6px 0;gap:6px}
+  .tx-bar .seg button,.tx-ft{height:38px}
+  .dg-hd{padding:10px 10px 2px;font-size:12.5px}
+  .dg-hd b{font-size:14px}
+  .row{min-height:50px;padding:7px 10px;margin:0 2px}
+  /* 钱包 */
+  .bal{padding:14px 14px 12px}
+  .bal .k{font-size:12px}
+  .bal .v{font-size:28px;margin-top:6px}
+  .bal .d{font-size:11.5px;margin-top:4px}
+  .bal .kv{margin:8px 0}
+  .bal .kv>div{padding:7px 0}
+  .bal .acts{padding-top:8px;gap:6px}
+  .bal .acts .btn{height:42px}
+  .tlx .hd{margin-bottom:0}
+  .tl{margin-top:8px}
+  .tl li{padding:8px 0}
+  /* 我的 */
+  .prof{padding:14px}
+  .prof .av{width:40px;height:40px;font-size:16px}
+  .prof b{font-size:16px}
+  .prof small{font-size:12px}
+  .prof .st3{padding-top:10px;margin-top:10px}
+  .me-col .set+.set{margin-top:10px}
+  .me-col .set>h2,.me-col .set .hd2 h2{font-size:15px;margin:10px 0 2px}
+  .me-row{padding:8px 0;gap:10px}
+  .me-row b{font-size:14px}.me-row small{font-size:12px}
+  .me-note{font-size:12px;margin-top:6px}
+}
 </style>
 <link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/dodo-180.png?v=20261112">
@@ -2194,9 +2333,33 @@ function mz(v, n = 0) { return v == null || !Number.isFinite(+v) ? '—' : money
 function UMR() { if (!LIVE) return 4.85; const v = LIVE.acct ? +LIVE.acct.uniMMR : NaN; return Number.isFinite(v) && v > 0 ? v : null; }
 function UMRS() { const v = UMR(); return v == null ? '未取到' : (v * 100).toFixed(2).replace(/\.?0+$/, '') + '%'; }
 function UMR_ST(en) { const v = UMR(); if (v == null) return en ? 'unavailable' : '未取到'; return v > 1.5 ? (en ? 'Healthy' : '安全') : v > 1.05 ? (en ? 'below 150%' : '低于自由交易线') : (en ? 'at liquidation line' : '已到强平线'); }
+/* uniMMR history. Live: only real local snapshots (LIVE.umrHist, raw ratios) plus the value read just now, drawn as
+   separate dots, never joined or filled. Demo: a clearly labelled demo series. Shown ×100 as %, like the current value. */
+let UMH = false;
+const umrP = v => (v * 100).toFixed(v >= 10 ? 0 : 1).replace(/\.0$/, '') + '%';
+function umrSeries() {
+  if (!LIVE) { const pts = []; for (let k = 29; k >= 0; k--) pts.push({ t: +now - k * 864e5, v: k ? +(4.85 + .42 * Math.sin(k * .43) + .16 * Math.sin(k * 1.9) - k * .006).toFixed(4) : 4.85, now: !k }); return { pts, demo: true, snaps: 0 }; }
+  const h = (LIVE.umrHist || []).filter(p => p.t < (LIVE.fetchedAt || +now) - 6e4), cur = UMR(), pts = h.slice();
+  if (cur != null) pts.push({ t: LIVE.fetchedAt || +now, v: cur, now: true });
+  return { pts, demo: false, snaps: h.length };
+}
+function umrHistHtml() {
+  const S = umrSeries(), P = S.pts, dt = t => fmtD(new Date(t), { month: 'numeric', day: 'numeric' });
+  const cap = S.demo ? `<span class="demo">演示历史</span>近 30 天每日一点，按示例生成，不是真实数据`
+    : `本机快照 ${S.snaps} 个 + 本次读取 · 只画实测点，不连线、不补点`;
+  if (!S.demo && !S.snaps) return `<div class="umh-empty"><b>历史积累中</b><span>本机还没有 uniMMR 快照。只有页面打开并连接本地服务时才记录，最多每 30 分钟一条；不会补造过去的数据。</span>${P.length ? `<span>本次读取 <b class="num">${UMRS()}</b>（原始值 ${P[0].v.toFixed(4)} × 100）</span>` : ''}</div>`;
+  const W = 300, H = 96, L = 34, R = 8, T = 8, B = 18, vs = P.map(p => p.v), lo0 = Math.min(...vs, 1.5), hi0 = Math.max(...vs, 1.5), pad = (hi0 - lo0) * .12 || .2, lo = Math.max(0, lo0 - pad), hi = hi0 + pad;
+  const t0 = P[0].t, t1 = P[P.length - 1].t, X = t => L + (t1 > t0 ? (t - t0) / (t1 - t0) : .5) * (W - L - R), Y = v => T + (1 - (v - lo) / (hi - lo)) * (H - T - B);
+  const line = S.demo ? `<path d="${P.map((p, i) => `${i ? 'L' : 'M'}${X(p.t).toFixed(1)},${Y(p.v).toFixed(1)}`).join('')}" fill="none" stroke="var(--brand)" stroke-width="1.5" vector-effect="non-scaling-stroke"/>` : '';
+  const dots = P.map(p => p.now ? `<circle cx="${X(p.t).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="3.6" class="nw"><title>${dt(p.t)} ${umrP(p.v)}</title></circle>` : S.demo ? '' : `<circle cx="${X(p.t).toFixed(1)}" cy="${Y(p.v).toFixed(1)}" r="2.6"><title>${fmtD(new Date(p.t), { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false })} ${umrP(p.v)}</title></circle>`).join('');
+  const y150 = Y(1.5).toFixed(1);
+  return `<svg class="umh-c" viewBox="0 0 ${W} ${H}" role="img" aria-label="联合保证金率历史"><line x1="${L}" x2="${W - R}" y1="${y150}" y2="${y150}" class="th"/><text x="${L - 4}" y="${+y150 + 3}" text-anchor="end">150%</text>${Y(1.5) - Y(hi0) > 10 ? `<text x="${L - 4}" y="${(Y(hi0) + 3).toFixed(1)}" text-anchor="end">${umrP(hi0)}</text>` : ''}${Y(lo0) - Y(1.5) > 10 ? `<text x="${L - 4}" y="${(Y(lo0) + 3).toFixed(1)}" text-anchor="end">${umrP(lo0)}</text>` : ''}${line}${dots}<text x="${L}" y="${H - 4}">${dt(t0)}</text><text x="${W - R}" y="${H - 4}" text-anchor="end">${S.demo ? '今天' : '现在'}</text></svg>
+    <p class="umh-cap">${cap}</p>`;
+}
 function UMR_ROWS() {
   const v = UMR(), c = v == null ? 'mut' : v > 1.5 ? 'up' : 'dn';
-  let h = `<div class="r umr">联合保证金率 <small>${v == null ? '未取到，不按 0 处理' : `uniMMR · ${UMR_ST()}`}</small><b class="num ${c}">${UMRS()}</b></div>`;
+  let h = `<button type="button" class="r umr" data-umh aria-expanded="${UMH}" aria-controls="umh">联合保证金率 <small>${v == null ? '未取到，不按 0 处理' : `uniMMR · ${UMR_ST()}`}</small><b class="num ${c}">${UMRS()}</b><span class="umh-tg">历史</span></button>
+    <div class="umh" id="umh"${UMH ? '' : ' hidden'}>${umrHistHtml()}</div>`;
   if (LIVE && LIVE.acct) { const a = LIVE.acct;
     h += `<div class="r">维持保证金 <small>权益 ${mz(a.accountEquity)} ÷ 维持 = ${v == null ? '—' : v.toFixed(4)}</small><b class="num">${mz(a.accountMaintMargin)}</b></div>`
       + `<div class="r">可用余额 <small>可转出 ${mz(a.virtualMaxWithdrawAmount)}</small><b class="num">${mz(a.totalAvailableBalance)}</b></div>`; }
@@ -2295,7 +2458,7 @@ function renderMetrics() {
         <div class="d">今天 <b class="num">${sgn(dd, 0)}</b>（${pct(dd / ddBase, 3)}）· ${LIVE ? '净转入' : '本金'} ${money(D0, 0)}${LIVE ? ` · <small>${eqDay ? '净权益变化 − 当日净转入（昨日有快照）' : '今天按已实现口径，不含浮盈亏变化（缺昨日快照）'}</small>` : ''}</div>
         <div class="d gnn num">账面资产余额 ${money(gross, 0)} ${U <= 0 ? '−' : '+'} 未实现${U <= 0 ? '浮亏' : '浮盈'} ${money(Math.abs(U), 0)} = 账户净权益 ${money(T.equity, 0)} USDT</div>
         <div class="chips num"><span>7 天<b class="${cls(ch(7))}">${sgn(ch(7), 0)}</b></span><span>30 天<b class="${cls(ch(30))}">${sgn(ch(30), 0)}</b></span><span>${LIVE ? '总收益率（含浮盈亏）' : '收益率'}<b class="${cls(cum)}">${pct(cum / D0)}</b></span></div>${LIVE ? '<div class="d" style="font-size:11px;opacity:.75">7 天 / 30 天 / 本月按已实现口径；总收益率 = (净权益 − 净转入) ÷ 净转入</div>' : ''}</div>
-      <div class="brief${mfCls('brief')}" data-mf="brief" aria-label="账户状况">${mfBtn('brief', '账户状况', `${LIVE ? `uniMMR <b class="${UMR() == null ? '' : UMR() > 1.5 ? 'up' : 'dn'}">${UMRS()}</b> · ` : ''}本月 <b class="${cls(mg)}">${sgn(mg, 0)}</b> · ${rem.some(r => r.w) ? `<em>${rem.filter(r => r.w).length} 条需要留意</em>` : '暂无异常'}`)}<h3>账户状况<span>截至 ${nowLabel}</span></h3>
+      <div class="brief${mfCls('brief')}${UMH ? ' umh-on' : ''}" data-mf="brief" aria-label="账户状况">${mfBtn('brief', '账户状况', `uniMMR <b class="${UMR() == null ? '' : UMR() > 1.5 ? 'up' : 'dn'}">${UMRS()}</b> · 本月 <b class="${cls(mg)}">${sgn(mg, 0)}</b> · ${rem.some(r => r.w) ? `<em>${rem.filter(r => r.w).length} 条需要留意</em>` : '暂无异常'}`)}<h3>账户状况<span>截至 ${nowLabel}</span></h3>
         <div class="r">本月收益 <small>${monthName(now)} 1 日起</small><b class="num ${cls(mg)}">${sgn(mg, 0)}</b></div>
         ${UMR_ROWS()}
         ${HIST_OK() ? `<div class="r">距最高净权益 <small>${hiI === DAYS ? '今天' : dLabel(hiI)}</small><b class="num ${fromHi < -1e-9 ? 'dn' : 'up'}">${fromHi < -1e-9 ? pct(fromHi) : '处于最高'}</b></div>
@@ -2327,6 +2490,7 @@ let OVK = 'cum', OVX = false;
 document.addEventListener('click', e => {
   const h = e.target.closest('.lg .lh'); if (h) { const r = h.parentNode, o = !r.classList.contains('open'); OVK = o ? r.dataset.lg : '';
     $$('#kpis .lg').forEach(x => { const on = x === r && o; x.classList.toggle('open', on); $('.lh', x).setAttribute('aria-expanded', on); $('.lx', x).inert = !on; }); return; }
+  const u = e.target.closest('[data-umh]'); if (u) { UMH = !UMH; const b = u.closest('.brief'); b.classList.toggle('umh-on', UMH); $('#umh').hidden = !UMH; $$('[data-umh]', b).forEach(x => x.setAttribute('aria-expanded', UMH)); return; }
   if (e.target.closest('[data-gopos]')) { $('#posMini').scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' }); return; }
   if (e.target.closest('[data-allg]')) { S.tf.day = ''; S.tf.coin = ''; S.tf.act = ''; S.tDetail = null; S.tShow = 20; renderTrades('back'); goTo('#trades'); saveState(); return; }
   if (e.target.closest('[data-ovday]')) { S.tf.day = 'today'; S.tf.coin = ''; S.tf.act = ''; renderTrades('back'); goTo('#trades'); saveState(); return; }
@@ -2345,11 +2509,11 @@ function renderYield() {
     <div class="mid"><svg class="dn" viewBox="0 0 96 96" aria-hidden="true">${dn}</svg>
       <ul>${STB.map((c, k) => `<li><i style="background:${c.c}"></i>${c.s}<b class="num">${(c.w * 100).toFixed(0)}%</b><em class="num">${c.ref == null ? '无利率' : `参考 ${c.ref.toFixed(2)}%`}</em></li>`).join('')}</ul></div>
     <p class="pool-note" style="margin:6px 0 0;font-size:11px;line-height:1.5;color:#3f6b62">${LIVE ? '币安统一账户实时余额；BFUSD / RWUSD 利率取自币安 rateHistory（最新一条）；USD1 在统一账户里不计息，USD1 活动奖励以 WLFI 空投发到现货钱包' : '引用 2026-10-10 历史快照，非实时报价；RWUSD 不等于直接持有美债或 RWA，USD1 本身不自动付息；持仓余额不自动等于合资格计奖余额'}</p>
-    <div class="rc"><div class="rc-tabs" role="tablist" aria-label="选择币种看利率">${STB.filter(c => !c.na).map(c => `<button type="button" role="tab" data-yc="${c.s}" aria-selected="${c === rcC}"><i style="background:${c.c}"></i>${c.s}</button>`).join('')}<button type="button" class="more" data-dw="stable" aria-label="打开各币种利率详情">详情 →</button></div>
+    ${W.length ? `<div class="rc"><div class="rc-tabs" role="tablist" aria-label="选择币种看利率">${STB.filter(c => !c.na).map(c => `<button type="button" role="tab" data-yc="${c.s}" aria-selected="${c === rcC}"><i style="background:${c.c}"></i>${c.s}</button>`).join('')}<button type="button" class="more" data-dw="stable" aria-label="打开各币种利率详情">详情 →</button></div>
       <div class="rc-cap"><b>${esc(rcC.s)}</b><span>活期年化利率 APY · %/年</span><span>近 30 天 · 按天</span></div>
       <div class="rc-g" role="img" aria-label="近 30 天活期年化利率 · ${esc(rcC.s)} · 今天 ${W[W.length - 1][rk].toFixed(2)}% · 最低 ${lo.toFixed(2)}% · 最高 ${hi.toFixed(2)}%"><span class="ya num" aria-hidden="true"><span>${hi.toFixed(2)}%</span><span>${lo.toFixed(2)}%</span></span>
         <svg viewBox="0 0 300 56" preserveAspectRatio="none" aria-hidden="true"><path d="${ln(rk)}L300,56L0,56Z" fill="${rcC.c}" opacity=".1"/><path d="${ln(rk)}" fill="none" stroke="${rcC.c}" stroke-width="2" vector-effect="non-scaling-stroke"/></svg></div>
-      <div class="rc-x num" aria-hidden="true"><span>${dLabel(DAYS - 29)}</span><span>今天 ${W[W.length - 1][rk].toFixed(2)}%</span></div></div>
+      <div class="rc-x num" aria-hidden="true"><span>${dLabel(DAYS - 29)}</span><span>今天 ${W[W.length - 1][rk].toFixed(2)}%</span></div></div>` : `<div class="rc"><p class="pool-note" style="margin:8px 0 0;font-size:11.5px;color:#3f6b62">暂无可计息币种的利率历史</p></div>`}
     <div class="kv"><div>${LIVE ? '今日入账' : '今日预估'}<b class="num up">${sgn(T.interest)}</b></div><div>近 30 天<b class="num up">${sgn(it30, LIVE ? 2 : 0)}</b></div><div>累计计奖<b class="num up">${sgn(T.cumI, LIVE ? 2 : 0)}</b></div></div>`;
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-yc]'); if (!b) return; S.rc = b.dataset.yc; renderYield(); $(`#yld [data-yc="${S.rc}"]`)?.focus({ preventScroll: true }); saveState(); });
@@ -3027,6 +3191,11 @@ function answer(q) {
   if (a && !a.live) return mk(`${a.name} ${a.st === 'failed' ? '接入校验没有通过' : a.st === 'checking' ? '还在接入校验中' : '还没有完成接入测试'}，所以还没有仓位和收益数据。通过接入测试后我就能回答这类问题。`, null, `${enD(a.name)} hasn't passed the connection test yet and its strategy hasn't started, so there are no positions or returns yet. I can answer this once it's running.`);
   const f = facts(), T = f.T, pos = T.pos;
   if (LIVE) { const r = liveAnswer(q, f, T); if (r) return r; }
+  if (!LIVE && /保证金|uniMMR|mmr|强平|爆仓|margin|liquidat/i.test(q)) {
+    const v = UMR(), H = umrSeries().pts.map(p => p.v), lo = Math.min(...H), hi = Math.max(...H);
+    return mk(`示例账户的联合保证金率 uniMMR 是 <b>${UMRS()}</b>（${UMR_ST()}），原始值 ${v.toFixed(4)}，界面 ×100 显示为百分比。高于 150% 可自由交易，≤105% 触发强平。演示历史近 30 天在 ${umrP(lo)}–${umrP(hi)} 之间；这些都是示例数据，不是真实账户。`, ['#dashboard', '看账户状况'],
+      `The demo account's unified margin ratio (uniMMR) is <b>${UMRS()}</b> (${UMR_ST(true)}); raw value ${v.toFixed(4)}, shown ×100 as a percentage. Above 150% trading is unrestricted; at or below 105% liquidation starts. The demo history over the last 30 days ranges ${umrP(lo)}–${umrP(hi)}. All of this is sample data, not a real account.`);
+  }
   if (/止盈线|阈值|杠杆|调到|改成|改为|设置|暂停|停掉|关掉|threshold|leverage|pause|turn off|set .* to|change .* to/i.test(q)) {
     const cur = acctById(viewIds()[0]), th = (cur.th * 100).toFixed(1), n = (q.match(/(\d+(?:\.\d+)?)\s*%/) || [])[1];
     const what = /杠杆|leverage/i.test(q) ? ['杠杆', '当前设置', n ? n + ' 倍' : '你说的值', 'Leverage', 'current setting', n ? n + 'x' : 'the value you gave'] : /暂停|停掉|关掉|pause|turn off/i.test(q) ? ['策略状态', '运行中', '暂停', 'Strategy status', 'running', 'paused'] : ['止盈线', th + '%', n ? n + '%' : '你说的值', 'Take-profit line', th + '%', n ? n + '%' : 'the value you gave'];

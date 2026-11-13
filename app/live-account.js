@@ -196,6 +196,9 @@ Object.assign(window.LiveAccount, (() => {
         totalAvailableBalance: n('totalAvailableBalance'), virtualMaxWithdrawAmount: n('virtualMaxWithdrawAmount'), totalMarginOpenLoss: n('totalMarginOpenLoss'), accountStatus: acc.accountStatus, updateTime: n('updateTime') },
       uid: (A.spot || {}).uid, restrictions: A.restrictions || {}, balances: A.balances || [], bfusd: A.bfusd, rwusd: A.rwusd, income24h: A.income || [],
       posErr, balErr, coverage: H.coverage || {}, coins, ksym, days, trades, pos, stb, rates, kh, NH, kerr, airRows: airRows.sort((a, b) => b.t - a.t), flows: flows.sort((a, b) => b.t - a.t), dep0,
+      /* uniMMR history: every raw local snapshot that holds a real ratio, oldest first. Sparse points stay sparse:
+         no resampling, no interpolation, no synthetic rows. The current live value is NOT appended here (the UI adds it as "now"). */
+      umrHist: (H.snapshots || []).map(s => ({ t: +s.t, v: f(s.uniMMR) })).filter(p => Number.isFinite(p.t) && p.t <= nowMs && p.v != null && p.v > 0).sort((a, b) => a.t - b.t),
       unpriced, other, beforeWindow: before, snapCount: snaps.size, errors: Object.assign({}, A.errors, H.errors) };
   }
   async function load(done) {

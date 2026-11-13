@@ -139,18 +139,16 @@ html[data-theme=day] .tm .sun{display:block}html[data-theme=day] .tm .moon{displ
 @media (max-width:760px){.tm{width:32px;height:32px;margin-right:8px}.tm svg{width:16px;height:16px}}
 #tdLay{display:none!important}
 /* phones, first visit: one tap turns on motion (iOS only asks inside a real tap). Skipping it never asks again */
-.gate{position:fixed;inset:0;z-index:15;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:14px;padding:0 28px calc(56px + env(safe-area-inset-bottom));
-  background:linear-gradient(rgba(6,9,11,.2),rgba(6,9,11,.55) 45%,rgba(6,9,11,.92));opacity:0;transition:opacity .45s;cursor:pointer;-webkit-tap-highlight-color:transparent;text-align:center}
+.gate{position:fixed;inset:0;z-index:15;display:flex;align-items:center;justify-content:center;background:#000;opacity:0;transition:opacity .5s;cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:none}
 .gate.on{opacity:1}.gate[hidden]{display:none}
-.gate .ph{width:74px;height:74px;color:var(--brand);margin-bottom:6px}
-.gate .ph g{transform-origin:37px 37px;animation:tilt 2.6s ease-in-out infinite}
-@keyframes tilt{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
-.gate b{font:700 24px var(--sans);color:#f3f5f6;letter-spacing:.02em}
-.gate span{font:500 15px var(--sans);color:#aab3bb;max-width:300px;line-height:1.5}
-.gate .tap{margin-top:10px;height:52px;width:min(320px,100%);border-radius:26px;display:flex;align-items:center;justify-content:center;background:var(--brand);color:#04211c;font:700 17px var(--sans);box-shadow:0 10px 34px rgba(47,220,188,.35)}
-.gate .no{all:unset;cursor:pointer;padding:12px 18px;font:500 14px var(--sans);color:#8a939c}
-html[data-theme=day] .gate{background:linear-gradient(rgba(230,234,238,.2),rgba(230,234,238,.6) 45%,rgba(230,234,238,.94))}
-html[data-theme=day] .gate b{color:#11161a}html[data-theme=day] .gate span{color:#4b545c}html[data-theme=day] .gate .ph{color:#0fa58b}
+.gate b{font:500 17px var(--sans);color:#e9edf0;letter-spacing:.32em;padding-left:.32em;animation:gbr 2.8s ease-in-out infinite}
+@keyframes gbr{0%,100%{opacity:.42}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){.gate b{animation:none;opacity:.85}}
+/* the logo is the way home: back to 01 */
+.bar .home{display:block;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:6px}
+.bar .home:focus-visible{outline:2px solid var(--brand);outline-offset:6px}
+.hfade{position:fixed;inset:0;z-index:12;background:var(--bg);opacity:0;pointer-events:none;transition:opacity .26s ease}
+.hfade.on{opacity:1}
 /* copy coming in: the eyebrow first with its rule drawing out, then each headline line rising out of its own mask, then the paragraph settling */
 .blk .ln{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
 .blk .ln>span{display:block;transform:translateY(105%);transition:transform .9s cubic-bezier(.16,.84,.24,1)}
@@ -181,7 +179,7 @@ html[data-theme=day] .gate b{color:#11161a}html[data-theme=day] .gate span{color
 <div class="grain"></div>
 
 <header class="bar">
-  <img class="logo" src="../account/assets/3dtrading-logo-white.svg" alt="3dtrading">
+  <a class="home" id="home" href="#" aria-label="3dtrading，回到首页" title="回到首页"><img class="logo" src="../account/assets/3dtrading-logo-white.svg" alt="3dtrading"></a>
   <button class="tm" id="thm" aria-label="切换白天 / 黑夜" title="白天 / 黑夜"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg></button>
   <div class="acts" id="acts"><a class="gh" data-go="login">登录</a><a class="pr" data-go="signup">接入体验</a></div>
 </header>
@@ -249,13 +247,8 @@ html[data-theme=day] .gate b{color:#11161a}html[data-theme=day] .gate span{color
 <div class="toast" id="toast" role="status"></div>
 <a class="talk" id="talk" data-go="ai">和 Dodo 对话</a>
 <i id="layTg" hidden></i>
-<div class="gate" id="gate" hidden aria-hidden="true" role="button" tabindex="0">
-  <svg class="ph" viewBox="0 0 74 74" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><g><rect x="25" y="12" width="24" height="50" rx="5"/><path d="M33 56h8"/></g><path d="M12 28a26 26 0 0 0 0 18M62 28a26 26 0 0 1 0 18" opacity=".55"/></svg>
-  <b>轻触开启体感</b>
-  <span>转动手机，左右、上下环顾 Dodo 所在的空间</span>
-  <div class="tap">轻触开启</div>
-  <button class="no" data-gy-no>暂不开启，直接浏览</button>
-</div>
+<div class="gate" id="gate" hidden aria-hidden="true" role="button" tabindex="0" aria-label="轻触开始体验"><b>轻触开始体验</b></div>
+<div class="hfade" id="hfade" aria-hidden="true"></div>
 
 <div class="door" id="door" aria-hidden="true"><img src="../account/assets/3dtrading-logo-white.svg" alt=""></div>
 
@@ -356,7 +349,7 @@ const S8 = { ix: 26, iz: -23, H: 15, ZB: -46, SY: 17.5, GB: [40, -61] };   // ri
 /* 08's closed bay (x 15–57, z −46…−76) took 09's old ground, so 09 and 10 move left (and 10 a little forward) as whole scenes:
    their fields, pillars, Dodo, names and their camera stops all go by D9 / DV10 */
 const D9 = [-14, 0], DV10 = [-10, 4], m9 = (x, z) => [x + D9[0], z + D9[1]], v9 = v => [v[0] + D9[0], v[1], v[2] + D9[1]], v10 = v => [v[0] + DV10[0], v[1], v[2] + DV10[1]];
-const S9 = { c: m9(2, -58), R: 4.2, RG: 16, P: [[...m9(-7, -63.5), '账户自主', '#2fdcbc', '资产留在你的子账户'], [...m9(11, -63.5), '方向对冲', '#f0b90b', '多空配对 · 不猜涨跌'], [...m9(2, -47.5), '收益增强', '#5b9dff', '资本效率增厚回报']] };   // rear: three separate domains with dark gaps between; Dodo visits each and links them
+const S9 = { c: m9(2, -58), R: 4.2, RG: 16, P: [[...m9(-7, -63.5), '账户自主', '#2fdcbc', '资产留在你的子账户'], [...m9(11, -63.5), '方向对冲', '#f0b90b', '多空配对 · 不猜涨跌'], [...m9(2, -47.5), '收益增强', '#d8b36a', '资本效率增厚回报']] };   // rear: three separate domains with dark gaps between; Dodo visits each and links them
 /* 09's timeline: the domains rise one by one; Dodo drops onto the first, then hops 0→1→2→0, a bridge forming under each hop; last it hops to the middle and the network lights */
 const H9 = [[.28, .4, 0, 1], [.46, .58, 1, 2], [.64, .76, 2, 0]], HUB9 = [.8, .88], VIS9 = [.24, .4, .58];
 function pos9(u) { const P = S9.P, top = 1.75; if (u < H9[0][0]) return [P[0][0], top, P[0][1], 0];
@@ -373,18 +366,18 @@ const mvc = (c, f) => ({ ...c, ...(c.p ? { p: f(c.p), l: f(c.l) } : {}), kf: c.k
 const MTOUR = {
   0: { p: [29.5, 5.8, 6.5], l: [52, .4, 6.5] },
   // 08: stand in front of the tower, Binance straight behind it: the tower, its Dodo, the key and the line all fit the tall screen
-  1: { p: [28, 6, -2], l: [37, 14, -70], kf: [[.4, [28.5, 17.5, -17], [35, 16.5, -32]], [.6, [28.5, 17.6, -17.3], [35, 16.6, -32]], [1, [29, 10, -17], [37, 13.5, -80]]], sy: .2 },
+  1: { p: [29, 10, -17], l: [37, 13.5, -80], sy: .2 },
   // 10: the three Dodo in a row, Telegram over Discord beside them
-  3: mvc({ kf: [[.74, [-20, 4.8, -15], [-31, 3.4, -12]], [.9, [-16.5, 7, -21], [-31, 7.2, -21]], [1, [-16.5, 7, -21], [-31, 7.2, -21]]] }, v10),
+  3: mvc({ p: [-16.5, 7, -21], l: [-31, 7.2, -21] }, v10),
   4: { p: [-44, 8, 24], l: [-100, 12, 15] },
 };
 const APPW = [[-29.5, -3.6], [-29.5, 3.2]], APPM = [[-37, -24], [-38, -18.5]], APH = k => ML && k ? 10.4 : 2.9;   // Telegram and Discord stand on two pillars next to the Dodo who answer
 const TOUR = [
   { p: [26, 5.4, 6.5], l: [52, .8, 6.5] },
-  // 08: close on the Dodo as the key appears, then behind it as the key goes into the boundary, then back to see the whole link
-  { p: [24, 1.8, -37], l: [34, 7, -30], kf: [[.2, [22.5, 16.4, -38.5], [34, 15.2, -30.5]], [.44, [29, 20.5, -21], [35.5, 16.5, -46]], [.6, [28, 21, -19.5], [36, 16.5, -48]], [.86, [21, 22, -17], [41, 14, -62]], [1, [21, 22, -17], [41, 14, -62]]] },
-  // 09: the three cut-off fields from above, down close to the Dodo while it links them, then up and back as the gaps close
-  mvc({ p: [18, 17, -30], l: [9, 1, -58], kf: [[.24, [16, 13, -35], [8, 1.2, -58]], [.84, [14, 11.5, -37.5], [7.5, 1.2, -58]], [.97, [10, 27, -29], [7.5, 0, -58]], [1, [10, 27, -29], [7.5, 0, -58]]] }, v9),
+  // 08: turn right during arrival and keep one composition for the full key sequence
+  { p: [21, 22, -17], l: [41, 14, -62] },   // one arrival from 07; key animation never steers the camera
+  // 09: a stable overview of three column platforms; Dodo connects them within the scene
+  mvc({ p: [10, 27, -29], l: [7.5, 0, -58] }, v9),
   // 10: in front of one Dodo; it comes towards us and its reply comes out to the screen
   mvc({ p: [-13.5, 5.6, -28.5], l: [-26, 3, -24] }, v10),
   { p: [-46, 9, 25], l: [-100, 13, 13] },
@@ -404,28 +397,38 @@ const CAM = () => (ML ? [
   { p: [-5, 9.6, -27.5], l: [4.6, 6.4, 6], sx: .14, sy: .02 },
   { p: [-1.4, 11, -24.5], l: [5.6, 7.6, 6], sx: .14, sy: .02 },
   { p: [-4, 60, -34], l: [3, 0, 9], sx: .16, sy: .06 },
-].map((c, i) => !mob && i >= 1 && i <= 4 ? near(c, LSQ() ? LQK : KNEAR) : c)).concat(TOUR.map((c, i) => ML ? near({ ...c, sx: 0, sy: .12, ...(MTOUR[i] || {}) }, MNEAR[i]) : mob && i === 0 && W < H ? { ...c, ...M7, sx: 0, sy: 0 } : mob && i === 2 ? shx({ ...c, sx: 0, sy: 0 }, -5) : mob && i === 1 ? { ...c, ...M8, sx: 0, sy: 0 } : i === 1 && LSQ() ? near({ ...c, sx: +(QP.get('lsx') || .2), sy: 0 }, +(QP.get('lsk') || 1.5)) : mob && i === 3 ? { ...c, p: QP.has('m10p') ? QP.get('m10p').split(',').map(Number) : v10([-20, 11, -16.5]), l: QP.has('m10l') ? QP.get('m10l').split(',').map(Number) : v10([-26, 1.5, -31]), sx: 0, sy: 0 } : { ...c, sx: 0, sy: 0 }));
+].map((c, i) => !mob && i >= 1 && i <= 4 ? (LSQ() ? near(c, LQK) : shx(near(c, KNEAR), [0, KUP[i - 1], 0])) : mob && !ML && i >= 1 && i <= 4 ? shx(near(c, MKN[i - 1]), [MKX[i - 1], MKY[i - 1], 0]) : c)).concat(TOUR.map((c, i) => ML ? near({ ...c, sx: 0, sy: .12, ...(MTOUR[i] || {}) }, MNEAR[i]) : mob && i === 0 && W < H ? { ...c, ...M7, sx: 0, sy: 0 } : mob && i === 2 ? near(shx({ ...c, sx: 0, sy: 0 }, -5), 1.4) : mob && i === 1 ? { ...c, ...M8, sx: 0, sy: 0 } : i === 1 && LSQ() ? near({ ...c, sx: +(QP.get('lsx') || .2), sy: 0 }, +(QP.get('lsk') || 1.5)) : mob && i === 3 ? { ...c, p: QP.has('m10p') ? QP.get('m10p').split(',').map(Number) : v10([-20, 11, -16.5]), l: QP.has('m10l') ? QP.get('m10l').split(',').map(Number) : v10([-26, 1.5, -31]), sx: 0, sy: 0 } : { ...c, sx: 0, sy: 0 }));
 /* phones keep 09's copy on top, so its fields go back to the middle (the computer moves them right of the copy) */
 // 08 on a portrait phone: its own path, solved so tower+Dodo+key (start), key->port (middle) and tower/port/BINANCE/labels (end) all sit below the copy
 // a phone held sideways: the copy takes the left side, so 08 moves to the right half and steps back
 const LSQ = () => !mob && H < 520 && matchMedia('(pointer: coarse)').matches;
 // 07 on a portrait phone: up high, looking down the three lanes, so all three and their names fit without turning
 const M7 = { p: QP.has('m7p') ? QP.get('m7p').split(',').map(Number) : [24, 11, 6.5], l: QP.has('m7l') ? QP.get('m7l').split(',').map(Number) : [44, 0, 6.5] };
-const M8 = { p: [20.2, 3, -18], l: [34.1, 7.6, -29.8], kf: [[.2, [19.6, 5.5, -17.6], [34.1, 10, -30.4]], [.42, [21.66, 17, -17.52], [36, 17, -38]], [.64, [26.27, 28.02, 19.44], [39.1, 15, -53.3]], [1, [26.27, 28.02, 19.44], [39.1, 15, -53.3]]] };
+const M8 = { p: [26.27, 28.02, 19.44], l: [39.1, 15, -53.3] };
 function shx(c, d, dl) { const D = Array.isArray(d) ? d : [d, 0, 0], E = dl || D, mp = v => [v[0] + D[0], v[1] + D[1], v[2] + D[2]], ml = v => [v[0] + E[0], v[1] + E[1], v[2] + E[2]]; return { ...c, p: mp(c.p), l: ml(c.l), kf: c.kf && c.kf.map(([a, p, l]) => a > .3 && a < .8 && !dl ? [a, p, l] : [a, mp(p), ml(l)]) }; }   // the close-up in the middle stays on Dodo
 /* phones: pull a stop's camera (and its in-step keys) toward what it looks at */
 const MNEAR = [.96, 1, .8, .92, .5];
 const KNEAR = +(QP.get('kn') || .84);
+const QL = (k, d) => QP.has(k) ? QP.get(k).split(',').map(Number) : d;   // a list from the address, for tuning
+const KUP = QL('kup', [2.3, .6, 2.1, 2.1]), MKN = QL('mkn', [1.15, 1.1, 1.1, 1.1]), MKX = QL('mkx', [2.6, .6, .6, .4]), MKY = QL('mky', [0, 0, 0, 0]);   // 02–05: the computer lifts its camera so the header clears the bar; portrait phones pull back / slide so K-line and header fit together
 const MHW = +(QP.get('mhw') || 9.2), MHX = +(QP.get('mhx') || 0), LQW = +(QP.get('lqw') || 10), LQK = +(QP.get('lqk') || 1), LQY = +(QP.get('lqy') || 3.6);   // …and phones held sideways: header width, camera pull-in   // portrait phones, 02–05: the stacked header's width, and a nudge   // the computer, 02–05: the camera this much of the way in to the K-line (closer than before)
 function near(c, k) { const m = (p, l) => p.map((v, j) => l[j] + (v - l[j]) * k); return { ...c, p: m(c.p, c.l), kf: c.kf && c.kf.map(([a, p, l]) => [a, m(p, l), l]) }; }
 /* where stop i stands, given how far its own step has played */
+/* a stop with sp: one continuous path through its keys (monotone cubic per axis, Fritsch–Carlson): it keeps moving through a key instead of
+   stopping at each one, never overshoots a key, and only comes to rest at the start, the end, or where an axis really turns round */
+function pchip(xs, ys, a) { const n = xs.length; if (a <= xs[0]) return ys[0]; if (a >= xs[n - 1]) return ys[n - 1];
+  const h = [], d = []; for (let k = 0; k < n - 1; k++) { h[k] = Math.max(1e-4, xs[k + 1] - xs[k]); d[k] = (ys[k + 1] - ys[k]) / h[k]; }
+  const m = ys.map((_, k) => { if (k === 0 || k === n - 1 || d[k - 1] * d[k] <= 0) return 0; const w1 = 2 * h[k] + h[k - 1], w2 = h[k] + 2 * h[k - 1]; return (w1 + w2) / (w1 / d[k - 1] + w2 / d[k]); });
+  let k = 0; while (k < n - 2 && a > xs[k + 1]) k++; const u = (a - xs[k]) / h[k], u2 = u * u, u3 = u2 * u;
+  return (2 * u3 - 3 * u2 + 1) * ys[k] + (u3 - 2 * u2 + u) * h[k] * m[k] + (-2 * u3 + 3 * u2) * ys[k + 1] + (u3 - u2) * h[k] * m[k + 1]; }
 function pose(c, a) {
+  if (c.kf && c.sp) { const ks = [[0, c.p, c.l], ...c.kf], xs = ks.map(k => k[0]); return [1, 2].map(j => [0, 1, 2].map(i => pchip(xs, ks.map(k => k[j][i]), a))); }
   if (!c.kf) return [c.p, c.l]; let pa = 0, pp = c.p, pl = c.l;
   for (const [ka, kp, kl] of c.kf) { if (a <= ka) { const u = sm((a - pa) / Math.max(.001, ka - pa)); return [pp.map((v, i) => L(v, kp[i], u)), pl.map((v, i) => L(v, kl[i], u))]; } pa = ka; pp = kp; pl = kl; }
   return [pp, pl];
 }
 /* a sideways swing on the way between two stops, so moves arc instead of sliding in a line */
-const BUL = [null, [0, 0, 0], [.6, .4, 0], [0, -.8, 0], [.4, .4, 0], [-4, 6, 6], [10, -10, 8], [9, 4, 0], [0, 2, 0], [-2, 3, 0], [0, 7, 0]];
+const BUL = [null, [0, 0, 0], [.6, .4, 0], [0, -.8, 0], [.4, .4, 0], [-4, 6, 6], [10, -10, 8], [0, 0, 0], [0, 0, 0], [-2, 3, 0], [0, 7, 0]];
 
 /* ---------- motion: one spring along the steps. One gesture = one step; a gesture the other way turns it round at once ---------- */
 const K = { t: 0, v: 0, tgt: 0 }, A = new Array(NS).fill(0); A[0] = 1;
@@ -452,9 +455,11 @@ let GATE = false, PEND = null; const go = (d, why) => { if (GATE) return;   // t
   if (d * (K.tgt - K.t) > WH.QMAX) {   // one step already waits beyond the one playing: never pile up. A separate swipe or notch that lands now is
     if (why !== 'drive' && !PEND) { PEND = { d, at: performance.now() }; setTimeout(pendTry, 40); }   // held (one at most, PEND ms) and plays once the slot frees; a held drag's repeat is just dropped
     return; }
-  const tg = clamp(K.tgt + d, 0, NS - 1); if (tg === K.tgt) return; const s = Math.sign(tg - K.tgt); K.tgt = tg; if (Math.sign(K.v) === -s) K.v *= .2; K.v += s * .45; };
+  const tg = clamp(K.tgt + d, 0, NS - 1); if (tg === K.tgt) return; K.tgt = tg; // Preserve velocity: the integrator brakes and reverses smoothly.
+ };
 function pendTry() { if (!PEND) return; if (performance.now() - PEND.at > WH.PEND) { PEND = null; return; } if (PEND.d * (K.tgt - K.t) <= WH.QMAX) { const d = PEND.d; PEND = null; go(d); return; } setTimeout(pendTry, 40); }
-const jump = i => { PEND = null; if (i === K.tgt) return; const s = Math.sign(i - K.tgt); K.tgt = i; if (Math.sign(K.v) === -s) K.v *= .2; K.v += s * .45; };
+const jump = i => { PEND = null; if (i === K.tgt) return; K.tgt = i; // Preserve velocity: the integrator brakes and reverses smoothly.
+ };
 /* one gesture = one step. A gesture is split from the next by a short silence (QUIET), by the wheel turning the other way, or by the
    wheel clearly speeding up again from the lowest point of the decaying tail (RISE×, and RISE_ABS more, two events in a row) — so a quick second swipe is caught even while the
    first one's inertia is still coming in, and that inertia tail itself never adds a step. Inside one gesture, only a real sustained
@@ -548,14 +553,15 @@ function anchors(only, a) {
   const cms0 = CMS, cmy0 = CMY; ANC = cams.map((c, i) => { if (only != null && i !== only) return ANC[i]; CMS = MSS[i]; CMY = MSYS[i]; const [cp, cl] = pose(c, only != null ? a : CPA[i]); setCam(cp, cl, c.sx, c.sy); const kk = C.F / D, ux = (W * sp[i][0] - C.cx) / kk, uy = (C.cy - H * sp[i][1]) / kk, e = ENT[i];
     return { w: [0, 1, 2].map(j => C.p[j] + C.f[j] * D + C.r[j] * ux + C.u[j] * uy), e: [0, 1, 2].map(j => C.r[j] * e[0] + C.u[j] * e[1] + C.f[j] * e[2]), k: kk }; }); CMS = cms0; CMY = cmy0;
 }
-function placeCopy(t) {
-  BLK.forEach((b, i) => { const a = ANC[i], dt = t - i; let o = 1 - sm((Math.abs(dt) - .1) / .5);
-    const w = a ? a.w.map((v, j) => v - a.e[j] * dt * 3.2) : null, q = o > .01 && w ? pr(...w) : null;
+function placeCopy(t) { const SP = SPOT();
+  BLK.forEach((b, i) => { const a = ANC[i], dt = t - i, late = i >= 6; let o = late ? 1 - sm((Math.abs(dt) - .06) / .4) : 1 - sm((Math.abs(dt) - .1) / .5);
+    const dr = late && dt > 0 ? 0 : 3.2;   // 07 on: leaving, the copy stays put in the space and the camera leaves it behind (cut by the screen edge), it never drifts along with the move
+    const w = a ? a.w.map((v, j) => v - a.e[j] * dt * dr) : null, q = o > .01 && w ? pr(...w) : null;
     if (!q) { if (b._v) { b.style.opacity = 0; b._v = 0; b.style.pointerEvents = 'none'; } return; }
     const sc = clamp(q.k / a.k, .55, 1.7); o *= clamp((1.7 - sc) / .3);
     const c = b.classList.contains('c');
     b.style.opacity = o.toFixed(3); b.style.pointerEvents = c && o > .6 ? 'auto' : 'none';
-    let y = q.y; if (!c && !mob) { const h = b._h || (b._h = b.offsetHeight); y = Math.max(y, 62 + h * sc / 2); }   // a short landscape screen: keep the copy under the header
+    let y = q.y; if (!c && !mob) { const h = b._h || (b._h = b.offsetHeight); y += Math.max(0, 62 + h / 2 - H * SP[i][1]); }   // a short landscape screen: the copy rests under the header — a fixed shift, so on the way out it still moves with the space (a floor here held it under the header while the camera left)
     b.style.transform = `translate(${q.x.toFixed(1)}px,${y.toFixed(1)}px)${c ? ' translate(-50%,-50%)' : mob ? '' : ' translateY(-50%)'} scale(${sc.toFixed(3)})`; b._v = 1; });
 }
 
@@ -570,7 +576,17 @@ function tex(name, w, h, sc = 2) { let t = TX[name]; if (!t) { const c = documen
 const KIND = ['状态空间模型', '盘口深度', '长短期记忆网络', '已实现波动率', '条件异方差', '指数加权波动'];
 const PWd = 440, PHd = 600, PSC = 1.5, LT = 196, RH = 50, HROW = 2;
 const PT = [];
-let HIT = null, nextHit = 1.2, hitN = 0;
+let HIT = null, nextHit = 1.2, hitN = 0, LBLCL = true, LCW = 1;
+/* the logo goes home: a short fade to the page colour hides the jump, then everything is put back as on a fresh load of 01 */
+const homeEl = document.getElementById('home'), hfadeEl = document.getElementById('hfade'); let HOMING = false;
+function homeReset() { K.t = K.tgt = 0; K.v = 0; A.fill(0); A[0] = 1; WT.fill(0); PEND = null; HOLDU = null; GOLD.clear();
+  HIT = null; nextHit = T + 1.2; WS.fired = false; WS.acc = 0; WS.dir = 0; WS.t = -1e9; side = -1; inS = -1; smx = smy = 0;
+  BLK.forEach(b => b.classList.remove('in')); de.classList.add('snap'); setTimeout(() => de.classList.remove('snap'), 400); }
+function goHome(e) { if (e) e.preventDefault(); if (GATE || HOMING) return; doorEl.classList.remove('on', 'rm');
+  if (K.tgt === 0 && Math.abs(K.t) < .02) { homeReset(); return; }
+  if (RM) { homeReset(); return; } HOMING = true; hfadeEl.classList.add('on');
+  setTimeout(() => { homeReset(); requestAnimationFrame(() => { hfadeEl.classList.remove('on'); setTimeout(() => HOMING = false, 280); }); }, 270); }
+homeEl.addEventListener('click', goHome);
 function initWall() {
   if (PT.length) return; let sd = 11; const r = () => (sd = (sd * 16807) % 2147483647, (sd - 1) / 2147483646);
   for (let i = 0; i < 6; i++) { const c = document.createElement('canvas'); c.width = PWd * PSC; c.height = PHd * PSC; const x = themed(c.getContext('2d')); x.scale(PSC, PSC);
@@ -891,11 +907,11 @@ const lock = (x, X, Y, s, c) => { x.strokeStyle = c; x.lineWidth = s * .16; x.be
 function bnMark(x, X, Y, s) { x.fillStyle = BN.y; const d = (cx, cy, r) => { x.beginPath(); x.moveTo(cx, cy - r); x.lineTo(cx + r, cy); x.lineTo(cx, cy + r); x.lineTo(cx - r, cy); x.closePath(); x.fill(); };
   d(X, Y, s * .22); d(X, Y - s * .5, s * .2); d(X, Y + s * .5, s * .2); d(X - s * .5, Y, s * .2); d(X + s * .5, Y, s * .2); }
 /* 07: the three lanes are named on the floor */
-function laneTex(i) { const [, name, ok] = S7.lanes[i], t = tex('lane' + i + (ML ? 'm' : ''), 520, 150); if (t.at === 1) return t; t.at = 1; const x = t.g; x.clearRect(0, 0, 520, 150);
-  x.fillStyle = ok ? 'rgba(14,203,129,.16)' : 'rgba(246,70,93,.16)'; x.beginPath(); x.roundRect(6, 20, 508, 110, 55); x.fill(); x.strokeStyle = ok ? 'rgba(14,203,129,.75)' : 'rgba(246,70,93,.75)'; x.lineWidth = 3; x.stroke();
-  if (ok) check(x, 70, 74, true); else lock(x, 70, 80, 36, '#ff8a99');
-  const rw = ok ? '允许' : '永久关闭', rf = font(ML ? 40 : 26, 800); x.font = rf; const room = 488 - x.measureText(rw).width - 24 - 118; let fs = ML ? 56 : 46; x.font = font(fs, 800); while (x.measureText(name).width > room && fs > 22) { fs -= 1; x.font = font(fs, 800); }
-  txt(x, name, 118, 94, '#f3f5f6', font(fs, 800)); txt(x, rw, 488, 92, ok ? '#7fe3b8' : '#ff8a99', rf, 'right'); return t; }
+function laneTex(i) { const [, name, ok] = S7.lanes[i], t = tex('lane' + i + (ML ? 'm' : '') + (DAY ? 'd' : ''), 520, 150); if (t.at === 1) return t; t.at = 1; const x = t.g; x.clearRect(0, 0, 520, 150);   // the name only: green is allowed, red is closed, nothing else said
+  let fs = 50; x.font = font(fs, 800); while (x.measureText(name).width > 420 && fs > 26) { fs -= 1; x.font = font(fs, 800); } const tw = x.measureText(name).width, pw = tw + 74, x0 = 260 - pw / 2;
+  x.fillStyle = DAY ? 'rgba(255,255,255,.95)' : 'rgba(8,12,14,.88)'; x.beginPath(); x.roundRect(x0, 40, pw, 70, 35); x.fill(); x.fillStyle = ok ? 'rgba(14,203,129,.14)' : 'rgba(246,70,93,.16)'; x.fill(); x.strokeStyle = ok ? 'rgba(14,203,129,.7)' : 'rgba(246,70,93,.75)'; x.lineWidth = 3; x.stroke();
+  x.fillStyle = ok ? '#2ee096' : '#ff5c72'; x.beginPath(); x.arc(x0 + 30, 75, 7, 0, 2 * PI); x.fill();
+  txt(x, name, x0 + 48, 75 + fs * .36, DAY ? (ok ? '#0c8a5c' : '#c8344c') : ok ? '#9ff3cf' : '#ffa3b0', font(fs, 800)); return t; }
 /* ---------- 08: the key, made and kept by us; Binance only answers our address ---------- */
 const KEYS = 'k3Q9vF2mX7aT1pLz8RwN4cY6hJ0sB5dG2uE9iK7oV3qM1xW8nC4';
 function keyTex(u) {
@@ -1040,9 +1056,9 @@ const GOLD = new Map();   // cell → when it turned gold, so each one pops on i
 let Aext = 0;             // area added by the slow natural growth
 /* ---------- the places round the sphere, snapped to the field cells (the cells are bigger on phones) ---------- */
 const TEAL = [47, 220, 188], GOLDC = [240, 185, 11], BLUE = [91, 157, 255], REDC = [246, 70, 93], DARK = [16, 19, 23];
-const S9C = [TEAL, GOLDC, BLUE];
+const S9C = [[65, 174, 158], GOLDC, [188, 156, 75]];
 const OFF = new URLSearchParams(location.search).get('off') || '';
-let LAY = null, PH7 = 0, PL10 = null, D10 = null; const O9 = {}; const LB9 = [1, 1, 1]; const LIT9 = [.45, .45, .45];
+let LAY = null, PH7 = 0, PL10 = null, D10 = null; const O9 = {}, O10 = {}; const LB9 = [1, 1, 1]; const LIT9 = [.45, .45, .45];
 function layout() {
   const s = PS(); if (LAY && LAY.s === s && LAY.ML === ML) return LAY;
   const ixw = x => Math.round((x - .3) / s), izw = z => Math.round(z / s), K2 = (a, b) => a * 4096 + b;
@@ -1077,23 +1093,24 @@ function box3(c, B, hx, hy, hz, cols) { const H = [hx, hy, hz];
     const a1 = (ax + 1) % 3, a2 = (ax + 2) % 3, u = mul3(B[a1], H[a1]), v = mul3(B[a2], H[a2]);
     polyW([add3(fc, add3(u, v)), add3(fc, sub3(u, v)), sub3(fc, add3(u, v)), add3(fc, sub3(v, u))], cols[ax === 1 ? 0 : ax === 2 ? 1 : 2]); } }
 /* a short name in the world, its size kept in a range */
-let FN = 0, LQ = false, CPR = 0, HBX = null; const LBX = {}, O8 = {};   // test: where each label was drawn this frame
-function lbl(s, X, Y, col, p0, p1, a, bold) { if (a < .01) return; g.save(); g.globalAlpha = a; const fs = clamp(p1, p0, 30); g.font = font(fs, bold ? 800 : 600); g.textAlign = 'center'; if (DAY) { RAWC++; g.shadowColor = 'rgba(246,248,250,.98)'; g.shadowBlur = 6; g.fillStyle = col[0] === '!' ? col.slice(1) : dayCol(col); } else { g.shadowColor = '#000'; g.shadowBlur = 8; g.fillStyle = col.replace('!', ''); } const hw = g.measureText(s).width / 2; if (mob || LQ) X = clamp(X, hw + 8 + (LQ ? CPR : 0), W - hw - 8);   // a narrow phone: a name near the edge slides in rather than being cut; a phone held sideways: nor under the copy on the left
+let FN = 0, LQ = false, CPR = 0, HBX = null, KBX = null; const LBX = {}, O8 = {};   // test: where each label was drawn this frame
+const hdrA = Y => LBLCL ? 1 : clamp((Y - (mob ? 64 : 92)) / 26);   // 07 on: a name in the space fades as it passes under the header band, never over the logo
+function lbl(s, X, Y, col, p0, p1, a, bold) { a *= hdrA(Y); if (a < .01) return; g.save(); g.globalAlpha = a; const fs = clamp(p1, p0, 30); g.font = font(fs, bold ? 800 : 600); g.textAlign = 'center'; if (DAY) { RAWC++; g.shadowColor = 'rgba(246,248,250,.98)'; g.shadowBlur = 6; g.fillStyle = col[0] === '!' ? col.slice(1) : dayCol(col); } else { g.shadowColor = '#000'; g.shadowBlur = 8; g.fillStyle = col.replace('!', ''); } const hw = g.measureText(s).width / 2; if (mob || LQ) X = L(X, clamp(X, hw + 8 + (LQ ? CPR : 0), W - hw - 8), LCW);   // (07 on: names belong to the space and are cut by the screen edge like it, never dragged along)  a narrow phone: a name near the edge slides in rather than being cut; a phone held sideways: nor under the copy on the left
   if (DAY) { g.lineWidth = 3; g.strokeStyle = 'rgba(246,248,250,.85)'; g.strokeText(s, X, Y); } g.fillText(s, X, Y); if (DAY) RAWC--; LBX[s] = { f: FN, a: +a.toFixed(2), b: [X - hw, X + hw, Y - fs, Y + fs * .3].map(Math.round) }; g.restore(); }
 /* 09 by day: each value as a plain matte tag on the graphite, no glow or outline: its name in its colour, a short line of that colour
    to the left tying it to its domain, the line under it in light grey */
-function tag9(p, X, Y, px, a) { if (a < .01) return; const [, , name, col, sub] = p; g.save(); RAWC++; g.globalAlpha = a; g.shadowBlur = 0;
+function tag9(p, X, Y, px, a) { a *= hdrA(Y); if (a < .01) return; const [, , name, col, sub] = p; g.save(); RAWC++; g.globalAlpha = a; g.shadowBlur = 0;
   const fs = clamp(px, 15, 30), fs2 = Math.max(12, px * .58); g.font = font(fs, 800); const w1 = g.measureText(name).width; g.font = font(fs2, 600); const w2 = g.measureText(sub).width;
-  const w = Math.max(w1, w2) + 34, h = fs + fs2 + 22; if (mob || LQ) X = clamp(X, w / 2 + 8 + (LQ ? CPR : 0), W - w / 2 - 8);
+  const w = Math.max(w1, w2) + 34, h = fs + fs2 + 22; if (mob || LQ) X = L(X, clamp(X, w / 2 + 8 + (LQ ? CPR : 0), W - w / 2 - 8), LCW);
   const x0 = X - w / 2, y0 = Y - fs - 8; g.fillStyle = 'rgba(30,34,39,.9)'; g.beginPath(); g.roundRect(x0, y0, w, h, 10); g.fill();
   g.fillStyle = col; g.fillRect(x0 + 12, y0 + 10, 3, h - 20);
-  g.textAlign = 'left'; g.font = font(fs, 800); g.fillStyle = col; g.fillText(name, x0 + 24, Y); g.font = font(fs2, 600); g.fillStyle = '#d5dbe0'; g.fillText(sub, x0 + 24, Y + fs2 + 7);
+  g.textAlign = 'left'; g.font = font(fs, 800); g.fillStyle = '#ffffff'; g.fillText(name, x0 + 24, Y); g.font = font(fs2, 600); g.fillStyle = '#d5dbe0'; g.fillText(sub, x0 + 24, Y + fs2 + 7);
   LBX[name] = { f: FN, a: +a.toFixed(2), b: [x0, x0 + w, y0, y0 + h].map(Math.round) }; RAWC--; g.restore(); }
-/* 07, phones: each lane's name as a solid chip in screen space, at least 15px, kept on screen */
-function chip7(j, X, Y, a) { if (a < .01) return; const [, name, ok] = S7.lanes[j], s = (ok ? '✓ ' : '🔒 ') + name + (ok ? ' · 允许' : ' · 永久关闭'), fs = W < 400 ? 15 : 16;
-  g.save(); if (DAY) RAWC++; g.globalAlpha = a; g.font = font(fs, 700); const w = g.measureText(s).width + 26, h = fs + 16; X = clamp(X, w / 2 + 10 + (LQ ? CPR : 0), W - w / 2 - 10);
-  g.fillStyle = DAY ? 'rgba(255,255,255,.94)' : 'rgba(8,12,14,.9)'; g.beginPath(); g.roundRect(X - w / 2, Y - h / 2, w, h, h / 2); g.fill(); g.strokeStyle = ok ? 'rgba(46,224,150,.85)' : 'rgba(255,107,128,.9)'; g.lineWidth = 1.5; g.stroke();
-  g.fillStyle = DAY ? (ok ? '#0c8a5c' : '#c8344c') : ok ? '#7ff0c0' : '#ffa3b0'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(s, X, Y + 1); LBX['lane' + j] = { f: FN, a: +a.toFixed(2), b: [X - w / 2, X + w / 2, Y - h / 2, Y + h / 2].map(Math.round), fs }; if (DAY) RAWC--; g.restore(); }
+/* 07, phones: each lane's name as a small chip hung at its lane in the space: the name only, its colour says allowed / closed. Not held on screen: it leaves with the scene */
+function chip7(j, X, Y, a) { a *= hdrA(Y); if (a < .01) return; const [, name, ok] = S7.lanes[j], fs = 13;
+  g.save(); if (DAY) RAWC++; g.globalAlpha = a; g.font = font(fs, 700); const w = g.measureText(name).width + 24, h = fs + 12;
+  g.fillStyle = DAY ? 'rgba(255,255,255,.94)' : 'rgba(8,12,14,.86)'; g.beginPath(); g.roundRect(X - w / 2, Y - h / 2, w, h, h / 2); g.fill(); g.strokeStyle = ok ? 'rgba(46,224,150,.8)' : 'rgba(255,107,128,.9)'; g.lineWidth = 1.25; g.stroke();
+  g.fillStyle = DAY ? (ok ? '#0c8a5c' : '#c8344c') : ok ? '#7ff0c0' : '#ffa3b0'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(name, X, Y + 1); LBX['lane' + j] = { f: FN, a: +a.toFixed(2), b: [X - w / 2, X + w / 2, Y - h / 2, Y + h / 2].map(Math.round), fs }; if (DAY) RAWC--; g.restore(); }
 /* 10: your message in a bubble */
 function msgB(s, X, Y, px, a) { g.save(); g.globalAlpha = a; g.font = font(px, 600); const w = g.measureText(s).width + px * 1.4, h = px * 2.1;
   g.shadowColor = 'rgba(20,184,154,.6)'; g.shadowBlur = 24; g.fillStyle = '#14b89a'; g.beginPath(); g.roundRect(X - w / 2, Y - h, w, h, h / 2); g.fill(); g.shadowBlur = 0;
@@ -1102,7 +1119,28 @@ function msgB(s, X, Y, px, a) { g.save(); g.globalAlpha = a; g.font = font(px, 6
 const HD = {}, talkEl = document.getElementById('talk');
 function talkAt(X, Y, a) { if (a < .5 || X == null) { if (talkEl._v) { talkEl._v = 0; talkEl.classList.remove('on'); } return; }
   const w = talkEl.offsetWidth || 150; talkEl.style.transform = `translate(${clamp(X - w / 2, 12, W - w - 12).toFixed(1)}px,${clamp(Y, 70, H - 60).toFixed(1)}px)`; if (!talkEl._v) { talkEl._v = 1; talkEl.classList.add('on'); } }
-/* 10: Telegram and Discord, each on its own pillar: coming soon */
+/* 10: three ways in — 3dtrading, Telegram, Discord — as round tokens hung in the air around the Dodo, no screens, no words passed.
+   One at a time, a message (the channel's colour) flies in along a soft arc; the Dodo hops and turns to it; an answer (teal) flies back
+   and the token rings. Where they hang is fixed in the space, set from the camera's rest at 10, so they leave with the scene */
+const CH10 = [{ k: 'web', n: '3dtrading', c: '#2fdcbc' }, { k: 'tg', n: 'Telegram', c: '#2aa3df' }, { k: 'dc', n: 'Discord', c: '#5865f2' }];
+const CH10D = [[-4.4, 1.5], [-1.7, 4.3], [3.7, 1.1]], CH10M = [[-2.3, 2.1], [0, 4.2], [2.3, 2.1]], CH10P = 1.7;   // offsets from the Dodo (camera right, up); seconds per channel
+function chanTex(kind) { const t = tex('ch' + kind, 220, 220); if (t.at === 1) return t; t.at = 1; const x = t.g, ch = CH10.find(c => c.k === kind); x.clearRect(0, 0, 220, 220);
+  x.fillStyle = hexA(ch.c, .18); x.beginPath(); x.arc(110, 110, 106, 0, PI * 2); x.fill();
+  x.fillStyle = kind === 'web' ? '#0b1114' : ch.c; x.beginPath(); x.arc(110, 110, 84, 0, PI * 2); x.fill(); x.strokeStyle = kind === 'web' ? ch.c : 'rgba(255,255,255,.28)'; x.lineWidth = kind === 'web' ? 6 : 3; x.stroke();
+  x.fillStyle = '#ffffff'; x.strokeStyle = '#ffffff'; x.lineJoin = 'round'; x.lineCap = 'round';
+  if (kind === 'web') { txt(x, '3d', 110, 134, ch.c, font(72, 800), 'center'); }
+  else if (kind === 'tg') { x.beginPath(); x.moveTo(58, 106); x.lineTo(160, 66); x.lineTo(140, 156); x.lineTo(108, 132); x.lineTo(92, 150); x.lineTo(90, 124); x.closePath(); x.fill();
+    x.strokeStyle = ch.c; x.lineWidth = 6; x.beginPath(); x.moveTo(90, 124); x.lineTo(150, 78); x.stroke(); }
+  else { x.beginPath(); x.moveTo(62, 140); x.bezierCurveTo(58, 104, 70, 82, 84, 74); x.quadraticCurveTo(96, 70, 98, 78); x.lineTo(122, 78); x.quadraticCurveTo(124, 70, 136, 74); x.bezierCurveTo(150, 82, 162, 104, 158, 140);
+    x.quadraticCurveTo(146, 152, 132, 154); x.lineTo(126, 142); x.lineTo(94, 142); x.lineTo(88, 154); x.quadraticCurveTo(74, 152, 62, 140); x.closePath(); x.fill();
+    x.fillStyle = ch.c; x.beginPath(); x.ellipse(92, 116, 9, 11, 0, 0, PI * 2); x.ellipse(128, 116, 9, 11, 0, 0, PI * 2); x.fill(); }
+  return t; }
+let CH10W = null, CH10K = '';
+function ch10World() { const key = (mob ? 'm' : 'd') + W + 'x' + H + (D10 ? D10.join() : ''); if (CH10W && CH10K === key) return CH10W; if (!D10) return null; CH10K = key;
+  const c = CAM()[9], [cp, cl] = pose(c, 1), f = nrm(sub3(cl, cp)), r = nrm([f[2], 0, -f[0]]), u = cross3(f, r), O = (mob ? CH10M : CH10D), base = [D10[0], D10[1] + 1.1, D10[2]];
+  return CH10W = O.map(([a, b]) => add3(base, add3(mul3(r, a), mul3(u, b)))); }
+const cyc10 = () => { const v = T / CH10P, k = Math.floor(v) % 3; return { k, ph: v - Math.floor(v) }; };   // which channel speaks now, and how far along: in .0–.34, Dodo .34–.52, back .5–.84, ring .84–1
+const bez3 = (A0, B0, v, lift) => { const m = [(A0[0] + B0[0]) / 2, (A0[1] + B0[1]) / 2 + lift, (A0[2] + B0[2]) / 2], w = 1 - v; return [0, 1, 2].map(j => w * w * A0[j] + 2 * w * v * m[j] + v * v * B0[j]); };
 function soonTex(kind) { const t = tex('soon' + kind, 460, 150); if (t.at === 1) return t; t.at = 1; const x = t.g, tg = kind === 'tg', col = tg ? '#2aa3df' : '#5865f2'; x.clearRect(0, 0, 460, 150);
   x.fillStyle = 'rgba(12,16,19,.95)'; x.beginPath(); x.roundRect(4, 4, 452, 142, 30); x.fill(); x.strokeStyle = hexA(col, .9); x.lineWidth = 3; x.stroke();
   x.fillStyle = col; x.beginPath(); x.arc(70, 75, 38, 0, PI * 2); x.fill(); txt(x, tg ? '✈' : '◆', 70, 90, '#ffffff', font(40, 700), 'center');
@@ -1164,7 +1202,6 @@ function gyKeep(v) { try { sessionStorage.setItem('td-gy', v); } catch (e) {} }
 function gateHide() { if (!GATE) return; GATE = false; gateEl.classList.remove('on'); gateEl.setAttribute('aria-hidden', 'true'); setTimeout(() => { if (!GATE) gateEl.hidden = true; }, 600); }
 function gateShow() { GATE = true; gateEl.hidden = false; gateEl.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => requestAnimationFrame(() => gateEl.classList.add('on'))); }
 gateEl.addEventListener('click', e => { e.preventDefault(); e.stopPropagation();
-  if (e.target.closest('[data-gy-no]')) { GY.skip = true; gyKeep('skip'); gateHide(); return; }
   if (GY.state !== 'denied') gyKeep('on'); if (needAsk()) ask(e); else gyStart(); gateHide(); });   // the tap's own touch may already have asked and been refused: keep that answer
 gateEl.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
 function gyBoot() { if (!touchDev || !window.DeviceOrientationEvent) return; let kept = null; try { kept = sessionStorage.getItem('td-gy'); } catch (e) {}
@@ -1189,12 +1226,12 @@ function frame(now) {
   FN++;
   const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
   const seg = Math.floor(clamp(Math.min(K.t, K.tgt), 0, NS - 1.01)), wn = seg === 0 ? 1.8 : seg === 1 ? 1.55 : seg === 4 ? 1.3 : seg === 5 ? 1.6 : seg >= 6 ? 1.5 : 2.1;
-  if (RM) { K.t = K.tgt; K.v = 0; } else { const acc = wn * wn * (K.tgt - K.t) - 2 * .9 * wn * K.v; K.v += acc * dt; K.t += K.v * dt; if (K.t < -.04) { K.t = -.04; K.v = Math.max(0, K.v); } if (K.t > NS - .96) { K.t = NS - .96; K.v = Math.min(0, K.v); } }
-  const t = clamp(K.t, 0, NS - 1);
+  if (RM) { K.t = K.tgt; K.v = 0; } else { const err = K.tgt - K.t, acc = clamp(wn * wn * err - 2 * wn * K.v, -.85, .85); K.v = clamp(K.v + acc * dt, -.48, .48); const next = K.t + K.v * dt; if ((K.tgt - next) * err < 0) { K.t = K.tgt; K.v = 0; } else K.t = next; if (K.t < -.04) { K.t = -.04; K.v = Math.max(0, K.v); } if (K.t > NS - .96) { K.t = NS - .96; K.v = Math.min(0, K.v); } }
+  const t = clamp(K.t, 0, NS - 1); LBLCL = t < 5.5; LCW = LBLCL ? 1 : 1 - sm(Math.abs(t - Math.round(t)) / .12);   // 07 on: kept on screen only while at rest, let go as soon as the camera moves
   for (let s = 1; s < NS; s++) {
     const early = PRE[s], near = K.t > s - (early || .03);
     if (K.tgt >= s && near && A[s - 1] >= 1) { WT[s] += dt; if (WT[s] >= (early ? REACT : 0) || K.tgt > s) A[s] = Math.min(1, A[s] + dt / (RM ? .01 : DUR[s]) * (K.tgt > s ? 3 : 1)); }
-    else if (K.tgt < s) { WT[s] = 0; A[s] = Math.max(0, A[s] - dt / .3); }
+    else if (K.tgt < s && K.t < s - 1.1) { WT[s] = 0; A[s] = 0; }   // reset only offscreen; interruption keeps the visible scene intact
   }
   if (HOLDU != null) A[K.tgt] = HOLDU;   // test hook: hold the step's progress
   syncHTML();
@@ -1292,7 +1329,7 @@ function frame(now) {
 
   /* cells that stand tall in a place (so they stay drawn when only their top is in view) */
   const tallAt = (ix, iz) => { if (a8 > .01) { if (ix === LY.tw[0] && iz === LY.tw[1]) return S8.H; for (const [tx, tz, th] of LY.tries) if (ix === tx && iz === tz) return th; }
-    if (a10 > .01) { for (const [sx, sz, sh] of LY.st) if (ix === sx && iz === sz) return sh; }
+    if (a10 > .01) { const [sx, sz, sh] = LY.st[0]; if (ix === sx && iz === sz) return sh; }
     if (a7 > .01 && ix === LY.gi && LY.posts.includes(iz)) return 2.6;
     return 0; };
   /* what a place makes of the field cell (ix, iz): [height, top, side, side] or null */
@@ -1317,38 +1354,38 @@ function frame(now) {
     if (a9 > .01 && x > S9.c[0] - 19 && x < S9.c[0] + 20 && z > S9.c[1] - 16 && z < S9.c[1] + 19) {
       const r9 = place9(ix, iz, x, z, h, nn); if (r9) { if (DAY) r9[4] = a9; return r9; }
     }
-    if (DAY && a9 > .01) { const dc = Math.hypot(x - S9.c[0], z - S9.c[1]), k = a9 * (1 - sm(clamp((dc - S9.RG - 14) / 18)));   // day, round 09: the field outside the board sinks and thins out, so the board leads
+    if (a9 > .01) { const dc = Math.hypot(x - S9.c[0], z - S9.c[1]), k = a9 * (1 - sm(clamp((dc - S9.RG - 14) / 18)));   // day, round 09: the field outside the board sinks and thins out, so the board leads
       if (dc >= S9.RG) { const hz = Math.sin(ix * 41.37 + iz * 17.91) * 24634.6345, hr = hz - Math.floor(hz);   // and really thins out: most outer cells drop away (dissolving in as 09 arrives), near ~5 in 6, far ~3 in 5
-        if (hr < a9 * (.62 + .22 * (k / a9 || 0)) && dc >= S9.RG + 1.2 && !(a10 > .01 && LY.st.some(([sx, sz]) => ix === sx && iz === sz))) return PLACE_SKIP;   // 10's steps never drop
+        if (hr < sm(sg(a9, .35, .98)) && dc >= S9.RG + 1.2 && !(a10 > .01 && LY.st.some(([sx, sz]) => ix === sx && iz === sz))) return PLACE_SKIP;   // 10's steps never drop
         if (k > .01) return [L(h, nn < .5 ? .04 : h * .45, k), null, null, null]; } }
     function place9(ix, iz, x, z, h, nn) {   // 09's board: its three domains, the bridges, the hub and the gaps
       let bi = 0, bd = 1e9; S9.P.forEach((p, i) => { const d2 = Math.hypot(x - p[0], z - p[1]); if (d2 < bd) { bd = d2; bi = i; } });
-      const dc = Math.hypot(x - S9.c[0], z - S9.c[1]), col = S9C[bi], P = S9.P[bi], net = sm(sg(u9, .86, .97)), syn = .25 * Math.sin(Tq * 2.4 - dc * .6);
+      const dc = Math.hypot(x - S9.c[0], z - S9.c[1]), col = S9C[bi], P = S9.P[bi], net = sm(sg(u9, .86, .97)), syn = 0;
       // the middle: the hub Dodo ends on; it rises when the network closes
       if (dc < 1.7) { const pu = sm(sg(u9, HUB9[0], HUB9[1] + .04)); return [L(h, L(.06, 1.7 + .15 * syn * net, pu), a9), mixc([40, 44, 52], mixc([10, 12, 15], [210, 255, 244], pu), a9), mixc([19, 22, 27], [60, 130, 118], pu * a9), mixc([15, 18, 22], [40, 96, 88], pu * a9)]; }
       if (bd <= S9.R) {
         // each domain rises on its own and runs its own way: a walled vault (your account), a long/short pair that always cancels (the hedge), a stepped rise (the yield)
         const ru = sm(sg(u9, .02 + .06 * bi, .14 + .06 * bi)), lit = L(.38, 1, sm(sg(u9, VIS9[bi] - .03, VIS9[bi] + .03))), rel = bd / S9.R;
         let hh, c = col;
-        if (bi === 0) { hh = rel > .7 ? 2.15 : rel < .2 ? 2.7 + .12 * Math.sin(Tq * 2) : 1.25; }
-        else if (bi === 1) { const sd = x < P[0] - .2 ? 1 : x > P[0] + .2 ? -1 : 0; hh = 1.35 + .5 * sd * Math.sin(Tq * 1.7); c = sd > 0 ? [44, 214, 140] : sd < 0 ? [240, 84, 104] : GOLDC; }
-        else { hh = .95 + Math.round((1 - rel) * 4) * .38 + .1 * Math.sin(Tq * 3 - bd * 1.4); }
+        if (bi === 0) { hh = rel > .76 ? 1.65 : 1.3; }
+        else if (bi === 1) { const sd = x < P[0] - .2 ? 1 : x > P[0] + .2 ? -1 : 0; hh = 1.55 + .12 * sd * Math.sin(Tq * 1.1); c = sd > 0 ? [44, 214, 140] : sd < 0 ? [240, 84, 104] : GOLDC; }
+        else { hh = 1.05 + Math.floor((1 - rel) * 3) * .32; }
         hh += syn * net;
         return [L(h, L(.06, hh, ru), a9), mixc([40, 44, 52], c, (.25 + .7 * lit) * a9 * ru), mixc([19, 22, 27], c.map(v => v * .5), (.2 + .6 * lit) * a9 * ru), mixc([15, 18, 22], c.map(v => v * .36), (.2 + .6 * lit) * a9 * ru)];
       }
       if (dc < S9.RG) {
         // the bridges Dodo makes: one between each pair of domains, laid under it as it hops; at the end three spokes join the hub
         const seg = (A0, B0) => { const vx = B0[0] - A0[0], vz = B0[1] - A0[1], ln = Math.hypot(vx, vz); return [((x - A0[0]) * vx + (z - A0[1]) * vz) / ln, Math.abs((x - A0[0]) * vz - (z - A0[1]) * vx) / ln, ln]; };
-        for (const [a, b, i, j] of H9) { const [tt, off, ln] = seg(S9.P[i], S9.P[j]), bu = eio(sg(u9, a, b)) * ln; if (off < .95 && tt > 0 && tt < ln && tt < bu + .6) { const c2 = mixc(S9C[i], S9C[j], tt / ln), fr = sm(clamp((bu + .6 - tt) / 1.4));
+        for (const [a, b, i, j] of H9) { const [tt, off, ln] = seg(S9.P[i], S9.P[j]), bu = eio(sg(u9, a, b)) * ln; if (off < .95 && tt > 0 && tt < ln && tt < bu + .6) { const c2 = [94, 124, 120], fr = sm(clamp((bu + .6 - tt) / 1.4));
           return [L(h, L(.06, .85 + syn * net, fr), a9), mixc([40, 44, 52], mixc(DARK, c2, .45 + .45 * fr), a9), mixc([19, 22, 27], c2.map(v => v * .45 * fr), a9), [12, 14, 17]]; } }
         for (let i = 0; i < 3; i++) { const [tt, off, ln] = seg(S9.c, S9.P[i]), bu = sm(sg(u9, .86 + i * .02, .95 + i * .02)) * ln; if (off < .8 && tt > 0 && tt < ln && tt < bu) {
-          return [L(h, .7 + syn * net, a9), mixc([40, 44, 52], mixc(DARK, mixc(S9C[i], [210, 255, 244], .3), .7), a9), mixc([19, 22, 27], S9C[i].map(v => v * .35), a9), [12, 14, 17]]; } }
+          return [L(h, .7 + syn * net, a9), mixc([40, 44, 52], mixc(DARK, [130, 165, 156], .7), a9), mixc([19, 22, 27], S9C[i].map(v => v * .35), a9), [12, 14, 17]]; } }
         // the gaps between the domains: cut deep and dark, so each stands alone until Dodo links them
         if (DAY) return [L(h, .1, a9), mixc([40, 44, 52], [60, 65, 72], a9), mixc([19, 22, 27], [42, 46, 52], a9), mixc([15, 18, 22], [34, 37, 42], a9)];   // day: a matte graphite board, not a dark hole
         return [L(h, .04, a9), mixc([40, 44, 52], [9, 11, 13], a9), mixc([19, 22, 27], [5, 6, 8], a9), mixc([15, 18, 22], [5, 6, 8], a9)];
       }
     }
-    if (a10 > .01) LY.st.forEach(([sx, sz, sh], k) => { if (ix === sx && iz === sz) { const ru = k ? sm(sg(A[9], .34 + k * .04, .42 + k * .04)) : 1; const c10 = k === 1 ? [42, 163, 223] : k === 2 ? [88, 101, 242] : TEAL; PL10 = [L(h, sh, a10 * ru), mixc([40, 44, 52], c10, (k ? .6 : .45) * a10 * ru), mixc([19, 22, 27], c10.map(c => c * .4), k ? a10 * ru : 0), mixc([15, 18, 22], c10.map(c => c * .3), k ? a10 * ru : 0)]; } });
+    if (a10 > .01) LY.st.forEach(([sx, sz, sh], k) => { if (!k && ix === sx && iz === sz) { const ru = k ? sm(sg(A[9], .34 + k * .04, .42 + k * .04)) : 1; const c10 = k === 1 ? [42, 163, 223] : k === 2 ? [88, 101, 242] : TEAL; PL10 = [L(h, sh, a10 * ru), mixc([40, 44, 52], c10, (k ? .6 : .45) * a10 * ru), mixc([19, 22, 27], c10.map(c => c * .4), k ? a10 * ru : 0), mixc([15, 18, 22], c10.map(c => c * .3), k ? a10 * ru : 0)]; } });
     if (PL10) { const r = PL10; PL10 = null; return r; }
     if (D11 && ix <= LY.di && iz >= LY.zs - 8 && iz <= LY.zs + 8) {
       if (Math.abs(iz - LY.zs) <= 1) { const k = LY.di - ix, ru = eio(clamp((w11 - k * .012) / .3)) * a11; return [L(h, .55 + (k + 1) * S11.rise, ru), mixc([40, 44, 52], k % 2 ? [27, 29, 33] : STR[0], ru), mixc([19, 22, 27], STR[1], ru), mixc([15, 18, 22], STR[2], ru)]; }
@@ -1468,10 +1505,11 @@ function frame(now) {
     if (dv > 0) put(x9, y9, z9, () => dodo(x9, y, z9, { a: a9 * clamp(dv * 4), s: 1.15, hop: 0, sq: lnd > 0 && lnd < 1 ? Math.sin(PI * lnd) * .8 : 0, ph: 4, lx: 0, ly: hp > .2 ? -3 : 4 })); }
   /* 10: one Dodo; your message comes in from where you are, it turns to you, comes closer and sends the reply out to you */
   /* 10: one Dodo on its pillar, facing you; each time it answers it gives a small hop */
-  if (a10 > .01) { const U = A[9], P = [cellX(LY.st[0][0]), LY.st[0][2], cellZ(LY.st[0][1])], h1 = sg(U, .3, .38), h2 = sg(U, .68, .76);
-    const hop = (h1 > 0 && h1 < 1 ? Math.sin(PI * h1) * .55 : 0) + (h2 > 0 && h2 < 1 ? Math.sin(PI * h2) * .55 : 0);
-    D10 = [P[0], P[1], P[2]];
-    put(P[0], P[1], P[2], () => dodo(P[0], L(.5, P[1], a10), P[2], { a: a10, s: .9, ph: 1, face: 1, hop, sq: 0, lx: 0, ly: 3 })); }
+  if (a10 > .01) { const U = A[9], P = [cellX(LY.st[0][0]), LY.st[0][2], cellZ(LY.st[0][1])], on = sm(sg(U, .2, .32)), { k: ck, ph } = cyc10(), hu = sg(ph, .34, .52);
+    const hop = on * (hu > 0 && hu < 1 ? Math.sin(PI * hu) * .5 : 0), sq = on * (hu > 0 && hu < .25 ? Math.sin(PI * hu / .25) * .4 : 0);
+    D10 = [P[0], P[1], P[2]]; const cw = ch10World(); let lx = 0, ly = 3;
+    if (cw && on > .01) { const qd = pr(P[0], P[1] + 1.1, P[2]), qc = pr(...cw[ck]); if (qd && qc) { const dx = qc.x - qd.x, dy = qc.y - qd.y, dl = Math.hypot(dx, dy) || 1, lk = on * sm(sg(ph, .02, .2)) * (1 - sm(sg(ph, .9, 1))); lx = dx / dl * 6 * lk; ly = L(3, dy / dl * 6, lk); } }   // its eye goes to whoever is talking
+    put(P[0], P[1], P[2], () => dodo(P[0], L(.5, P[1], a10), P[2], { a: a10, s: .9, ph: 1, face: 1, hop, sq, lx, ly })); }
   /* 11: Dodo gather either side of the stairs */
   if (D11) {
     LY.cl.forEach(e => { const ru = sg(w11, e.at + .3, e.at + .42); if (ru < .55) return; const x = cellX(e.ix), z = cellZ(e.iz), hh = L(.5, e.hh, eio(ru)) * a11 + .5 * (1 - a11), au = sg(w11, e.at + .36, e.at + .5);
@@ -1480,10 +1518,7 @@ function frame(now) {
 
   // the K-line screen (02–05)
   const HM = ML || mob || LQ, IW = ML ? 17 : mob ? MHW : LQ ? LQW : 15.4, IC = ML ? [KX(0) - .45 + 8.55, KYB + KH + .7 + IW * IHm / IWm / 2, KZ] : LQ ? [KX(0) - .45 + IW / 2, KYB + KH + .3 - LQY + IW * IHm / IWm / 2, KZ] : mob ? [KX(0) - .45 + 15.4 - IW / 2 + MHX, KYB + KH + .3 + IW * IHm / IWm / 2, KZ] : [KX(0) - .45 + 7.7, KYB + KH + .22 + IW * IHd / IWd / 2, KZ];
-  if (mob && !ML) for (let i = 0; i < 2; i++) { const e = pr(IC[0] + IW / 2, IC[1], KZ), m = 14; if (e && e.x > W - m) IC[0] -= (e.x - (W - m)) / e.k; }
-  if (mob && !ML && kv > .01) { let bot = 0; for (let i = 1; i <= 4; i++) { const b = BLK[i]; if (b && +b.style.opacity > .3) bot = Math.max(bot, b.getBoundingClientRect().bottom); }   // …and its top below the copy
-    const tp = pr(IC[0], IC[1] + IW * IHm / IWm / 2, KZ); if (bot && tp && tp.y < bot + 16) IC[1] -= (bot + 16 - tp.y) / tp.k; }   // portrait phones: keep the header's right edge on screen (02's camera sits further left)
-  { const ih = IW * (HM ? IHm / IWm : IHd / IWd) / 2, a = pr(IC[0] - IW / 2, IC[1] + ih, KZ), b = pr(IC[0] + IW / 2, IC[1] - ih, KZ); HBX = kv > .01 && a && b ? { f: FN, a: +kv.toFixed(2), b: [a.x, b.x, a.y, b.y].map(Math.round) } : null; }   // test: the K-line header's box on screen
+  { const ih = IW * (HM ? IHm / IWm : IHd / IWd) / 2, a = pr(IC[0] - IW / 2, IC[1] + ih, KZ), b = pr(IC[0] + IW / 2, IC[1] - ih, KZ); HBX = kv > .01 && a && b ? { f: FN, a: +kv.toFixed(2), b: [a.x, b.x, a.y, b.y].map(Math.round), w: IC.map(v => +v.toFixed(2)) } : null; const ka = pr(KX(0) - .45, KYB + KH, KZ), kb = pr(KX(NH + NN - 1) + .45, KYB, KZ); KBX = ka && kb ? [ka.x, kb.x, ka.y, kb.y].map(Math.round) : null; }   // test: the K-line header's box on screen
   if (kv > .01) items.push([pd, () => {
     drawKline(cs, kv * .96);
     const ea = H1.on ? kv : 0, eu = sm(sg(A[1], .42, .6));
@@ -1498,11 +1533,11 @@ function frame(now) {
 
   // overlays, over the scene
   if (a7 > .01) { const lb = a7 * sm(sg(A[6], .05, .25));
-    if (mob || LQ) { const qs = LY.lz.map(k => pr(cellX(LY.gi) + 1.5, 3.6, cellZ(k))), ys = qs.filter(Boolean).map(q => q.y), y0 = ys.length ? Math.min(...ys) - 40 : 0, hh = (W < 400 ? 15 : 16) + 24;   // the three lanes sit almost on one line from here: their chips stack, one above another, never on top of each other
-      qs.forEach((q, j) => { if (q) chip7(j, q.x, y0 + j * hh, lb); }); }
-    else LY.lz.forEach((k, j) => wall(laneTex(j), [cellX(LY.gi) - .2, ML ? 4.8 : 4.4, cellZ(k)], ML ? 2.7 : 2.4, -PI / 2, lb));
+    if (mob || LQ) LY.lz.forEach((k, j) => { const q = pr(cellX(LY.gi) + 1.5, 3.4 + j * .9, cellZ(k)); if (q) chip7(j, q.x, q.y, lb); });   // each chip hangs over its own lane, a little higher each, so the three never sit on one another
+    else LY.lz.forEach((k, j) => wall(laneTex(j), [cellX(LY.gi) - .2, ML ? 4.6 : 4.2, cellZ(k)], ML ? 2.6 : 2.3, -PI / 2, lb));
     bill(lockTex(), [cellX(LY.gi + 4) + s * .5, 5.1, cellZ(LY.lz[2])], 1.1, lb * (.75 + .25 * Math.sin(T * 4))); }
-  if (a8 > .01 && K8) { const { A0, B0, S } = K8, U = A[7];
+  const a8L = a8 * (1 - sm(sg(t, 8.15, 8.6)));   // 08's lines (trade path, frames, red pulses) stay through 09 but are gone before 10, so its arc can't cut into 10's sky
+  if (a8L > .01 && K8) { const { A0, B0, S } = K8, U = A[7], a8 = a8L;
     // the trade path: from the Dodo into the port, then on, through the frames, to Binance
     const fr = U8L => sm(sg(U, .54 + U8L * .022, .6 + U8L * .022)), Pa = v => [L(S[0], B0[0], v), L(S[1], B0[1], v) + Math.sin(PI * v) * 4, L(S[2], B0[2], v)];
     for (let k = 1; k <= 7; k++) { const f = fr(k); if (f < .01) continue; const v = k / 10.5, c = Pa(v), tg = nrm(sub3(Pa(v + .01), c)), ax = nrm(cross3(tg, [0, 1, 0])), ay = cross3(ax, tg), hh = (.75 - v * .2) * (.6 + .4 * f);
@@ -1529,7 +1564,7 @@ function frame(now) {
     if (DAY) RAWC++;
     // each hop leaves a line of light from domain to domain; it stays once laid
     H9.forEach(([a, b, i, j]) => { const v = sg(u9, a, b); if (v <= 0) return; const P0 = [S9.P[i][0], 2.2, S9.P[i][1]], P1 = [S9.P[j][0], 2.2, S9.P[j][1]];
-      line3(arc3(P0, P1, eio(v), 3.2 * (1 - sm(sg(u9, b, b + .1)))), a9 * (v < 1 ? .85 : .45), 'rgba(200,255,244,1)', 2, DAY ? 0 : 12);
+      line3(arc3(P0, P1, eio(v), 3.2 * (1 - sm(sg(u9, b, b + .1)))), a9 * (v < 1 ? .65 : .16), 'rgba(200,255,244,1)', 1, 0);
       const lv = sg(u9, b, b + .06); if (lv > 0 && lv < 1) { const q = pr(...P1); if (q) glow(q.x, q.y, q.k * 5 * eio(lv), S9.P[j][3], .5 * gk * a9 * (1 - lv)); } });
     const fl = sg(u9, .88, .99); if (fl > 0 && fl < 1) { ring(2 + S9.RG * eio(fl), a9 * .9 * (1 - fl), 'rgba(220,255,248,1)', 3); const q = pr(cx, 1.3, cz); if (q) glow(q.x, q.y, q.k * 9 * eio(fl), '#bff5ea', .35 * gk * a9 * (1 - fl)); }
     if (u9 > .88) { const q = pr(cx, 2.2, cz); if (q) glow(q.x, q.y, q.k * (3 + .5 * Math.sin(T * 2.4)), '#bff5ea', .3 * gk * a9 * sm(sg(u9, .88, .95))); }
@@ -1542,22 +1577,26 @@ function frame(now) {
       const hit = q.x + w / 2 > br.left - 12 && q.x - w / 2 < br.right + 12 && q.y + px * 2.2 > br.top - 8 && q.y - px < br.bottom + 8 && +BLK[8].style.opacity > .05;
       const cx = clamp(q.x, w / 2 + 8, W - w / 2 - 8), bx = [cx - w / 2, cx + w / 2, q.y - px, q.y + px * 2.2], cl = took9.some(o => bx[0] < o[1] && bx[1] > o[0] && bx[2] < o[3] && bx[3] > o[2]); if (!cl && LB9[i] > .02) took9.push(bx);
       const ru = sm(sg(u9, .06 + .06 * i, .16 + .06 * i)); LB9[i] = L(LB9[i], hit || cl || dep(p[0], 2.8, p[1]) < 9 ? 0 : 1, .15);
-      if (LB9[i] > .02) { if (DAY) tag9(p, q.x, q.y, px, la9 * LB9[i] * ru); else { lbl(p[2], q.x, q.y, p[3], 15, px, la9 * LB9[i] * ru, 1); lbl(p[4], q.x, q.y + px * 1.15, '#c9d1d8', 12, Math.max(12, px * .58), la9 * LB9[i] * ru * .9); } } }); }
-  // 10: the chat is in the space: your question floats in over the Dodo, it thinks (a glow), its answer opens beside it; then a second one.
-  // Telegram and Discord stand on their own pillars, marked coming soon. One real button under the answer goes into the chat
-  { let tx10 = null, ty10 = null; const la10 = a10 * (1 - sm(sg(t, 9.35, 9.8)));
-  if (la10 > .01 && D10) { const U = A[9], R = C.r, k2 = U < .5 ? 0 : 1, ub = k2 ? sg(U, .5, 1) : sg(U, 0, .5), qa = sm(sg(ub, .02, .14)), ty = ub > .2 && ub < .44, aa = sm(sg(ub, .44, .56)) * (k2 || U < .5 ? 1 : 1);
-    const sd = mob || LQ ? 0 : 1, qc = [D10[0] + R[0] * -1.2 * sd, D10[1] + (mob ? 3.3 : 3.1), D10[2] + R[2] * -1.2 * sd], AS = mob ? 0 : LQ ? -3 : 3.4, ac = [D10[0] + R[0] * AS, D10[1] + (mob ? 1.2 : LQ ? .9 : 1.5), D10[2] + R[2] * AS];   // a phone held sideways has its copy on the right: the answer opens on the Dodo's left there
-    const fo = k2 ? 1 : 1 - sm(sg(U, .47, .5)), qy = (1 - qa) * .6;
-    bill(qTex(k2), [qc[0], qc[1] - qy, qc[2]], mob ? 2.6 : 2.4, la10 * qa * fo);
-    const qh = pr(D10[0], D10[1] + 1.9, D10[2]); if (ty && qh) glow(qh.x, qh.y + qh.k * .7, qh.k * (1.2 + .4 * Math.sin(T * 6)), '#2fdcbc', .45 * la10);
-    if (ty) bill(aTex(k2, true), mob ? [ac[0], ac[1] + .9, ac[2]] : ac, 1.2, la10 * fo);
-    if (aa > .01 && !mob) bill(aTex(k2), ac, 3.6, la10 * aa * fo);
-    if (aa > .01 && mob) { const q = pr(...D10); if (q) bill(aTex(k2), [D10[0], D10[1] - 1.4, D10[2]], 3, la10 * aa * fo); }
-    // the button: under the answer (computer) / under the Dodo (phone)
-    const qb = mob || LQ ? pr(D10[0], D10[1] - (LQ ? 1.6 : 2.9), D10[2]) : pr(ac[0], ac[1] - 1.1, ac[2]); if (qb) { tx10 = qb.x; ty10 = qb.y + 8; }
-    LY.st.forEach(([sx, sz, sh], k) => { if (!k) return; const ru = sm(sg(U, .3 + k * .05, .42 + k * .05)), q = [cellX(sx), sh + .9, cellZ(sz)];
-      bill(soonTex(k === 1 ? 'tg' : 'dc'), q, mob ? 2.5 : 2.3, la10 * ru); });
+      if (LB9[i] > .02) { if (DAY) tag9(p, q.x, q.y, px, la9 * LB9[i] * ru); else { lbl(p[2], q.x, q.y, '#ffffff', 15, px, la9 * LB9[i] * ru, 1); lbl(p[4], q.x, q.y + px * 1.15, '#b4bec7', 12, Math.max(12, px * .58), la9 * LB9[i] * ru * .9); } } }); }
+  // 10: 3dtrading, Telegram and Discord around the Dodo, each tied to it by a faint arc. In turn each sends it a message (a light in the channel's
+  // colour), the Dodo hops and looks over, an answer (teal) goes back and the channel rings. Only who talks to whom is shown, never what is said
+  { let tx10 = null, ty10 = null; const la10 = a10 * (1 - sm(sg(t, 9.35, 9.8))), cw = ch10World();
+  if (la10 > .01 && D10 && cw) { const U = A[9], { k: ck, ph } = cyc10(), on = sm(sg(U, .2, .32)), Dm = [D10[0], D10[1] + 1.2, D10[2]], lift = mob ? .9 : 1.2;
+    CH10.forEach((ch, k) => { const P = cw[k], ru = sm(sg(U, .03 + k * .06, .15 + k * .06)), a = la10 * ru; if (a < .01) return;
+      const pts = []; for (let n = 0; n <= 24; n++) pts.push(bez3(P, Dm, n / 24, lift)); line3(pts, a * (k === ck ? .34 : .16) * (DAY ? 1.4 : 1), ch.c, 1.4, DAY ? 0 : 6);
+      const q = pr(...P); if (!q) return; const sz = mob ? 1 : 1.1, rr = q.k * sz * .5;
+      if (!DAY) glow(q.x, q.y, rr * 2.2, ch.c, .22 * a);
+      bill(chanTex(ch.k), P, sz, a);
+      if (k === ck && on > .01) { const rp = sg(ph, .84, 1); if (rp > 0 && rp < 1) { g.save(); g.globalAlpha = a * on * (1 - rp); g.strokeStyle = ch.c; g.lineWidth = 2; g.beginPath(); g.arc(q.x, q.y, rr * (1.05 + .9 * eio(rp)), 0, PI * 2); g.stroke(); g.restore(); } }
+      lbl(ch.n, q.x, q.y + rr + 17, DAY ? '!#3c454d' : '#c9d1d8', 12, 12, a * .95); });
+    if (on > .01) { const ch = CH10[ck], P = cw[ck], vi = sg(ph, 0, .34), vo = sg(ph, .5, .84);
+      const dot = (v, A0, B0, col) => { for (let n = 0; n < 4; n++) { const w = v - n * .035; if (w <= 0 || w >= 1) continue; const q = pr(...bez3(A0, B0, eio(w), lift)); if (q) glow(q.x, q.y, Math.max(6, q.k * (.75 - n * .14)), col, la10 * on * (.95 - n * .22)); } };
+      if (vi > 0 && vi < 1) dot(vi, P, Dm, ch.c);
+      if (vo > 0 && vo < 1) dot(vo, Dm, P, '#2fdcbc');
+      const hr = sg(ph, .34, .58); if (hr > 0 && hr < 1) { const q = pr(...Dm); if (q) { glow(q.x, q.y, q.k * (1.6 + 1.2 * eio(hr)), ch.c, .4 * la10 * on * (1 - hr)); g.save(); g.globalAlpha = la10 * on * (1 - hr) * .8; g.strokeStyle = ch.c; g.lineWidth = 2; g.beginPath(); g.arc(q.x, q.y, q.k * (1.1 + 1.3 * eio(hr)), 0, PI * 2); g.stroke(); g.restore(); } } }
+    O10.ch = cw.map(P => { const q = pr(...P); return q ? [Math.round(q.x), Math.round(q.y)] : null; }); O10.k = ck; O10.ph = ph;
+    // the one real way in: under the Dodo's pillar
+    const qb = pr(D10[0], D10[1] - (LQ ? 1.6 : mob ? 2.6 : 1.4), D10[2]); if (qb) { tx10 = qb.x; ty10 = qb.y + 8; }
     talkAt(tx10, ty10, la10 * sm(sg(U, .06, .16))); } else talkAt(null, null, 0); }
   requestAnimationFrame(frame);
 }
@@ -1574,8 +1613,8 @@ function xtraFor(ms) { const x = Math.max(0, Math.atan(1.6 * Math.tan(.42)) - Ma
 function resize() { BLK.forEach(b => b._h = 0); DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; mob = W < 760; ringFor(); BAZ = BAZ0 + (mob ? +(QP.get('bz') || -3.8) * DEG : 0); BSZ = mob ? +(QP.get('bs') || 1) : 1; KZ = SCR[2] = ML ? 3.2 : 4.6; KH = ML ? 8.4 : 7.6; XTRA = xtraFor(mob ? MS : 1); LQ = LSQ(); setTimeout(() => { CPR = LQ ? Math.max(0, ...BLK.map(b => b.getBoundingClientRect().right).filter(r => r > 0 && r < W * .6)) : 0; }, 300); cv.width = W * DPR; cv.height = H * DPR; cells(); anchors(); initWall(); initCoins(); }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(resize, 120); });
 resize(); gyBoot();
-window.__dive = { K, A, go, jump, GY, xtra: () => XTRA, smx: () => +smx.toFixed(3),
-  look: v => { LOOKQ = v == null ? null : clamp(v, -.5, .5); }, lookY: v => { LOOKY = v == null ? null : clamp(v, -.5, .5); }, smy: () => +smy.toFixed(3), wlog: WLOG, WH, WS, wsim: seq => { const keep = JSON.stringify(WS), lg = WLOG.length, out = []; Object.assign(WS, { acc: 0, t: -1e9, dir: 0, at: -1e9, fdir: 0, fired: false, lo: 0, peak: 0, rise: 0, win: [], b: [], ds: -1e9, cnt: 0 }); seq.forEach(([t, d]) => { const r = wheelStep(t, d); if (r) out.push([Math.round(t), r, WLOG[WLOG.length - 1][2]]); }); WLOG.length = lg; Object.assign(WS, JSON.parse(keep)); return out; }, gate: () => GATE, o9: O9, theme: d => setTheme(d), day: () => DAY, lbx: LBX, hbx: () => HBX, hold: v => { HOLDU = v; },   // test: hold the look like ?look= does
+window.__dive = { K, A, go, jump, GY, camera: () => ({ p: C.p.slice(), f: C.f.slice() }), poses: () => CAM().map(c => [0, .25, .5, .75, 1].map(a => pose(c, a))), xtra: () => XTRA, smx: () => +smx.toFixed(3),
+  look: v => { LOOKQ = v == null ? null : clamp(v, -.5, .5); }, lookY: v => { LOOKY = v == null ? null : clamp(v, -.5, .5); }, smy: () => +smy.toFixed(3), wlog: WLOG, WH, WS, wsim: seq => { const keep = JSON.stringify(WS), lg = WLOG.length, out = []; Object.assign(WS, { acc: 0, t: -1e9, dir: 0, at: -1e9, fdir: 0, fired: false, lo: 0, peak: 0, rise: 0, win: [], b: [], ds: -1e9, cnt: 0 }); seq.forEach(([t, d]) => { const r = wheelStep(t, d); if (r) out.push([Math.round(t), r, WLOG[WLOG.length - 1][2]]); }); WLOG.length = lg; Object.assign(WS, JSON.parse(keep)); return out; }, gate: () => GATE, o9: O9, o10: O10, home: () => goHome(), theme: d => setTheme(d), day: () => DAY, lbx: LBX, hbx: () => HBX, kbx: () => KBX, hold: v => { HOLDU = v; },   // test: hold the look like ?look= does
   // test: where 08's Binance logo lands on screen [left, right, top, bottom]
   dk8: v => { DK8 = v; }, bs: v => { BSZ = v; }, M8, snap: v => { LOOKQ = v; smx = v; },
   k8: () => { const r = BLK[7].getBoundingClientRect(); return { f: FN, W, H, o: O8, l: LBX, bn: __dive.bn(), cp: [r.left, r.right, r.top, r.bottom].map(Math.round), op: +getComputedStyle(BLK[7]).opacity }; },
