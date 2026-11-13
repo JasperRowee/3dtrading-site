@@ -698,21 +698,41 @@ html.rm .bal:hover .mascot .arm-r{animation:none}
 .me-row>div:first-child{flex:1}.me-row b{display:block;font-size:14.5px}.me-row small{font-size:13px;color:var(--ink3)}
 .me-note{font-size:13px;color:var(--ink3);margin:10px 0 0}
 .lvt{overflow-x:auto;margin:10px 0 4px;-webkit-overflow-scrolling:touch}.lvt table{width:100%;font-size:12px;border-collapse:collapse}.lvt th,.lvt td{padding:5px 6px;text-align:left;white-space:nowrap;border-top:1px solid var(--line2)}.lvt th{font-weight:600;color:var(--ink3);border-top:0}.lvt .r{text-align:right}.lvt .td-h{margin:0 0 4px}
-.brief .r.umr b{font-size:18px}
-.brief button.r.umr{appearance:none;border:0;background:none;font:inherit;color:inherit;width:100%;text-align:left;cursor:pointer;border-top:1px solid rgba(255,255,255,.07);border-radius:0}
-.brief button.r.umr:hover .umh-tg,.brief button.r.umr:focus-visible .umh-tg{color:#fff;border-color:rgba(255,255,255,.4)}
-.brief button.r.umr{white-space:nowrap}.brief button.r.umr small{min-width:0;overflow:hidden;text-overflow:ellipsis}
-.brief .umh-tg{flex:none;font-size:11.5px;font-weight:600;color:#9aa3b0;border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:1px 8px;line-height:16px;align-self:center}
-.brief .umh-tg::after{content:' ▾';font-size:9px}.brief.umh-on .umh-tg::after{content:' ▴'}
-.brief.umh-on .r:not(.umr),.brief.umh-on .rm{display:none}
-.umh{padding:2px 0 6px}
-.umh-c{display:block;width:100%;height:auto;max-height:118px;overflow:visible}
-.umh-c text{font-size:9px;fill:#7d8794;font-family:inherit}
-.umh-c .th{stroke:#ffb44d;stroke-width:1;stroke-dasharray:3 3;opacity:.7}
-.umh-c circle{fill:#c3c9d2}.umh-c circle.nw{fill:var(--brand);stroke:#0b0f14;stroke-width:1.5}
-.umh-cap{margin:4px 0 0;font-size:11.5px;color:#7d8794;line-height:1.5}.umh-cap .demo{margin-right:6px}
-.umh-empty{display:flex;flex-direction:column;gap:4px;font-size:12px;color:#9aa3b0;line-height:1.5;padding:8px 10px;border:1px dashed rgba(255,255,255,.16);border-radius:10px}
-.umh-empty>b{color:#fff;font-size:12.5px}.umh-empty b.num{color:#fff}
+/* r27 · uniMMR standalone overview card (right column above the ledger; right after the NAV card on phone) */
+.ovr{display:flex;flex-direction:column;gap:16px;min-width:0}
+.umrc{--zc:var(--long);background:#fff;border-radius:16px;box-shadow:var(--sh);padding:12px 16px 10px;min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:22px;align-items:end}
+.uc-h,.uc-src,.umrc .umh{grid-column:1/-1}.uc-v{grid-row:2/4;align-self:center}.uc-bar,.uc-ax{grid-column:2}
+.umrc.z-warn{--zc:#d97706}.umrc.z-liq{--zc:var(--short)}.umrc.z-na{--zc:var(--ink3)}
+.uc-h{display:flex;align-items:center;gap:8px;min-width:0}
+.uc-k{font-size:13px;font-weight:600;color:var(--ink3);white-space:nowrap}.uc-k em{font-style:normal;font-weight:500;margin-left:6px;opacity:.8}
+html[data-lang=en] .uc-k em{display:none}
+.uc-st{font-size:12px;font-weight:650;color:var(--zc);background:color-mix(in srgb,var(--zc) 11%,#fff);border-radius:999px;padding:1px 8px;line-height:18px;white-space:nowrap}
+.uc-tg{margin-left:auto;flex:none;appearance:none;font:inherit;font-size:12px;font-weight:600;color:var(--ink2);background:var(--soft);border:0;border-radius:999px;padding:0 10px;min-height:28px;cursor:pointer}
+.uc-tg::after{content:' ▾';font-size:9px}.umrc.umh-on .uc-tg::after{content:' ▴'}
+.uc-tg:hover{background:#eceff2}.uc-tg:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.uc-v{font-size:30px;font-weight:720;letter-spacing:-.025em;line-height:1.15;margin-top:4px;color:var(--zc)}
+.umrc.z-na .uc-v{font-size:22px;color:var(--ink2)}
+.uc-bar{position:relative;display:grid;grid-template-columns:18% 22% 1fr;gap:2px;height:6px;margin:14px 0 0}
+.uc-bar i{border-radius:3px}.uc-bar .z1{background:#f6c9ca}.uc-bar .z2{background:#f7dfb0}.uc-bar .z3{background:#bfeedd}
+.umrc.z-na .uc-bar i{background:var(--line2)}
+.uc-bar b{position:absolute;top:-4px;width:4px;height:14px;margin-left:-2px;border-radius:2px;background:var(--ink);box-shadow:0 0 0 2px #fff}
+.uc-ax{position:relative;height:16px;margin-top:3px;font-size:11px;color:var(--ink3)}
+.uc-ax span{position:absolute;top:0;transform:translateX(-50%);white-space:nowrap}.uc-ax span:first-child{transform:none;left:0!important}
+.uc-src{margin:2px 0 0;font-size:12px;color:var(--ink3);line-height:1.5;overflow-wrap:anywhere}
+.umrc .umh{padding:10px 0 2px;margin-top:8px;border-top:1px solid var(--line2)}
+.umh-c{display:block;width:100%;height:auto;max-height:132px;overflow:visible}
+.umh-c text{font-size:9px;fill:var(--ink3);font-family:inherit}
+.umh-c .th{stroke:#d97706;stroke-width:1;stroke-dasharray:3 3;opacity:.75}
+.umh-c circle{fill:#9aa3b0}.umh-c circle.nw{fill:var(--brand);stroke:#fff;stroke-width:1.5}
+.umh-cap{margin:4px 0 0;font-size:11.5px;color:var(--ink3);line-height:1.5}.umh-cap .demo{margin-right:6px}
+.umh-empty{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink3);line-height:1.5;padding:8px 10px;border:1px dashed var(--line);border-radius:10px}
+.umh-empty>b{color:var(--ink);font-size:12.5px}.umh-empty b.num{color:var(--ink)}
+@media (max-width:760px){
+  .ovr{display:contents}
+  .umrc{order:1;padding:12px 14px 10px;display:block}
+  .uc-bar{margin-top:10px}
+  .uc-v{font-size:26px}
+}
 .dens{display:inline-flex;background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:2px;gap:2px}
 .dens button{appearance:none;border:0;background:none;border-radius:8px;height:28px;padding:0 10px;font-size:13.5px;font-weight:600;color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
 .dens button svg{width:12px;height:12px}
@@ -2357,13 +2377,27 @@ function umrHistHtml() {
     <p class="umh-cap">${cap}</p>`;
 }
 function UMR_ROWS() {
-  const v = UMR(), c = v == null ? 'mut' : v > 1.5 ? 'up' : 'dn';
-  let h = `<button type="button" class="r umr" data-umh aria-expanded="${UMH}" aria-controls="umh">联合保证金率 <small>${v == null ? '未取到，不按 0 处理' : `uniMMR · ${UMR_ST()}`}</small><b class="num ${c}">${UMRS()}</b><span class="umh-tg">历史</span></button>
-    <div class="umh" id="umh"${UMH ? '' : ' hidden'}>${umrHistHtml()}</div>`;
-  if (LIVE && LIVE.acct) { const a = LIVE.acct;
-    h += `<div class="r">维持保证金 <small>权益 ${mz(a.accountEquity)} ÷ 维持 = ${v == null ? '—' : v.toFixed(4)}</small><b class="num">${mz(a.accountMaintMargin)}</b></div>`
-      + `<div class="r">可用余额 <small>可转出 ${mz(a.virtualMaxWithdrawAmount)}</small><b class="num">${mz(a.totalAvailableBalance)}</b></div>`; }
-  return h;
+  if (!(LIVE && LIVE.acct)) return '';
+  const a = LIVE.acct, v = UMR();
+  return `<div class="r">维持保证金 <small>权益 ${mz(a.accountEquity)} ÷ 维持 = ${v == null ? '—' : v.toFixed(4)}</small><b class="num">${mz(a.accountMaintMargin)}</b></div>`
+    + `<div class="r">可用余额 <small>可转出 ${mz(a.virtualMaxWithdrawAmount)}</small><b class="num">${mz(a.totalAvailableBalance)}</b></div>`;
+}
+/* r27 · uniMMR as its own overview metric: value, zone scale (≤105% liquidation · 150% free-trading line), source line and
+   the history entry. Same UMR()/UMRS()/UMR_ST() reading as before; a missing value stays "未取到" and never becomes 0. */
+const umrPos = v => v <= 1 ? 0 : v <= 1.05 ? (v - 1) / .05 * 18 : v <= 1.5 ? 18 + (v - 1.05) / .45 * 22 : Math.min(97, 40 + 60 * (1 - 1.5 / v));
+function UMR_CARD() {
+  const v = UMR(), z = v == null ? 'na' : v > 1.5 ? 'ok' : v > 1.05 ? 'warn' : 'liq', a = LIVE && LIVE.acct, en = !!(window.I18N && I18N.lang === 'en');
+  const src = v == null ? '本次没有取到数值，不按 0 处理'
+    : LIVE ? `权益 ${mz(a.accountEquity)} ÷ 维持保证金 ${mz(a.accountMaintMargin)} · 原始值 ${v.toFixed(4)} × 100`
+    : `示例数值 · 原始值 ${v.toFixed(4)} × 100`;
+  return `<section class="umrc z-${z}${UMH ? ' umh-on' : ''}" aria-label="联合保证金率">
+      <div class="uc-h"><span class="uc-k">联合保证金率<em>uniMMR</em></span><span class="uc-st" data-i18n-skip>${UMR_ST(en)}</span><button type="button" class="uc-tg" data-umh aria-expanded="${UMH}" aria-controls="umh">历史</button></div>
+      <div class="uc-v num">${UMRS()}</div>
+      <div class="uc-bar" role="img" data-i18n-skip aria-label="${v == null ? (en ? 'uniMMR unavailable' : '联合保证金率未取到') : en ? `uniMMR ${UMRS()}, ${UMR_ST(true)}; 150% free-trading line, 105% or below triggers liquidation` : `联合保证金率 ${UMRS()}，${UMR_ST()}；150% 自由交易线，105% 及以下触发强平`}"><i class="z1"></i><i class="z2"></i><i class="z3"></i>${v == null ? '' : `<b style="left:${umrPos(v).toFixed(1)}%"></b>`}</div>
+      <div class="uc-ax" aria-hidden="true"><span style="left:18%">105% 强平</span><span style="left:40%">150% 自由交易线</span></div>
+      <p class="uc-src">${src}</p>
+      <div class="umh" id="umh"${UMH ? '' : ' hidden'}>${umrHistHtml()}</div>
+    </section>`;
 }
 function APY_TXT() { return LIVE.stb.map(c => c.na || c.ref == null ? `${c.s} 无利率` : `${c.s} ${c.ref.toFixed(2)}%`).join(' · '); }
 function mixLive(lg, T) {
@@ -2392,7 +2426,7 @@ function liveAnswer(q, f, T) {
     return mk(`现在连接的是币安只读 API，只能读取，不能下单、改杠杆或暂停策略，我也不会替你操作。需要改设置请在币安里自己操作。`, ['#me', '看连接状态'], `This account is connected with a read-only Binance API: it can read, but cannot place orders, change leverage or pause anything, and I will not act for you. Make changes in Binance yourself.`);
   if (/保证金|uniMMR|mmr|强平|爆仓|margin|liquidat/i.test(q)) {
     const v = UMR();
-    return mk(`联合保证金率 uniMMR 现在是 <b>${UMRS()}</b>（${UMR_ST()}）。${v == null ? '这次没有取到数值。' : `币安返回原始值 ${v.toFixed(4)}，等于账户权益 ${mz(a.accountEquity)} ÷ 维持保证金 ${mz(a.accountMaintMargin)}，界面 ×100 显示为百分比。`}高于 150% 可自由交易，≤105% 触发强平。可用余额 ${mz(a.totalAvailableBalance)} USDT，最大可转出 ${mz(a.virtualMaxWithdrawAmount)} USDT。`, ['#dashboard', '看账户状况'],
+    return mk(`联合保证金率 uniMMR 现在是 <b>${UMRS()}</b>（${UMR_ST()}）。${v == null ? '这次没有取到数值。' : `币安返回原始值 ${v.toFixed(4)}，等于账户权益 ${mz(a.accountEquity)} ÷ 维持保证金 ${mz(a.accountMaintMargin)}，界面 ×100 显示为百分比。`}高于 150% 可自由交易，≤105% 触发强平。可用余额 ${mz(a.totalAvailableBalance)} USDT，最大可转出 ${mz(a.virtualMaxWithdrawAmount)} USDT。`, ['#dashboard', '看联合保证金率'],
       `Unified margin ratio (uniMMR) is <b>${UMRS()}</b> (${UMR_ST(true)}). ${v == null ? 'No value was returned this time.' : `Binance returns ${v.toFixed(4)}, i.e. account equity ${mz(a.accountEquity)} ÷ maintenance margin ${mz(a.accountMaintMargin)}, shown ×100 as a percentage.`} Above 150% trading is unrestricted; at or below 105% liquidation starts. Available balance ${mz(a.totalAvailableBalance)} USDT, max withdrawable ${mz(a.virtualMaxWithdrawAmount)} USDT.`);
   }
   if (/调仓|止盈|成交|动作|操作|rebalanc|take.?profit|trade|fill/i.test(q)) {
@@ -2458,7 +2492,7 @@ function renderMetrics() {
         <div class="d">今天 <b class="num">${sgn(dd, 0)}</b>（${pct(dd / ddBase, 3)}）· ${LIVE ? '净转入' : '本金'} ${money(D0, 0)}${LIVE ? ` · <small>${eqDay ? '净权益变化 − 当日净转入（昨日有快照）' : '今天按已实现口径，不含浮盈亏变化（缺昨日快照）'}</small>` : ''}</div>
         <div class="d gnn num">账面资产余额 ${money(gross, 0)} ${U <= 0 ? '−' : '+'} 未实现${U <= 0 ? '浮亏' : '浮盈'} ${money(Math.abs(U), 0)} = 账户净权益 ${money(T.equity, 0)} USDT</div>
         <div class="chips num"><span>7 天<b class="${cls(ch(7))}">${sgn(ch(7), 0)}</b></span><span>30 天<b class="${cls(ch(30))}">${sgn(ch(30), 0)}</b></span><span>${LIVE ? '总收益率（含浮盈亏）' : '收益率'}<b class="${cls(cum)}">${pct(cum / D0)}</b></span></div>${LIVE ? '<div class="d" style="font-size:11px;opacity:.75">7 天 / 30 天 / 本月按已实现口径；总收益率 = (净权益 − 净转入) ÷ 净转入</div>' : ''}</div>
-      <div class="brief${mfCls('brief')}${UMH ? ' umh-on' : ''}" data-mf="brief" aria-label="账户状况">${mfBtn('brief', '账户状况', `uniMMR <b class="${UMR() == null ? '' : UMR() > 1.5 ? 'up' : 'dn'}">${UMRS()}</b> · 本月 <b class="${cls(mg)}">${sgn(mg, 0)}</b> · ${rem.some(r => r.w) ? `<em>${rem.filter(r => r.w).length} 条需要留意</em>` : '暂无异常'}`)}<h3>账户状况<span>截至 ${nowLabel}</span></h3>
+      <div class="brief${mfCls('brief')}" data-mf="brief" aria-label="账户状况">${mfBtn('brief', '账户状况', `本月 <b class="${cls(mg)}">${sgn(mg, 0)}</b> · ${rem.some(r => r.w) ? `<em>${rem.filter(r => r.w).length} 条需要留意</em>` : '暂无异常'}`)}<h3>账户状况<span>截至 ${nowLabel}</span></h3>
         <div class="r">本月收益 <small>${monthName(now)} 1 日起</small><b class="num ${cls(mg)}">${sgn(mg, 0)}</b></div>
         ${UMR_ROWS()}
         ${HIST_OK() ? `<div class="r">距最高净权益 <small>${hiI === DAYS ? '今天' : dLabel(hiI)}</small><b class="num ${fromHi < -1e-9 ? 'dn' : 'up'}">${fromHi < -1e-9 ? pct(fromHi) : '处于最高'}</b></div>
@@ -2466,7 +2500,7 @@ function renderMetrics() {
         <div class="r">当期服务费与分润 <small>按合作协议约定费率核算</small><b class="mut" style="font-size:12px">尚未配置扣费</b></div>
         <div class="rm" aria-label="提醒"><span>需要留意</span>${rem.map(r => `<p class="${r.w ? 'w' : ''}"><i aria-hidden="true"></i><span>${r.t}</span></p>`).join('')}</div>
         <div class="acts"><button type="button" class="go1" data-go="#curveSec">看收益曲线 →</button><button type="button" class="go2" data-askq="这个月表现怎么样？" data-ctxl="收益 · 近 30 天">问 Dodo</button></div></div></div>
-    <h2 class="ov-sh">收益构成<small>点一行展开</small></h2><div class="ldg" role="list" aria-label="核心指标，点一行展开">` +
+    <h2 class="ov-sh">收益构成<small>点一行展开</small></h2><div class="ovr">${UMR_CARD()}<div class="ldg" role="list" aria-label="核心指标，点一行展开">` +
     lg('cum', '累计净收益', sgn(cum, 0), `收益率 <b class="${cls(cum)}">${pct(cum / D0)}</b> · ${DAYS} 天`,
       `<div class="split" title="收益来源与扣减" aria-hidden="true"><i style="width:${(Math.max(0, T.cumR) / tot * 100).toFixed(1)}%;background:var(--long)"></i><i style="width:${(T.cumI / tot * 100).toFixed(1)}%;background:var(--brand)"></i><i style="width:${(T.cumF / tot * 100).toFixed(1)}%;background:#c3c9d2"></i><i style="width:${(Math.max(0, -U) / tot * 100).toFixed(1)}%;background:var(--short)"></i></div>`,
       `已实现 <b>${csgn(T.cumR)}</b> · 计奖收益 <b class="up">${csgn(T.cumI)}</b> · 手续费 <b>−${money(T.cumF, 0)}</b> · 浮盈亏 <b class="${cls(U)}">${csgn(U)}</b>`, `<button type="button" class="go3" data-go="#curveSec">看曲线 →</button>`) +
@@ -2478,7 +2512,7 @@ function renderMetrics() {
       `比昨天 <b class="${clx(f.dU)}">${f.dU == null ? '需历史积累' : sgn(f.dU, 0)}</b> · 净敞口${f.net >= 0 ? '偏多' : '偏空'} ${(Math.abs(f.net) / T.equity * 100).toFixed(1)}%`, `<button type="button" class="go3" data-gopos>看多空持仓 ↓</button>`) +
     (LIVE ? mixLive(lg, T) : lg('mix', '合资格计奖配置', `${money(T.stable, 0)}<small> USDT 计奖中</small>`, `保证金及可用余量 ${money(T.equity - T.stable, 0)}`,
       `<div class="split mix" aria-hidden="true"><i style="width:${(T.stable / T.equity * 100).toFixed(1)}%"></i><i style="width:${(100 - T.stable / T.equity * 100).toFixed(1)}%"></i></div>`,
-      `计奖资产 <b>${money(T.stable, 0)}</b> · 保证金及可用余量 <b>${money(T.equity - T.stable, 0)}</b> · 持仓余额不自动等于计奖余额 · 均按今日数据`, `<button type="button" class="go3" data-dw="stable">资产池 →</button>`)) + `</div>
+      `计奖资产 <b>${money(T.stable, 0)}</b> · 保证金及可用余量 <b>${money(T.equity - T.stable, 0)}</b> · 持仓余额不自动等于计奖余额 · 均按今日数据`, `<button type="button" class="go3" data-dw="stable">资产池 →</button>`)) + `</div></div>
     <details class="ovx"${OVX ? ' open' : ''}><summary>策略执行明细 · 按需查看<span class="mut" style="font-weight:500">${LIVE ? '今天成交' : '今天调仓'} ${T.rebal} ${LIVE ? '单' : '次'} · 止盈 ${f.tradesToday.length} 笔</span></summary>
       <div class="in num">${LIVE ? '今天成交' : '今天调仓'} <b>${T.rebal}</b> ${LIVE ? '单' : '次'}<span>主要在 <b>${esc(top3 || '暂无')}</b></span><span>止盈 <b class="${cls(tp)}">${sgn(tp, 0)}</b></span><span>手续费 <b class="dn">${sgn(-T.fees, 0)}</b></span><span>7 天 ${RBN(7)} · 30 天 ${RBN(30)}</span>
         <span class="acts"><button type="button" class="k" data-ovday>看今天的记录 →</button><button type="button" data-askq="今天为什么调仓？" data-ctxl="今天的调仓">问 Dodo 为什么</button></span></div></details>`;
@@ -2490,12 +2524,14 @@ let OVK = 'cum', OVX = false;
 document.addEventListener('click', e => {
   const h = e.target.closest('.lg .lh'); if (h) { const r = h.parentNode, o = !r.classList.contains('open'); OVK = o ? r.dataset.lg : '';
     $$('#kpis .lg').forEach(x => { const on = x === r && o; x.classList.toggle('open', on); $('.lh', x).setAttribute('aria-expanded', on); $('.lx', x).inert = !on; }); return; }
-  const u = e.target.closest('[data-umh]'); if (u) { UMH = !UMH; const b = u.closest('.brief'); b.classList.toggle('umh-on', UMH); $('#umh').hidden = !UMH; $$('[data-umh]', b).forEach(x => x.setAttribute('aria-expanded', UMH)); return; }
+  const u = e.target.closest('[data-umh]'); if (u) { UMH = !UMH; const b = u.closest('.umrc'); b.classList.toggle('umh-on', UMH); $('#umh').hidden = !UMH; u.setAttribute('aria-expanded', UMH); return; }
   if (e.target.closest('[data-gopos]')) { $('#posMini').scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' }); return; }
   if (e.target.closest('[data-allg]')) { S.tf.day = ''; S.tf.coin = ''; S.tf.act = ''; S.tDetail = null; S.tShow = 20; renderTrades('back'); goTo('#trades'); saveState(); return; }
   if (e.target.closest('[data-ovday]')) { S.tf.day = 'today'; S.tf.coin = ''; S.tf.act = ''; renderTrades('back'); goTo('#trades'); saveState(); return; }
   const q = e.target.closest('[data-askq]'); if (q) askFrom(q.dataset.askq, q.dataset.ctxl ? { k: 'txt', label: q.dataset.ctxl } : null);
 });
+
+window.addEventListener('langchange', () => { const c = $('#kpis .umrc'); if (c) c.outerHTML = UMR_CARD(); });
 
 /* ---------- yield: donut, latest rates and a 30-day rate sketch; the full chart is in the drawer ---------- */
 function renderYield() {
@@ -3193,7 +3229,7 @@ function answer(q) {
   if (LIVE) { const r = liveAnswer(q, f, T); if (r) return r; }
   if (!LIVE && /保证金|uniMMR|mmr|强平|爆仓|margin|liquidat/i.test(q)) {
     const v = UMR(), H = umrSeries().pts.map(p => p.v), lo = Math.min(...H), hi = Math.max(...H);
-    return mk(`示例账户的联合保证金率 uniMMR 是 <b>${UMRS()}</b>（${UMR_ST()}），原始值 ${v.toFixed(4)}，界面 ×100 显示为百分比。高于 150% 可自由交易，≤105% 触发强平。演示历史近 30 天在 ${umrP(lo)}–${umrP(hi)} 之间；这些都是示例数据，不是真实账户。`, ['#dashboard', '看账户状况'],
+    return mk(`示例账户的联合保证金率 uniMMR 是 <b>${UMRS()}</b>（${UMR_ST()}），原始值 ${v.toFixed(4)}，界面 ×100 显示为百分比。高于 150% 可自由交易，≤105% 触发强平。演示历史近 30 天在 ${umrP(lo)}–${umrP(hi)} 之间；这些都是示例数据，不是真实账户。`, ['#dashboard', '看联合保证金率'],
       `The demo account's unified margin ratio (uniMMR) is <b>${UMRS()}</b> (${UMR_ST(true)}); raw value ${v.toFixed(4)}, shown ×100 as a percentage. Above 150% trading is unrestricted; at or below 105% liquidation starts. The demo history over the last 30 days ranges ${umrP(lo)}–${umrP(hi)}. All of this is sample data, not a real account.`);
   }
   if (/止盈线|阈值|杠杆|调到|改成|改为|设置|暂停|停掉|关掉|threshold|leverage|pause|turn off|set .* to|change .* to/i.test(q)) {

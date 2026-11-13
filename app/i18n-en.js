@@ -1520,4 +1520,16 @@ window.I18N_EN = {
 "uniMMR · 低于自由交易线": "below 150%",
 "uniMMR · 已到强平线": "at liquidation line",
 "净权益变化 − 当日净转入": "equity change − net transfers today",
+/* r27 · uniMMR standalone overview card */
+"{0}% 强平": "{0}% liquidation",
+"{0}% 自由交易线": "{0}% free-trading line",
+"{0}% 及以下触发强平": "{0}% or below triggers liquidation",
+"示例数值": "Sample value",
+"权益 {0} ÷ 维持保证金 {1}": "equity {0} ÷ maintenance margin {1}",
+"本次没有取到数值": "No value returned this time",
+"联合保证金率未取到": "uniMMR unavailable",
+"看联合保证金率": "See uniMMR",
+"看联合保证金率 →": "See uniMMR →",
+"权益 {0} ÷ 维持 = —": "equity {0} ÷ maintenance = —",
+"统一维持保证金率 uniMMR 未取到": "Unified maintenance margin ratio (uniMMR) unavailable",
 };
