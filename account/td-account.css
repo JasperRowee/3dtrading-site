@@ -2,7 +2,7 @@
 .tda-scope{--tda-bg:#0f1315;--tda-sf:#171c1f;--tda-ink:#f2f5f4;--tda-ink2:#a9b4b1;--tda-ink3:#76827f;--tda-line:rgba(255,255,255,.08);--tda-hov:rgba(255,255,255,.06);
   --tda-brand:#2fdcbc;--tda-brandD:#0a8a73;--tda-onb:#032720;--tda-ok:#22c55e;--tda-warn:#f0b100;--tda-bad:#e5484d;--tda-sh:0 0 0 1px rgba(255,255,255,.06),0 28px 70px -18px rgba(0,0,0,.7);
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;-webkit-font-smoothing:antialiased}
-.tda-scope[data-theme="light"]{--tda-bg:#f5f4f2;--tda-sf:#e9e8e6;--tda-ink:#21201c;--tda-ink2:#52524d;--tda-ink3:#63635e;--tda-line:#dad9d6;--tda-hov:#e9e8e6;--tda-brandD:#245b4b;--tda-ok:#0d753b;--tda-warn:#805600;--tda-bad:#c42b36;--tda-sh:0 1px 2px rgba(18,24,26,.05),0 24px 60px -16px rgba(18,24,26,.3)}
+.tda-scope[data-theme="light"]{--tda-bg:#f5f4f2;--tda-sf:#e9e8e6;--tda-ink:#21201c;--tda-ink2:#52524d;--tda-ink3:#63635e;--tda-line:#dad9d6;--tda-hov:#e9e8e6;--tda-brandD:#087568;--tda-ok:#0d753b;--tda-warn:#805600;--tda-bad:#c42b36;--tda-sh:0 1px 2px rgba(18,24,26,.05),0 24px 60px -16px rgba(18,24,26,.3)}
 
 .tda-menu{position:fixed;z-index:2147483000;width:320px;overflow:auto;overscroll-behavior:contain;background:var(--tda-bg);color:var(--tda-ink);border-radius:18px;padding:8px;box-shadow:var(--tda-sh);
   font-size:13px;line-height:1.4;text-align:left;animation:tda-pop .22s cubic-bezier(.2,.8,.2,1)}
@@ -51,8 +51,8 @@
 .tda-lang button:focus-visible{box-shadow:0 0 0 2px var(--tda-brand)}
 @media (max-width:420px){.tda-menu{border-radius:16px}}
 
-.tda-scope[data-theme="light"] .tda-btn.pri{background:#245b4b;color:#fff}
-.tda-scope[data-theme="light"] .tda-btn.pri:hover{background:#1d493d}
+.tda-scope[data-theme="light"] .tda-btn.pri{background:#2fdcbc;color:#04261f}
+.tda-scope[data-theme="light"] .tda-btn.pri:hover{background:#25c7aa}
 
-.tda-scope[data-theme="light"] .tda-btn.pri{background:#245b4b;color:#fff}
-.tda-scope[data-theme="light"] .tda-btn.pri:hover{background:#1d493d}
+.tda-scope[data-theme="light"] .tda-btn.pri{background:#2fdcbc;color:#04261f}
+.tda-scope[data-theme="light"] .tda-btn.pri:hover{background:#25c7aa}

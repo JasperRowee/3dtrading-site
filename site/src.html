@@ -119,9 +119,9 @@ html[data-theme=day] .grain{opacity:.035}
 html[data-theme=day] .blk h1,html[data-theme=day] .blk h2{text-shadow:0 0 26px #f1f0ef,0 0 6px #f1f0ef}
 html[data-theme=day] .blk p{color:#63635e;text-shadow:0 0 16px #f1f0ef,0 0 4px #f1f0ef}
 html[data-theme=day] .blk p b{color:#0b0f12}
-html[data-theme=day] h1 em,html[data-theme=day] h2 em{color:#245b4b}
+html[data-theme=day] h1 em,html[data-theme=day] h2 em{color:#087568}
 html[data-theme=day] h2 .l{color:#0d753b}html[data-theme=day] h2 .s{color:#b43c50}html[data-theme=day] h2 .y{color:#805600}
-html[data-theme=day] .ey b{color:#245b4b}
+html[data-theme=day] .ey b{color:#087568}
 html[data-theme=day] .acts .gh{color:#1a2025;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
 html[data-theme=day] .go .gh{color:#21201c;background:rgba(245,244,242,.6);box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
 html[data-theme=day] .hint{color:#63635e;text-shadow:0 0 12px #f1f0ef}
@@ -130,8 +130,8 @@ html[data-theme=day] .scrim{background:linear-gradient(#f1f0ef 0,rgba(241,240,23
 html[data-theme=day] .toast{background:rgba(245,244,242,.96);color:#1a2025;box-shadow:0 8px 24px rgba(0,0,0,.12)}
 html[data-theme=day] .door{background:#f1f0ef}
 html[data-theme=day] .blk.c .logo{filter:drop-shadow(0 0 30px rgba(241,240,239,.9))}
-html[data-theme=day] .acts .pr,html[data-theme=day] .go .pri{background:#245b4b;color:#fff}
-html[data-theme=day] .acts .pr:hover,html[data-theme=day] .go .pri:hover{background:#1d493d}
+html[data-theme=day] .acts .pr,html[data-theme=day] .go .pr{background:#2fdcbc;color:#04261f}
+html[data-theme=day] .acts .pr:hover,html[data-theme=day] .go .pr:hover{background:#25c7aa}
 html.thx canvas{transition:opacity .18s}html.thx.dim canvas{opacity:.15}
 /* the day/night switch: a small round button left of sign in */
 .tm{all:unset;cursor:pointer;width:40px;height:40px;border-radius:20px;display:inline-flex;align-items:center;justify-content:center;margin-left:auto;margin-right:10px;color:#e9edf0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);transition:background .2s}
@@ -622,10 +622,10 @@ function panelTex(i) {
   x.strokeStyle = 'rgba(47,220,188,.22)'; x.lineWidth = 2; x.stroke();
   const on = HIT && HIT.md.includes(i) ? sm((T - HIT.at) / .35) * (1 - sm((T - HIT.at - HIT.hold) / .6)) : 0;
   if (on > .01) { x.strokeStyle = `rgba(47,220,188,${(.85 * on).toFixed(3)})`; x.lineWidth = 3; x.stroke(); }
-  txt(x, 'M' + (i + 1), 30, 58, (DAY ? '!#28735f' : '#2fdcbc'), font(18, 700, 1)); txt(x, MODELS[i], 74, 60, (DAY ? '!#21201c' : '#f3f5f6'), font(34, 700));
+  txt(x, 'M' + (i + 1), 30, 58, (DAY ? '!#087568' : '#2fdcbc'), font(18, 700, 1)); txt(x, MODELS[i], 74, 60, (DAY ? '!#21201c' : '#f3f5f6'), font(34, 700));
   txt(x, KIND[i], 30, 94, (DAY ? '!#63635e' : '#6f7a84'), font(16, 500));
   const pu = .5 + .5 * Math.sin(T * 3 + i); x.fillStyle = `rgba(47,220,188,${(.45 + .55 * pu).toFixed(3)})`; x.beginPath(); x.arc(PWd - 34, 52, 6, 0, PI * 2); x.fill();
-  txt(x, on > .3 ? '命中' : '评估盘口', PWd - 50, 58, on > .3 ? (DAY ? '!#245b4b' : '#bff5ea') : (DAY ? '!#63635e' : '#7f8a94'), font(15, 600), 'right');
+  txt(x, on > .3 ? '命中' : '评估盘口', PWd - 50, 58, on > .3 ? (DAY ? '!#087568' : '#bff5ea') : (DAY ? '!#63635e' : '#7f8a94'), font(15, 600), 'right');
   x.save(); x.beginPath(); x.rect(26, 112, PWd - 52, 58); x.clip();
   x.strokeStyle = 'rgba(47,220,188,.5)'; x.lineWidth = 1.6; x.beginPath();
   for (let k = 0; k <= 64; k++) { const u = k / 64, tt = T * (.8 + i * .07) + u * 9, v = Math.sin(tt * 1.3 + t.ph) * .45 + Math.sin(tt * 3.1 + i) * .25 + Math.sin(tt * 7.3) * .12 + on * Math.exp(-Math.pow((u - .9) * 9, 2)) * 1.1;
@@ -650,7 +650,7 @@ function panelTex(i) {
     x.strokeStyle = 'rgba(47,220,188,.95)'; x.lineWidth = 2; x.stroke();
     if (im && im.complete) x.drawImage(im, 28, Y + RH / 2 - 14, 30, 30);
     txt(x, HIT.s, 68, Y + RH / 2 + 9, (DAY ? '!#21201c' : '#ffffff'), font(22, 700));
-    txt(x, '命中', 178, Y + RH / 2 + 7, (DAY ? '!#28735f' : '#2fdcbc'), font(15, 700));
+    txt(x, '命中', 178, Y + RH / 2 + 7, (DAY ? '!#087568' : '#2fdcbc'), font(15, 700));
     txt(x, (up ? '▲ ' : '▼ ') + Math.abs(HIT.pct).toFixed(2) + '%', PWd - 30, Y + RH / 2 + 8, up ? (DAY ? '!#197653' : '#9ff0cd') : (DAY ? '!#b43c50' : '#ffa3af'), font(18, 700, 1), 'right');
     x.globalAlpha = 1; }
   return t;
@@ -1033,6 +1033,22 @@ const prism = (x, z, hx, hz, y0, y1, cols, far) => {
   }
   if (c[1] > y1) polyW([V(-1, y1, -1), V(1, y1, -1), V(1, y1, 1), V(-1, y1, 1)], cols[0]); RAWC--;
 };
+// Distant pillars share projected corners: full side faces without repeated clipping work.
+function farPrism(x, z, hw, h, cols, d) {
+  const top = [pr(x - hw, h, z - hw), pr(x + hw, h, z - hw), pr(x + hw, h, z + hw), pr(x - hw, h, z + hw)];
+  if (top.some(q => !q)) return;
+  RAWC++;
+  if (h * C.F / d >= .7) {
+    const side = (a, b, col) => { const A = top[a], B = top[b];
+      // Project the lower corners exactly; y changes depth when looking down.
+      const coords = [[x - hw, z - hw], [x + hw, z - hw], [x + hw, z + hw], [x - hw, z + hw]];
+      quad([pr(coords[a][0], 0, coords[a][1]), pr(coords[b][0], 0, coords[b][1]), B, A], col); };
+    if (C.p[2] < z - hw) side(0, 1, cols[1]); else if (C.p[2] > z + hw) side(2, 3, cols[1]);
+    if (C.p[0] < x - hw) side(3, 0, cols[2]); else if (C.p[0] > x + hw) side(1, 2, cols[2]);
+  }
+  if (C.p[1] > h) quad(top, cols[0]);
+  RAWC--;
+}
 function glow(x, y, r, c, a) { if (r < 1 || a < .01) return; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, hexA(c, a)); gr.addColorStop(1, hexA(c, 0)); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
 const GTOP = [168, 124, 16], GS1 = [74, 54, 9], GS2 = [52, 38, 7];
 const NEU = [[40, 44, 52], [22, 25, 30], [17, 19, 23]], GRN = [[44, 196, 128], [12, 128, 82], [9, 96, 62]], RED = [[238, 84, 104], [164, 42, 60], [124, 32, 46]];
@@ -1378,7 +1394,7 @@ function frame(now) {
       if (gb < 3.4) { const ru = a8 * sm(sg(A[7], .55 + gb * .02, .66 + gb * .02)); return [L(h, 1 + .7 * (1 - gb / 3.4) + .25 * nn, ru), mixc([40, 44, 52], mixc(GTOP, [250, 214, 96], .3 * nn), ru), mixc([19, 22, 27], GS1, ru), mixc([15, 18, 22], GS2, ru)]; }
     }
     if (a9 > .01 && x > S9.c[0] - 19 && x < S9.c[0] + 20 && z > S9.c[1] - 16 && z < S9.c[1] + 19) {
-      const r9 = place9(ix, iz, x, z, h, nn); if (r9) { if (DAY) r9[4] = a9; return r9; }
+      const r9 = place9(ix, iz, x, z, h, nn); if (r9) return r9;
     }
     // Keep the surrounding ground columns throughout 08–11, in both themes.
     function place9(ix, iz, x, z, h, nn) {   // 09's board: its three domains, the bridges, the hub and the gaps
@@ -1403,9 +1419,8 @@ function frame(now) {
           return [L(h, L(.06, .85 + syn * net, fr), a9), mixc([40, 44, 52], mixc(DARK, c2, .45 + .45 * fr), a9), mixc([19, 22, 27], c2.map(v => v * .45 * fr), a9), [12, 14, 17]]; } }
         for (let i = 0; i < 3; i++) { const [tt, off, ln] = seg(S9.c, S9.P[i]), bu = sm(sg(u9, .86 + i * .02, .95 + i * .02)) * ln; if (off < .8 && tt > 0 && tt < ln && tt < bu) {
           return [L(h, .7 + syn * net, a9), mixc([40, 44, 52], mixc(DARK, [130, 165, 156], .7), a9), mixc([19, 22, 27], S9C[i].map(v => v * .35), a9), [12, 14, 17]]; } }
-        // the gaps between the domains: cut deep and dark, so each stands alone until Dodo links them
-        if (DAY) return [L(h, .1, a9), mixc([40, 44, 52], [60, 65, 72], a9), mixc([19, 22, 27], [42, 46, 52], a9), mixc([15, 18, 22], [34, 37, 42], a9)];   // day: a matte graphite board, not a dark hole
-        return [L(h, .04, a9), mixc([40, 44, 52], [9, 11, 13], a9), mixc([19, 22, 27], [5, 6, 8], a9), mixc([15, 18, 22], [5, 6, 8], a9)];
+        // Unoccupied cells keep the surrounding field's height and material in both themes.
+        return null;
       }
     }
     if (a10 > .01) LY.st.forEach(([sx, sz, sh], k) => { if (!k && ix === sx && iz === sz) { const ru = k ? sm(sg(A[9], .34 + k * .04, .42 + k * .04)) : 1; const c10 = k === 1 ? [42, 163, 223] : k === 2 ? [88, 101, 242] : TEAL; PL10 = [L(h, sh, a10 * ru), mixc([40, 44, 52], c10, (k ? .6 : .45) * a10 * ru), mixc([19, 22, 27], c10.map(c => c * .4), k ? a10 * ru : 0), mixc([15, 18, 22], c10.map(c => c * .3), k ? a10 * ru : 0)]; } });
@@ -1417,7 +1432,19 @@ function frame(now) {
     return null;
   }
 
-  // the field: near cells are full pillars, far ones only their tops; it runs all the way to the foot of the wall
+  // The floor shares the shaded pillar material; distance uses the same fog as the cells.
+  if (DAY) {
+    RAWC++;
+    const ground = g.createLinearGradient(0, 0, 0, H);
+    for (let k = 0; k <= 64; k++) {
+      const rayY = C.f[1] + C.u[1] * (C.cy - H * k / 64) / C.F;
+      const d = rayY < -.0001 ? -C.p[1] / rayY : 1e6;
+      ground.addColorStop(k / 64, fogc([15, 18, 22], d > 0 ? fogP(d) : 0));
+    }
+    const edge = Array.from({ length: 96 }, (_, k) => { const a = k / 96 * PI * 2; return [SC[0] + FLR * Math.cos(a), 0, SC[2] + FLR * Math.sin(a)]; });
+    polyW(edge, ground); RAWC--;
+  }
+  // Distant cells retain perspective tops and visible sides, rather than flat screen rectangles.
   const items = [], far = [];
   const pd = dep(SCR[0], SCR[1], KZ);
   const key = (z, d) => kv > .01 ? (z > KZ ? pd + 500 + d : Math.min(d, pd - .01)) : d;
@@ -1443,10 +1470,10 @@ function frame(now) {
       if (!own && Rg > 0 && pdist < Rg) { let t0 = GOLD.get(ck); if (t0 == null) { t0 = T; GOLD.set(ck, t0); } gd = sm((T - t0) / .45); pop = T - t0 < .7 ? Math.sin(PI * (T - t0) / .7) : 0; gd *= gA; pop *= gA; } else if (GOLD.size) GOLD.delete(ck);
       if (ov) h = ov[0]; h += gd * (.1 + .16 * nn) + pop * .5;
       const f = fogP(d);
-      if (d > 34 && !own) {     // far: just its top, as one small rect
-        let top = [33 + h * 18, 38 + h * 18, 45 + h * 18]; if (gd > 0) { top = mixc(top, GTOP, gd * (.8 + .2 * nn)); top = mixc(top, [250, 214, 96], pop * .6); }
-        const qt = pr(x, h, z); if (!qt) continue; const w = hw * 2 * qt.k, hh = Math.max(1, w * clamp((cpy - h) / d, .04, 1));
-        far.push([d, qt.x - w / 2, qt.y - hh / 2, w, hh, fogc(top, f)]); continue; }
+      if (d > 34 && !own) {
+        let top = [33 + h * 18, 38 + h * 18, 45 + h * 18], s1 = [19, 22, 27], s2 = [15, 18, 22];
+        if (gd > 0) { top = mixc(top, GTOP, gd * (.8 + .2 * nn)); top = mixc(top, [250, 214, 96], pop * .6); s1 = mixc(s1, GS1, gd); s2 = mixc(s2, GS2, gd); }
+        far.push([d, x, z, h, [fogc(top, f), fogc(s1, f), fogc(s2, f)]]); continue; }
       items.push([key(z, d), () => {
         let top = [33 + Math.min(h, 1) * 18, 38 + Math.min(h, 1) * 18, 45 + Math.min(h, 1) * 18], s1 = [19, 22, 27], s2 = [15, 18, 22];
         if (own) { top = ov[1]; s1 = ov[2]; s2 = ov[3]; }
@@ -1455,10 +1482,7 @@ function frame(now) {
         const rw = own && ov[4]; prism(x, z, hw, hw, 0, h, rw ? [fogr(top, f, rw), fogr(s1, f, rw), fogr(s2, f, rw)] : [fogc(top, f), fogc(s1, f), fogc(s2, f)], d > 34 && !own); }]);
     } }
   if (OFF.includes('f')) far.length = 0;
-  far.sort((a, b) => b[0] - a[0]); RAWC++; for (const [, X, Y, w, hh, c] of far) { g.fillStyle = c; g.fillRect(X, Y, w, hh); } RAWC--;
-  // day, 09: one matte graphite plate under the board, a shade darker than the cells, so the gaps read as fine dark seams, not a bright grid
-  if (DAY && a9 > .01) { const pts = []; for (let k = 0; k < 64; k++) { const an = k / 64 * 2 * PI; pts.push([S9.c[0] + Math.cos(an) * (S9.RG + .6), .02, S9.c[1] + Math.sin(an) * (S9.RG + .6)]); }
-    RAWC++; polyW(pts, RGB(mixc(BGD, mixc(dayP([40, 44, 52]), [40, 44, 49], a9), fogP(dep(S9.c[0], 0, S9.c[1]))))); RAWC--; }
+  far.sort((a, b) => b[0] - a[0]); for (const [d, x, z, h, cols] of far) farPrism(x, z, hw, h, cols, d);
   const put = (x, y, z, fn) => items.push([dep(x, y, z) - .05, fn]);
   // the two Dodo pillars: the same size as every other pillar
   [[LP, longCol, lH, lFl, lHop, 0], [SP, H1.on ? 'r' : null, sH, H1.fl, H1, 1]].forEach(([P2, col, h, flash, Hh, i]) => {

@@ -5,7 +5,7 @@ html[data-theme=day] .bar .logo .lg-n{display:none}
 html[data-theme=day] .bar .logo .lg-d{display:block}
 
 html[data-theme=day]{--bg:#f1f0ef;--sf:#f5f4f2;--sfHi:#f9f9f8;--onb:#04261f;--sf2:#e9e8e6;--sf3:#e9e8e6;--line:rgba(20,27,29,.08);--line2:rgba(20,27,29,.16);
-  --ink:#21201c;--ink2:#52524d;--ink3:#63635e;--brand:#2fdcbc;--brandD:#245b4b;--ok:#0d753b;--warn:#805600;--bad:#c42b36;color-scheme:light}
+  --ink:#21201c;--ink2:#52524d;--ink3:#63635e;--brand:#2fdcbc;--brandD:#087568;--ok:#0d753b;--warn:#805600;--bad:#c42b36;color-scheme:light}
 html[data-theme=day] :focus-visible{outline-color:var(--brandD)}
 html[data-theme=day] .bar{background:rgba(241,240,239,.9)}
 html[data-theme=day] .bar::before{background:#f1f0ef}
@@ -13,7 +13,7 @@ html[data-theme=day] .demo-pill{background:rgba(128,86,0,.1);color:#734d00}
 html[data-theme=day] .av-btn{box-shadow:0 0 0 1px rgba(20,27,29,.1),0 8px 22px rgba(10,138,115,.16)}
 html[data-theme=day] .av-btn:hover{box-shadow:0 0 0 1px rgba(20,27,29,.2),0 10px 26px rgba(10,138,115,.24)}
 html[data-theme=day] .link,html[data-theme=day] .eyebrow{color:var(--brandD)}
-html[data-theme=day] .hero h1 em,html[data-theme=day] .intro h1 em{background:linear-gradient(92deg,#b37f10 0%,#c08a12 30%,#245b4b 75%);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-theme=day] .hero h1 em,html[data-theme=day] .intro h1 em{background:linear-gradient(92deg,#b37f10 0%,#c08a12 30%,#087568 75%);-webkit-background-clip:text;background-clip:text;color:transparent}
 html[data-theme=day] .hero p.lede,html[data-theme=day] .lede{color:var(--ink2)}
 
 /* fields */
@@ -75,5 +75,5 @@ html[data-theme=day] .sim{border-color:rgba(128,86,0,.4);background:rgba(128,86,
 html[data-theme=day] .sim h4{color:#734d00}
 
 /* Warm stone actions: evergreen on neutral surfaces, emerald stays with Dodo. */
-html[data-theme=day] .btn.pri,html[data-theme=day] #go{background:#245b4b;color:#fff}
-html[data-theme=day] .btn.pri:hover,html[data-theme=day] #go:hover{background:#1d493d}
+html[data-theme=day] .btn.pri,html[data-theme=day] #go{background:#2fdcbc;color:#04261f}
+html[data-theme=day] .btn.pri:hover,html[data-theme=day] #go:hover{background:#25c7aa}

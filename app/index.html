@@ -18,7 +18,7 @@ else if(!TDAccount.requireUser())document.documentElement.classList.add('td-gate
 <script>try{var d=new URLSearchParams(location.search).get('density')||localStorage.getItem('3dtrading.dash.density');if(d==='compact')document.documentElement.classList.add('cp')}catch(e){}</script>
 <style>
 :root{--bg:#f1f0ef;--top:64px;--sh:0 1px 2px rgba(18,24,26,.05),0 6px 20px -4px rgba(18,24,26,.07);--sh2:0 2px 6px rgba(15,23,42,.06),0 18px 44px -14px rgba(15,23,42,.2);--sf:#f5f4f2;--sf-hi:#f9f9f8;--hov:#e9e8e6;--onb:#04261f;--ink:#21201c;--ink2:#52524d;--ink3:#63635e;--line:#dad9d6;--line2:#e4e3df;--soft:#e9e8e6;
-  --brand:#2fdcbc;--brandD:#245b4b;--brandL:#dfefea;--cyan:#56cfe1;--blk:#12181a;--blk2:#1b2326;
+  --brand:#2fdcbc;--brandD:#087568;--brandL:#dfefea;--cyan:#56cfe1;--blk:#12181a;--blk2:#1b2326;
   --long:#0d753b;--short:#c42b36;--gold:#d99b16;--goldInk:#805600;--r:14px;--side:224px;--ease:cubic-bezier(.2,.8,.2,1)}
 *{box-sizing:border-box}
 html{scroll-padding-top:calc(var(--top) + 72px)}
@@ -37,7 +37,7 @@ h1,h2,h3{margin:0;letter-spacing:-.01em}
 .btn{appearance:none;border:0;cursor:pointer;font-size:15px;font-weight:600;border-radius:11px;padding:0 18px;height:42px;background:var(--blk);color:#fff;white-space:nowrap;
   display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .15s,background .2s,opacity .2s,border-color .2s}
 .btn:hover{background:#262a31}.btn:active{transform:scale(.98)}
-.btn.brand{background:#245b4b;color:#fff}.btn.brand:hover{background:#1d493d}
+.btn.brand{background:#2fdcbc;color:#04261f}.btn.brand:hover{background:#25c7aa}
 .btn.ghost{background:var(--sf-hi);color:var(--ink);border:1px solid var(--line)}.btn.ghost:hover{border-color:#c9ced6;background:var(--sf-hi)}
 .btn.danger{background:var(--sf);color:#c62f3a;border:1px solid #f1c4c8}.btn.danger:hover{background:#fff5f5;border-color:#e59aa1}
 .lnk.unl{color:#8a919c;font-size:12px;font-weight:600;background:none;border:0;cursor:pointer;padding:0 4px}.lnk.unl:hover{color:#c62f3a;text-decoration:underline}
