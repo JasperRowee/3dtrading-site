@@ -113,23 +113,25 @@ h2 .l{color:var(--up)}h2 .s{color:var(--dn)}h2 .y{color:var(--bn)}
 .door.rm{clip-path:none;transition:opacity .2s}
 .copy .mo{display:none}@media (max-width:760px){.copy .pc{display:none}.copy .mo{display:inline}}
 /* day: the same page, light. The scene recolours itself in the canvas; here the copy, header and controls follow */
-html[data-theme=day]{--bg:#e6eaee;--ink:#11161a;--ink2:#56606a;--ink3:#8d969f}
+html[data-theme=day]{--bg:#f1f0ef;--ink:#21201c;--ink2:#52524d;--ink3:#63635e}
 html[data-theme=day] .vign{background:radial-gradient(120% 100% at 55% 45%,transparent 55%,rgba(150,160,170,.28) 100%)}
 html[data-theme=day] .grain{opacity:.035}
-html[data-theme=day] .blk h1,html[data-theme=day] .blk h2{text-shadow:0 0 26px #eef1f4,0 0 6px #eef1f4}
-html[data-theme=day] .blk p{color:#3d464e;text-shadow:0 0 16px #eef1f4,0 0 4px #eef1f4}
+html[data-theme=day] .blk h1,html[data-theme=day] .blk h2{text-shadow:0 0 26px #f1f0ef,0 0 6px #f1f0ef}
+html[data-theme=day] .blk p{color:#63635e;text-shadow:0 0 16px #f1f0ef,0 0 4px #f1f0ef}
 html[data-theme=day] .blk p b{color:#0b0f12}
-html[data-theme=day] h1 em,html[data-theme=day] h2 em{color:#0fa58b}
-html[data-theme=day] h2 .l{color:#079a62}html[data-theme=day] h2 .s{color:#d8304a}html[data-theme=day] h2 .y{color:#c79400}
-html[data-theme=day] .ey b{color:#0fa58b}
+html[data-theme=day] h1 em,html[data-theme=day] h2 em{color:#245b4b}
+html[data-theme=day] h2 .l{color:#0d753b}html[data-theme=day] h2 .s{color:#b43c50}html[data-theme=day] h2 .y{color:#805600}
+html[data-theme=day] .ey b{color:#245b4b}
 html[data-theme=day] .acts .gh{color:#1a2025;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
-html[data-theme=day] .go .gh{color:#11161a;background:rgba(255,255,255,.6);box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
-html[data-theme=day] .hint{color:#3d464e;text-shadow:0 0 12px #eef1f4}
-html[data-theme=day] .rail button.on{color:#11161a}
-html[data-theme=day] .scrim{background:linear-gradient(#e6eaee 0,rgba(230,234,238,.9) 150px,rgba(230,234,238,.55) 240px,transparent)}
-html[data-theme=day] .toast{background:rgba(255,255,255,.96);color:#1a2025;box-shadow:0 8px 24px rgba(0,0,0,.12)}
-html[data-theme=day] .door{background:#e6eaee}
-html[data-theme=day] .blk.c .logo{filter:drop-shadow(0 0 30px rgba(238,241,244,.9))}
+html[data-theme=day] .go .gh{color:#21201c;background:rgba(245,244,242,.6);box-shadow:inset 0 0 0 1px rgba(0,0,0,.2)}
+html[data-theme=day] .hint{color:#63635e;text-shadow:0 0 12px #f1f0ef}
+html[data-theme=day] .rail button.on{color:#21201c}
+html[data-theme=day] .scrim{background:linear-gradient(#f1f0ef 0,rgba(241,240,239,.9) 150px,rgba(241,240,239,.55) 240px,transparent)}
+html[data-theme=day] .toast{background:rgba(245,244,242,.96);color:#1a2025;box-shadow:0 8px 24px rgba(0,0,0,.12)}
+html[data-theme=day] .door{background:#f1f0ef}
+html[data-theme=day] .blk.c .logo{filter:drop-shadow(0 0 30px rgba(241,240,239,.9))}
+html[data-theme=day] .acts .pr,html[data-theme=day] .go .pri{background:#245b4b;color:#fff}
+html[data-theme=day] .acts .pr:hover,html[data-theme=day] .go .pri:hover{background:#1d493d}
 html.thx canvas{transition:opacity .18s}html.thx.dim canvas{opacity:.15}
 /* the day/night switch: a small round button left of sign in */
 .tm{all:unset;cursor:pointer;width:40px;height:40px;border-radius:20px;display:inline-flex;align-items:center;justify-content:center;margin-left:auto;margin-right:10px;color:#e9edf0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);transition:background .2s}
@@ -163,7 +165,7 @@ html[data-theme=day] .tm .sun{display:block}html[data-theme=day] .tm .moon{displ
 .talk{position:fixed;z-index:7;left:0;top:0;height:44px;padding:0 20px;border-radius:22px;display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#04211c;font:700 15px var(--sans);text-decoration:none;cursor:pointer;box-shadow:0 10px 30px rgba(47,220,188,.3);opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap}
 .talk.on{opacity:1;pointer-events:auto}.talk::before{content:"";width:8px;height:8px;border-radius:4px;background:#04211c;opacity:.6}
 </style>
-<script src="../account/td-account.js?v=20261112-r21" data-site="../site/index.html"></script>
+<script src="../account/td-account.js?v=20261113-r31" data-site="../site/index.html"></script>
 <link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/dodo-180.png?v=20261112">
 <link rel="manifest" href="../manifest.webmanifest?v=20261112">
@@ -271,11 +273,11 @@ const RGB = c => `rgb(${c[0] | 0},${c[1] | 0},${c[2] | 0})`, mixc = (a, b, u) =>
    textures set goes through dayCol() (light and dark swap, hues kept, strong colours a touch deeper so they read on light);
    the pillars have their own day shading (lit tops, darker sides) and fade into a light haze; Dodo keeps its own colours ---------- */
 let DAY = de.dataset.theme === 'day' ? 1 : 0, RAWC = 0; const TMAP = new Map();
-function dayCol(v) { let m = TMAP.get(v); if (m !== undefined) return m; let r, gg, b, a = 1, mm;
+function dayCol(v) { if (v[0] === '!') return v.slice(1); let m = TMAP.get(v); if (m !== undefined) return m; let r, gg, b, a = 1, mm;
   if (v[0] === '#') { let h = v.slice(1); if (h.length === 3) h = h.replace(/./g, c => c + c); if (h.length !== 6) return v; const n = parseInt(h, 16); r = n >> 16; gg = n >> 8 & 255; b = n & 255; }
   else if ((mm = v.match(/^rgba?\(([^)]+)\)$/))) { const q = mm[1].split(',').map(Number); [r, gg, b] = q; if (q.length > 3) a = q[3]; }
   else return v;
-  const mx = Math.max(r, gg, b), mn = Math.min(r, gg, b), Lc = (mx + mn) / 510, w = clamp(((mx - mn) / 255 - .15) / .35), nL = L(.93 - .86 * Lc, Lc * .8, w), sh = nL * 255 - (mx + mn) / 2;
+  const mx = Math.max(r, gg, b), mn = Math.min(r, gg, b), Lc = (mx + mn) / 510, w = clamp(((mx - mn) / 255 - .15) / .35), nL = L(.87 - .80 * Lc, Lc * .78, w), sh = nL * 255 - (mx + mn) / 2;
   m = `rgba(${clamp(r + sh, 0, 255) | 0},${clamp(gg + sh, 0, 255) | 0},${clamp(b + sh, 0, 255) | 0},${a})`; if (TMAP.size > 6000) TMAP.clear(); TMAP.set(v, m); return m; }
 const CP2 = CanvasRenderingContext2D.prototype;
 function themed(x) { ['fillStyle', 'strokeStyle', 'shadowColor'].forEach(k => { const D = Object.getOwnPropertyDescriptor(CP2, k);
@@ -283,8 +285,12 @@ function themed(x) { ['fillStyle', 'strokeStyle', 'shadowColor'].forEach(k => { 
   const wrapG = f => function (...q) { const gr = f.apply(this, q), ac = gr.addColorStop; gr.addColorStop = function (o, c) { return ac.call(this, o, DAY && !RAWC && typeof c === 'string' ? dayCol(c) : c); }; return gr; };
   x.createLinearGradient = wrapG(CP2.createLinearGradient); x.createRadialGradient = wrapG(CP2.createRadialGradient); return x; }
 themed(g);
-const BG = [9, 12, 15], BGD = [226, 231, 236];
-const dayP = c => { const w = clamp(1 - (Math.max(...c) - Math.min(...c)) / 80); return c.map(v => clamp(v * (1 + .9 * w) + 150 * w, 0, 255)); };   // day pillars: greys lift to light stone, coloured ones stay coloured
+const BG = [9, 12, 15], BGD = [228, 227, 221];
+// Preserve material identity while giving neutral pillar faces distinct stone shading.
+const dayP = c => { const chroma = Math.max(...c) - Math.min(...c), neutral = clamp(1 - chroma / 80), light = (c[0] + c[1] + c[2]) / 3;
+  const stone = light < 23 ? mixc([135,148,135], [167,176,165], clamp((light - 18) / 5)) : mixc([167,176,165], [201,205,196], clamp((light - 23) / 24));
+  const material = c[0] > c[2] * 1.5 && c[1] > c[2] * 1.2 ? c.map(v => v * .78) : c.map(v => v * .86);
+  return mixc(material, stone, neutral); };
 const fogc = (c, f) => DAY ? RGB(mixc(BGD, dayP(c), f)) : RGB(mixc(BG, c, f));
 const PLACE_SKIP = [-1];   // place() says: leave this field cell out
 const fogr = (c, f, w) => DAY ? RGB(mixc(BGD, mixc(dayP(c), c, w), f)) : RGB(mixc(BG, c, f));   // day: w of the way from the light stone to the colour as given (09's graphite board)
@@ -524,7 +530,7 @@ syncAuth(); addEventListener('storage', syncAuth);
 const thc = document.getElementById('thc'), barLogo = document.querySelector('.bar .logo'), doorLogo = document.querySelector('#door img');
 function setTheme(day, quick) { DAY = day ? 1 : 0; de.dataset.theme = day ? 'day' : 'night'; try { localStorage.setItem('3dt.theme', de.dataset.theme); } catch (e) {}
   TMAP.clear(); IMG = DAY ? IMGD : IMGN; LOGO = DAY ? LOGOD : LOGON; for (const k in TX) TX[k].at = -9; PT.forEach(t => t && (t.at = -9)); PTM.forEach(t => t && (t.at = -9));
-  const lg = DAY ? '../account/assets/3dtrading-logo.svg' : '../account/assets/3dtrading-logo-white.svg'; barLogo.src = lg; doorLogo.src = lg; thc.content = DAY ? '#e6eaee' : '#06090b';
+  const lg = DAY ? '../account/assets/3dtrading-logo.svg' : '../account/assets/3dtrading-logo-white.svg'; barLogo.src = lg; doorLogo.src = lg; thc.content = DAY ? '#f1f0ef' : '#06090b';
   if (!quick && !RM) { de.classList.add('thx', 'dim'); setTimeout(() => de.classList.remove('dim'), 60); setTimeout(() => de.classList.remove('thx'), 400); } }
 document.getElementById('thm').addEventListener('click', e => { e.stopPropagation(); setTheme(!DAY); });
 if (DAY) setTimeout(() => setTheme(1, 1), 0);
@@ -611,15 +617,15 @@ function newHit() { if (HIT && CO[HIT.ci]) { CO[HIT.ci].hit = 0; CO[HIT.ci].on =
 function panelTex(i) {
   const t = PT[i]; if (T - t.at < .045) return t; t.at = T; const x = t.g;
   x.clearRect(0, 0, PWd, PHd);
-  const bg = x.createLinearGradient(0, 0, 0, PHd); bg.addColorStop(0, 'rgba(12,27,29,.93)'); bg.addColorStop(1, 'rgba(8,17,19,.95)');
+  const bg = x.createLinearGradient(0, 0, 0, PHd); bg.addColorStop(0, (DAY ? '!rgba(222,229,220,.96)' : 'rgba(12,27,29,.93)')); bg.addColorStop(1, (DAY ? '!rgba(211,220,208,.96)' : 'rgba(8,17,19,.95)'));
   x.fillStyle = bg; x.beginPath(); x.roundRect(2, 2, PWd - 4, PHd - 4, 20); x.fill();
   x.strokeStyle = 'rgba(47,220,188,.22)'; x.lineWidth = 2; x.stroke();
   const on = HIT && HIT.md.includes(i) ? sm((T - HIT.at) / .35) * (1 - sm((T - HIT.at - HIT.hold) / .6)) : 0;
   if (on > .01) { x.strokeStyle = `rgba(47,220,188,${(.85 * on).toFixed(3)})`; x.lineWidth = 3; x.stroke(); }
-  txt(x, 'M' + (i + 1), 30, 58, '#2fdcbc', font(18, 700, 1)); txt(x, MODELS[i], 74, 60, '#f3f5f6', font(34, 700));
-  txt(x, KIND[i], 30, 94, '#6f7a84', font(16, 500));
+  txt(x, 'M' + (i + 1), 30, 58, (DAY ? '!#28735f' : '#2fdcbc'), font(18, 700, 1)); txt(x, MODELS[i], 74, 60, (DAY ? '!#21201c' : '#f3f5f6'), font(34, 700));
+  txt(x, KIND[i], 30, 94, (DAY ? '!#63635e' : '#6f7a84'), font(16, 500));
   const pu = .5 + .5 * Math.sin(T * 3 + i); x.fillStyle = `rgba(47,220,188,${(.45 + .55 * pu).toFixed(3)})`; x.beginPath(); x.arc(PWd - 34, 52, 6, 0, PI * 2); x.fill();
-  txt(x, on > .3 ? '命中' : '评估盘口', PWd - 50, 58, on > .3 ? '#bff5ea' : '#7f8a94', font(15, 600), 'right');
+  txt(x, on > .3 ? '命中' : '评估盘口', PWd - 50, 58, on > .3 ? (DAY ? '!#245b4b' : '#bff5ea') : (DAY ? '!#63635e' : '#7f8a94'), font(15, 600), 'right');
   x.save(); x.beginPath(); x.rect(26, 112, PWd - 52, 58); x.clip();
   x.strokeStyle = 'rgba(47,220,188,.5)'; x.lineWidth = 1.6; x.beginPath();
   for (let k = 0; k <= 64; k++) { const u = k / 64, tt = T * (.8 + i * .07) + u * 9, v = Math.sin(tt * 1.3 + t.ph) * .45 + Math.sin(tt * 3.1 + i) * .25 + Math.sin(tt * 7.3) * .12 + on * Math.exp(-Math.pow((u - .9) * 9, 2)) * 1.1;
@@ -629,23 +635,23 @@ function panelTex(i) {
   x.save(); x.beginPath(); x.rect(0, LT - 6, PWd, PHd - LT - 14); x.clip();
   for (let r = -1; r < 9; r++) {
     const it = t.list[(Math.floor(off) + r + 300) % t.list.length], Y = LT + (r - fr) * RH, cy = Y + RH / 2;
-    const lit = clamp(1 - Math.abs(cy - scanY) / 70), al = .32 + .5 * lit;
+    const lit = clamp(1 - Math.abs(cy - scanY) / 70), al = DAY ? .78 + .22 * lit : .32 + .5 * lit;
     x.globalAlpha = al; const im = IMG[it.s]; if (im && im.complete) x.drawImage(im, 30, cy - 12, 24, 24);
-    txt(x, it.s, 66, cy + 6, '#e6eaed', font(17, 600));
+    txt(x, it.s, 66, cy + 6, (DAY ? '!#21201c' : '#e6eaed'), font(17, 600));
     x.fillStyle = 'rgba(255,255,255,.08)'; x.fillRect(178, cy - 2, 120, 4); x.fillStyle = it.ch > 0 ? BN.up : BN.dn; x.fillRect(178, cy - 2, 120 * it.sc, 4);
-    txt(x, (it.ch > 0 ? '▲ ' : '▼ ') + Math.abs(it.ch).toFixed(2) + '%', PWd - 30, cy + 6, it.ch > 0 ? '#7fe3b8' : '#ff8a99', font(15, 600, 1), 'right');
+    txt(x, (it.ch > 0 ? '▲ ' : '▼ ') + Math.abs(it.ch).toFixed(2) + '%', PWd - 30, cy + 6, it.ch > 0 ? (DAY ? '!#197653' : '#7fe3b8') : (DAY ? '!#b43c50' : '#ff8a99'), font(15, 600, 1), 'right');
   }
   x.globalAlpha = 1;
   const sg2 = x.createLinearGradient(0, scanY - 36, 0, scanY + 2); sg2.addColorStop(0, 'rgba(47,220,188,0)'); sg2.addColorStop(1, 'rgba(47,220,188,.16)');
   x.fillStyle = sg2; x.fillRect(16, scanY - 36, PWd - 32, 38); x.fillStyle = 'rgba(120,255,225,.7)'; x.fillRect(16, scanY, PWd - 32, 1.5);
   x.restore();
   if (on > .01) { const Y = LT + HROW * RH - 2, im = IMG[HIT.s], up = HIT.pct > 0;
-    x.globalAlpha = on; x.fillStyle = 'rgba(9,40,36,.96)'; x.beginPath(); x.roundRect(14, Y, PWd - 28, RH + 4, 12); x.fill();
+    x.globalAlpha = on; x.fillStyle = (DAY ? '!rgba(206,222,209,.98)' : 'rgba(9,40,36,.96)'); x.beginPath(); x.roundRect(14, Y, PWd - 28, RH + 4, 12); x.fill();
     x.strokeStyle = 'rgba(47,220,188,.95)'; x.lineWidth = 2; x.stroke();
     if (im && im.complete) x.drawImage(im, 28, Y + RH / 2 - 14, 30, 30);
-    txt(x, HIT.s, 68, Y + RH / 2 + 9, '#ffffff', font(22, 700));
-    txt(x, '命中', 178, Y + RH / 2 + 7, '#2fdcbc', font(15, 700));
-    txt(x, (up ? '▲ ' : '▼ ') + Math.abs(HIT.pct).toFixed(2) + '%', PWd - 30, Y + RH / 2 + 8, up ? '#9ff0cd' : '#ffa3af', font(18, 700, 1), 'right');
+    txt(x, HIT.s, 68, Y + RH / 2 + 9, (DAY ? '!#21201c' : '#ffffff'), font(22, 700));
+    txt(x, '命中', 178, Y + RH / 2 + 7, (DAY ? '!#28735f' : '#2fdcbc'), font(15, 700));
+    txt(x, (up ? '▲ ' : '▼ ') + Math.abs(HIT.pct).toFixed(2) + '%', PWd - 30, Y + RH / 2 + 8, up ? (DAY ? '!#197653' : '#9ff0cd') : (DAY ? '!#b43c50' : '#ffa3af'), font(18, 700, 1), 'right');
     x.globalAlpha = 1; }
   return t;
 }
@@ -918,9 +924,9 @@ function bnMark(x, X, Y, s) { x.fillStyle = BN.y; const d = (cx, cy, r) => { x.b
 /* 07: the three lanes are named on the floor */
 function laneTex(i) { const [, name, ok] = S7.lanes[i], t = tex('lane' + i + (ML ? 'm' : '') + (DAY ? 'd' : ''), 520, 150); if (t.at === 1) return t; t.at = 1; const x = t.g; x.clearRect(0, 0, 520, 150);   // the name only: green is allowed, red is closed, nothing else said
   let fs = 50; x.font = font(fs, 800); while (x.measureText(name).width > 420 && fs > 26) { fs -= 1; x.font = font(fs, 800); } const tw = x.measureText(name).width, pw = tw + 74, x0 = 260 - pw / 2;
-  x.fillStyle = DAY ? 'rgba(255,255,255,.95)' : 'rgba(8,12,14,.88)'; x.beginPath(); x.roundRect(x0, 40, pw, 70, 35); x.fill(); x.fillStyle = ok ? 'rgba(14,203,129,.14)' : 'rgba(246,70,93,.16)'; x.fill(); x.strokeStyle = ok ? 'rgba(14,203,129,.7)' : 'rgba(246,70,93,.75)'; x.lineWidth = 3; x.stroke();
+  x.fillStyle = DAY ? '!rgba(233,232,230,.95)' : 'rgba(8,12,14,.88)'; x.beginPath(); x.roundRect(x0, 40, pw, 70, 35); x.fill(); x.fillStyle = ok ? 'rgba(14,203,129,.14)' : 'rgba(246,70,93,.16)'; x.fill(); x.strokeStyle = ok ? 'rgba(14,203,129,.7)' : 'rgba(246,70,93,.75)'; x.lineWidth = 3; x.stroke();
   x.fillStyle = ok ? '#2ee096' : '#ff5c72'; x.beginPath(); x.arc(x0 + 30, 75, 7, 0, 2 * PI); x.fill();
-  txt(x, name, x0 + 48, 75 + fs * .36, DAY ? (ok ? '#0c8a5c' : '#c8344c') : ok ? '#9ff3cf' : '#ffa3b0', font(fs, 800)); return t; }
+  txt(x, name, x0 + 48, 75 + fs * .36, DAY ? (ok ? '!#197653' : '!#b43c50') : ok ? '#9ff3cf' : '#ffa3b0', font(fs, 800)); return t; }
 /* ---------- 08: the key, made and kept by us; Binance only answers our address ---------- */
 const KEYS = 'k3Q9vF2mX7aT1pLz8RwN4cY6hJ0sB5dG2uE9iK7oV3qM1xW8nC4';
 function keyTex(u) {
@@ -1104,8 +1110,8 @@ function box3(c, B, hx, hy, hz, cols) { const H = [hx, hy, hz];
 /* a short name in the world, its size kept in a range */
 let FN = 0, LQ = false, CPR = 0, HBX = null, KBX = null; const LBX = {}, O8 = {};   // test: where each label was drawn this frame
 const hdrA = Y => LBLCL ? 1 : clamp((Y - (mob ? 64 : 92)) / 26);   // 07 on: a name in the space fades as it passes under the header band, never over the logo
-function lbl(s, X, Y, col, p0, p1, a, bold) { a *= hdrA(Y); if (a < .01) return; g.save(); g.globalAlpha = a; const fs = clamp(p1, p0, 30); g.font = font(fs, bold ? 800 : 600); g.textAlign = 'center'; if (DAY) { RAWC++; g.shadowColor = 'rgba(246,248,250,.98)'; g.shadowBlur = 6; g.fillStyle = col[0] === '!' ? col.slice(1) : dayCol(col); } else { g.shadowColor = '#000'; g.shadowBlur = 8; g.fillStyle = col.replace('!', ''); } const hw = g.measureText(s).width / 2; if (mob || LQ) X = L(X, clamp(X, hw + 8 + (LQ ? CPR : 0), W - hw - 8), LCW);   // (07 on: names belong to the space and are cut by the screen edge like it, never dragged along)  a narrow phone: a name near the edge slides in rather than being cut; a phone held sideways: nor under the copy on the left
-  if (DAY) { g.lineWidth = 3; g.strokeStyle = 'rgba(246,248,250,.85)'; g.strokeText(s, X, Y); } g.fillText(s, X, Y); if (DAY) RAWC--; LBX[s] = { f: FN, a: +a.toFixed(2), b: [X - hw, X + hw, Y - fs, Y + fs * .3].map(Math.round) }; g.restore(); }
+function lbl(s, X, Y, col, p0, p1, a, bold) { a *= hdrA(Y); if (a < .01) return; g.save(); g.globalAlpha = a; const fs = clamp(p1, p0, 30); g.font = font(fs, bold ? 800 : 600); g.textAlign = 'center'; if (DAY) { RAWC++; g.shadowColor = 'rgba(236,235,231,.7)'; g.shadowBlur = 6; g.fillStyle = col[0] === '!' ? col.slice(1) : dayCol(col); } else { g.shadowColor = '#000'; g.shadowBlur = 8; g.fillStyle = col.replace('!', ''); } const hw = g.measureText(s).width / 2; if (mob || LQ) X = L(X, clamp(X, hw + 8 + (LQ ? CPR : 0), W - hw - 8), LCW);   // (07 on: names belong to the space and are cut by the screen edge like it, never dragged along)  a narrow phone: a name near the edge slides in rather than being cut; a phone held sideways: nor under the copy on the left
+  if (DAY) { g.lineWidth = 3; g.strokeStyle = 'rgba(236,235,231,.65)'; g.strokeText(s, X, Y); } g.fillText(s, X, Y); if (DAY) RAWC--; LBX[s] = { f: FN, a: +a.toFixed(2), b: [X - hw, X + hw, Y - fs, Y + fs * .3].map(Math.round) }; g.restore(); }
 /* 09 by day: each value as a plain matte tag on the graphite, no glow or outline: its name in its colour, a short line of that colour
    to the left tying it to its domain, the line under it in light grey */
 function tag9(p, X, Y, px, a) { a *= hdrA(Y); if (a < .01) return; const [, , name, col, sub] = p; g.save(); RAWC++; g.globalAlpha = a; g.shadowBlur = 0;
@@ -1113,13 +1119,13 @@ function tag9(p, X, Y, px, a) { a *= hdrA(Y); if (a < .01) return; const [, , na
   const w = Math.max(w1, w2) + 34, h = fs + fs2 + 22; if (mob || LQ) X = L(X, clamp(X, w / 2 + 8 + (LQ ? CPR : 0), W - w / 2 - 8), LCW);
   const x0 = X - w / 2, y0 = Y - fs - 8; g.fillStyle = 'rgba(30,34,39,.9)'; g.beginPath(); g.roundRect(x0, y0, w, h, 10); g.fill();
   g.fillStyle = col; g.fillRect(x0 + 12, y0 + 10, 3, h - 20);
-  g.textAlign = 'left'; g.font = font(fs, 800); g.fillStyle = '#ffffff'; g.fillText(name, x0 + 24, Y); g.font = font(fs2, 600); g.fillStyle = '#d5dbe0'; g.fillText(sub, x0 + 24, Y + fs2 + 7);
+  g.textAlign = 'left'; g.font = font(fs, 800); g.fillStyle = '#ffffff'; g.fillText(name, x0 + 24, Y); g.font = font(fs2, 600); g.fillStyle = '#deded8'; g.fillText(sub, x0 + 24, Y + fs2 + 7);
   LBX[name] = { f: FN, a: +a.toFixed(2), b: [x0, x0 + w, y0, y0 + h].map(Math.round) }; RAWC--; g.restore(); }
 /* 07, phones: each lane's name as a small chip hung at its lane in the space: the name only, its colour says allowed / closed. Not held on screen: it leaves with the scene */
 function chip7(j, X, Y, a) { a *= hdrA(Y); if (a < .01) return; const [, name, ok] = S7.lanes[j], fs = 13;
   g.save(); if (DAY) RAWC++; g.globalAlpha = a; g.font = font(fs, 700); const w = g.measureText(name).width + 24, h = fs + 12;
-  g.fillStyle = DAY ? 'rgba(255,255,255,.94)' : 'rgba(8,12,14,.86)'; g.beginPath(); g.roundRect(X - w / 2, Y - h / 2, w, h, h / 2); g.fill(); g.strokeStyle = ok ? 'rgba(46,224,150,.8)' : 'rgba(255,107,128,.9)'; g.lineWidth = 1.25; g.stroke();
-  g.fillStyle = DAY ? (ok ? '#0c8a5c' : '#c8344c') : ok ? '#7ff0c0' : '#ffa3b0'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(name, X, Y + 1); LBX['lane' + j] = { f: FN, a: +a.toFixed(2), b: [X - w / 2, X + w / 2, Y - h / 2, Y + h / 2].map(Math.round), fs }; if (DAY) RAWC--; g.restore(); }
+  g.fillStyle = DAY ? 'rgba(233,232,230,.94)' : 'rgba(8,12,14,.86)'; g.beginPath(); g.roundRect(X - w / 2, Y - h / 2, w, h, h / 2); g.fill(); g.strokeStyle = ok ? 'rgba(46,224,150,.8)' : 'rgba(255,107,128,.9)'; g.lineWidth = 1.25; g.stroke();
+  g.fillStyle = DAY ? (ok ? '#197653' : '#b43c50') : ok ? '#7ff0c0' : '#ffa3b0'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(name, X, Y + 1); LBX['lane' + j] = { f: FN, a: +a.toFixed(2), b: [X - w / 2, X + w / 2, Y - h / 2, Y + h / 2].map(Math.round), fs }; if (DAY) RAWC--; g.restore(); }
 /* 10: your message in a bubble */
 function msgB(s, X, Y, px, a) { g.save(); g.globalAlpha = a; g.font = font(px, 600); const w = g.measureText(s).width + px * 1.4, h = px * 2.1;
   g.shadowColor = 'rgba(20,184,154,.6)'; g.shadowBlur = 24; g.fillStyle = '#14b89a'; g.beginPath(); g.roundRect(X - w / 2, Y - h, w, h, h / 2); g.fill(); g.shadowBlur = 0;
@@ -1288,7 +1294,7 @@ function frame(now) {
   setCam(P, Lk, L(ca.sx, cb.sx, pu), L(ca.sy, cb.sy, pu));
 
   g.setTransform(DPR, 0, 0, DPR, 0, 0);
-  RAWC++; const sk = g.createLinearGradient(0, 0, 0, H); if (DAY) { sk.addColorStop(0, '#f6f8fa'); sk.addColorStop(.5, '#edf1f4'); sk.addColorStop(1, '#e3e8ec'); } else { sk.addColorStop(0, '#05070a'); sk.addColorStop(.5, '#080b0e'); sk.addColorStop(1, '#090c10'); }
+  RAWC++; const sk = g.createLinearGradient(0, 0, 0, H); if (DAY) { sk.addColorStop(0, '#ecebe7'); sk.addColorStop(.5, '#e4e3dd'); sk.addColorStop(1, '#d7d9d2'); } else { sk.addColorStop(0, '#05070a'); sk.addColorStop(.5, '#080b0e'); sk.addColorStop(1, '#090c10'); }
   g.fillStyle = sk; g.fillRect(0, 0, W, H); RAWC--;
   const hz = pr(GC[0], 0, 140); if (hz && !OFF.includes('h')) glow(hz.x, hz.y, W * .6, '#f0b90b', .035 * sm(sg(t, .4, 1)));
 

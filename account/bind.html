@@ -7,42 +7,32 @@
 <title>3dtrading · 连接币安子账户</title>
 <script>/* day / night follows the website (localStorage '3dt.theme'); night is the default */
 try{document.documentElement.dataset.theme=localStorage.getItem('3dt.theme')==='day'?'day':'night'}catch(e){document.documentElement.dataset.theme='night'}</script>
-<link rel="stylesheet" href="page.css?v=20261112-r21">
+<link rel="stylesheet" href="page.css?v=20261113-r31">
 <link rel="stylesheet" href="bind-bn.css?v=20261113-r28">
 <style>
-/* same world as the sign-in page: dark ground, soft mint/gold glow, a glass card on the right */
-body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(90% 60% at 88% 0%,rgba(47,220,188,.10),transparent 60%),radial-gradient(70% 55% at 0% 100%,rgba(232,184,74,.07),transparent 60%)}
-.bar{background:rgba(7,9,10,.88)}
-.bd{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,460px);gap:clamp(28px,4vw,64px);max-width:1360px;margin:0 auto;padding:clamp(24px,5vh,56px) clamp(20px,4vw,56px) 72px}
-
-/* left: headline + one short looping excerpt of the Binance setup */
-.intro{position:sticky;top:calc(var(--barH) + env(safe-area-inset-top) + clamp(24px,5vh,56px));align-self:start;min-width:0}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:650;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin:0 0 14px}
-.eyebrow::before{content:"";width:18px;height:2px;border-radius:2px;background:linear-gradient(90deg,#e8b84a,var(--brand))}
-.intro h1{font-size:clamp(30px,3.1vw,46px);line-height:1.08;letter-spacing:-.025em;margin:0 0 14px;font-weight:780;max-width:14em}
-.intro h1 em{font-style:normal;background:linear-gradient(92deg,#f5d27a 0%,#e8b84a 30%,var(--brand) 75%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.lede{font-size:15.5px;line-height:1.65;color:var(--ink2);margin:0 0 26px;max-width:34em}
-.clip{border-radius:22px;padding:8px;background:linear-gradient(180deg,rgba(22,27,30,.7),rgba(12,15,17,.75));box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 30px 80px -36px rgba(47,220,188,.35)}
-.stage{position:relative;height:clamp(300px,44vh,440px);overflow:hidden;border-radius:16px;background:#000;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-.stage .bn{transition:transform .7s cubic-bezier(.45,0,.2,1)}
-.cap{display:flex;align-items:center;gap:12px;padding:12px 8px 6px 10px}
-.cap-tx{flex:1;min-width:0;transition:opacity .3s}
-.cap-tx.fade{opacity:0}
-.cap-tx strong{display:block;font-size:15px;font-weight:700;line-height:1.35}
-.cap-tx span{display:block;font-size:13px;line-height:1.5;color:var(--ink2)}
-.cap .tagx{flex:none;font-size:11px;font-weight:650;color:var(--ink3);letter-spacing:.04em}
-.cb{appearance:none;border:0;flex:none;width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.06);color:var(--ink2);cursor:pointer;display:grid;place-items:center}
-.cb:hover{color:var(--ink);background:rgba(255,255,255,.1)}
-.cb svg{width:15px;height:15px;fill:currentColor}
-.srcl{margin:10px 2px 0;font-size:11.5px;line-height:1.5;color:var(--ink3)}
-
-/* right: the card, as on the sign-in page */
-.card{position:relative;min-width:0;padding:28px 28px 24px;border-radius:28px;background:linear-gradient(180deg,rgba(22,27,30,.8),rgba(12,15,17,.85));-webkit-backdrop-filter:blur(22px) saturate(1.3);backdrop-filter:blur(22px) saturate(1.3);box-shadow:inset 0 0 0 1px rgba(255,255,255,.09),inset 0 1px 0 rgba(255,255,255,.06),0 40px 90px -40px rgba(0,0,0,.8)}
-.card::before{content:"";position:absolute;left:28px;right:28px;top:-1px;height:1px;background:linear-gradient(90deg,transparent,rgba(47,220,188,.7),rgba(232,184,74,.6),transparent)}
-.phd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:16px}
-.phd h2{font-size:22px;letter-spacing:-.015em;margin:0 0 6px;font-weight:740}
-.phd p{margin:0;color:var(--ink3);font-size:13.5px;line-height:1.55}
-.skip{flex:none;height:36px;padding:0 12px;border-radius:10px;font-size:13px;font-weight:650;white-space:nowrap}
+/* A quiet two-column workspace; the form leads in both DOM and reading order. */
+body::before{display:none}
+.bar{background:var(--bg);border-bottom:0;box-shadow:none}
+.bd{position:relative;max-width:1100px;margin:0 auto;padding:48px 32px 64px;display:grid;grid-template-columns:minmax(0,480px) minmax(0,1fr);gap:40px 72px;align-items:start}
+.page-heading{grid-column:1/-1}
+.page-heading h1{margin:0 0 12px;font-size:36px;line-height:1.15;letter-spacing:-.04em;font-weight:650}
+.page-heading p{margin:0;color:var(--ink2);font-size:15px;line-height:1.6}
+.card{min-width:0;padding:0;background:none;border:0;border-radius:0;box-shadow:none;backdrop-filter:none}
+.phd{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+.phd h2{font-size:16px;font-weight:600;margin:0}.phd p{font-size:13px;color:var(--ink3);line-height:1.5;margin:6px 0 0}.phd p:empty{display:none}
+.btn.ghost.skip{font-size:13px;min-height:36px;padding:0;background:none!important;border:0;box-shadow:none;color:var(--ink2)}
+.intro{min-width:0;position:sticky;top:100px;padding-top:4px}
+summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:40px;font-size:14px;color:var(--ink2)}
+summary::-webkit-details-marker{display:none}summary::after{content:'+';font-size:18px;font-weight:400}details[open]>summary::after{content:'−'}
+summary:focus-visible{outline:2px solid var(--brand);outline-offset:4px}
+.clip{margin-top:16px;background:#000;border:1px solid #24282b;border-radius:12px;overflow:hidden}
+.stage{position:relative;min-height:340px;background:#000;overflow:hidden}
+.cap{display:flex;align-items:center;gap:12px;padding:20px;border-top:1px solid #202427;color:#eaecef}
+.cap-tx{flex:1;min-width:0;transition:opacity .3s}.cap-tx.fade{opacity:0}
+.cap-tx strong{display:block;font-size:14px;font-weight:600;line-height:1.5}.cap-tx span{display:block;margin-top:4px;font-size:12px;color:#9da5ad;line-height:1.6}
+.cb{appearance:none;border:0;background:transparent;color:#eaecef;flex:none;width:40px;height:40px;display:grid;place-items:center;cursor:pointer}.cb svg{width:16px;height:16px;fill:currentColor}
+.source-note{margin-top:12px}.source-note summary{font-size:12px;color:var(--ink3)}.srcl{font-size:12px;line-height:1.7;color:var(--ink3);margin:8px 0}
+.optional-field{margin:0 0 18px}.optional-field summary{justify-content:flex-start;font-size:12px;min-height:30px;color:var(--ink3)}.optional-field[open] .fld{margin-top:12px}
 .welcome{display:none;margin:0 0 14px}
 .welcome.on{display:flex}
 .list{margin:0 0 16px;display:grid;grid-template-columns:minmax(0,1fr);gap:6px}
@@ -62,21 +52,19 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .icb.rm:hover{color:var(--bad)}
 .icb svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .icb.sure{width:auto;padding:0 10px;background:rgba(255,99,105,.14);color:var(--bad);font-size:12px;font-weight:700}
-.card .inp input{background:rgba(0,0,0,.32);height:44px}
-
+ .card .inp input{height:46px;background:var(--sf)}
 /* several sub-accounts at once: one block per sub-account, each with its own errors */
 .rows{display:grid;gap:12px;margin:0 0 10px}
-.arow{padding:14px 14px 4px;border-radius:16px;background:rgba(0,0,0,.24);box-shadow:inset 0 0 0 1px var(--line)}
+.arow{padding:0;background:none;border-radius:0;box-shadow:none}.arow+.arow{padding-top:24px;border-top:1px solid var(--line)}
 .arow.bad{box-shadow:inset 0 0 0 1.5px rgba(255,99,105,.55)}
 .arow-h{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:-2px 0 10px}
 .arow-h b{font-size:12.5px;font-weight:700;color:var(--ink3);letter-spacing:.02em}
 .arow-h .icb{width:30px;height:30px}
-.arow .fld{margin-bottom:10px}
+.arow .fld{margin-bottom:18px}
 .rerr{display:none;margin:-2px 0 10px;font-size:12.5px;line-height:1.5;color:#ff9a9e}
 .arow.bad .rerr{display:block}
 .r2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.addrow{appearance:none;width:100%;height:44px;border:1.5px dashed rgba(255,255,255,.16);border-radius:13px;background:none;color:var(--ink2);font-size:13.5px;font-weight:650;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 6px}
-.addrow:hover{border-color:rgba(47,220,188,.55);color:var(--ink)}
+.addrow{appearance:none;display:flex;align-items:center;gap:8px;min-height:36px;margin:0 0 16px;padding:0;border:0;background:none;color:var(--ink2);font-size:13px;cursor:pointer}.addrow:hover{color:var(--ink)}
 .addrow svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .addrow[hidden]{display:none}
 .sum{margin:0 0 12px}
@@ -90,8 +78,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .mini-ips button{appearance:none;border:0;font-family:var(--mono);font-size:11.5px;padding:2px 7px;border-radius:6px;background:var(--sf3);color:var(--ink);cursor:pointer}
 .mini-ips button:hover{background:#262d31}
 .tag{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;font-size:11px;font-weight:650;background:rgba(240,177,0,.14);color:#f5c84b;white-space:nowrap}
-#go{height:50px;font-size:15.5px;box-shadow:0 12px 30px -10px rgba(47,220,188,.65)}
-.safe{margin:12px 0 0;font-size:12px;padding:10px 12px}
+#go{height:48px;font-size:15px;box-shadow:none;border-radius:8px}
+.safe{margin:14px 0 0;font-size:12px;padding:0;background:none!important;border:0;box-shadow:none;color:var(--ink3);line-height:1.6}.safe svg{display:none}
 
 /* result */
 #resView{display:none}
@@ -131,33 +119,23 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .toast.on{opacity:1;transform:translate(-50%,0)}
 [hidden]{display:none!important}
 
-@media (max-width:1180px) and (min-width:901px){.bd{grid-template-columns:minmax(0,1fr) 400px}}
-/* phone / tablet: one column, same excerpt on top, normal page scroll so the keyboard never hides a field */
-@media (max-width:900px){
-  :root{--barH:56px}
-  .bar{padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
-  .bar .logo img{height:19px}
-  .demo-pill{display:none}
-  .bd{display:block;padding:20px max(14px,env(safe-area-inset-right)) max(32px,env(safe-area-inset-bottom)) max(14px,env(safe-area-inset-left))}
-  .intro{position:static;padding:0 6px}
-  .eyebrow{font-size:11.5px;margin-bottom:8px}
-  .intro h1{font-size:27px;margin-bottom:8px}
-  .lede{font-size:14.5px;margin-bottom:16px;color:#c8d1ce}
-  .clip{margin:0 -6px;border-radius:20px;padding:6px}
-  .stage{height:clamp(210px,62vw,330px);border-radius:14px}
-  .cap{padding:10px 6px 4px 8px}
-  .cap-tx strong{font-size:14.5px}.cap-tx span{font-size:12.5px}
-  .card{margin-top:18px;padding:22px 16px 18px;border-radius:24px}
-  .phd h2{font-size:20px}
-  .inp input{font-size:16px}
-  .arow{padding:12px 12px 2px}
+@media(max-width:900px){
+.bd{max-width:600px;grid-template-columns:minmax(0,1fr);padding:32px 24px 48px;gap:28px}
+.page-heading h1{font-size:30px}.page-heading{grid-column:auto}.intro{position:static;padding:12px 0 0;border-top:1px solid var(--line)}
+.bar .logo img{height:19px}.card .inp input{font-size:16px}
 }
-@media (max-width:400px){.r2{grid-template-columns:1fr;gap:0}.skip{padding:0 10px}.cap .tagx{display:none}}
-@media (orientation:landscape) and (max-height:500px) and (max-width:900px){.stage{height:min(70vh,300px)}}
-@media (prefers-reduced-motion:reduce){.cap-tx{transition:none}}
-.stage{height:auto;min-height:340px}
+@media(max-width:400px){.bd{padding-left:20px;padding-right:20px}.r2{grid-template-columns:1fr;gap:0}}
+@media(prefers-reduced-motion:reduce){.cap-tx{transition:none}}
 </style>
-<link rel="stylesheet" href="day.css?v=20261112-r21">
+<link rel="stylesheet" href="day.css?v=20261113-r31">
+<style>
+html[data-theme="day"] body::before{display:none}
+html[data-theme="day"] .card,html[data-theme="day"] .arow{background:none;box-shadow:none;border:0;backdrop-filter:none}
+html[data-theme="day"] .card::before{display:none}
+html[data-theme="day"] .arow.bad{box-shadow:inset 0 0 0 1.5px rgba(209,52,60,.55)}
+html[data-theme="day"] .clip{background:#000;box-shadow:none;border-color:#24282b}
+html[data-theme="day"] .cap-tx strong{color:#eaecef}html[data-theme="day"] .cap-tx span{color:#9da5ad}
+</style>
 <link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/dodo-180.png?v=20261112">
 <link rel="manifest" href="../manifest.webmanifest?v=20261112">
@@ -166,33 +144,21 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#06090b">
-<script>(function(){function tc(){var m=document.querySelector('meta[name=theme-color]');if(m)m.content=document.documentElement.dataset.theme==='day'?'#e6eaee':'#06090b'}tc();addEventListener('td:theme',tc)})()</script>
+<script>(function(){function tc(){var m=document.querySelector('meta[name=theme-color]');if(m)m.content=document.documentElement.dataset.theme==='day'?'#f1f0ef':'#06090b'}tc();addEventListener('td:theme',tc)})()</script>
 </head>
 <body>
 <header class="bar">
   <a class="logo" href="#" data-href="site" data-i18n-attr="aria-label:acct.toSite"><img class="lg-n" src="assets/3dtrading-logo-white.svg" alt="3dtrading" width="91" height="22"><img class="lg-d" src="assets/3dtrading-logo.svg" alt="3dtrading" width="91" height="22"></a>
   <span class="sp"></span>
-  <span class="demo-pill" data-i18n="bind.pill">演示 · 未连接币安</span>
   <div id="lang"></div>
   <button type="button" class="av-btn ini" id="av"></button>
 </header>
 
 <main class="bd">
-  <section class="intro" aria-labelledby="hh">
-    <p class="eyebrow" data-i18n="bind.eyebrow">第 2 步 · 连接子账户</p>
-    <h1 id="hh" data-i18n-html="bind.h1">把币安子账户<br><em>交给策略运行</em></h1>
-    <p class="lede" data-i18n="bind.lede">每个子账户一组独立 API。可以一次连接多个，也可以先跳过。</p>
-    <div class="clip" id="car" data-i18n-attr="aria-label:bind.carL" role="region">
-      <div class="stage" id="stage" aria-hidden="true"><div class="bn" id="bn"></div></div>
-      <div class="cap">
-        <div class="cap-tx" id="capTx" aria-live="off"><strong id="ct"></strong><span id="cx"></span></div>
-        <span class="tagx" data-i18n="bind.excerpt">节选 · 自动播放</span>
-        <button type="button" class="cb" id="cPlay"></button>
-      </div>
-    </div>
-    <p class="srcl" id="srcl"></p>
-  </section>
-
+  <header class="page-heading">
+    <h1 id="hh" data-i18n="bind.h1">连接币安</h1>
+    <p data-i18n="bind.lede">填写子账户 API，即可开始配置。</p>
+  </header>
   <section class="card boot" id="panel" aria-labelledby="formH">
     <div class="note good welcome" id="welcome" role="status"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="bind.welcome">演示账号已创建。</span></div>
     <div class="phd">
@@ -223,11 +189,24 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 
     <div id="resView" aria-live="polite"></div>
   </section>
+  <aside class="intro" aria-label="API setup">
+    <details id="tutorial" open>
+      <summary data-i18n="bind.tutorial">如何设置 API</summary>
+    <div class="clip" id="car" data-i18n-attr="aria-label:bind.carL" role="region">
+      <div class="stage" id="stage" aria-hidden="true"><div class="bn" id="bn"></div></div>
+      <div class="cap">
+        <div class="cap-tx" id="capTx" aria-live="off"><strong id="ct"></strong><span id="cx"></span></div>
+        <button type="button" class="cb" id="cPlay"></button>
+      </div>
+    </div>
+    </details>
+    <details class="source-note"><summary data-i18n="bind.aboutDemo">关于演示</summary><p class="srcl" id="srcl"></p></details>
+  </aside>
 </main>
 
 <div class="toast" id="toast" role="status"></div>
 
-<script src="td-account.js?v=20261112-r21"></script>
+<script src="td-account.js?v=20261113-r31"></script>
 <script src="bind-steps.js?v=20261113-r28"></script>
 <script src="bind-bn.js?v=20261113-r28"></script>
 <script>
@@ -252,15 +231,15 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
     zh: {
       'bind.bootErr': '页面没有完整加载，请刷新后再试。已绑定的账户不会受影响。', 'acct.demo.name': '示例账户', 'acct.demo.sub': '示例数据 · 未连接币安', 'acct.demo.st': '示例数据 · 未连接币安', 'bind.demoTag': '演示',
       'bind.title': '3dtrading · 连接币安子账户', 'bind.pill': '演示 · 未连接币安',
-      'bind.eyebrow': '连接币安子账户', 'bind.h1': '把币安子账户<br><em>交给策略运行</em>',
-      'bind.lede': '每个子账户使用一组独立 API，策略只在子账户内运行，与主账户其他资产隔离。可以一次连接多个，也可以先跳过。',
+      'bind.eyebrow': '连接币安子账户', 'bind.h1': '连接币安', 'bind.tutorial': '如何设置 API', 'bind.aboutDemo': '关于演示', 'bind.optionalLabel': '添加 API 标签（选填）',
+      'bind.lede': '使用子账户 API，策略仅在子账户内运行。',
       'bind.welcome': '演示账号已创建。可以现在连接，也可以先跳过。',
       'bind.skip': '暂时跳过', 'bind.back': '返回后台',
       'bind.carL': '币安 API 设置示意（节选，自动播放）', 'bind.excerpt': '节选 · 自动播放', 'bind.cPlay': '继续播放', 'bind.cPause': '暂停播放',
       'bind.srcl': '代码复刻的币安网页示意（节选），非实时页面；名称、UID 与密钥均为虚构示例。依据 {g} 配置指南与币安官方 FAQ，{d} 核对。',
       'bind.ipPend': '示例白名单 IP',
       'bind.listH': '已连接 {n} 个子账户', 'bind.current': '当前', 'bind.recheck': '重新校验', 'bind.remove': '移除', 'bind.sure': '确认移除', 'bind.removed': '已移除 {name}',
-      'bind.newT': '连接币安子账户', 'bind.newS': '填写子账户和它的 API。有多个子账户时，点「再添加一个」一起提交。',
+      'bind.newT': '账户信息', 'bind.newS': '',
       'bind.addT': '再连接子账户', 'bind.addS': '每个子账户使用自己的 API，可以一次添加多个。',
       'bind.demoP': '这是后台为你准备的示例账户：收益、持仓和交易全部是模拟数据，没有连接币安，也不会下单。它不需要也不能填写 API。',
       'bind.demoKeys': '无（示例账户不使用 API）', 'bind.demoNote': '示例账户不能做接入测试或重新校验。想看真实数据，请连接你自己的币安子账户；不需要时可以删除它。', 'bind.demoReal': '连接真实子账户',
@@ -269,12 +248,12 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
       'bind.fName': '子账户名称', 'bind.fNamePh': '例如 3dtUSDT01', 'bind.fUid': '子账户 UID', 'bind.fUidPh': '用户 ID',
       'bind.fLabel': 'API 标签', 'bind.optional': '选填',
       'bind.fKey': 'API Key', 'bind.fKeyPh': '在币安点 Copy 后粘贴', 'bind.fSec': 'Secret Key', 'bind.fSecPh': '只显示一次，点 Copy 后粘贴', 'bind.show': '显示或隐藏 Secret Key',
-      'bind.checkH': '已在币安完成（对以上所有子账户）',
+      'bind.checkH': '确认账户设置',
       'bind.ck1': '子账户已 <b>允许合约</b>，并已 <b>开通统一账户</b>',
       'bind.ck2': '<b>只访问受信任的 IP</b>，两个 IP 已保存',
-      'bind.ck3': '已核对最小权限边界：<b>提款与跨账户转账已关闭</b>（申赎操作权限按协议另行确认）',
+      'bind.ck3': '<b>提款与跨账户转账已关闭</b>',
       'bind.go': '检查并保存', 'bind.goN': '检查并保存这 {n} 个', 'bind.cancel': '取消',
-      'bind.safe': '演示：只在本页检查格式，不连接币安。密钥不发送、不保存，检查后立即清空；保存的子账户状态为「待接入测试」。',
+      'bind.safe': '演示模式 · 仅检查格式，不连接币安。密钥不发送、不保存。',
       'bind.e.name': '请填写子账户名称。', 'bind.e.uid': 'UID 是 6–12 位数字。', 'bind.e.dup': '这个子账户已经连接过了。要更新密钥，请在上面的列表里点「重新校验」。',
       'bind.e.dupName': '和本次填写的另一个子账户重名。', 'bind.e.dupUid': '和本次填写的另一个子账户 UID 相同。', 'bind.e.keyRow': '这组密钥在另一个子账户里已经用过。每个子账户要用它自己的 API。',
       'bind.e.key': 'API Key 应为 64 位字母和数字。请用币安页面上的 Copy 按钮完整复制。', 'bind.e.sec': 'Secret Key 应为 64 位字母和数字。只显示一次，丢了需要重建 API。',
@@ -301,15 +280,15 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
     en: {
       'bind.bootErr': 'The page did not finish loading. Please refresh and try again. Your linked accounts are not affected.', 'acct.demo.name': 'Sample account', 'acct.demo.sub': 'Sample data · not connected to Binance', 'acct.demo.st': 'Sample data · not connected to Binance', 'bind.demoTag': 'Demo',
       'bind.title': '3dtrading · Connect Binance sub-accounts', 'bind.pill': 'Demo · Binance not connected',
-      'bind.eyebrow': 'Connect Binance sub-accounts', 'bind.h1': 'Let the strategy run<br><em>in your sub-account</em>',
-      'bind.lede': 'Each sub-account uses its own API key, and the strategy stays inside it, apart from the rest of your main account. Connect several at once, or skip for now.',
+      'bind.eyebrow': 'Connect Binance sub-accounts', 'bind.h1': 'Connect Binance', 'bind.tutorial': 'How to set up your API', 'bind.aboutDemo': 'About this demo', 'bind.optionalLabel': 'Add an API label (optional)',
+      'bind.lede': 'Use a sub-account API. The strategy runs inside that account.',
       'bind.welcome': 'Demo account created. Connect now, or skip for now.',
       'bind.skip': 'Skip for now', 'bind.back': 'Back to dashboard',
       'bind.carL': 'Binance API setup preview (excerpt, plays on its own)', 'bind.excerpt': 'Excerpt · auto-play', 'bind.cPlay': 'Play', 'bind.cPause': 'Pause',
       'bind.srcl': 'A coded excerpt of Binance’s website, not a live page; names, UIDs and keys are made-up examples. Based on the {g} setup guide and Binance’s FAQs, checked {d}.',
       'bind.ipPend': 'Example whitelist IPs',
       'bind.listH': '{n} connected', 'bind.current': 'Current', 'bind.recheck': 'Check again', 'bind.remove': 'Remove', 'bind.sure': 'Remove?', 'bind.removed': 'Removed {name}',
-      'bind.newT': 'Connect Binance sub-accounts', 'bind.newS': 'Enter a sub-account and its API key. Have several? Use “Add another” and submit them together.',
+      'bind.newT': 'Account details', 'bind.newS': '',
       'bind.addT': 'Connect more sub-accounts', 'bind.addS': 'Each sub-account uses its own API key. You can add several at once.',
       'bind.demoP': 'A sample account set up for you in the dashboard. Its returns, positions and trades are all simulated. It is not connected to Binance and places no orders. It needs no API and cannot take one.',
       'bind.demoKeys': 'None (the sample account uses no API)', 'bind.demoNote': 'The sample account cannot be connection-tested or checked again. To see real data, connect your own Binance sub-account. You can delete the sample account when you no longer need it.', 'bind.demoReal': 'Connect a real sub-account',
@@ -318,12 +297,12 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
       'bind.fName': 'Sub-account name', 'bind.fNamePh': 'e.g. 3dtUSDT01', 'bind.fUid': 'Sub-account UID', 'bind.fUidPh': 'User ID',
       'bind.fLabel': 'API label', 'bind.optional': 'Optional',
       'bind.fKey': 'API Key', 'bind.fKeyPh': 'Click Copy on Binance, then paste', 'bind.fSec': 'Secret Key', 'bind.fSecPh': 'Shown once; click Copy, then paste', 'bind.show': 'Show or hide the Secret Key',
-      'bind.checkH': 'Done on Binance (for every sub-account above)',
+      'bind.checkH': 'Confirm account settings',
       'bind.ck1': 'The sub-account has <b>futures enabled</b> and <b>Portfolio Margin</b> on',
       'bind.ck2': '<b>Trusted IPs only</b>, both IPs saved',
-      'bind.ck3': 'Minimum permission boundary verified: <b>withdrawals and cross-account transfers are off</b> (subscription/redemption permissions confirmed separately per agreement)',
+      'bind.ck3': '<b>Withdrawals and cross-account transfers are off</b>',
       'bind.go': 'Check and save', 'bind.goN': 'Check and save all {n}', 'bind.cancel': 'Cancel',
-      'bind.safe': 'Demo: the format is checked on this page only and Binance is not contacted. Keys are never sent or stored and are cleared right after the check; saved sub-accounts show “Awaiting connection test”.',
+      'bind.safe': 'Demo · Format check only. Binance is not connected. Keys are never sent or stored.',
       'bind.e.name': 'Enter the sub-account name.', 'bind.e.uid': 'The UID is 6–12 digits.', 'bind.e.dup': 'This sub-account is already connected. To update its keys, use “Check again” in the list above.',
       'bind.e.dupName': 'Another sub-account in this form has the same name.', 'bind.e.dupUid': 'Another sub-account in this form has the same UID.', 'bind.e.keyRow': 'These keys are already used by another sub-account here. Each sub-account needs its own API key.',
       'bind.e.key': 'The API Key is 64 letters and digits. Use the Copy button on Binance to copy all of it.', 'bind.e.sec': 'The Secret Key is 64 letters and digits. It is shown only once; if you lost it, create a new key.',
@@ -376,7 +355,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
   var stage = $('#stage'), bn = $('#bn');
   function later(fn, ms) { C.timers.push(setTimeout(fn, ms)); }
   function stop() { C.timers.forEach(clearTimeout); C.timers = []; }
-  function running() { return C.playing && C.vis; }
+  function running() { return C.playing && C.vis && $('#tutorial').open; }
   var DWELL = 4600;
   function box(el) { var r = el.getBoundingClientRect(), b = bn.getBoundingClientRect(); return { x: r.left - b.left, y: r.top - b.top, w: r.width, h: r.height }; }
   function draw(anim) {
@@ -427,6 +406,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
       later(function () { show(C.i + 1, true); }, 420);
     }, DWELL);
   }
+  $('#tutorial').open = !mobile.matches;
+  $('#tutorial').addEventListener('toggle', function () { stop(); if (this.open) { draw(false); caption(); schedule(); } });
   // plays on its own and loops; the only control is pause (WCAG 2.2.2). No step numbers, no paging.
   $('#cPlay').addEventListener('click', function () { C.playing = !C.playing; stop(); caption(); if (C.playing) schedule(); });
   document.addEventListener('visibilitychange', function () { C.vis = !document.hidden; stop(); if (C.vis) schedule(); });
@@ -466,7 +447,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
       fld('name', 'bind.fName', '<div class="inp"><input name="' + p + 'name" maxlength="40" autocomplete="off" spellcheck="false" data-i18n-attr="placeholder:bind.fNamePh"></div>') +
       fld('uid', 'bind.fUid', '<div class="inp"><input name="' + p + 'uid" inputmode="numeric" maxlength="12" autocomplete="off" class="mono" data-i18n-attr="placeholder:bind.fUidPh"></div>') +
       '</div>' +
-      fld('label', 'bind.fLabel', '<div class="inp"><input name="' + p + 'label" maxlength="40" autocomplete="off" spellcheck="false" placeholder="' + esc(B.labelEx) + '"></div>', true) +
+      '<details class="optional-field"><summary data-i18n="bind.optionalLabel"></summary>' + fld('label', 'bind.fLabel', '<div class="inp"><input name="' + p + 'label" maxlength="40" autocomplete="off" spellcheck="false" placeholder="' + esc(B.labelEx) + '"></div>', true) + '</details>' +
       fld('key', 'bind.fKey', '<div class="inp"><input name="' + p + 'key" class="mono" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-i18n-attr="placeholder:bind.fKeyPh"></div>') +
       '<label class="fld has-eye-wrap" data-f="sec"><span><span data-i18n="bind.fSec"></span></span><div class="inp has-eye"><input name="' + p + 'sec" type="password" class="mono" autocomplete="new-password" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-i18n-attr="placeholder:bind.fSecPh"><button type="button" class="eye" data-eye aria-pressed="false" data-i18n-attr="aria-label:bind.show">' + IC.eye + '</button></div><div class="msg"></div></label>' +
       '<p class="rerr" data-i18n="bind.e.rowKeys"></p>';
@@ -685,7 +666,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
     }
     if ((t = e.target.closest('[data-acc]'))) { S.rm = null; A.setActive(t.dataset.acc); showRes(t.dataset.acc); return; }
     if (e.target.closest('[data-add]')) { showForm(); inp(rows()[0], 'name').focus(); return; }
-    if (e.target.closest('[data-seestep]')) { C.playing = false; show(PERM_CLIP, false); $('#car').scrollIntoView({ block: 'center', behavior: RM.matches ? 'auto' : 'smooth' }); return; }
+    if (e.target.closest('[data-seestep]')) { C.playing = false; $('#tutorial').open = true; show(PERM_CLIP, false); $('#car').scrollIntoView({ block: 'center', behavior: RM.matches ? 'auto' : 'smooth' }); return; }
     if ((t = e.target.closest('[data-sim]'))) {
       var sim = t.dataset.sim, cur = find(S.resId); if (!cur || A.isDemo(cur)) return;
       A.upsertAccount({ id: cur.id, status: sim === 'ok' ? 'verified' : 'failed', reason: sim === 'ok' ? '' : sim, checkedAt: Date.now() });

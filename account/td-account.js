@@ -22,7 +22,7 @@
       sessionStorage.removeItem('td-door');
       if (Date.now() - dt < 5000) {
         var rm = global.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, st = document.createElement('style');
-        st.textContent = 'html.td-arrive::after{content:"";position:fixed;inset:0;z-index:2147483647;background:' + (themeKey() === 'day' ? '#e6eaee' : '#06090b') + ';pointer-events:none;animation:tdArrive ' + (rm ? '.2s' : '.6s .08s') + ' cubic-bezier(.3,0,.2,1) forwards}@keyframes tdArrive{to{opacity:0;visibility:hidden}}';
+        st.textContent = 'html.td-arrive::after{content:"";position:fixed;inset:0;z-index:2147483647;background:' + (themeKey() === 'day' ? '#f1f0ef' : '#06090b') + ';pointer-events:none;animation:tdArrive ' + (rm ? '.2s' : '.6s .08s') + ' cubic-bezier(.3,0,.2,1) forwards}@keyframes tdArrive{to{opacity:0;visibility:hidden}}';
         (document.head || document.documentElement).appendChild(st); document.documentElement.classList.add('td-arrive');
         setTimeout(function () { document.documentElement.classList.remove('td-arrive'); }, 1000);
       }
@@ -260,7 +260,7 @@
   /* ---------- UI: styles ---------- */
   function ensureCss() {
     if (document.getElementById('tda-css')) return;
-    var l = document.createElement('link'); l.id = 'tda-css'; l.rel = 'stylesheet'; l.href = base + 'td-account.css?v=20261112-r21';
+    var l = document.createElement('link'); l.id = 'tda-css'; l.rel = 'stylesheet'; l.href = base + 'td-account.css?v=20261113-r31';
     document.head.appendChild(l);
   }
 
