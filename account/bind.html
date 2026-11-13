@@ -8,7 +8,7 @@
 <script>/* day / night follows the website (localStorage '3dt.theme'); night is the default */
 try{document.documentElement.dataset.theme=localStorage.getItem('3dt.theme')==='day'?'day':'night'}catch(e){document.documentElement.dataset.theme='night'}</script>
 <link rel="stylesheet" href="page.css?v=20261112-r21">
-<link rel="stylesheet" href="bind-bn.css?v=20261111-3">
+<link rel="stylesheet" href="bind-bn.css?v=20261113-r28">
 <style>
 /* same world as the sign-in page: dark ground, soft mint/gold glow, a glass card on the right */
 body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(90% 60% at 88% 0%,rgba(47,220,188,.10),transparent 60%),radial-gradient(70% 55% at 0% 100%,rgba(232,184,74,.07),transparent 60%)}
@@ -155,6 +155,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 @media (max-width:400px){.r2{grid-template-columns:1fr;gap:0}.skip{padding:0 10px}.cap .tagx{display:none}}
 @media (orientation:landscape) and (max-height:500px) and (max-width:900px){.stage{height:min(70vh,300px)}}
 @media (prefers-reduced-motion:reduce){.cap-tx{transition:none}}
+.stage{height:auto;min-height:340px}
 </style>
 <link rel="stylesheet" href="day.css?v=20261112-r21">
 <link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
@@ -227,8 +228,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 <div class="toast" id="toast" role="status"></div>
 
 <script src="td-account.js?v=20261112-r21"></script>
-<script src="bind-steps.js?v=20261111-3"></script>
-<script src="bind-bn.js?v=20261111-3"></script>
+<script src="bind-steps.js?v=20261113-r28"></script>
+<script src="bind-bn.js?v=20261113-r28"></script>
 <script>
 (function () {
   'use strict';
@@ -293,8 +294,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
       'bind.seeStep': '看权限与 IP 示意', 'bind.again': '重新校验', 'bind.toApp': '进入后台', 'bind.addMore': '再连接子账户',
       'bind.saved': '已保存 {name}', 'bind.savedN': '已保存 {n} 个子账户', 'bind.copied': '已复制 {ip}', 'bind.copy': '复制',
       'bind.c1t': '创建子账户', 'bind.c1x': '子账户 → 账户管理 → 创建子账户（虚拟邮箱）',
-      'bind.c2t': '创建 API', 'bind.c2x': 'API 管理 → 创建 API → 系统生成',
-      'bind.c3t': '复制两项密钥', 'bind.c3x': 'Secret Key 只显示一次，马上复制',
+      'bind.c2t': '创建 API', 'bind.c2x': '选择「自行设置」，填入系统生成的公钥（演示）',
+      'bind.c3t': '保存连接密钥', 'bind.c3x': 'API Key 与系统生成的私钥均为假数据，仅供演示',
       'bind.c4t': '权限与 IP 白名单', 'bind.c4x': '只开读取与交易、关闭提现；只访问受信任的 IP'
     },
     en: {
@@ -342,8 +343,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
       'bind.seeStep': 'Show permissions & IPs', 'bind.again': 'Check again', 'bind.toApp': 'Open dashboard', 'bind.addMore': 'Connect more sub-accounts',
       'bind.saved': 'Saved {name}', 'bind.savedN': 'Saved {n} sub-accounts', 'bind.copied': 'Copied {ip}', 'bind.copy': 'Copy',
       'bind.c1t': 'Create a sub-account', 'bind.c1x': 'Sub Accounts → Account Management → Create (virtual email)',
-      'bind.c2t': 'Create an API key', 'bind.c2x': 'API Management → Create API → System generated',
-      'bind.c3t': 'Copy both keys', 'bind.c3x': 'The Secret Key is shown only once; copy it now',
+      'bind.c2t': 'Create an API key', 'bind.c2x': 'Choose Self-configured and enter the generated public key (demo)',
+      'bind.c3t': 'Save connection keys', 'bind.c3x': 'API Key and generated private key are dummy data for this demo',
       'bind.c4t': 'Permissions and trusted IPs', 'bind.c4x': 'Read and trade only, withdrawals off; trusted IPs only'
     }
   });
@@ -368,9 +369,8 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
   var S = { view: 'form', editId: null, resId: null, batch: null, rm: null };
   var MAX_ROWS = 8;
 
-  /* ---------- excerpt: four key moments of the coded Binance replica, same on phone and desktop ---------- */
-  // s = scene index in bind-bn.js; the full nine-step walkthrough is no longer shown
-  var CLIPS = [{ s: 1, k: 'c1' }, { s: 5, k: 'c2' }, { s: 7, k: 'c3' }, { s: 8, k: 'c4' }].filter(function (c) { return BN && BN.scenes && BN.scenes[c.s]; });
+  /* ---------- purpose-built, responsive playback panels ---------- */
+  var CLIPS = [{ s: 0, k: 'c1' }, { s: 1, k: 'c2' }, { s: 2, k: 'c3' }, { s: 3, k: 'c4' }];
   var PERM_CLIP = CLIPS.length - 1;
   var C = { i: 0, playing: true, vis: !document.hidden, timers: [], s: 1, cur: null };
   var stage = $('#stage'), bn = $('#bn');
@@ -379,32 +379,17 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
   function running() { return C.playing && C.vis; }
   var DWELL = 4600;
   function box(el) { var r = el.getBoundingClientRect(), b = bn.getBoundingClientRect(); return { x: r.left - b.left, y: r.top - b.top, w: r.width, h: r.height }; }
-  function union(a, b) { if (!a) return b; if (!b) return a; var x = Math.min(a.x, b.x), y = Math.min(a.y, b.y); return { x: x, y: y, w: Math.max(a.x + a.w, b.x + b.w) - x, h: Math.max(a.y + a.h, b.y + b.h) - y }; }
-  function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
-  function camera(f, H) {
-    var W = stage.clientWidth, SH = stage.clientHeight, CW = bn.offsetWidth || BN.width;
-    var s = Math.min(W / CW, SH / Math.min(H, 640));
-    // small stages zoom in on the part being clicked so it stays readable
-    if (s < 0.66 && f) s = Math.min(1, Math.max(s, Math.min((W - 16) / (f.w + 40), (SH - 16) / (f.h + 40))));
-    var cw = CW * s, ch = H * s, fx = f ? (f.x + f.w / 2) * s : cw / 2, fy = f ? (f.y + f.h / 2) * s : ch / 2;
-    var tx = cw <= W ? (W - cw) / 2 : clamp(W / 2 - fx, W - cw, 0);
-    var ty = ch <= SH ? (SH - ch) / 2 : clamp(SH / 2 - fy, SH - ch, 0);
-    C.s = s;
-    return 'translate(' + Math.round(tx) + 'px,' + Math.round(ty) + 'px) scale(' + s.toFixed(4) + ')';
-  }
   function draw(anim) {
     if (!CLIPS.length) return;
-    var sc = BN.scenes[CLIPS[C.i].s], prev = bn.style.transform;
-    bn.style.transition = 'none'; bn.style.transform = 'none'; bn.style.width = '';
+    var sc = BN.clips[CLIPS[C.i].s];
+    bn.classList.add('playback'); bn.style.transform = 'none'; bn.style.width = '100%';
     bn.innerHTML = sc.html(L(), B) + '<div class="bn-cur hide" id="bnCur">' + IC.cursor + '</div>';
-    bn.style.height = sc.h + 'px';
-    var tg = bn.querySelector('[data-t]'), fe = bn.querySelector('[data-focus]');
-    var tb = tg && box(tg), f = union(fe && box(fe), tb);
-    var tr = camera(f, sc.h);
-    bn.style.transform = anim ? prev || tr : tr; void bn.offsetWidth; bn.style.transition = ''; bn.style.transform = tr;
+    bn.style.height = 'auto';
+    var tg = bn.querySelector('[data-t]');
+    var tb = tg && box(tg);
     var cur = $('#bnCur'), to = tb ? { x: tb.x + tb.w / 2, y: tb.y + tb.h / 2 } : null;
     if (!to) return;
-    var from = anim ? C.cur : (C.cur ? null : { x: bn.offsetWidth / 2, y: Math.min(sc.h, 640) * 0.6 });
+    var from = anim ? C.cur : (C.cur ? null : { x: bn.offsetWidth / 2, y: bn.offsetHeight * 0.6 });
     if (from && !RM.matches) {
       cur.style.transition = 'none'; cur.style.transform = 'translate(' + from.x + 'px,' + from.y + 'px)'; cur.classList.remove('hide');
       void cur.offsetWidth; cur.style.transition = '';

@@ -7,6 +7,8 @@ window.TD_BIND = {
   ips: ['47.236.171.168', '47.245.58.251'],
   ipsConfirmed: false,
   permsConfirmed: false,
+  publicEx: 'EXAMPLE-PUBLIC-KEY-3dtrading-NOT-REAL',
+  privateEx: 'EXAMPLE-PRIVATE-KEY-3dtrading-NOT-REAL',
   nameEx: '3dtUSDT01', labelEx: '3dtrading01',
   // made-up keys for the tutorial only: hyphens make them fail the form's key check, so they can never be submitted
   keyEx: 'EXAMPLE-3dtrading-apikey-0000-not-real', secretEx: 'EXAMPLE-3dtrading-secret-0000-not-real',

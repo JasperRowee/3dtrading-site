@@ -221,5 +221,39 @@
       html: function (l, cfg) { var w = W[l]; return frame(w, 1, head(w, w.apiTitle, '') + keyPage(w, cfg, 'perm')); } }
   ];
 
-  global.TD_BN = { scenes: scenes, width: 1100, words: W };
+  // Purpose-built playback panels. They are laid out at the viewport width, never cropped from a full page.
+  function playback(l, cfg, step) {
+    var en = l === 'en';
+    function t(zh, eng) { return esc(en ? eng : zh); }
+    function field(label, value) { return '<label class="demo-field"><small>' + label + '</small><code>' + esc(value) + '</code></label>'; }
+    function action(label) { return '<span class="demo-action" data-t="action">' + label + '</span>'; }
+    var body = '';
+    if (step === 0) {
+      body = '<h2>' + t('创建子账户', 'Create sub-account') + '</h2>' +
+        field(t('子账户类型', 'Account type'), en ? 'Virtual email' : '虚拟邮箱') +
+        field(t('账户名称', 'Account name'), cfg.nameEx) +
+        '<p class="demo-note">3dtusdt01_virtual@example.com</p>' + action(t('创建子账户', 'Create sub-account'));
+    } else if (step === 1) {
+      body = '<h2>' + t('创建 API', 'Create API') + '</h2>' +
+        '<div class="demo-choice">' + t('系统生成', 'System generated') + '<span>○</span></div>' +
+        '<div class="demo-choice selected">' + t('自行设置', 'Self-configured') + '<span>●</span></div>' +
+        field(t('系统生成的公钥 · 演示', 'System-generated public key · demo'), cfg.publicEx) +
+        action(t('使用公钥创建', 'Create with public key'));
+    } else if (step === 2) {
+      body = '<h2>' + t('保存连接密钥', 'Save connection keys') + '</h2>' +
+        field('API Key', cfg.keyEx) + field(t('私钥 · 系统生成', 'Private key · system generated'), cfg.privateEx) +
+        '<p class="demo-note">' + t('仅供演示的假密钥，不能用于连接账户。', 'Dummy keys for this demo; cannot connect an account.') + '</p>' +
+        action(t('保存密钥', 'Save keys'));
+    } else {
+      body = '<h2>' + t('设置 API 权限', 'Set API permissions') + '</h2>' +
+        '<div class="demo-perms"><span>✓ ' + t('读取', 'Read') + '</span><span>✓ ' + t('交易', 'Trade') + '</span><span class="disabled">× ' + t('提现关闭', 'Withdrawals off') + '</span></div>' +
+        '<div class="demo-choice selected">' + t('只访问受信任的 IP', 'Trusted IPs only') + '<span>●</span></div>' +
+        field(t('专属授权 IP', 'Assigned IP addresses'), cfg.ips.join(' · ')) + action(t('保存权限', 'Save permissions'));
+    }
+    return '<div class="demo-panel"><header><span class="bn-logo">' + I.mark + ' BINANCE</span><small>' + t('连接演示', 'Connection demo') + '</small></header><section>' + body + '</section></div>';
+  }
+  var clips = [0, 1, 2, 3].map(function (step) {
+    return { html: function (l, cfg) { return playback(l, cfg, step); } };
+  });
+  global.TD_BN = { scenes: scenes, clips: clips, width: 1100, words: W };
 })(window);
