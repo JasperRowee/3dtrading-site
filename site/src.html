@@ -288,10 +288,10 @@ themed(g);
 const BG = [9, 12, 15], BGD = [255, 255, 255];
 // Preserve material identity while giving neutral pillar faces distinct stone shading.
 const dayP = c => { const chroma = Math.max(...c) - Math.min(...c), neutral = clamp(1 - (chroma - 16) / 64), light = (c[0] + c[1] + c[2]) / 3;
-  const stone = light < 23 ? mixc([210,210,210], [235,235,235], clamp((light - 18.333333) / 4.333333)) : mixc([235,235,235], [255,255,255], clamp((light - 23) / 20));
+  const stone = light < 23 ? mixc([228,228,228], [242,242,242], clamp((light - 18.333333) / 4.333333)) : mixc([242,242,242], [255,255,255], clamp((light - 23) / 20));
   // Gold keeps its saturation and warm highlights; neutral stone never tints it grey.
   const gold = c[0] > c[2] * 1.5 && c[1] > c[2] * 1.2;
-  const material = gold ? c.map((v, i) => Math.min(255, v * 1.15 + [28,18,3][i])) : c.map(v => v * .86);
+  const material = gold ? c.map((v, i) => Math.min(255, v * .92 + [78,57,17][i])) : c.map(v => Math.min(255, v * .82 + 43));
   return mixc(material, stone, gold ? 0 : neutral); };
 const fogc = (c, f) => DAY ? RGB(mixc(BGD, dayP(c), f)) : RGB(mixc(BG, c, f));
 const PLACE_SKIP = [-1];   // place() says: leave this field cell out
@@ -358,8 +358,8 @@ const S8 = { ix: 26, iz: -23, H: 15, ZB: -46, SY: 17.5, GB: [40, -61] };   // ri
    their fields, pillars, Dodo, names and their camera stops all go by D9 / DV10 */
 const D9 = [-14, 0], DV10 = [-10, 4], m9 = (x, z) => [x + D9[0], z + D9[1]], v9 = v => [v[0] + D9[0], v[1], v[2] + D9[1]], v10 = v => [v[0] + DV10[0], v[1], v[2] + DV10[1]];
 const S9 = { c: m9(2, -58), R: 4.2, RG: 16, P: [[...m9(-7, -63.5), '账户自主', '#2fdcbc', '资产留在你的子账户'], [...m9(11, -63.5), '方向对冲', '#f0b90b', '多空配对 · 不猜涨跌'], [...m9(2, -47.5), '收益增强', '#d8b36a', '资本效率增厚回报']] };   // rear: three separate domains with dark gaps between; Dodo visits each and links them
-/* 09's timeline: the domains rise one by one; Dodo drops onto the first, then hops 0→1→2→0, a bridge forming under each hop; last it hops to the middle and the network lights */
-const H9 = [[.28, .4, 0, 1], [.46, .58, 1, 2], [.64, .76, 2, 0]], HUB9 = [.8, .88], VIS9 = [.24, .4, .58];
+/* 09's timeline: the domains rise together during travel; Dodo drops onto the first, then hops 0→1→2→0, a bridge forming under each hop; last it hops to the middle and the network lights */
+const H9 = [[.28, .4, 0, 1], [.46, .58, 1, 2], [.64, .76, 2, 0]], HUB9 = [.8, .88], VIS9 = [.1, .1, .1];
 function pos9(u) { const P = S9.P, top = 1.75; if (u < H9[0][0]) return [P[0][0], top, P[0][1], 0];
   for (let k = 0; k < 3; k++) { const [a, b, i, j] = H9[k]; if (u <= b) { const v = sg(u, a, b), e = eio(v); return [L(P[i][0], P[j][0], e), top + Math.sin(PI * v) * 3.2, L(P[i][1], P[j][1], e), v > 0 && v < 1 ? Math.sin(PI * v) : 0]; }
     if (k < 2 && u < H9[k + 1][0]) return [P[j][0], top, P[j][1], 0]; }
@@ -441,8 +441,8 @@ const BUL = [null, [0, 0, 0], [.6, .4, 0], [0, -.8, 0], [.4, .4, 0], [-4, 6, 6],
 /* ---------- motion: one spring along the steps. One gesture = one step; a gesture the other way turns it round at once ---------- */
 const K = { t: 0, v: 0, tgt: 0 }, A = new Array(NS).fill(0); A[0] = 1;
 const DUR = [0, 1.1, .2, 2.6, 1.4, .3, 7, 5.4, 8.5, 6, 4.2];
-// 02, 04, 05: start once the camera is ~70% there (the scene is in view), after a short beat to take it in
-const PRE = [0, .3, 0, .3, .3, 0, 0, 0, 0, 0, 0], REACT = .3, WT = new Array(NS).fill(0);
+// Trading actions and construction start with travel; 02 retains its introduction beat.
+const PRE = [0, .3, 0, 1.1, 1.1, 0, 0, 1.1, 1.1, 0, 0], REACT = .3, WT = new Array(NS).fill(0);
 let leaving = false;
 function routes() { const r = (window.TDAccount && TDAccount.routes) || {}; return { signup: r.signup || '../account/auth.html?mode=register', login: r.login || '../account/auth.html?mode=login', dashboard: r.dashboard || '../app/index.html#/dashboard', ai: '../app/index.html#/ai' }; }
 const user = () => { try { return window.TDAccount && TDAccount.getSession(); } catch (e) { return null; } };
@@ -824,7 +824,7 @@ function drawKline(cs, a) {
   const s = pr(KX(n - 1) + .2, KY(p), KZ), e = pr(xr, KY(p), KZ);
   if (s && e) { g.globalAlpha = a; const col = p >= P0 ? BN.up : BN.dn; g.setLineDash([4, 4]); g.strokeStyle = hexA(col, .55); g.lineWidth = 1; g.beginPath(); g.moveTo(s.x, s.y); g.lineTo(e.x, e.y); g.stroke(); g.setLineDash([]);
     const fs = clamp(e.k * .2, ML ? 12 : 9, 13); g.font = font(fs, 700, 1); const w = g.measureText(fmtN(p, 1)).width + 12;
-    g.fillStyle = col; g.beginPath(); g.roundRect(e.x, e.y - fs * .85, w, fs * 1.7, 3); g.fill(); g.fillStyle = '#0b0e11'; g.textAlign = 'left'; g.fillText(fmtN(p, 1), e.x + 6, e.y + fs * .36); }
+    const labelX = mob ? Math.min(e.x, W - w - 8) : e.x; g.fillStyle = col; g.beginPath(); g.roundRect(labelX, e.y - fs * .85, w, fs * 1.7, 3); g.fill(); g.fillStyle = '#0b0e11'; g.textAlign = 'left'; g.fillText(fmtN(p, 1), labelX + 6, e.y + fs * .36); }
   g.globalAlpha = 1;
 }
 /* an arrow drawn as lines: short, a little thick. dir −1 points down (red, above the candle), 1 points up (green, below it) */
@@ -1051,7 +1051,7 @@ function farPrism(x, z, hw, h, cols, d) {
   if (C.p[1] > h) quad(top, cols[0]);
   RAWC--;
 }
-function glow(x, y, r, c, a) { if (r < 1 || a < .01) return; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, hexA(c, a)); gr.addColorStop(1, hexA(c, 0)); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
+function glow(x, y, r, c, a) { if (DAY) a *= .3; if (r < 1 || a < .01) return; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, hexA(c, a)); gr.addColorStop(1, hexA(c, 0)); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); }
 const GTOP = [168, 124, 16], GS1 = [74, 54, 9], GS2 = [52, 38, 7];
 const NEU = [[40, 44, 52], [22, 25, 30], [17, 19, 23]], GRN = [[44, 196, 128], [12, 128, 82], [9, 96, 62]], RED = [[238, 84, 104], [164, 42, 60], [124, 32, 46]];
 const BLK3 = [[30, 32, 36], [11, 12, 14], [8, 9, 11]], STR = [[22, 23, 26], [6, 7, 8], [11, 12, 14]];
@@ -1155,8 +1155,8 @@ function talkAt(X, Y, a) { if (a < .5 || X == null) { if (talkEl._v) { talkEl._v
 /* 10: three ways in — 3dtrading, Telegram, Discord — as round tokens hung in the air around the Dodo, no screens, no words passed.
    One at a time, a message (the channel's colour) flies in along a soft arc; the Dodo hops and turns to it; an answer (teal) flies back
    and the token rings. Where they hang is fixed in the space, set from the camera's rest at 10, so they leave with the scene */
-const CH10 = [{ k: 'web', n: '3dtrading', c: '#2fdcbc' }, { k: 'tg', n: 'Telegram', c: '#2aa3df' }, { k: 'dc', n: 'Discord', c: '#5865f2' }];
-const CH10D = [[-4.4, 1.5], [-1.7, 4.3], [3.7, 1.1]], CH10M = [[-2.3, 2.1], [0, 4.2], [2.3, 2.1]], CH10P = 1.7;   // offsets from the Dodo (camera right, up); seconds per channel
+const CH10 = [{ k: 'web', n: '官网', c: '#2fdcbc' }, { k: 'tg', n: 'Telegram', c: '#2aa3df' }, { k: 'dc', n: 'Discord', c: '#5865f2' }];
+const CH10D = [[-2.7, 2.6], [0, 3.4], [2.7, 2.6]], CH10M = [[-2.1, 2.9], [0, 3.5], [2.1, 2.9]], CH10P = 5.4;   // offsets from the Dodo (camera right, up); seconds per channel
 function chanTex(kind) { const t = tex('ch' + kind, 220, 220); if (t.at === 1) return t; t.at = 1; const x = t.g, ch = CH10.find(c => c.k === kind); x.clearRect(0, 0, 220, 220);
   x.fillStyle = hexA(ch.c, .18); x.beginPath(); x.arc(110, 110, 106, 0, PI * 2); x.fill();
   x.fillStyle = kind === 'web' ? '#0b1114' : ch.c; x.beginPath(); x.arc(110, 110, 84, 0, PI * 2); x.fill(); x.strokeStyle = kind === 'web' ? ch.c : 'rgba(255,255,255,.28)'; x.lineWidth = kind === 'web' ? 6 : 3; x.stroke();
@@ -1274,7 +1274,8 @@ function frame(now) {
   const t = clamp(K.t, 0, NS - 1); LBLCL = t < 5.5; LCW = LBLCL ? 1 : 1 - sm(Math.abs(t - Math.round(t)) / .12);   // 07 on: kept on screen only while at rest, let go as soon as the camera moves
   for (let s = 1; s < NS; s++) {
     const early = PRE[s], near = K.t > s - (early || .03);
-    if (K.tgt >= s && near && A[s - 1] >= 1) { WT[s] += dt; if (WT[s] >= (early ? REACT : 0) || K.tgt > s) A[s] = Math.min(1, A[s] + dt / (RM ? .01 : DUR[s]) * (K.tgt > s ? 3 : 1)); }
+    if (K.tgt >= s && near && (A[s - 1] >= 1 || [3, 4, 7, 8].includes(s))) { WT[s] += dt; if (WT[s] >= ([3, 4, 7, 8].includes(s) ? 0 : early ? REACT : 0) || K.tgt > s) A[s] = Math.min(1, A[s] + dt / (RM ? .01 : DUR[s]) * (K.tgt > s ? 3 : 1)); }
+    else if (s === 4 && K.tgt < 4) { A[4] = Math.max(0, A[4] - dt / .65); WT[4] = 0; }
     else if (K.tgt < s && K.t < s - 1.1) { WT[s] = 0; A[s] = 0; }   // reset only offscreen; interruption keeps the visible scene intact
   }
   if (HOLDU != null) A[K.tgt] = HOLDU;   // test hook: hold the step's progress
@@ -1311,6 +1312,19 @@ function frame(now) {
   if (diveT) { const dv = eio(clamp((performance.now() - diveT) / 700)) * 14, f = nrm(sub3(Lk, P)); P = add3(P, mul3(f, dv)); Lk = add3(Lk, mul3(f, dv)); }   // going in: rush forward
   setCam(P, Lk, L(ca.sx, cb.sx, pu), L(ca.sy, cb.sy, pu));
 
+  // Fit the entire trading composition together on phones; panning still moves it as one unit.
+  if (mob && t > .6 && t < 4.5) {
+    const fit = sm(sg(t, .6, 1)) * (1 - sm(sg(t, 4.1, 4.5)));
+    const pts = [[KX(0) - .45, 18.42], [KX(0) - .45 + 15.4, 18.42], [KX(0) - .45, 4.1], [KX(0) - .45 + 15.4, 4.1]].map(([x,y]) => pr(x,y,KZ));
+    if (pts.every(Boolean)) {
+      const left = Math.min(...pts.map(p=>p.x)), right = Math.max(...pts.map(p=>p.x));
+      const scale = Math.min(1, (W - 32) / (right - left));
+      C.F *= L(1, scale, fit);
+      const mid = C.cx + ((left + right) / 2 - C.cx) * L(1, scale, fit);
+      C.cx += (W / 2 - mid + smx * W * .3) * fit;
+    }
+  }
+
   g.setTransform(DPR, 0, 0, DPR, 0, 0);
   RAWC++; const sk = g.createLinearGradient(0, 0, 0, H); if (DAY) { sk.addColorStop(0, '#ffffff'); sk.addColorStop(.5, '#ffffff'); sk.addColorStop(1, '#ffffff'); } else { sk.addColorStop(0, '#05070a'); sk.addColorStop(.5, '#080b0e'); sk.addColorStop(1, '#090c10'); }
   g.fillStyle = sk; g.fillRect(0, 0, W, H); RAWC--;
@@ -1318,11 +1332,11 @@ function frame(now) {
 
   /* the story's numbers */
   const g3 = eio(sg(t, 1.02, 1.97));                                       // 03: the rise, played during the camera move
-  const H1 = hopOf(A[1]), H3 = hopOf(clamp(A[3] * 2.4)), H4 = hopOf(A[4]);
+  const H1 = hopOf(A[1]), H3 = hopOf(clamp(A[3] * 2.4)), H4 = hopOf(clamp(A[4] * 2.4));
   const cs = kline(g3); fitK(cs); const kn = cs.length, kl = cs[kn - 1], price = kl.c;
   const closed = H3.on && !H4.on;
   // 04: the moment the feet land, the long pillar turns black AND drops, together. 05: it turns green and climbs back to its top
-  const fall = eio(sg(A[3], .175, .33)), back = eio(sg(A[4], .44, .78));
+  const fall = eio(sg(A[3], .175, .33)), back = eio(sg(A[4], .175, .33));
   const lTop = PH + 1.5 * g3, lH = H4.on ? L(BOT, PMAX, back) : L(lTop, BOT, H3.on ? fall : 0), sH = L(PH, BOT, g3);
   const longCol = !H1.on ? null : H4.on ? 'g' : H3.on ? 'k' : 'g', lFl = H4.on ? H4.fl : H3.on ? H3.fl : H1.fl;
   const lHop = A[4] > 0 ? H4 : A[3] > 0 ? H3 : H1;
@@ -1338,10 +1352,10 @@ function frame(now) {
   if (t > .9 && !RM) Aext = Math.min(Aext + dt * 2.2 * (1 - .8 * wlc), 1400);
   const R0 = ML ? 5.6 : 4.8, Rg = sm(sg(t, .42, .9)) * Math.sqrt(R0 * R0 * totV / 200000 + Aext / PI);
   const kv = sm(sg(t, .55, .92)) * (1 - sm(sg(t, 4.0, 4.5)));               // the K-line folds away during 06
-  KYB = 6.7 - 3 * sm(sg(t, 4.0, 4.5));
+  KYB = (mob ? 4.1 : 6.7) - 3 * sm(sg(t, 4.0, 4.5));
   const dodoA = sm(sg(t, .3, .8));
   const LY = layout(), s = PS(), hw = s * .42, Tq = RM ? 0 : T;
-  Object.assign(HD, { t, price, tot, open: H1.on, lst: H4.on ? 'new' : closed ? 'closed' : 'open', lp: H4.on ? (price - P1) * QTY : closed ? 0 : (price - P0) * QTY, sp: (P0 - price) * QTY, alarm, wl });
+  Object.assign(HD, { lH, sH, refill: A[4], close: A[3], hop: lHop.hop, t, price, tot, open: H1.on, lst: H4.on ? 'new' : closed ? 'closed' : 'open', lp: H4.on ? (price - P1) * QTY : closed ? 0 : (price - P0) * QTY, sp: (P0 - price) * QTY, alarm, wl });
   if (a7 > .01 && !RM) PH7 += dt * 2.4 * (1 - .6 * wl);
   // 09: which two fields Dodo can reach at the moment
   const u9 = A[8], set9 = u9 < .1 ? [0, 1, 2] : u9 < .3 ? [0, 1] : u9 < .5 ? [1, 2] : u9 < .72 ? [2, 0] : [0, 1, 2];
@@ -1390,7 +1404,7 @@ function frame(now) {
       if (wl > .01 && ix > LY.gi) return [h - .18 * wl * (.5 + .5 * Math.sin(Tq * 3 - x * .8)), null, null, null];
     }
     if (a8 > .01) {
-      if (ix === LY.tw[0] && iz === LY.tw[1]) return [L(h, L(4, S8.H, sm(sg(A[7], .02, .4))), a8), mixc([40, 44, 52], TEAL, .7 * a8), mixc([19, 22, 27], [40, 104, 94], a8), mixc([15, 18, 22], [28, 74, 68], a8)];
+      if (ix === LY.tw[0] && iz === LY.tw[1]) return [L(h, L(4, S8.H, sm(sg(A[7], 0, .15))), a8), mixc([40, 44, 52], TEAL, .7 * a8), mixc([19, 22, 27], [40, 104, 94], a8), mixc([15, 18, 22], [28, 74, 68], a8)];
       for (const [tx, tz, th] of LY.tries) if (ix === tx && iz === tz) return [L(h, th, a8 * sm(sg(A[7], .72, .82))), mixc([40, 44, 52], [120, 60, 68], a8 * .6), mixc([19, 22, 27], [70, 32, 40], a8), mixc([15, 18, 22], [52, 24, 30], a8)];
       const gb = Math.hypot(x - S8.GB[0], z - S8.GB[1]);      // the assets: a gold block that stays on Binance's side
       if (gb < 3.4) { const ru = a8 * sm(sg(A[7], .55 + gb * .02, .66 + gb * .02)); return [L(h, 1 + .7 * (1 - gb / 3.4) + .25 * nn, ru), mixc([40, 44, 52], mixc(GTOP, [250, 214, 96], .3 * nn), ru), mixc([19, 22, 27], GS1, ru), mixc([15, 18, 22], GS2, ru)]; }
@@ -1406,7 +1420,7 @@ function frame(now) {
       if (dc < 1.7) { const pu = sm(sg(u9, HUB9[0], HUB9[1] + .04)); return [L(h, L(.06, 1.7 + .15 * syn * net, pu), a9), mixc([40, 44, 52], mixc([10, 12, 15], [210, 255, 244], pu), a9), mixc([19, 22, 27], [60, 130, 118], pu * a9), mixc([15, 18, 22], [40, 96, 88], pu * a9)]; }
       if (bd <= S9.R) {
         // each domain rises on its own and runs its own way: a walled vault (your account), a long/short pair that always cancels (the hedge), a stepped rise (the yield)
-        const ru = sm(sg(u9, .02 + .06 * bi, .14 + .06 * bi)), lit = L(.38, 1, sm(sg(u9, VIS9[bi] - .03, VIS9[bi] + .03))), rel = bd / S9.R;
+        const ru = sm(sg(u9, 0, .12)), lit = L(.38, 1, sm(sg(u9, VIS9[bi] - .03, VIS9[bi] + .03))), rel = bd / S9.R;
         let hh, c = col;
         if (bi === 0) { hh = rel > .76 ? 1.65 : 1.3; }
         else if (bi === 1) { const sd = x < P[0] - .2 ? 1 : x > P[0] + .2 ? -1 : 0; hh = 1.55 + .12 * sd * Math.sin(Tq * 1.1); c = sd > 0 ? [44, 214, 140] : sd < 0 ? [240, 84, 104] : GOLDC; }
@@ -1493,7 +1507,7 @@ function frame(now) {
       const base = col === 'g' ? GRN : col === 'r' ? RED : col === 'k' ? BLK3 : NEU, fla = col === 'k' ? flash * .4 : flash;
       const cols = col ? [mixc(base[0], [255, 255, 255], .1 * (col !== 'k') + .5 * fla), mixc(base[1], [255, 255, 255], .35 * fla), mixc(base[2], [255, 255, 255], .25 * fla)] : NEU;
       prism(P2[0], P2[1], PW / 2, PW / 2, 0, h, cols.map(c => fogc(c, f)));
-      if (col === 'g' || col === 'r') { const q = pr(P2[0], h, P2[1]); if (q) glow(q.x, q.y, q.k * (1.4 + 1.8 * flash), col === 'r' ? '#f6465d' : '#0ecb81', .2 + .45 * flash); }
+      if (col === 'g' || col === 'r') { const q = pr(P2[0], h, P2[1]); if (q) glow(q.x, q.y, q.k * (1.4 + 1.8 * flash), col === 'r' ? '#f6465d' : '#0ecb81', (DAY ? .035 : .2) + (DAY ? .08 : .45) * flash); }
       if (dodoA > .02) dodo(P2[0], h, P2[1], { a: dodoA, s: .8, hop: Hh.hop, sq: Hh.sq, ph: i * 1.7, face: i ? -1 : 1, lx: 5, ly: Hh.hop > .1 ? -4 : 0 }); }]);
   });
 
@@ -1509,7 +1523,7 @@ function frame(now) {
     }
   }
   /* 08: Dodo on the tower sends the key into the port in the boundary */
-  const twh = L(4, S8.H, sm(sg(A[7], .02, .4))), U8 = A[7];
+  const twh = L(4, S8.H, sm(sg(A[7], 0, .15))), U8 = A[7];
   let K8 = null;
   if (a8 > .01) { const x = cellX(LY.tw[0]), z = cellZ(LY.tw[1]), B0 = onS(BAZ, BEL, SR * .98), A0 = [x, twh + 1.1, z], uS = (S8.ZB - A0[2]) / (B0[2] - A0[2]), S = [L(A0[0], B0[0], uS), L(A0[1], B0[1], uS), S8.ZB];
     const K0 = [x, twh + 3, z + .4], ex = nrm(sub3(S, K0)), ey0 = nrm(sub3([0, 1, 0], mul3(ex, ex[1]))), ez0 = cross3(ex, ey0);
@@ -1566,14 +1580,14 @@ function frame(now) {
   }
 
   // the K-line screen (02–05)
-  const HM = ML || mob || LQ, IW = ML ? 17 : mob ? MHW : LQ ? LQW : 15.4, IC = ML ? [KX(0) - .45 + 8.55, KYB + KH + .7 + IW * IHm / IWm / 2, KZ] : LQ ? [KX(0) - .45 + IW / 2, KYB + KH + .3 - LQY + IW * IHm / IWm / 2, KZ] : mob ? [KX(0) - .45 + 15.4 - IW / 2 + MHX, KYB + KH + .3 + IW * IHm / IWm / 2, KZ] : [KX(0) - .45 + 7.7, KYB + KH + .22 + IW * IHd / IWd / 2, KZ];
+  const HM = ML || mob || LQ, IW = ML ? 15.4 : mob ? 15.4 : LQ ? LQW : 15.4, IC = ML ? [KX(0) - .45 + IW / 2, KYB + KH + .22 + IW * IHm / IWm / 2, KZ] : LQ ? [KX(0) - .45 + IW / 2, KYB + KH + .3 - LQY + IW * IHm / IWm / 2, KZ] : mob ? [KX(0) - .45 + IW / 2, KYB + KH + .22 + IW * IHm / IWm / 2, KZ] : [KX(0) - .45 + 7.7, KYB + KH + .22 + IW * IHd / IWd / 2, KZ];
   { const ih = IW * (HM ? IHm / IWm : IHd / IWd) / 2, a = pr(IC[0] - IW / 2, IC[1] + ih, KZ), b = pr(IC[0] + IW / 2, IC[1] - ih, KZ); HBX = kv > .01 && a && b ? { f: FN, a: +kv.toFixed(2), b: [a.x, b.x, a.y, b.y].map(Math.round), w: IC.map(v => +v.toFixed(2)) } : null; const ka = pr(KX(0) - .45, KYB + KH, KZ), kb = pr(KX(NH + NN - 1) + .45, KYB, KZ); KBX = ka && kb ? [ka.x, kb.x, ka.y, kb.y].map(Math.round) : null; }   // test: the K-line header's box on screen
   if (kv > .01) items.push([pd, () => {
     drawKline(cs, kv * .96);
     const ea = H1.on ? kv : 0, eu = sm(sg(A[1], .42, .6));
     arrow(cs[NH - 1], NH - 1, -1, ea, eu); arrow(cs[NH - 1], NH - 1, 1, ea, eu);
     if (H3.on) arrow(kl, kn - 1, -1, kv, sm(sg(A[3], .175, .32)));          // the close: a down arrow where the long was closed
-    if (H4.on) arrow(kl, kn - 1, 1, kv, sm(sg(A[4], .42, .62)));            // the refill: an up arrow at the same price
+    if (H4.on) arrow(kl, kn - 1, 1, kv, sm(sg(A[4], .175, .26)));            // the refill: an up arrow at the same price
     wall((HM ? infoTexM : infoTex)({ price, open: H1.on, lst: H4.on ? 'new' : closed ? 'closed' : 'open', lp: H4.on ? (price - P1) * QTY : closed ? 0 : (price - P0) * QTY, sp: (P0 - price) * QTY, net: tot + (H4.on ? (price - P1) * QTY : closed ? 0 : (price - P0) * QTY) + (P0 - price) * QTY, alarm, tot, hot }), IC, IW, 0, kv);
     if (alarm) { const q = HM ? pr(IC[0] + IW * .38, IC[1] - IW * IHm / IWm * .38, KZ) : pr(IC[0] + IW * .38, IC[1] - .4, KZ); if (q) glow(q.x, q.y, q.k * 2.6, '#f6465d', .16 + .12 * Math.sin(T * 9)); }
   }]);
@@ -1625,7 +1639,7 @@ function frame(now) {
       if (ov > 0 && ov < w * .45 && q.x - w / 2 > br.left && +BLK[8].style.opacity > .05) q.x += ov;   // only just touching the copy: slide the name right a little rather than hide it
       const hit = q.x + w / 2 > br.left - 12 && q.x - w / 2 < br.right + 12 && q.y + px * 2.2 > br.top - 8 && q.y - px < br.bottom + 8 && +BLK[8].style.opacity > .05;
       const cx = clamp(q.x, w / 2 + 8, W - w / 2 - 8), bx = [cx - w / 2, cx + w / 2, q.y - px, q.y + px * 2.2], cl = took9.some(o => bx[0] < o[1] && bx[1] > o[0] && bx[2] < o[3] && bx[3] > o[2]); if (!cl && LB9[i] > .02) took9.push(bx);
-      const ru = sm(sg(u9, .06 + .06 * i, .16 + .06 * i)); LB9[i] = L(LB9[i], hit || cl || dep(p[0], 2.8, p[1]) < 9 ? 0 : 1, .15);
+      const ru = sm(sg(u9, .02, .12)); LB9[i] = L(LB9[i], hit || cl || dep(p[0], 2.8, p[1]) < 9 ? 0 : 1, .15);
       if (LB9[i] > .02) { if (DAY) tag9(p, q.x, q.y, px, la9 * LB9[i] * ru); else { lbl(p[2], q.x, q.y, '#ffffff', 15, px, la9 * LB9[i] * ru, 1); lbl(p[4], q.x, q.y + px * 1.15, '#b4bec7', 12, Math.max(12, px * .58), la9 * LB9[i] * ru * .9); } } }); }
   // 10: 3dtrading, Telegram and Discord around the Dodo, each tied to it by a faint arc. In turn each sends it a message (a light in the channel's
   // colour), the Dodo hops and looks over, an answer (teal) goes back and the channel rings. Only who talks to whom is shown, never what is said
@@ -1643,9 +1657,29 @@ function frame(now) {
       if (vi > 0 && vi < 1) dot(vi, P, Dm, ch.c);
       if (vo > 0 && vo < 1) dot(vo, Dm, P, '#2fdcbc');
       const hr = sg(ph, .34, .58); if (hr > 0 && hr < 1) { const q = pr(...Dm); if (q) { glow(q.x, q.y, q.k * (1.6 + 1.2 * eio(hr)), ch.c, .4 * la10 * on * (1 - hr)); g.save(); g.globalAlpha = la10 * on * (1 - hr) * .8; g.strokeStyle = ch.c; g.lineWidth = 2; g.beginPath(); g.arc(q.x, q.y, q.k * (1.1 + 1.3 * eio(hr)), 0, PI * 2); g.stroke(); g.restore(); } } }
+    S9.P.forEach((p, i) => { const end = [D10[0], D10[1], D10[2]]; line3([[p[0], .9, p[1]], [S9.c[0], .9, S9.c[1]], end], la10 * .35, CH10[i].c, 1.4, 0); });
+    const dq = pr(...Dm);
+    if (dq) {
+      const cx = clamp(dq.x, mob ? W * .5 : 240, mob ? W * .5 : W - 240);
+      const askY = clamp(dq.y - (mob ? 62 : 84), mob ? 220 : 175, H - 260);
+      const answerY = Math.min(H - 125, Math.max(askY + 150, dq.y + 68));
+      const questions = ['现在多空配平了吗？', '账户净权益是多少？', '现在有哪些持仓？'];
+      const answers = ['多空各 5 BTC，已配对', '216,000 USDT · 已扣浮亏', 'BTCUSDT · 多 5 / 空 5'];
+      msgB(questions[ck], cx, askY, mob ? 15 : 19, la10);
+      const ready = ph > .3;
+      g.save(); g.globalAlpha = la10; g.shadowBlur = 0;
+      const aw = Math.min(W - 32, mob ? 340 : 430), ax = cx - aw / 2;
+      g.fillStyle = DAY ? '!rgba(237,245,242,.96)' : 'rgba(15,33,31,.96)';
+      g.beginPath(); g.roundRect(ax, answerY, aw, 76, 14); g.fill();
+      g.textAlign = 'left'; g.font = font(12, 700); g.fillStyle = DAY ? '!#197c69' : '#5fe3c4';
+      g.fillText('Dodo · 对话演示', ax + 16, answerY + 23);
+      g.font = font(mob ? 16 : 20, 600); g.fillStyle = DAY ? '!#183b34' : '#e5f5f0';
+      g.fillText(ready ? answers[ck] : '正在查看…', ax + 16, answerY + 53); g.restore();
+      O10.conversation = { question: questions[ck], answer: ready ? answers[ck] : null, box: [ax, answerY, aw, 76] };
+    }
     O10.ch = cw.map(P => { const q = pr(...P); return q ? [Math.round(q.x), Math.round(q.y)] : null; }); O10.k = ck; O10.ph = ph;
     // the one real way in: under the Dodo's pillar
-    const qb = pr(D10[0], D10[1] - (LQ ? 1.6 : mob ? 2.6 : 1.4), D10[2]); if (qb) { tx10 = qb.x; ty10 = qb.y + 8; }
+    const qb = pr(D10[0], D10[1] - (LQ ? 1.6 : mob ? 2.6 : 1.4), D10[2]); if (qb) { tx10 = qb.x; ty10 = O10.conversation ? O10.conversation.box[1] + 88 : qb.y + 8; }
     talkAt(tx10, ty10, la10 * sm(sg(U, .06, .16))); } else talkAt(null, null, 0); }
   requestAnimationFrame(frame);
 }
@@ -1659,10 +1693,10 @@ let DK8 = +(QP.get('dk8') || .5);
 function mid8(U) { const B0 = onS(BAZ, BEL, SR * .98), a = [34.1, -29.9], b = [36, -38], e = [(34.1 + 37.75 + B0[0] + 40) / 4, (-29.9 - 46 + B0[2] - 61) / 4], u1 = sm(sg(U, .2, .32)), u2 = sm(sg(U, .5, .66));
   return [L(L(a[0], b[0], u1), e[0], u2), L(L(a[1], b[1], u1), e[1], u2)]; }
 function xtraFor(ms) { const x = Math.max(0, Math.atan(1.6 * Math.tan(.42)) - Math.atan((W / 2) / ((H / 2) / Math.tan(.42) * (mob ? ms : 1)))); return x > 0 ? x + +(QP.get('xa') || XA) : 0; }
-function resize() { BLK.forEach(b => b._h = 0); DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; mob = W < 760; ringFor(); BAZ = BAZ0 + (mob ? +(QP.get('bz') || -3.8) * DEG : 0); BSZ = mob ? +(QP.get('bs') || 1) : 1; KZ = SCR[2] = ML ? 3.2 : 4.6; KH = ML ? 8.4 : 7.6; XTRA = xtraFor(mob ? MS : 1); LQ = LSQ(); setTimeout(() => { CPR = LQ ? Math.max(0, ...BLK.map(b => b.getBoundingClientRect().right).filter(r => r > 0 && r < W * .6)) : 0; }, 300); cv.width = W * DPR; cv.height = H * DPR; cells(); anchors(); initWall(); initCoins(); }
+function resize() { BLK.forEach(b => b._h = 0); DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; mob = W < 760; ringFor(); BAZ = BAZ0 + (mob ? +(QP.get('bz') || -3.8) * DEG : 0); BSZ = mob ? +(QP.get('bs') || 1) : 1; KZ = SCR[2] = ML ? 3.2 : 4.6; KH = ML ? 8.4 : mob ? 6.4 : 7.6; XTRA = xtraFor(mob ? MS : 1); LQ = LSQ(); setTimeout(() => { CPR = LQ ? Math.max(0, ...BLK.map(b => b.getBoundingClientRect().right).filter(r => r > 0 && r < W * .6)) : 0; }, 300); cv.width = W * DPR; cv.height = H * DPR; cells(); anchors(); initWall(); initCoins(); }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(resize, 120); });
 resize(); gyBoot();
-window.__dive = { K, A, go, jump, GY, camera: () => ({ p: C.p.slice(), f: C.f.slice() }), poses: () => CAM().map(c => [0, .25, .5, .75, 1].map(a => pose(c, a))), xtra: () => XTRA, smx: () => +smx.toFixed(3),
+window.__dive = { K, A, go, jump, GY, story: () => ({...HD}), camera: () => ({ p: C.p.slice(), f: C.f.slice() }), poses: () => CAM().map(c => [0, .25, .5, .75, 1].map(a => pose(c, a))), xtra: () => XTRA, smx: () => +smx.toFixed(3),
   look: v => { LOOKQ = v == null ? null : clamp(v, -.5, .5); }, lookY: v => { LOOKY = v == null ? null : clamp(v, -.5, .5); }, smy: () => +smy.toFixed(3), wlog: WLOG, WH, WS, wsim: seq => { const keep = JSON.stringify(WS), lg = WLOG.length, out = []; Object.assign(WS, { acc: 0, t: -1e9, dir: 0, at: -1e9, fdir: 0, fired: false, lo: 0, peak: 0, rise: 0, win: [], b: [], ds: -1e9, cnt: 0 }); seq.forEach(([t, d]) => { const r = wheelStep(t, d); if (r) out.push([Math.round(t), r, WLOG[WLOG.length - 1][2]]); }); WLOG.length = lg; Object.assign(WS, JSON.parse(keep)); return out; }, gate: () => GATE, o9: O9, o10: O10, home: () => goHome(), theme: d => setTheme(d), day: () => DAY, lbx: LBX, hbx: () => HBX, kbx: () => KBX, hold: v => { HOLDU = v; },   // test: hold the look like ?look= does
   // test: where 08's Binance logo lands on screen [left, right, top, bottom]
   dk8: v => { DK8 = v; }, bs: v => { BSZ = v; }, M8, snap: v => { LOOKQ = v; smx = v; },
