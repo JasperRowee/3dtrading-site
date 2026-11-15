@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="robots" content="noindex">
+<title>3dtrading · 添加币安账户</title>
+<script>/* r41: day / night follows the dashboard (localStorage '3dt.theme.app'); day is the default. The website keeps its own '3dt.theme.site'. */
+try{var L=localStorage,o=L.getItem('3dt.theme');if(o!==null){if(L.getItem('3dt.theme.site')===null)L.setItem('3dt.theme.site',o==='day'?'day':'night');L.removeItem('3dt.theme')}document.documentElement.dataset.theme=L.getItem('3dt.theme.app')==='night'?'night':'day'}catch(e){document.documentElement.dataset.theme='day'}</script>
+<link rel="stylesheet" href="page.css?v=r41">
+<link rel="stylesheet" href="bind-bn.css?v=r44">
+<link rel="stylesheet" href="day.css?v=20261113-r38">
+<link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
+<link rel="apple-touch-icon" sizes="180x180" href="../icons/dodo-180.png?v=20261112">
+<link rel="manifest" href="../manifest.webmanifest?v=20261112">
+<meta name="application-name" content="3dtrading">
+<meta name="apple-mobile-web-app-title" content="3dtrading">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#06090b">
+<script>(function(){function tc(){var m=document.querySelector('meta[name=theme-color]');if(m)m.content=document.documentElement.dataset.theme==='day'?'#ffffff':'#06090b'}tc();addEventListener('td:theme',tc)})()</script>
+<link rel="stylesheet" href="r41.css?v=r41">
+<style>
+/* r44 · 添加币安账户 — the page IS our own coded Binance front end (an illustration: never the live site, never an iframe).
+   No guide card: the user clicks the lit control inside the Binance screen itself (avatar → 子账户 → 创建子账户 → … →
+   编辑权限 → 确认) and the screen moves on. A small dark callout sits next to that control; everything else is dimmed.
+   Our copy chips sit in the Binance field that wants the value; the Key / Secret display fields become our inputs.
+   r44b: phones work the same way — the Binance field holds our copy chip / input, the hint sits next to the lit control as
+   plain text on the dimmed screen (no card, no bottom dock, no mirror button). Never a page scroll: html/body are clipped. */
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{padding-top:0;min-height:0;background:#181a20}
+body::before{display:none}
+.bar{background:transparent;border-bottom:0;box-shadow:none;z-index:40}
+.bar::before{display:none}
+html[data-theme=day] .bar{background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.bar .tdt-tm{margin-right:2px}
+.hb-back{font-size:13.5px;font-weight:600;color:var(--ink2);text-decoration:none;white-space:nowrap;padding:8px 10px;border-radius:10px}
+.hb-back:hover{color:var(--ink)}
+.gd{position:fixed;inset:0;overflow:hidden}
+.stage{position:absolute;inset:0;overflow:hidden;background:#181a20}
+.stage .bn{overflow:visible;transform-origin:0 0;transition:transform .55s cubic-bezier(.45,0,.2,1)}
+.spot{position:absolute;left:0;top:0;width:0;height:0;border-radius:12px;z-index:5;pointer-events:none;
+  box-shadow:0 0 0 1.5px rgba(47,220,188,.75),0 0 0 200vmax rgba(5,7,9,.7);
+  transition:transform .55s cubic-bezier(.45,0,.2,1),width .55s cubic-bezier(.45,0,.2,1),height .55s cubic-bezier(.45,0,.2,1),opacity .3s}
+.gd .spot.none{box-shadow:0 0 0 200vmax rgba(5,7,9,.62)}
+html[data-theme=day] .spot{box-shadow:0 0 0 1.5px rgba(47,220,188,.8),0 0 0 200vmax rgba(24,30,36,.56)}
+html[data-theme=day] .gd .spot.none{box-shadow:0 0 0 200vmax rgba(24,30,36,.5)}
+/* our pieces inside the Binance screen keep Binance's dark palette in both themes (no white cards) */
+.gd .bnz{--ink:#eaecef;--ink2:#b7bdc6;--ink3:#848e9c;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.16);--sf:#1e2329;--sf2:#0b0e11;--sf3:#12161a;--bad:#ff6369;--ok:#2ebd85;--warn:#f0b90b;color:var(--ink);color-scheme:dark}
+html .gd .bnz .inp input{background:#0b0e11;border-color:rgba(47,220,188,.45);color:#eaecef}
+html .gd .bnz .inp input::placeholder{color:#5e6673}
+html .gd .bnz .inp input:focus{background:#0b0e11;border-color:#2fdcbc;box-shadow:0 0 0 3px rgba(47,220,188,.18)}
+html .gd .bnz .fld.err .inp input{border-color:var(--bad)}
+html .gd .bnz :focus-visible{outline-color:#2fdcbc}
+/* the hint: plain text on the dimmed screen next to the lit control — no card, no frame; a thin teal rule ties it to the target */
+.tip{position:absolute;z-index:30;isolation:isolate;left:0;top:0;width:300px;padding:2px 0 2px 13px;border-radius:0;background:none;
+  box-shadow:inset 2px 0 0 rgba(47,220,188,.7);text-shadow:0 1px 2px rgba(0,0,0,.55);
+  transition:left .5s cubic-bezier(.45,0,.2,1),top .5s cubic-bezier(.45,0,.2,1),opacity .25s}
+html[data-theme=day] .tip{background:none}
+/* a soft, edgeless shade behind the hint text only (no card, no border) */
+.tip:not(.final)::after{content:"";position:absolute;inset:-12px -18px -12px -6px;z-index:-1;background:rgba(9,11,14,.62);filter:blur(14px);border-radius:24px;pointer-events:none}
+.tip::before{display:none!important;content:"";position:absolute;width:10px;height:10px;background:inherit;transform:rotate(45deg);box-shadow:inherit;clip-path:polygon(0 0,0 100%,100% 100%);display:none}
+.tip[data-side=right]::before{display:block;left:-5px;top:var(--a,24px)}
+.tip[data-side=left]::before{display:block;right:-5px;top:var(--a,24px);transform:rotate(-135deg)}
+.tip[data-side=below]::before{display:block;top:-5px;left:var(--a,24px);transform:rotate(135deg)}
+.tip[data-side=above]::before{display:block;bottom:-5px;left:var(--a,24px);transform:rotate(-45deg)}
+.t-top{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink3);min-height:22px}
+.t-prev{appearance:none;border:0;background:none;color:var(--ink2);width:24px;height:24px;margin-left:-6px;border-radius:7px;cursor:pointer;display:grid;place-items:center;font-size:17px;line-height:1}
+.t-prev:hover{background:rgba(255,255,255,.08);color:var(--ink)}
+.t-prev[disabled]{opacity:.3;cursor:default;background:none}
+.t-n{font:600 11.5px var(--mono);color:var(--ink2);white-space:nowrap}
+.t-dots{display:flex;gap:3px;align-items:center}
+.t-dots i{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.18)}
+.t-dots i.done{background:rgba(47,220,188,.5)}.t-dots i.on{background:#2fdcbc;width:12px;border-radius:3px}
+.t-sp{flex:1}
+.t-tag{white-space:nowrap;padding:1px 7px;border-radius:999px;background:rgba(240,185,11,.14);color:#f0b90b;font-weight:700;font-size:10.5px}
+.t-out{margin-left:auto;color:var(--ink3);font-weight:600;text-decoration:none;white-space:nowrap}
+.t-out::after{content:" ↗";font-size:10px}
+.t-out:hover{color:var(--ink)}
+.tip h2{margin:6px 0 0;font-size:15.5px;line-height:1.35;font-weight:650;letter-spacing:-.005em}
+.tip p.t-x{margin:4px 0 0;font-size:12.5px;line-height:1.6;color:var(--ink2)}
+.tip p.t-x b{color:var(--ink);font-weight:650}
+.t-foot{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:11.5px}
+.t-hint{flex:1;min-width:0;display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:650;color:#2fdcbc}
+.t-hint::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:#2fdcbc;box-shadow:0 0 0 4px rgba(47,220,188,.18);animation:t-pulse 1.6s ease-in-out infinite}
+@keyframes t-pulse{50%{box-shadow:0 0 0 7px rgba(47,220,188,.04)}}
+.t-hint[hidden]{display:none}
+.t-tap{display:none}
+.c-ctl:empty{display:none}
+.c-ctl{margin-top:10px;display:grid;gap:10px}
+/* controls laid in the Binance field (desktop) */
+.w{position:absolute;z-index:20;display:none}
+.w.on{display:block}
+.c-ctl .w{position:static}
+.wc{background:#0b0e11;border-radius:8px;box-shadow:0 0 0 1.5px rgba(47,220,188,.6);padding:8px 10px 8px 12px}
+.wc small{display:block;font-size:11px;font-weight:650;color:#2fdcbc;margin-bottom:4px}
+.cp{display:flex;align-items:center;gap:10px}
+.cp code{flex:1;min-width:0;font:600 14px var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;user-select:all}
+.cp .btn{height:32px;padding:0 13px;font-size:13px;border-radius:7px;flex:none}
+.cp.off code{color:var(--ink3);font-weight:500;font-family:inherit;font-size:12.5px;white-space:normal;user-select:none}
+.cp-msg{margin-top:5px;font-size:12px;line-height:1.5;color:var(--ink3)}
+.cp-msg:empty{display:none}
+.cp-msg.ok{color:var(--ok)}.cp-msg.bad{color:var(--bad)}
+.cp-man{margin-top:6px;width:100%;height:34px;border-radius:7px;border:1px solid var(--line2);background:#12161a;color:var(--ink);font:13px var(--mono);padding:0 9px}
+.wc .fld{margin:0}
+.wc .fld>span{font-size:11px;color:#2fdcbc;margin-bottom:4px}
+.wc .inp input{height:40px;border-radius:7px}
+.wc .kfoot{display:flex;justify-content:space-between;gap:10px;margin-top:4px;font-size:11px;color:var(--ink3)}
+.wc .kfoot .n{font-family:var(--mono);margin-left:auto}.wc .kfoot .n.ok{color:var(--ok)}
+.fin{display:grid;gap:11px}
+.fin ul{margin:0;padding:0;list-style:none;display:grid;gap:5px;font-size:12.5px;color:var(--ink2)}
+.fin li{display:flex;gap:8px;align-items:center}
+.fin li i{flex:none;width:16px;height:16px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:800;background:rgba(255,255,255,.08);color:var(--ink3)}
+.fin li.y i{background:rgba(47,220,188,.18);color:#2fdcbc}
+.fin li.n i{background:rgba(240,185,11,.16);color:#f0b90b}
+.fin .safe{margin:0;font-size:11.5px;line-height:1.6;color:var(--ink3)}
+.fin .fld{margin:0}
+#go{height:44px;font-size:14.5px;border-radius:10px}
+.res{padding:11px 13px;border-radius:10px;background:rgba(255,255,255,.05);box-shadow:inset 3px 0 0 #f0b90b;display:grid;gap:6px}
+.res[hidden]{display:none}
+.res .rt{display:flex;align-items:center;gap:10px;font-weight:650;font-size:14px}
+.res .rt .bdg{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(240,185,11,.16);color:#f0b90b}
+.res.bad{box-shadow:inset 3px 0 0 var(--bad)}.res.bad .rt .bdg{background:rgba(255,99,105,.14);color:var(--bad)}
+.res.busy{box-shadow:inset 3px 0 0 var(--line2)}
+.res p,.res ul{margin:0;font-size:12.5px;line-height:1.55;color:var(--ink2)}.res ul{padding-left:18px}
+.res .ract{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.btn.ghost{color:var(--ink)}
+/* last step: the 3dtrading name + verify sits in the middle of the dimmed Binance screen; a faint shade only, no frame */
+.tip.final{width:min(430px,calc(100vw - 32px));max-height:calc(100% - var(--barH) - 32px);overflow:auto;overscroll-behavior:contain;padding:12px 16px 14px;
+  background:rgba(11,14,17,.55);border-radius:10px;box-shadow:none;text-shadow:none}
+html[data-theme=day] .tip.final{background:rgba(11,14,17,.6)}
+.tip.final::before{display:none}
+.tip.final:has(#res:not([hidden])) #sum{display:none}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#eaecef;color:#0b0e11;font-weight:650;font-size:13.5px;padding:10px 16px;border-radius:11px;transition:.3s;z-index:90}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* phones / short windows: same in-field layout; the hint is narrower and a little smaller; inputs 16px (no iOS zoom) */
+.gd.sheet .tip{width:calc(100vw - 32px)}
+.gd.sheet .tip h2{font-size:14.5px;margin-top:3px}
+.gd.sheet .tip p.t-x{font-size:12px;line-height:1.5}
+.gd.sheet .tip.final{max-height:calc(100% - var(--barH) - 24px)}
+.gd.sheet .inp input{font-size:16px}
+/* the lit Binance control keeps its look but gets a ≥44×44 px touch area (48 drawn, square corners) (--hs = 1 / camera scale, set by connect.js) */
+main.gd .bn .hot::before{content:"";position:absolute;left:50%;top:50%;width:max(100%,calc(48px * var(--hs,1)));height:max(100%,calc(48px * var(--hs,1)));transform:translate(-50%,-50%)}
+@media (max-width:760px){.hb-back{display:none}}
+@media (prefers-reduced-motion:reduce){.stage .bn,.spot,.tip{transition:none!important}.t-hint::before{animation:none}}
+main.gd .bn [data-slot] .bn-copy.hot{box-shadow:none;animation:none}
+</style>
+</head>
+<body>
+<header class="bar">
+  <a class="logo" href="#" data-href="site" data-i18n-attr="aria-label:acct.toSite"><img class="lg-n" src="assets/3dtrading-logo-white.svg" alt="3dtrading" width="91" height="22"><img class="lg-d" src="assets/3dtrading-logo.svg" alt="3dtrading" width="91" height="22"></a>
+  <span class="sp"></span>
+  <a class="hb-back" id="back" href="#" data-i18n="cx.back">返回后台</a>
+  <button type="button" id="thm"></button>
+  <div id="lang"></div>
+  <button type="button" class="av-btn ini" id="av"></button>
+</header>
+
+<main class="gd" id="gd">
+  <h1 class="sr" data-i18n="cx.h1">添加币安账户</h1>
+  <!-- the coded Binance screen; one control in it is lit and clickable at a time -->
+  <div class="stage" id="stage" role="region" data-i18n-attr="aria-label:cx.stageL" aria-label="币安操作示意（不是真实币安页面）"><div class="bn" id="bn"></div></div>
+  <div class="spot" id="spot" aria-hidden="true"></div>
+  <div id="slots"></div>
+
+  <section class="tip bnz" id="tip" aria-labelledby="cT">
+    <div class="t-top">
+      <button type="button" class="t-prev" id="prev" data-i18n-attr="aria-label:cx.prev" aria-label="上一步">‹</button>
+      <span class="t-n" id="cN"></span><span class="t-dots" id="cBar" aria-hidden="true"></span><span class="t-sp"></span>
+      <span class="t-tag" data-i18n="cx.tag">操作示意</span>
+    </div>
+    <div aria-live="polite"><h2 id="cT"></h2><p class="t-x" id="cP"></p></div>
+    <div class="t-foot"><div class="t-hint" id="cHint"></div><a class="t-out" id="cOut" href="#" target="_blank" rel="noopener noreferrer" data-i18n="cx.open">在币安打开</a></div>
+    <div class="c-ctl" id="cCtl"></div>
+      </section>
+
+  <!-- the controls; connect.js lays each one in its Binance field (desktop and phone); only the last step's form sits in the centre -->
+  <div id="pool" hidden>
+    <div class="w wc bnz" id="wName"><small id="wNameL"></small><div class="cp"><code id="wNameV"></code><button type="button" class="btn pri" data-copy="name" data-i18n="cx.copy">复制</button></div><div class="cp-msg" id="wNameM" role="status"></div></div>
+    <div class="w wc bnz" id="wLabel"><small id="wLabelL"></small><div class="cp"><code id="wLabelV"></code><button type="button" class="btn pri" data-copy="label" data-i18n="cx.copy">复制</button></div><div class="cp-msg" id="wLabelM" role="status"></div></div>
+    <div class="w wc bnz" id="wPub"><small data-i18n="cx.pubL">3dtrading 公钥 · 复制到这里</small><div class="cp off"><code id="wPubV"></code><button type="button" class="btn pri" id="pubCopy" disabled data-i18n="cx.copy">复制</button></div><div class="cp-msg" id="wPubM"></div></div>
+    <div class="w wc bnz" id="wIps"><small data-i18n="cx.ipsL">IP 白名单 · 填到这里</small><div class="cp off"><code id="wIpsV"></code><button type="button" class="btn pri" disabled data-i18n="cx.copy">复制</button></div><div class="cp-msg" id="wIpsM"></div></div>
+    <div class="w wc bnz" id="wKey"><label class="fld" id="fKey"><span data-i18n="cx.keyIn">把币安的 API Key 粘贴到这里</span>
+      <div class="inp"><input id="key" class="mono" name="cx-k" maxlength="80" spellcheck="false" autocapitalize="off" autocomplete="off" data-i18n-attr="placeholder:cx.keyPh" placeholder="粘贴 64 位 API Key"></div>
+      <div class="kfoot"><span data-i18n="cx.keyHint">从币安复制，不会离开这台电脑</span><span class="n" id="nKey">0 / 64</span></div><div class="msg" id="mKey"></div></label></div>
+    <div class="w wc bnz" id="wSec"><label class="fld" id="fSec"><span data-i18n="cx.secIn">把 Secret Key 粘贴到这里</span>
+      <div class="inp has-eye"><input id="sec" class="mono" type="password" name="cx-s" maxlength="80" spellcheck="false" autocapitalize="off" autocomplete="new-password" data-i18n-attr="placeholder:cx.secPh" placeholder="粘贴 64 位 Secret Key">
+        <button type="button" class="eye" id="eye" data-i18n-attr="aria-label:cx.show" aria-pressed="false"></button></div>
+      <div class="kfoot"><span data-i18n="cx.secHint">请妥善保存；这里不保存</span><span class="n" id="nSec">0 / 64</span></div><div class="msg" id="mSec"></div></label></div>
+    <div class="w fin" id="wFin">
+      <div class="res" id="res" hidden role="status" aria-live="polite"></div>
+      <form id="f" novalidate autocomplete="off" class="fin">
+        <label class="fld" id="fName"><span data-i18n="cx.name">账户名称</span>
+          <div class="inp"><input id="name" name="cx-name" maxlength="40" data-i18n-attr="placeholder:cx.namePh" placeholder="例如 3dtUSDT01" autocomplete="off"></div><div class="msg" id="mName"></div></label>
+        <ul id="sum"></ul>
+        <button class="btn pri block" type="submit" id="go" data-i18n="cx.go">连接并验证</button>
+        <p class="safe" id="safe"></p>
+      </form>
+    </div>
+  </div>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="td-account.js?v=r44"></script>
+<script src="api-adapter.js?v=r43"></script>
+<script src="bind-steps.js?v=r44"></script>
+<script src="bind-bn.js?v=r44"></script>
+<script src="connect.js?v=r44b"></script>
+</body>
+</html>

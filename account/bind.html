@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="robots" content="noindex">
 <title>3dtrading · 连接币安子账户</title>
-<script>/* day / night follows the website (localStorage '3dt.theme'); night is the default */
-try{document.documentElement.dataset.theme=localStorage.getItem('3dt.theme')==='day'?'day':'night'}catch(e){document.documentElement.dataset.theme='night'}</script>
-<link rel="stylesheet" href="page.css?v=20261113-r31">
-<link rel="stylesheet" href="bind-bn.css?v=20261113-r28">
+<script>/* r41: day / night follows the dashboard (localStorage '3dt.theme.app'); day is the default. The website keeps its own '3dt.theme.site'. */
+try{var L=localStorage,o=L.getItem('3dt.theme');if(o!==null){if(L.getItem('3dt.theme.site')===null)L.setItem('3dt.theme.site',o==='day'?'day':'night');L.removeItem('3dt.theme')}document.documentElement.dataset.theme=L.getItem('3dt.theme.app')==='night'?'night':'day'}catch(e){document.documentElement.dataset.theme='day'}</script>
+<link rel="stylesheet" href="page.css?v=20261113-r38">
+<link rel="stylesheet" href="bind-bn.css?v=20261113-r38">
 <style>
 /* A quiet two-column workspace; the form leads in both DOM and reading order. */
 body::before{display:none}
@@ -42,7 +42,6 @@ summary:focus-visible{outline:2px solid var(--brand);outline-offset:4px}
 .acc:hover{box-shadow:inset 0 0 0 1px var(--line2)}
 .acc.sel{box-shadow:inset 0 0 0 1.5px var(--brand)}
 .dot{flex:none;width:9px;height:9px;border-radius:50%;background:var(--warn)}
-.dot.verified{background:var(--ok)}.dot.failed{background:var(--bad)}.dot.demo{background:#6b7a8c}
 .acc .tx{flex:1;min-width:0}
 .acc .tx b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .acc .tx small{display:block;font-size:12px;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -69,23 +68,11 @@ summary:focus-visible{outline:2px solid var(--brand);outline-offset:4px}
 .addrow[hidden]{display:none}
 .sum{margin:0 0 12px}
 .sec{font-size:11.5px;font-weight:700;color:var(--ink3);letter-spacing:.05em;text-transform:uppercase;margin:16px 0 9px}
-.checks{display:grid;gap:9px;margin-bottom:14px}
-.checks .chk{font-size:13px}
-.checks.err .chk input:not(:checked){border-color:var(--bad)}
-.ckmsg{display:none;margin:-6px 0 12px;font-size:12.5px;color:var(--bad)}
-.checks.err+.ckmsg{display:block}
-.mini-ips{display:inline-flex;gap:5px;flex-wrap:wrap;margin:4px 0 0}
-.mini-ips button{appearance:none;border:0;font-family:var(--mono);font-size:11.5px;padding:2px 7px;border-radius:6px;background:var(--sf3);color:var(--ink);cursor:pointer}
-.mini-ips button:hover{background:#262d31}
 .tag{display:inline-flex;align-items:center;height:20px;padding:0 7px;border-radius:6px;font-size:11px;font-weight:650;background:rgba(240,177,0,.14);color:#f5c84b;white-space:nowrap}
 #go{height:48px;font-size:15px;box-shadow:none;border-radius:8px}
 .safe{margin:14px 0 0;font-size:12px;padding:0;background:none!important;border:0;box-shadow:none;color:var(--ink3);line-height:1.6}.safe svg{display:none}
 
 /* result */
-#resView{display:none}
-.card.res #formView,.card.boot #formView{display:none}
-.card.res #resView{display:block}
-.card.res .lh{display:none}
 .bootErr{padding:20px 0;font-size:14px;line-height:1.6;color:var(--ink2)}
 .rhd{display:flex;gap:14px;align-items:flex-start;margin-bottom:14px}
 .rhd .ic{flex:none;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;background:rgba(240,177,0,.14);color:#f5c84b}
@@ -108,16 +95,71 @@ summary:focus-visible{outline:2px solid var(--brand);outline-offset:4px}
 .flow li.n i{background:rgba(255,99,105,.16);color:var(--bad)}
 .flow li.w i{background:rgba(240,177,0,.16);color:#f5c84b}
 .flow li b{color:var(--ink);font-weight:600}
-.sim{margin:14px 0 0;padding:14px;border-radius:14px;border:1.5px dashed rgba(240,177,0,.45);background:rgba(240,177,0,.04)}
-.sim h4{display:flex;align-items:center;gap:8px;margin:0 0 4px;font-size:13px;color:#f5c84b}
+/* r39：演示工具默认收起，只占一行；展开后才看到选择框 */
+.sim{margin:14px 0 0;padding:0;border-top:1px solid var(--line2)}
+.sim>summary{list-style:none;cursor:pointer;display:flex;align-items:center;padding:12px 0;min-height:40px}
+.sim>summary::-webkit-details-marker{display:none}
+.sim>summary::after{content:"+";margin-left:auto;color:var(--ink3);font-size:16px}
+.sim[open]>summary::after{content:"−"}
+.sim[open]{padding-bottom:12px}
+.sim h4{display:flex;align-items:center;gap:8px;margin:0;font-size:13px;font-weight:500;color:var(--ink3)}
 .sim p{margin:0 0 10px;font-size:12px;line-height:1.55;color:var(--ink3)}
-.sim .b3{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.sim .btn{justify-content:flex-start;height:38px;font-size:12.5px;padding:0 10px}
 .ract{display:grid;gap:10px;margin-top:14px}
 .fixl{margin:12px 0;padding-left:18px;display:grid;gap:6px;font-size:13px;line-height:1.55;color:var(--ink2)}
 .toast{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--ink);color:var(--bg);font-weight:650;font-size:13.5px;padding:10px 16px;border-radius:11px;transition:.25s var(--ease);z-index:50;max-width:calc(100vw - 32px)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 [hidden]{display:none!important}
+/* r38: one block per sub-account, steps ②–⑤ inside; everything comes from TDApi */
+.card.boot .brows,.card.boot #formView,.card.boot #demoBox,.card.boot #addBtn{display:none!important}
+.ob{margin:0 0 14px}.ob a{color:inherit;font-weight:650}
+.brows{display:grid;gap:10px;margin:0 0 14px}
+.brows:empty{display:none}
+.brow{border-radius:14px;box-shadow:inset 0 0 0 1px var(--line);background:rgba(0,0,0,.18)}
+.brow.open{box-shadow:inset 0 0 0 1.5px var(--brand)}
+.brow .acc{background:none;box-shadow:none}
+.dot.demo{background:#6b7a8c}.dot.wait{background:var(--warn)}.dot.ok{background:var(--ok)}.dot.bad{background:var(--bad)}.dot.off{background:transparent;box-shadow:inset 0 0 0 1.5px var(--ink3)}
+.bbody{padding:2px 14px 16px}
+.bp{margin:6px 0 10px;font-size:13px;line-height:1.6;color:var(--ink2)}
+.muted{font-size:12.5px;color:var(--ink3)}
+.stp{margin:14px 0 0}.stp+.stp{padding-top:14px;border-top:1px solid var(--line)}
+.stp h4{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 8px;font-size:13.5px;font-weight:650}
+.stp h4 i{flex:none;font-style:normal;font-size:16px;line-height:1;color:var(--brand)}
+.stp h4.bad i{color:var(--bad)}
+.stp p{margin:0 0 8px;font-size:12.5px;line-height:1.6;color:var(--ink2)}
+.pem{margin:0 0 8px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.3);font-family:var(--mono);font-size:11.5px;line-height:1.55;white-space:pre-wrap;word-break:break-all;user-select:all}
+.kitrow{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:var(--ink3)}
+.kitrow code{font-family:var(--mono);color:var(--ink)}
+.perms{list-style:none;margin:0 0 4px;padding:0;display:grid;gap:5px;font-size:12.5px;line-height:1.45}
+.perms li{display:flex;gap:8px;color:var(--ink2)}.perms li b{flex:none;width:14px;text-align:center;color:var(--ok)}.perms li.no,.perms li.no b{color:var(--bad)}
+.ips{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}
+.ips button{appearance:none;border:0;font-family:var(--mono);font-size:12px;padding:4px 9px;border-radius:7px;background:var(--sf3);color:var(--ink);cursor:pointer}
+.ticks.done li i{animation:tick .3s var(--ease) both;animation-delay:calc(var(--i) * 180ms)}
+.flow li.w i{animation:pulse 1s ease-in-out infinite}
+@keyframes tick{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+@keyframes pulse{50%{opacity:.45}}
+.fails{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:8px}
+.fails li{padding:10px 12px;border-radius:12px;background:rgba(255,99,105,.07);font-size:13px;line-height:1.55}
+.fails li b{display:block;color:var(--ink);font-weight:650}.fails li p{margin:3px 0 4px;color:var(--ink2)}
+.fails li.security{box-shadow:inset 0 0 0 1.5px var(--bad)}
+.dodo{font-size:12.5px;font-weight:650;color:var(--brand);text-decoration:none}
+.unb{margin:0 0 12px;align-items:flex-start}.unb>span{flex:1}.unb code{white-space:nowrap}.unb .icb{width:28px;height:28px;color:inherit}
+.fh{margin:6px 0 14px;font-size:14px;font-weight:650}
+.sim select{width:100%;height:40px;border-radius:10px;background:var(--sf2);color:var(--ink);border:1px solid var(--line2);padding:0 10px;font:inherit;font-size:13px}
+.sim h4 .tag{margin-right:2px}
+body.locked{overflow:hidden}
+.sec-ov{position:fixed;inset:0;z-index:70;background:#8f121b;color:#fff;display:flex;align-items:center;justify-content:center;padding:32px 24px calc(32px + env(safe-area-inset-bottom));overflow:auto}
+.sec-ov[hidden]{display:none!important}
+.sec-ov .in{max-width:520px;width:100%}
+.sec-ov h2{font-size:30px;line-height:1.2;letter-spacing:-.02em;margin:18px 0 10px;color:#fff}
+.sec-badge{display:inline-block;padding:7px 12px;border-radius:8px;background:#fff;color:#8f121b;font-weight:800;font-size:15px;letter-spacing:.02em}
+.sec-badge.sm{padding:3px 8px;font-size:12px;vertical-align:middle}
+.sec-ov .who{margin:0 0 14px;font-size:14px;opacity:.92;word-break:break-all}
+.sec-ov .why{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:8px}
+.sec-ov .why li{padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.22);font-size:13.5px;line-height:1.55}.sec-ov .why b{display:block}
+.sec-ov .sent{font-size:15px;font-weight:650;margin:0 0 18px}
+.sec-ov .btn{background:#fff;color:#8f121b;border:0}.sec-ov .btn.ghost{background:transparent;color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.6)}
+html[data-theme="day"] .brow{background:rgba(255,255,255,.6)}
+html[data-theme="day"] .pem{background:rgba(0,0,0,.05)}
 
 @media(max-width:900px){
 .bd{max-width:600px;grid-template-columns:minmax(0,1fr);padding:32px 24px 48px;gap:28px}
@@ -127,7 +169,7 @@ summary:focus-visible{outline:2px solid var(--brand);outline-offset:4px}
 @media(max-width:400px){.bd{padding-left:20px;padding-right:20px}.r2{grid-template-columns:1fr;gap:0}}
 @media(prefers-reduced-motion:reduce){.cap-tx{transition:none}}
 </style>
-<link rel="stylesheet" href="day.css?v=20261113-r31">
+<link rel="stylesheet" href="day.css?v=20261113-r38">
 <style>
 html[data-theme="day"] body::before{display:none}
 html[data-theme="day"] .card,html[data-theme="day"] .arow{background:none;box-shadow:none;border:0;backdrop-filter:none}
@@ -144,7 +186,8 @@ html[data-theme="day"] .cap-tx strong{color:#eaecef}html[data-theme="day"] .cap-
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#06090b">
-<script>(function(){function tc(){var m=document.querySelector('meta[name=theme-color]');if(m)m.content=document.documentElement.dataset.theme==='day'?'#f1f0ef':'#06090b'}tc();addEventListener('td:theme',tc)})()</script>
+<script>(function(){function tc(){var m=document.querySelector('meta[name=theme-color]');if(m)m.content=document.documentElement.dataset.theme==='day'?'#ffffff':'#06090b'}tc();addEventListener('td:theme',tc)})()</script>
+<link rel="stylesheet" href="r41.css?v=r41">
 </head>
 <body>
 <header class="bar">
@@ -157,37 +200,36 @@ html[data-theme="day"] .cap-tx strong{color:#eaecef}html[data-theme="day"] .cap-
 <main class="bd">
   <header class="page-heading">
     <h1 id="hh" data-i18n="bind.h1">连接币安</h1>
-    <p data-i18n="bind.lede">填写子账户 API，即可开始配置。</p>
+    <p data-i18n="bind.lede">使用子账户 API，策略仅在子账户内运行。</p>
   </header>
   <section class="card boot" id="panel" aria-labelledby="formH">
     <div class="note good welcome" id="welcome" role="status"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.2 4.2L19 7"/></svg><span data-i18n="bind.welcome">演示账号已创建。</span></div>
+    <div class="note info ob" id="obNote" hidden><span><span data-i18n="bind.obNote">还没有确认风险披露与协议。</span> <a href="onboard.html" data-i18n="bind.obGo">去确认</a></span></div>
     <div class="phd">
       <div><h2 id="formH"></h2><p id="formS"></p></div>
       <a class="btn ghost skip" id="skipBtn" href="#"></a>
     </div>
-    <div class="list" id="list"></div>
+    <div id="unNote" aria-live="polite"></div>
+    <div class="brows" id="brows"></div>
+    <button type="button" class="addrow" id="addBtn" hidden><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="bind.addMore">再连接子账户</span></button>
 
-    <div id="formView">
+    <div id="formView" hidden>
+      <h3 class="fh" id="fh" data-i18n="bind.addT">再连接子账户</h3>
       <form id="f" novalidate autocomplete="off">
         <div class="note bad sum" id="sum" role="alert" hidden><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg><span id="sumT"></span></div>
         <div class="rows" id="rows"></div>
         <button type="button" class="addrow" id="addRow"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg><span data-i18n="bind.addRow">再添加一个子账户</span></button>
-
-        <div class="sec" data-i18n="bind.checkH">已在币安完成</div>
-        <div class="checks" id="checks" data-scroll-pad>
-          <label class="chk"><input type="checkbox" data-ck><span data-i18n-html="bind.ck1">子账户已允许合约，并已开通统一账户</span></label>
-          <label class="chk"><input type="checkbox" data-ck><span><span data-i18n-html="bind.ck2">只访问受信任的 IP，两个 IP 已保存</span><br><span class="mini-ips" id="miniIps"></span></span></label>
-          <label class="chk"><input type="checkbox" data-ck><span data-i18n-html="bind.ck3">已核对最小权限边界</span></label>
-        </div>
-        <div class="ckmsg" data-i18n="bind.e.checks">请在币安里完成这三项，再勾选确认。</div>
-
         <button class="btn pri block" type="submit" id="go"></button>
         <button class="btn ghost block" type="button" id="cancel" style="margin-top:8px" data-i18n="bind.cancel" hidden>取消</button>
-        <div class="note safe"><svg viewBox="0 0 24 24"><path d="M12 3.5 5 6.5v5c0 4.3 3 7.8 7 9 4-1.2 7-4.7 7-9v-5z"/></svg><span data-i18n="bind.safe">演示：只在本页检查格式，不连接币安。</span></div>
       </form>
     </div>
 
-    <div id="resView" aria-live="polite"></div>
+    <details class="sim" id="demoBox">
+      <summary><h4><span class="tag" data-i18n="bind.demoTag">演示</span><span data-i18n="bind.simH">下一次接入测试的模拟结果</span></h4></summary>
+      <p data-i18n="bind.simP">没有后端：这里只决定下一次「提交并测试」返回什么，用来预览各种结果。</p>
+      <select id="outSel" data-i18n-attr="aria-label:bind.simH"></select>
+    </details>
+    <div class="note safe"><span data-i18n="bind.safe">演示模式：不连接币安，不发送通知。API Key 提交后立即清空，浏览器不保存。</span></div>
   </section>
   <aside class="intro" aria-label="API setup">
     <details id="tutorial" open>
@@ -204,15 +246,27 @@ html[data-theme="day"] .cap-tx strong{color:#eaecef}html[data-theme="day"] .cap-
   </aside>
 </main>
 
+<div class="sec-ov" id="secOv" role="alertdialog" aria-modal="true" aria-labelledby="secH" hidden>
+  <div class="in">
+    <span class="sec-badge" data-i18n="bind.secDemo">演示模拟，未实际发送</span>
+    <h2 id="secH" data-i18n="bind.secH">请立即到币安删除这个 API</h2>
+    <p class="who" id="secWho"></p>
+    <ul class="why" id="secWhy"></ul>
+    <p class="sent"><span data-i18n="bind.secSent">我们已通知你的邮箱 / Telegram</span> <span class="sec-badge sm" data-i18n="bind.secDemo">演示模拟，未实际发送</span></p>
+    <div class="ract"><button type="button" class="btn block" id="secUnbind"></button><button type="button" class="btn ghost block" id="secClose" data-i18n="bind.secClose">我知道了</button></div>
+  </div>
+</div>
+
 <div class="toast" id="toast" role="status"></div>
 
-<script src="td-account.js?v=20261113-r31"></script>
-<script src="bind-steps.js?v=20261113-r28"></script>
-<script src="bind-bn.js?v=20261113-r28"></script>
+<script src="td-account.js?v=r44"></script>
+<script src="api-adapter.js?v=r43"></script>
+<script src="bind-steps.js?v=r41"></script>
+<script src="bind-bn.js?v=r41"></script>
 <script>
 (function () {
   'use strict';
-  var A = TDAccount, B = window.TD_BIND, BN = window.TD_BN, $ = function (s) { return document.querySelector(s); };
+  var A = TDAccount, API = window.TDApi, B = window.TD_BIND, BN = window.TD_BN, $ = function (s) { return document.querySelector(s); };
   /* Compat: a cached older td-account.js may lack the demo helpers. Fill them locally so the
      demo sub-account still shows its notice card (never the API form). */
   var DEMO_ID = A.DEMO_ID || 'demo-binance';
@@ -230,101 +284,79 @@ html[data-theme="day"] .cap-tx strong{color:#eaecef}html[data-theme="day"] .cap-
   A.i18n({
     zh: {
       'bind.bootErr': '页面没有完整加载，请刷新后再试。已绑定的账户不会受影响。', 'acct.demo.name': '示例账户', 'acct.demo.sub': '示例数据 · 未连接币安', 'acct.demo.st': '示例数据 · 未连接币安', 'bind.demoTag': '演示',
-      'bind.title': '3dtrading · 连接币安子账户', 'bind.pill': '演示 · 未连接币安',
-      'bind.eyebrow': '连接币安子账户', 'bind.h1': '连接币安', 'bind.tutorial': '如何设置 API', 'bind.aboutDemo': '关于演示', 'bind.optionalLabel': '添加 API 标签（选填）',
+      'bind.title': '3dtrading · 连接币安子账户', 'bind.h1': '连接币安', 'bind.tutorial': '如何设置 API', 'bind.aboutDemo': '关于演示', 'bind.optionalLabel': '添加 API 标签（选填）',
       'bind.lede': '使用子账户 API，策略仅在子账户内运行。',
       'bind.welcome': '演示账号已创建。可以现在连接，也可以先跳过。',
+      'bind.obNote': '还没有确认风险披露与协议。', 'bind.obGo': '去确认',
       'bind.skip': '暂时跳过', 'bind.back': '返回后台',
-      'bind.carL': '币安 API 设置示意（节选，自动播放）', 'bind.excerpt': '节选 · 自动播放', 'bind.cPlay': '继续播放', 'bind.cPause': '暂停播放',
-      'bind.srcl': '代码复刻的币安网页示意（节选），非实时页面；名称、UID 与密钥均为虚构示例。依据 {g} 配置指南与币安官方 FAQ，{d} 核对。',
-      'bind.ipPend': '示例白名单 IP',
-      'bind.listH': '已连接 {n} 个子账户', 'bind.current': '当前', 'bind.recheck': '重新校验', 'bind.remove': '移除', 'bind.sure': '确认移除', 'bind.removed': '已移除 {name}',
-      'bind.newT': '账户信息', 'bind.newS': '',
-      'bind.addT': '再连接子账户', 'bind.addS': '每个子账户使用自己的 API，可以一次添加多个。',
+      'bind.carL': '币安 API 设置示意（节选，自动播放）', 'bind.cPlay': '继续播放', 'bind.cPause': '暂停播放',
+      'bind.srcl': '代码复刻的币安网页示意（节选），非实时页面；名称、UID 与密钥均为虚构示例。依据 {g} 配置指南与币安官方 FAQ，{d} 核对。「自行生成 → 粘贴公钥」一屏为示意，未与币安实时页面核对。',
+      'bind.listH': '{n} 个子账户', 'bind.newT': '账户信息', 'bind.newS': '先填子账户名称和 UID。申请后，我们会给每个子账户一把专属公钥。',
+      'bind.addT': '再连接子账户', 'bind.addMore': '再连接子账户',
       'bind.demoP': '这是后台为你准备的示例账户：收益、持仓和交易全部是模拟数据，没有连接币安，也不会下单。它不需要也不能填写 API。',
-      'bind.demoKeys': '无（示例账户不使用 API）', 'bind.demoNote': '示例账户不能做接入测试或重新校验。想看真实数据，请连接你自己的币安子账户；不需要时可以删除它。', 'bind.demoReal': '连接真实子账户',
-      'bind.reT': '重新校验 {name}', 'bind.reS': '我们不保存密钥，所以需要重新填写 API Key 和 Secret Key。',
-      'bind.rowH': '子账户 {n}', 'bind.rowRm': '删除子账户 {n} 这一组', 'bind.addRow': '再添加一个子账户', 'bind.maxRows': '一次最多 {n} 个',
-      'bind.fName': '子账户名称', 'bind.fNamePh': '例如 3dtUSDT01', 'bind.fUid': '子账户 UID', 'bind.fUidPh': '用户 ID',
-      'bind.fLabel': 'API 标签', 'bind.optional': '选填',
-      'bind.fKey': 'API Key', 'bind.fKeyPh': '在币安点 Copy 后粘贴', 'bind.fSec': 'Secret Key', 'bind.fSecPh': '只显示一次，点 Copy 后粘贴', 'bind.show': '显示或隐藏 Secret Key',
-      'bind.checkH': '确认账户设置',
-      'bind.ck1': '子账户已 <b>允许合约</b>，并已 <b>开通统一账户</b>',
-      'bind.ck2': '<b>只访问受信任的 IP</b>，两个 IP 已保存',
-      'bind.ck3': '<b>提款与跨账户转账已关闭</b>',
-      'bind.go': '检查并保存', 'bind.goN': '检查并保存这 {n} 个', 'bind.cancel': '取消',
-      'bind.safe': '演示模式 · 仅检查格式，不连接币安。密钥不发送、不保存。',
-      'bind.e.name': '请填写子账户名称。', 'bind.e.uid': 'UID 是 6–12 位数字。', 'bind.e.dup': '这个子账户已经连接过了。要更新密钥，请在上面的列表里点「重新校验」。',
-      'bind.e.dupName': '和本次填写的另一个子账户重名。', 'bind.e.dupUid': '和本次填写的另一个子账户 UID 相同。', 'bind.e.keyRow': '这组密钥在另一个子账户里已经用过。每个子账户要用它自己的 API。',
-      'bind.e.key': 'API Key 应为 64 位字母和数字。请用币安页面上的 Copy 按钮完整复制。', 'bind.e.sec': 'Secret Key 应为 64 位字母和数字。只显示一次，丢了需要重建 API。',
-      'bind.e.same': 'API Key 和 Secret Key 不能相同，看看是不是粘贴了两次同一项。', 'bind.e.checks': '请在币安里完成这三项，再勾选确认。',
-      'bind.e.rowKeys': '这一组没有保存。为安全起见两项密钥已清空，改好后请重新粘贴。',
-      'bind.sum.part': '已保存 {ok} 个（待接入测试）。还有 {bad} 个没有保存，请按红色提示修改。', 'bind.sum.none': '{bad} 个子账户都没有保存，请按红色提示修改。',
-      'bind.r.pendT': '格式检查通过 · 待接入测试', 'bind.r.pendP': '已保存子账户「{name}」。这一步只检查了格式：没有连接币安，API Key 和 Secret 没有发送，也没有保存，表单已清空。',
-      'bind.r.batchT': '已保存 {n} 个子账户 · 待接入测试', 'bind.r.batchP': '只检查了格式：没有连接币安，密钥没有发送，也没有保存。接入测试需要服务端，演示环境里它们会一直是「待接入测试」。',
-      'bind.r.okT': '接入测试通过（演示）', 'bind.r.okP': '这是模拟结果，用来预览成功后的流程。币安并没有被连接。',
-      'bind.r.badT': '接入测试未通过（演示）', 'bind.r.badP': '这是模拟结果，用来预览失败时的提示。',
-      'bind.kv.name': '子账户', 'bind.kv.uid': 'UID', 'bind.kv.label': 'API 标签', 'bind.kv.status': '状态', 'bind.kv.keys': '密钥', 'bind.kv.keysV': '未保存（已清空）',
-      'bind.st.s1': '子账户已选择', 'bind.st.s1P': '：已填写名称和 UID（你自报，未经币安核对）', 'bind.st.s2': 'API 已创建', 'bind.st.s2P': '：两项密钥格式检查通过', 'bind.st.s3': '密钥已安全保存', 'bind.st.s3P': '：由你自行保存；本页提交后已清空，不保存', 'bind.st.s4': '权限与 IP 已保存', 'bind.st.s4P': '：你已在币安自查勾选，需服务端核实', 'bind.st.s5': '服务端验证通过', 'bind.st.s5P': '：演示环境未接通后端，尚未验证', 'bind.st.s5simP': '：仅为下方演示按钮的模拟结果，并未真实连接币安',
-      'bind.simH': '演示：模拟接入测试结果', 'bind.simP': '没有后端，下面的按钮只用来预览界面，不代表真实结果。',
-      'bind.simOk': '模拟：测试通过', 'bind.simIp': '模拟：IP 不在白名单', 'bind.simPerm': '模拟：权限不对', 'bind.simKey': '模拟：Key 无效',
-      'bind.fail.ip': '币安拒绝了请求：这个 API 没有把我们的服务器 IP 加入白名单。', 'bind.fail.perm': '权限不一致：缺少交易权限，或开启了提现或万向划转。', 'bind.fail.key': 'API Key 无效，可能已被删除，或和 Secret 不属于同一个子账户。',
-      'bind.fix.ip': '在币安打开这个 API，选「只访问受信任的IP」，确认两个 IP 都已保存。', 'bind.fix.perm': '在币安打开这个 API，按左侧「权限与 IP 白名单」示意勾选权限，关闭提现与万向划转，然后保存。', 'bind.fix.key': '在币安重新创建 API，并确认两项密钥来自同一个子账户。', 'bind.fix.again': '改完以后点「重新校验」，重新填写两项密钥。',
-      'bind.seeStep': '看权限与 IP 示意', 'bind.again': '重新校验', 'bind.toApp': '进入后台', 'bind.addMore': '再连接子账户',
-      'bind.saved': '已保存 {name}', 'bind.savedN': '已保存 {n} 个子账户', 'bind.copied': '已复制 {ip}', 'bind.copy': '复制',
+      'bind.demoNote': '示例账户不能做接入测试。想看真实数据，请连接你自己的币安子账户；不需要时可以移除它。',
+      'bind.rowH': '子账户 {n}', 'bind.rowRm': '删除子账户 {n} 这一组', 'bind.addRow': '再添加一个子账户',
+      'bind.fName': '子账户名称', 'bind.fNamePh': '例如 3dtUSDT01', 'bind.fUid': '子账户 UID', 'bind.fUidPh': '用户 ID', 'bind.fLabel': 'API 标签', 'bind.optional': '选填',
+      'bind.go': '申请绑定', 'bind.goN': '申请绑定这 {n} 个', 'bind.cancel': '取消',
+      'bind.sum': '已申请 {ok} 个。还有 {bad} 个没有提交，请按红色提示修改。',
+      'bind.safe': '演示模式：不连接币安，不发送通知。API Key 提交后立即清空，浏览器不保存。',
+      'bind.open': '展开', 'bind.unbind': '解绑', 'bind.sure': '确认解绑', 'bind.removed': '已移除 {name}',
+      'bind.unT': '已解绑「{name}」。', 'bind.unDel': '请到币安删除这个 API：', 'bind.unHint': 'API Key {hint}', 'bind.unClose': '知道了',
+      'bind.kitLoading': '正在准备公钥…',
+      'bind.s2h': '复制公钥', 'bind.exTag': '示例公钥 · 演示', 'bind.pubSafe': '公钥是公开的，可以放心复制。它只用来验证签名，不能动你的资产。', 'bind.fp': '指纹', 'bind.copyPub': '复制公钥', 'bind.pubCopied': '已复制公钥',
+      'bind.permH': '在币安勾选这些权限', 'bind.mustOff': '必须关闭', 'bind.ipH': '只允许这些 IP',
+      'bind.e.NAME_REQUIRED': '请填写名称', 'bind.e.NAME_TAKEN': '这个名称已经用过', 'bind.e.UID_INVALID': 'UID 是 6–12 位数字', 'bind.e.UID_TAKEN': '这个 UID 已经绑定过',
+      'bind.s3h': '在币安创建 API', 'bind.illus': '示意', 'bind.s3p': '选择「自行生成」→ 粘贴公钥（上面这把）→ 按清单设权限和 IP → 复制 API Key。', 'bind.s3see': '看示意',
+      'bind.s4h': '贴回 API Key', 'bind.keyPh': '在币安点 Copy 后粘贴', 'bind.keyHint': '只需要 API Key。没有 Secret，也不要任何私钥。提交后输入框立即清空。', 'bind.s4go': '提交并测试',
+      'bind.e.key': 'API Key 应为 64 位字母和数字。请用币安页面上的 Copy 按钮完整复制，再粘贴一次。', 'bind.e.gen': '没有提交成功，请再试一次。',
+      'bind.chkH': '接入测试中…', 'bind.failH': '接入测试未通过。按下面每一条修改后，点「重新测试」。', 'bind.askDodo': '问 Dodo', 'bind.retest': '重新测试', 'bind.secAgain': '查看安全提醒',
+      'bind.s5h': '测试通过 → 试运行（只观察）', 'bind.s5p': '演示结果：没有连接币安。试运行期间只观察，不会下单。', 'bind.toApp': '进入后台',
+      'bind.stHalted': '这个子账户已停机。到后台查看原因。', 'bind.stUnbound': '这个子账户已解绑。', 'bind.stUnknown': '我们正在处理这个子账户，稍后再来看。',
+      'bind.secH': '请立即到币安删除这个 API', 'bind.secSent': '我们已通知你的邮箱 / Telegram', 'bind.secDemo': '演示模拟，未实际发送', 'bind.secClose': '我知道了', 'bind.secWho': '子账户「{name}」 · API Key {hint}',
+      'bind.simH': '下一次接入测试的模拟结果', 'bind.simP': '没有后端：这里只决定下一次「提交并测试」返回什么，用来预览各种结果。', 'bind.outPass': '通过',
+      'bind.copied': '已复制 {ip}',
       'bind.c1t': '创建子账户', 'bind.c1x': '子账户 → 账户管理 → 创建子账户（虚拟邮箱）',
-      'bind.c2t': '创建 API', 'bind.c2x': '选择「自行设置」，填入系统生成的公钥（演示）',
-      'bind.c3t': '保存连接密钥', 'bind.c3x': 'API Key 与系统生成的私钥均为假数据，仅供演示',
-      'bind.c4t': '权限与 IP 白名单', 'bind.c4x': '只开读取与交易、关闭提现；只访问受信任的 IP'
+      'bind.c2t': '创建 API', 'bind.c2x': 'API 管理 → 创建 API，选这个子账户，填标签',
+      'bind.c3t': '选择自行生成 → 粘贴公钥 → 复制 API Key', 'bind.c3x': '示意：公钥用绑定页给你的那把；只复制 API Key，没有 Secret',
+      'bind.c4t': '权限与 IP 白名单', 'bind.c4x': '按绑定页清单勾选，提现关闭；填入绑定页给出的 IP'
     },
     en: {
       'bind.bootErr': 'The page did not finish loading. Please refresh and try again. Your linked accounts are not affected.', 'acct.demo.name': 'Sample account', 'acct.demo.sub': 'Sample data · not connected to Binance', 'acct.demo.st': 'Sample data · not connected to Binance', 'bind.demoTag': 'Demo',
-      'bind.title': '3dtrading · Connect Binance sub-accounts', 'bind.pill': 'Demo · Binance not connected',
-      'bind.eyebrow': 'Connect Binance sub-accounts', 'bind.h1': 'Connect Binance', 'bind.tutorial': 'How to set up your API', 'bind.aboutDemo': 'About this demo', 'bind.optionalLabel': 'Add an API label (optional)',
+      'bind.title': '3dtrading · Connect Binance sub-accounts', 'bind.h1': 'Connect Binance', 'bind.tutorial': 'How to set up your API', 'bind.aboutDemo': 'About this demo', 'bind.optionalLabel': 'Add an API label (optional)',
       'bind.lede': 'Use a sub-account API. The strategy runs inside that account.',
       'bind.welcome': 'Demo account created. Connect now, or skip for now.',
+      'bind.obNote': 'You haven’t confirmed the risk disclosure and agreement yet.', 'bind.obGo': 'Confirm now',
       'bind.skip': 'Skip for now', 'bind.back': 'Back to dashboard',
-      'bind.carL': 'Binance API setup preview (excerpt, plays on its own)', 'bind.excerpt': 'Excerpt · auto-play', 'bind.cPlay': 'Play', 'bind.cPause': 'Pause',
-      'bind.srcl': 'A coded excerpt of Binance’s website, not a live page; names, UIDs and keys are made-up examples. Based on the {g} setup guide and Binance’s FAQs, checked {d}.',
-      'bind.ipPend': 'Example whitelist IPs',
-      'bind.listH': '{n} connected', 'bind.current': 'Current', 'bind.recheck': 'Check again', 'bind.remove': 'Remove', 'bind.sure': 'Remove?', 'bind.removed': 'Removed {name}',
-      'bind.newT': 'Account details', 'bind.newS': '',
-      'bind.addT': 'Connect more sub-accounts', 'bind.addS': 'Each sub-account uses its own API key. You can add several at once.',
+      'bind.carL': 'Binance API setup preview (excerpt, plays on its own)', 'bind.cPlay': 'Play', 'bind.cPause': 'Pause',
+      'bind.srcl': 'A coded excerpt of Binance’s website, not a live page; names, UIDs and keys are made-up examples. Based on the {g} setup guide and Binance’s FAQs, checked {d}. The “Self-generated → paste public key” screen is an illustration, not checked against a live Binance page.',
+      'bind.listH': '{n} sub-accounts', 'bind.newT': 'Account details', 'bind.newS': 'Enter the sub-account name and UID first. After you apply, each sub-account gets its own public key.',
+      'bind.addT': 'Connect more sub-accounts', 'bind.addMore': 'Connect more sub-accounts',
       'bind.demoP': 'A sample account set up for you in the dashboard. Its returns, positions and trades are all simulated. It is not connected to Binance and places no orders. It needs no API and cannot take one.',
-      'bind.demoKeys': 'None (the sample account uses no API)', 'bind.demoNote': 'The sample account cannot be connection-tested or checked again. To see real data, connect your own Binance sub-account. You can delete the sample account when you no longer need it.', 'bind.demoReal': 'Connect a real sub-account',
-      'bind.reT': 'Check {name} again', 'bind.reS': 'We don’t keep keys, so enter the API Key and Secret Key again.',
-      'bind.rowH': 'Sub-account {n}', 'bind.rowRm': 'Remove sub-account {n}', 'bind.addRow': 'Add another sub-account', 'bind.maxRows': 'Up to {n} at a time',
-      'bind.fName': 'Sub-account name', 'bind.fNamePh': 'e.g. 3dtUSDT01', 'bind.fUid': 'Sub-account UID', 'bind.fUidPh': 'User ID',
-      'bind.fLabel': 'API label', 'bind.optional': 'Optional',
-      'bind.fKey': 'API Key', 'bind.fKeyPh': 'Click Copy on Binance, then paste', 'bind.fSec': 'Secret Key', 'bind.fSecPh': 'Shown once; click Copy, then paste', 'bind.show': 'Show or hide the Secret Key',
-      'bind.checkH': 'Confirm account settings',
-      'bind.ck1': 'The sub-account has <b>futures enabled</b> and <b>Portfolio Margin</b> on',
-      'bind.ck2': '<b>Trusted IPs only</b>, both IPs saved',
-      'bind.ck3': '<b>Withdrawals and cross-account transfers are off</b>',
-      'bind.go': 'Check and save', 'bind.goN': 'Check and save all {n}', 'bind.cancel': 'Cancel',
-      'bind.safe': 'Demo · Format check only. Binance is not connected. Keys are never sent or stored.',
-      'bind.e.name': 'Enter the sub-account name.', 'bind.e.uid': 'The UID is 6–12 digits.', 'bind.e.dup': 'This sub-account is already connected. To update its keys, use “Check again” in the list above.',
-      'bind.e.dupName': 'Another sub-account in this form has the same name.', 'bind.e.dupUid': 'Another sub-account in this form has the same UID.', 'bind.e.keyRow': 'These keys are already used by another sub-account here. Each sub-account needs its own API key.',
-      'bind.e.key': 'The API Key is 64 letters and digits. Use the Copy button on Binance to copy all of it.', 'bind.e.sec': 'The Secret Key is 64 letters and digits. It is shown only once; if you lost it, create a new key.',
-      'bind.e.same': 'The API Key and Secret Key can’t be the same. Did you paste one of them twice?', 'bind.e.checks': 'Finish these three on Binance, then tick them.',
-      'bind.e.rowKeys': 'Not saved. For safety both keys were cleared; paste them again after fixing.',
-      'bind.sum.part': 'Saved {ok} (awaiting connection test). {bad} not saved yet; fix the items marked in red.', 'bind.sum.none': 'None of the {bad} sub-accounts were saved; fix the items marked in red.',
-      'bind.r.pendT': 'Format OK · awaiting connection test', 'bind.r.pendP': 'Saved “{name}”. Only the format was checked: Binance was not contacted, and your API Key and Secret were neither sent nor stored. The form is cleared.',
-      'bind.r.batchT': 'Saved {n} sub-accounts · awaiting connection test', 'bind.r.batchP': 'Only the format was checked: Binance was not contacted and the keys were neither sent nor stored. A connection test needs the server; in this demo they stay “Awaiting connection test”.',
-      'bind.r.okT': 'Connection test passed (demo)', 'bind.r.okP': 'This is a simulated result to preview the success flow. Binance was not contacted.',
-      'bind.r.badT': 'Connection test failed (demo)', 'bind.r.badP': 'This is a simulated result to preview the error message.',
-      'bind.kv.name': 'Sub-account', 'bind.kv.uid': 'UID', 'bind.kv.label': 'API label', 'bind.kv.status': 'Status', 'bind.kv.keys': 'Keys', 'bind.kv.keysV': 'Not stored (cleared)',
-      'bind.st.s1': 'Sub-account selected', 'bind.st.s1P': ': name and UID entered (your own entry, not checked with Binance)', 'bind.st.s2': 'API created', 'bind.st.s2P': ': both keys passed the format check', 'bind.st.s3': 'Keys securely saved', 'bind.st.s3P': ': kept by you; this page cleared them on submit and stores nothing', 'bind.st.s4': 'Permissions & IPs saved', 'bind.st.s4P': ': ticked by you after checking on Binance; the server must confirm', 'bind.st.s5': 'Server verified', 'bind.st.s5P': ': not connected in this demo, so not verified', 'bind.st.s5simP': ': simulated by the demo buttons below only; Binance was not contacted',
-      'bind.simH': 'Demo: simulate a test result', 'bind.simP': 'There is no backend. These buttons only preview the screens; they are not real results.',
-      'bind.simOk': 'Simulate: passed', 'bind.simIp': 'Simulate: IP not listed', 'bind.simPerm': 'Simulate: permissions', 'bind.simKey': 'Simulate: bad key',
-      'bind.fail.ip': 'Binance rejected the request: our server IPs are not on this key’s allow-list.', 'bind.fail.perm': 'Permissions don’t match: trading is missing, or withdrawals / universal transfer are on.', 'bind.fail.key': 'The API Key is invalid. It may have been deleted, or it belongs to a different sub-account than the Secret.',
-      'bind.fix.ip': 'On Binance, open this key, choose trusted IPs only and check both IPs are saved.', 'bind.fix.perm': 'On Binance, open this key, tick the permissions shown in “Permissions and trusted IPs” on the left, turn withdrawals and universal transfer off and save.', 'bind.fix.key': 'Create a new key on Binance and check both keys come from the same sub-account.', 'bind.fix.again': 'When you’re done, click “Check again” and enter both keys.',
-      'bind.seeStep': 'Show permissions & IPs', 'bind.again': 'Check again', 'bind.toApp': 'Open dashboard', 'bind.addMore': 'Connect more sub-accounts',
-      'bind.saved': 'Saved {name}', 'bind.savedN': 'Saved {n} sub-accounts', 'bind.copied': 'Copied {ip}', 'bind.copy': 'Copy',
+      'bind.demoNote': 'The sample account cannot be connection-tested. To see real data, connect your own Binance sub-account. You can remove the sample account when you no longer need it.',
+      'bind.rowH': 'Sub-account {n}', 'bind.rowRm': 'Remove sub-account {n}', 'bind.addRow': 'Add another sub-account',
+      'bind.fName': 'Sub-account name', 'bind.fNamePh': 'e.g. 3dtUSDT01', 'bind.fUid': 'Sub-account UID', 'bind.fUidPh': 'User ID', 'bind.fLabel': 'API label', 'bind.optional': 'Optional',
+      'bind.go': 'Apply to connect', 'bind.goN': 'Apply for these {n}', 'bind.cancel': 'Cancel',
+      'bind.sum': 'Applied for {ok}. {bad} not submitted yet; fix the items in red.',
+      'bind.safe': 'Demo mode: Binance is not connected and no notifications are sent. The API Key is cleared as soon as you submit and is never stored in the browser.',
+      'bind.open': 'Expand', 'bind.unbind': 'Unbind', 'bind.sure': 'Confirm unbind', 'bind.removed': 'Removed {name}',
+      'bind.unT': 'Unbound “{name}”.', 'bind.unDel': 'Please delete this API on Binance:', 'bind.unHint': 'API Key {hint}', 'bind.unClose': 'OK',
+      'bind.kitLoading': 'Preparing your public key…',
+      'bind.s2h': 'Copy the public key', 'bind.exTag': 'Example key · demo', 'bind.pubSafe': 'A public key is public. It is safe to copy. It only verifies signatures and cannot move your assets.', 'bind.fp': 'Fingerprint', 'bind.copyPub': 'Copy public key', 'bind.pubCopied': 'Public key copied',
+      'bind.permH': 'Tick these permissions on Binance', 'bind.mustOff': 'must stay off', 'bind.ipH': 'Allow only these IPs',
+      'bind.e.NAME_REQUIRED': 'Enter a name', 'bind.e.NAME_TAKEN': 'That name is already used', 'bind.e.UID_INVALID': 'UID is 6–12 digits', 'bind.e.UID_TAKEN': 'That UID is already linked',
+      'bind.s3h': 'Create the API on Binance', 'bind.illus': 'Illustration', 'bind.s3p': 'Choose “Self-generated” → paste the public key above → set permissions and IPs from the list → copy the API Key.', 'bind.s3see': 'Show illustration',
+      'bind.s4h': 'Paste the API Key back', 'bind.keyPh': 'Click Copy on Binance, then paste', 'bind.keyHint': 'Only the API Key. There is no Secret, and never paste a private key. The field clears as soon as you submit.', 'bind.s4go': 'Submit and test',
+      'bind.e.key': 'The API Key should be 64 letters and digits. Use the Copy button on Binance and paste it again.', 'bind.e.gen': 'That did not go through. Please try again.',
+      'bind.chkH': 'Running the connection test…', 'bind.failH': 'The connection test failed. Fix each item below, then click “Test again”.', 'bind.askDodo': 'Ask Dodo', 'bind.retest': 'Test again', 'bind.secAgain': 'Show security alert',
+      'bind.s5h': 'Test passed → trial run (observe only)', 'bind.s5p': 'Demo result: Binance is not connected. During the trial run we only observe and place no orders.', 'bind.toApp': 'Open dashboard',
+      'bind.stHalted': 'This sub-account is halted. See the dashboard for why.', 'bind.stUnbound': 'This sub-account is unbound.', 'bind.stUnknown': 'We are processing this sub-account. Check back soon.',
+      'bind.secH': 'Delete this API on Binance now', 'bind.secSent': 'We have notified your email / Telegram', 'bind.secDemo': 'Demo simulation, nothing sent', 'bind.secClose': 'I understand', 'bind.secWho': 'Sub-account “{name}” · API Key {hint}',
+      'bind.simH': 'Simulated result of the next connection test', 'bind.simP': 'No backend: this only decides what the next “Submit and test” returns, so you can preview each result.', 'bind.outPass': 'Pass',
+      'bind.copied': 'Copied {ip}',
       'bind.c1t': 'Create a sub-account', 'bind.c1x': 'Sub Accounts → Account Management → Create (virtual email)',
-      'bind.c2t': 'Create an API key', 'bind.c2x': 'Choose Self-configured and enter the generated public key (demo)',
-      'bind.c3t': 'Save connection keys', 'bind.c3x': 'API Key and generated private key are dummy data for this demo',
-      'bind.c4t': 'Permissions and trusted IPs', 'bind.c4x': 'Read and trade only, withdrawals off; trusted IPs only'
+      'bind.c2t': 'Create an API key', 'bind.c2x': 'API Management → Create API, pick this sub-account, add a label',
+      'bind.c3t': 'Self-generated → paste public key → copy API Key', 'bind.c3x': 'Illustration: use the public key from the binding page; copy only the API Key, there is no Secret',
+      'bind.c4t': 'Permissions and trusted IPs', 'bind.c4x': 'Tick the listed permissions, withdrawals off; enter the IPs from the binding page'
     }
   });
 
@@ -343,10 +375,18 @@ html[data-theme="day"] .cap-tx strong{color:#eaecef}html[data-theme="day"] .cap-
   };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   var L = function () { return A.lang() === 'en' ? 'en' : 'zh'; };
+  var t = function (k, p) { return A.t(k, p); };
   var mobile = window.matchMedia('(max-width:900px)'), RM = window.matchMedia('(prefers-reduced-motion:reduce)');
   var qs = new URLSearchParams(location.search);
-  var S = { view: 'form', editId: null, resId: null, batch: null, rm: null };
-  var MAX_ROWS = 8;
+  var MAX_ROWS = 8, PASS = ['observing', 'verified', 'running'], DETAIL = ['checking', 'failed'].concat(PASS);
+  /* page state lives in memory only; the API Key itself is never kept anywhere */
+  var S = { list: [], det: {}, kits: {}, kitBusy: {}, open: null, adding: false, rm: null, chkAt: {}, secSeen: {}, keyErr: {}, unbound: null, outcome: 'pass', sec: null, secSure: false };
+  function isDemo(a) { return A.isDemo(a && a.id ? a.id : a); }
+  function clipCfg() {
+    var k = S.kits[S.open] || null;
+    if (!k) for (var id in S.kits) { k = S.kits[id]; break; }
+    return { nameEx: B.nameEx, labelEx: B.labelEx, keyEx: B.keyEx, kit: k };
+  }
 
   /* ---------- purpose-built, responsive playback panels ---------- */
   var CLIPS = [{ s: 0, k: 'c1' }, { s: 1, k: 'c2' }, { s: 2, k: 'c3' }, { s: 3, k: 'c4' }];
@@ -362,7 +402,7 @@ html[data-theme="day"] .cap-tx strong{color:#eaecef}html[data-theme="day"] .cap-
     if (!CLIPS.length) return;
     var sc = BN.clips[CLIPS[C.i].s];
     bn.classList.add('playback'); bn.style.transform = 'none'; bn.style.width = '100%';
-    bn.innerHTML = sc.html(L(), B) + '<div class="bn-cur hide" id="bnCur">' + IC.cursor + '</div>';
+    bn.innerHTML = sc.html(L(), clipCfg()) + '<div class="bn-cur hide" id="bnCur">' + IC.cursor + '</div>';
     bn.style.height = 'auto';
     var tg = bn.querySelector('[data-t]');
     var tb = tg && box(tg);
@@ -418,23 +458,171 @@ html[data-theme="day"] .cap-tx strong{color:#eaecef}html[data-theme="day"] .cap-
     clearTimeout(rz); rz = setTimeout(function () { stop(); draw(false); schedule(); }, 140);
   });
 
-  /* ---------- account list ---------- */
-  function renderList() {
-    var d = A.accounts(), el = $('#list');
-    if (!d.list.length) { el.innerHTML = ''; return; }
-    el.innerHTML = '<div class="lh"><span>' + esc(A.t('bind.listH', { n: d.list.length })) + '</span></div>' + d.list.map(function (a) {
-      var cur = d.active === a.id, sel = S.view === 'res' && (S.resId === a.id || (S.batch && S.batch.indexOf(a.id) >= 0)), sure = S.rm === a.id;
-      return '<div class="acc' + (sel ? ' sel' : '') + '" data-acc="' + esc(a.id) + '" role="button" tabindex="0">' +
-        '<span class="dot ' + esc(A.isDemo(a) ? 'demo' : (a.status || 'pending')) + '" aria-hidden="true"></span>' +
-        '<span class="tx"><b>' + esc(A.accountName(a)) + (A.isDemo(a) ? ' <span class="cur dm">· ' + esc(A.t('bind.demoTag')) + '</span>' : '') + (cur && d.list.length > 1 ? ' <span class="cur">· ' + esc(A.t('bind.current')) + '</span>' : '') + '</b><small>' + esc(A.accountSub(a)) + '</small></span>' +
-        (A.isDemo(a) ? '' : '<button type="button" class="icb" data-re="' + esc(a.id) + '" title="' + esc(A.t('bind.recheck')) + '" aria-label="' + esc(A.t('bind.recheck') + ' ' + A.accountName(a)) + '">' + IC.redo + '</button>') +
-        '<button type="button" class="icb rm' + (sure ? ' sure' : '') + '" data-rm="' + esc(a.id) + '" title="' + esc(A.t('bind.remove')) + '" aria-label="' + esc(A.t(sure ? 'bind.sure' : 'bind.remove') + ' ' + A.accountName(a)) + '">' + (sure ? esc(A.t('bind.sure')) : IC.trash) + '</button></div>';
-    }).join('');
-  }
-  function find(id) { return A.accounts().list.filter(function (a) { return a.id === id; })[0]; }
 
-  /* ---------- form: one block per sub-account ---------- */
-  var UID = /^\d{6,12}$/, KEY = /^[A-Za-z0-9]{64}$/;
+  /* ---------- data: everything goes through TDApi ---------- */
+  var busy = false, again = false, poll = null;
+  function refresh() {
+    if (busy) { again = true; return Promise.resolve(); }
+    busy = true;
+    return API.listAccounts().then(function (list) {
+      S.list = list || [];
+      var jobs = [];
+      S.list.forEach(function (a) {
+        if (isDemo(a)) return;
+        if (DETAIL.indexOf(a.status) >= 0) jobs.push(API.getAccount(a.id).then(function (d) { S.det[a.id] = d; }, function () {}));
+        else delete S.det[a.id];
+        if (a.status === 'awaiting_key' && !S.kits[a.id] && !S.kitBusy[a.id]) {
+          S.kitBusy[a.id] = true;
+          jobs.push(API.getBindKit(a.id).then(function (k) { S.kits[a.id] = k; }, function () {}).then(function () { delete S.kitBusy[a.id]; }));
+        }
+      });
+      return Promise.all(jobs);
+    }).then(function () {
+      busy = false;
+      if (S.open && !S.list.some(function (a) { return a.id === S.open; })) S.open = null;
+      render();
+      securityCheck();
+      clearTimeout(poll);
+      if (S.list.some(function (a) { return a.status === 'checking'; })) poll = setTimeout(refresh, 320);
+      if (again) { again = false; refresh(); }
+    }, function (e) { busy = false; try { console.error(e); } catch (_) {} });
+  }
+
+  /* ---------- account rows: one keyed block per sub-account, steps ②–⑤ inside ---------- */
+  function phase(id) { return Math.min(5, Math.floor((Date.now() - (S.chkAt[id] || Date.now())) / 300)); }
+  function ticks(a, d) {
+    var st = d && d.steps ? d.steps : API.testSteps().map(function (s) { return { key: s.key, label: s.label, state: 'running' }; });
+    var checking = a.status === 'checking', ph = checking ? phase(a.id) : 0;
+    return '<ol class="flow ticks' + (checking ? '' : ' done') + '" aria-live="polite">' + st.map(function (s, i) {
+      var c = checking ? (i === ph ? 'w' : '') : s.state === 'failed' ? 'n' : 'y';
+      var mark = checking ? (i === ph ? '…' : String(i + 1)) : s.state === 'failed' ? '✕' : '✓';
+      return '<li class="' + c + '" style="--i:' + i + '"><i>' + mark + '</i><span>' + esc(s.label) + '</span></li>';
+    }).join('') + '</ol>';
+  }
+  function kitHtml(a) {
+    var k = S.kits[a.id];
+    if (!k) return '<p class="muted">' + esc(t('bind.kitLoading')) + '</p>';
+    var en = L() === 'en';
+    var perms = (k.perms || []).map(function (p) {
+      return '<li class="' + (p.forbidden ? 'no' : '') + '"><b>' + (p.forbidden ? '✕' : '✓') + '</b><span>' + esc(en ? p.en : p.zh) + '</span></li>';
+    }).join('');
+    var ips = (k.ips || []).map(function (ip) { return '<button type="button" data-copy="' + esc(ip) + '" title="' + esc(t('bind.copied', { ip: ip })) + '">' + esc(ip) + '</button>'; }).join('');
+    return '<div class="stp"><h4><i>②</i><span>' + esc(t('bind.s2h')) + '</span><span class="tag">' + esc(t('bind.exTag')) + '</span></h4>' +
+      '<p>' + esc(t('bind.pubSafe')) + '</p>' +
+      '<pre class="pem" data-pem>' + esc(k.publicKeyPem) + '</pre>' +
+      '<div class="kitrow"><span>' + esc(t('bind.fp')) + ' <code>' + esc(k.fingerprint) + '</code></span><button type="button" class="btn sm ghost" data-copypub="' + esc(a.id) + '">' + esc(t('bind.copyPub')) + '</button></div>' +
+      '<div class="sec">' + esc(t('bind.permH')) + '</div><ul class="perms">' + perms + '</ul>' +
+      '<div class="sec">' + esc(t('bind.ipH')) + ' <span class="tag">' + esc(t('bind.demoTag')) + '</span></div><div class="ips">' + ips + '</div></div>' +
+      '<div class="stp"><h4><i>③</i><span>' + esc(t('bind.s3h')) + '</span><span class="tag">' + esc(t('bind.illus')) + '</span></h4><p>' + esc(t('bind.s3p')) + '</p><button type="button" class="btn sm ghost" data-seeclip="2">' + esc(t('bind.s3see')) + '</button></div>';
+  }
+  function keyForm(a) {
+    var err = S.keyErr[a.id];
+    return '<form class="stp" data-keyform="' + esc(a.id) + '" novalidate autocomplete="off"><h4><i>④</i><span>' + esc(t('bind.s4h')) + '</span></h4>' +
+      '<label class="fld' + (err ? ' err' : '') + '" data-f="key"><span>API Key</span><div class="inp"><input data-key class="mono" name="apikey-' + esc(a.id) + '" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" data-lpignore="true" data-1p-ignore placeholder="' + esc(t('bind.keyPh')) + '"></div>' +
+      '<div class="msg" role="alert">' + esc(err ? t(err === 'KEY_FORMAT' ? 'bind.e.key' : 'bind.e.gen') : '') + '</div><div class="hint">' + esc(t('bind.keyHint')) + '</div></label>' +
+      '<button class="btn pri block" type="submit">' + esc(t('bind.s4go')) + '</button></form>';
+  }
+  function dodoUrl(code) { var u = A.routes.app, h = u.indexOf('#'); return (h < 0 ? u : u.slice(0, h)) + '?ask=dodo&topic=' + encodeURIComponent(code) + (h < 0 ? '' : u.slice(h)); }
+  function bodyHtml(a) {
+    if (isDemo(a)) return '<p class="bp">' + esc(t('bind.demoP')) + '</p><div class="note warn">' + esc(t('bind.demoNote')) + '</div>';
+    var d = S.det[a.id] || {};
+    switch (a.status) {
+      case 'awaiting_key': return kitHtml(a) + keyForm(a);
+      case 'checking': return '<div class="stp"><h4><i>④</i><span>' + esc(t('bind.chkH')) + '</span></h4>' + ticks(a, null) + '</div>';
+      case 'failed':
+        var codes = d.failures || a.failures || [];
+        return '<div class="stp"><h4 class="bad"><i>⑤</i><span>' + esc(API.statusInfo('failed').label) + '</span></h4>' + ticks(a, d) +
+          '<div class="note bad">' + esc(t('bind.failH')) + '</div>' +
+          '<ul class="fails">' + codes.map(function (c) {
+            var f = API.getFailureText(c);
+            return '<li data-code="' + esc(c) + '"' + (f.security ? ' class="security"' : '') + '><b>' + esc(f.title) + '</b><p>' + esc(f.how) + '</p><a class="dodo" href="' + esc(dodoUrl(c)) + '">' + esc(t('bind.askDodo')) + ' →</a></li>';
+          }).join('') + '</ul>' +
+          '<div class="ract">' + (d.security ? '<button type="button" class="btn ghost block" data-secopen="' + esc(a.id) + '">' + esc(t('bind.secAgain')) + '</button>' : '') +
+          '<button type="button" class="btn pri block" data-retest="' + esc(a.id) + '">' + esc(t('bind.retest')) + '</button></div></div>';
+      case 'observing': case 'verified': case 'running':
+        return '<div class="stp"><h4 class="ok"><i>⑤</i><span>' + esc(t('bind.s5h')) + '</span></h4>' + ticks(a, d) + '<p>' + esc(t('bind.s5p')) + '</p>' +
+          '<div class="ract"><a class="btn pri block" href="' + esc(A.routes.app) + '">' + esc(t('bind.toApp')) + '</a></div></div>';
+      case 'halted': return '<p class="bp">' + esc(t('bind.stHalted')) + '</p>';
+      case 'unbound': return '<p class="bp">' + esc(t('bind.stUnbound')) + '</p>';
+      default: return '<p class="bp">' + esc(t('bind.stUnknown')) + '</p>';
+    }
+  }
+  function headHtml(a) {
+    var info = API.statusInfo(a.status), demo = isDemo(a), open = S.open === a.id, sure = S.rm === a.id;
+    var sub = demo ? t('acct.demo.sub') : 'UID ' + a.uid + ' · ' + info.label;
+    return '<div class="acc" data-acc="' + esc(a.id) + '" role="button" tabindex="0" aria-expanded="' + open + '">' +
+      '<span class="dot ' + (demo ? 'demo' : esc(info.tone)) + '" aria-hidden="true"></span>' +
+      '<span class="tx"><b>' + esc(demo ? A.accountName(a.id) : a.name) + (demo ? ' <span class="cur dm">· ' + esc(t('bind.demoTag')) + '</span>' : '') + '</b><small data-st="' + esc(info.status) + '">' + esc(sub) + '</small></span>' +
+      '<button type="button" class="icb rm' + (sure ? ' sure' : '') + '" data-rm="' + esc(a.id) + '" title="' + esc(t('bind.unbind')) + '" aria-label="' + esc(t(sure ? 'bind.sure' : 'bind.unbind')) + ' ' + esc(a.name || '') + '">' + (sure ? esc(t('bind.sure')) : IC.trash) + '</button></div>';
+  }
+  function renderList() {
+    var box = $('#brows'), ids = S.list.map(function (a) { return a.id; });
+    Array.prototype.slice.call(box.children).forEach(function (el) { if (ids.indexOf(el.dataset.id) < 0) el.remove(); });
+    S.list.forEach(function (a, i) {
+      var el = null;
+      Array.prototype.forEach.call(box.children, function (c) { if (c.dataset.id === a.id) el = c; });
+      if (!el) { el = document.createElement('div'); el.dataset.id = a.id; }
+      if (box.children[i] !== el) box.insertBefore(el, box.children[i] || null);
+      var d = S.det[a.id] || {}, open = S.open === a.id;
+      // only rebuild a row when what it shows changes, so a half-typed key is never wiped by a refresh
+      var sig = JSON.stringify([L(), a.status, open, S.rm === a.id, !!S.kits[a.id], d.status, d.failures, d.security, a.status === 'checking' ? phase(a.id) : 0, S.keyErr[a.id] || '']);
+      if (el._sig === sig) return;
+      var ki = el.querySelector('input[data-key]'), kv = ki ? ki.value : '', kf = ki && document.activeElement === ki;
+      el._sig = sig;
+      el.className = 'brow' + (open ? ' open' : '') + ' st-' + a.status;
+      el.innerHTML = headHtml(a) + (open ? '<div class="bbody">' + bodyHtml(a) + '</div>' : '');
+      var nk = el.querySelector('input[data-key]');
+      if (nk && kv) nk.value = kv;
+      if (nk && kf) nk.focus();
+    });
+  }
+  function find(id) { return S.list.filter(function (a) { return a.id === id; })[0]; }
+
+  /* ---------- security page (SIGNATURE_MISMATCH / IP_MISMATCH) ---------- */
+  function securityCheck() {
+    if (S.sec) return;
+    S.list.some(function (a) {
+      var d = S.det[a.id];
+      if (a.status === 'failed' && d && d.security && !S.secSeen[a.id]) { openSec(a.id); return true; }
+      return false;
+    });
+  }
+  function openSec(id) {
+    var a = find(id), d = S.det[id]; if (!a || !d) return;
+    S.sec = id; S.secSeen[id] = true; S.secSure = false;
+    secFill();
+    $('#secOv').hidden = false; document.body.classList.add('locked');
+    $('#secClose').focus();
+  }
+  function secFill() {
+    var id = S.sec, a = find(id), d = S.det[id] || {};
+    if (!a) return;
+    $('#secWho').textContent = t('bind.secWho', { name: a.name, hint: d.apiKeyHint || '—' });
+    $('#secWhy').innerHTML = (d.failures || []).filter(function (c) { return API.isSecurityCode(c); }).map(function (c) { var f = API.getFailureText(c); return '<li><b>' + esc(f.title) + '</b><span>' + esc(f.how) + '</span></li>'; }).join('');
+    $('#secUnbind').textContent = t(S.secSure ? 'bind.sure' : 'bind.unbind');
+  }
+  function closeSec() { var id = S.sec; S.sec = null; $('#secOv').hidden = true; document.body.classList.remove('locked'); var h = document.querySelector('[data-acc="' + id + '"]'); if (h) h.focus(); }
+
+  /* ---------- unbind ---------- */
+  function unbind(id) {
+    var a = find(id); if (!a) return;
+    var demo = isDemo(a), name = demo ? A.accountName(id) : a.name;
+    S.rm = null;
+    API.unbind(id).then(function (r) {
+      delete S.kits[id]; delete S.det[id]; delete S.keyErr[id];
+      if (S.open === id) S.open = null;
+      if (demo) { S.unbound = null; toast(t('bind.removed', { name: name })); }
+      else S.unbound = { name: name, hint: r.apiKeyHint };
+      if (S.sec === id) closeSec();
+      return refresh();
+    });
+  }
+  function renderUnbound() {
+    var u = S.unbound, el = $('#unNote');
+    el.innerHTML = u ? '<div class="note bad unb" role="status"><span><b>' + esc(t('bind.unT', { name: u.name })) + '</b> ' + esc(t('bind.unDel')) + ' <code class="mono">' + esc(t('bind.unHint', { hint: u.hint })) + '</code></span><button type="button" class="icb" data-unclose aria-label="' + esc(t('bind.unClose')) + '">✕</button></div>' : '';
+  }
+
+  /* ---------- form ①: up to 8 sub-accounts, one block each ---------- */
   var rowSeq = 0;
   function rows() { return Array.prototype.slice.call(document.querySelectorAll('#rows .arow')); }
   function rowHtml(id) {
@@ -447,248 +635,139 @@ html[data-theme="day"] .cap-tx strong{color:#eaecef}html[data-theme="day"] .cap-
       fld('name', 'bind.fName', '<div class="inp"><input name="' + p + 'name" maxlength="40" autocomplete="off" spellcheck="false" data-i18n-attr="placeholder:bind.fNamePh"></div>') +
       fld('uid', 'bind.fUid', '<div class="inp"><input name="' + p + 'uid" inputmode="numeric" maxlength="12" autocomplete="off" class="mono" data-i18n-attr="placeholder:bind.fUidPh"></div>') +
       '</div>' +
-      '<details class="optional-field"><summary data-i18n="bind.optionalLabel"></summary>' + fld('label', 'bind.fLabel', '<div class="inp"><input name="' + p + 'label" maxlength="40" autocomplete="off" spellcheck="false" placeholder="' + esc(B.labelEx) + '"></div>', true) + '</details>' +
-      fld('key', 'bind.fKey', '<div class="inp"><input name="' + p + 'key" class="mono" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-i18n-attr="placeholder:bind.fKeyPh"></div>') +
-      '<label class="fld has-eye-wrap" data-f="sec"><span><span data-i18n="bind.fSec"></span></span><div class="inp has-eye"><input name="' + p + 'sec" type="password" class="mono" autocomplete="new-password" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore data-i18n-attr="placeholder:bind.fSecPh"><button type="button" class="eye" data-eye aria-pressed="false" data-i18n-attr="aria-label:bind.show">' + IC.eye + '</button></div><div class="msg"></div></label>' +
-      '<p class="rerr" data-i18n="bind.e.rowKeys"></p>';
+      '<details class="optional-field"><summary data-i18n="bind.optionalLabel"></summary>' + fld('label', 'bind.fLabel', '<div class="inp"><input name="' + p + 'label" maxlength="40" autocomplete="off" spellcheck="false" placeholder="' + esc(B.labelEx) + '"></div>', true) + '</details>';
   }
-  function addRow(vals, focus) {
+  function inp(row, f) { return row.querySelector('[data-f="' + f + '"] input'); }
+  function addRow(focus) {
     if (rows().length >= MAX_ROWS) return null;
     var el = document.createElement('div'); el.className = 'arow'; el.dataset.row = String(++rowSeq);
     el.innerHTML = rowHtml(rowSeq);
     $('#rows').appendChild(el);
-    if (vals) { inp(el, 'name').value = vals.name || ''; inp(el, 'uid').value = vals.uid || ''; inp(el, 'label').value = vals.label || ''; }
     A.apply(el); numberRows();
     if (focus) inp(el, 'name').focus();
     return el;
   }
-  function inp(row, f) { return row.querySelector('[data-f="' + f + '"] input'); }
   function numberRows() {
     var rs = rows(), one = rs.length === 1;
     rs.forEach(function (r, i) {
-      r.querySelector('.rn').textContent = A.t('bind.rowH', { n: i + 1 });
-      var b = r.querySelector('[data-rmrow]'); b.hidden = one; b.setAttribute('aria-label', A.t('bind.rowRm', { n: i + 1 })); b.title = b.getAttribute('aria-label');
-      r.setAttribute('role', 'group'); r.setAttribute('aria-label', A.t('bind.rowH', { n: i + 1 }));
+      r.querySelector('.rn').textContent = t('bind.rowH', { n: i + 1 });
+      var b = r.querySelector('[data-rmrow]'); b.hidden = one; b.setAttribute('aria-label', t('bind.rowRm', { n: i + 1 })); b.title = b.getAttribute('aria-label');
     });
-    // header hidden for a single block so the simple case still reads as one plain form
-    rs.forEach(function (r) { r.querySelector('.arow-h').hidden = one && !S.multiSeen; });
-    var ar = $('#addRow'); ar.hidden = !!S.editId; ar.disabled = rs.length >= MAX_ROWS;
-    ar.querySelector('span').textContent = rs.length >= MAX_ROWS ? A.t('bind.maxRows', { n: MAX_ROWS }) : A.t('bind.addRow');
-    var n = rs.length; $('#go').textContent = n > 1 ? A.t('bind.goN', { n: n }) : A.t('bind.go');
+    $('#addRow').hidden = rs.length >= MAX_ROWS;
+    $('#go').textContent = rs.length > 1 ? t('bind.goN', { n: rs.length }) : t('bind.go');
   }
-  function ferr(row, f, key) {
-    var fl = row.querySelector('[data-f="' + f + '"]'), m = fl.querySelector('.msg');
-    fl.classList.add('err'); m.dataset.k = key; m.textContent = A.t(key); fl.querySelector('input').setAttribute('aria-invalid', 'true');
+  function resetForm() { $('#rows').innerHTML = ''; $('#sum').hidden = true; S.sum = null; $('#sumT').textContent = ''; addRow(false); }
+  function fieldErr(row, f, msg, code) { var l = row.querySelector('[data-f="' + f + '"]'); l.classList.toggle('err', !!msg); l.dataset.code = code || ''; l.querySelector('.msg').textContent = msg || ''; }
+  // field errors and the summary are re-worded when the language changes (codes kept, adapter wording only for unknown codes)
+  function relabel() {
+    Array.prototype.forEach.call(document.querySelectorAll('#rows .fld.err[data-code]'), function (l) { var c = l.dataset.code; if (c && FIELD[c]) l.querySelector('.msg').textContent = t('bind.e.' + c); });
+    if (S.sum) $('#sumT').textContent = t('bind.sum', S.sum);
   }
-  function fok(row, f) { var fl = row.querySelector('[data-f="' + f + '"]'); fl.classList.remove('err'); fl.querySelector('input').removeAttribute('aria-invalid'); }
-  function clearKeys(row) { inp(row, 'key').value = ''; var s = inp(row, 'sec'); s.value = ''; s.type = 'password'; row.querySelector('[data-eye]').setAttribute('aria-pressed', 'false'); }
-  function resetForm(vals) {
-    $('#rows').innerHTML = ''; S.multiSeen = false; addRow(vals);
-    document.querySelectorAll('[data-ck]').forEach(function (c) { c.checked = false; });
-    $('#checks').classList.remove('err'); $('#sum').hidden = true; $('#sumT').textContent = ''; S.sum = null;
-  }
-  function head() {
-    var a = S.editId && find(S.editId), n = A.accounts().list.length, res = S.view === 'res';
-    $('#formH').textContent = a ? A.t('bind.reT', { name: a.name }) : A.t(n ? (res ? 'bind.listH' : 'bind.addT') : 'bind.newT', { n: n });
-    $('#formS').textContent = res ? '' : A.t(a ? 'bind.reS' : n ? 'bind.addS' : 'bind.newS');
-    $('#formS').hidden = res;
-    $('#cancel').hidden = !(a || n);
-    $('#miniIps').innerHTML = B.ips.map(function (ip) { return '<button type="button" data-copy="' + esc(ip) + '" title="' + esc(A.t('bind.copy')) + '">' + esc(ip) + '</button>'; }).join('') + (B.ipsConfirmed ? '' : '<span class="tag">' + esc(A.t('bind.ipPend')) + '</span>');
-    document.querySelectorAll('#rows .fld.err .msg[data-k]').forEach(function (m) { m.textContent = A.t(m.dataset.k); });
-    if (S.sum) $('#sumT').textContent = A.t(S.sum.k, S.sum.p);
-    numberRows();
-  }
-  function showForm(editId) {
-    if (editId && A.isDemo(editId)) { showRes(editId); return; }
-    S.view = 'form'; S.editId = editId || null; S.batch = null; S.sum = null;
-    var a = S.editId && find(S.editId);
-    resetForm(a ? { name: a.name, uid: a.uid, label: a.label } : null);
-    render();
-  }
-  function clean(v) { return String(v || '').replace(/\s+/g, ''); }
-  function blank(r) { return !inp(r, 'name').value.trim() && !clean(inp(r, 'uid').value) && !clean(inp(r, 'key').value) && !clean(inp(r, 'sec').value) && !inp(r, 'label').value.trim(); }
-
-  // Checks every block on its own. Blocks that pass are saved as "pending" and leave the form;
-  // blocks that fail stay with their own messages. Keys are only compared in memory and cleared right after.
-  function submit() {
-    var allCk = Array.prototype.every.call(document.querySelectorAll('[data-ck]'), function (c) { return c.checked; });
-    $('#checks').classList.toggle('err', !allCk);
-    var rs = rows(), filled = rs.filter(function (r) { return !blank(r); });
-    if (!filled.length) filled = [rs[0]];
-    // empty extra blocks are dropped quietly
-    rs.forEach(function (r) { if (filled.indexOf(r) < 0) r.remove(); });
-    if (!allCk) {
-      var c = document.querySelector('[data-ck]:not(:checked)'); c.focus(); if (c.scrollIntoView) c.scrollIntoView({ block: 'center', behavior: RM.matches ? 'auto' : 'smooth' });
-      numberRows(); return;
-    }
-    var others = A.accounts().list.filter(function (a) { return a.id !== S.editId; });
-    var names = {}, uids = {}, keys = {}, good = [], bad = [];
-    filled.forEach(function (r) {
-      var ok = true, name = inp(r, 'name').value.trim(), uid = clean(inp(r, 'uid').value), key = clean(inp(r, 'key').value), sec = clean(inp(r, 'sec').value), ln = name.toLowerCase();
-      if (!name) { ferr(r, 'name', 'bind.e.name'); ok = false; }
-      else if (others.some(function (a) { return (a.name || '').toLowerCase() === ln; })) { ferr(r, 'name', 'bind.e.dup'); ok = false; }
-      else if (names[ln]) { ferr(r, 'name', 'bind.e.dupName'); ok = false; } else fok(r, 'name');
-      if (!UID.test(uid)) { ferr(r, 'uid', 'bind.e.uid'); ok = false; }
-      else if (others.some(function (a) { return a.uid === uid; })) { ferr(r, 'uid', 'bind.e.dup'); ok = false; }
-      else if (uids[uid]) { ferr(r, 'uid', 'bind.e.dupUid'); ok = false; } else fok(r, 'uid');
-      if (!KEY.test(key)) { ferr(r, 'key', 'bind.e.key'); ok = false; }
-      else if (keys[key]) { ferr(r, 'key', 'bind.e.keyRow'); ok = false; } else fok(r, 'key');
-      if (!KEY.test(sec)) { ferr(r, 'sec', 'bind.e.sec'); ok = false; }
-      else if (sec === key) { ferr(r, 'sec', 'bind.e.same'); ok = false; }
-      else if (keys[sec]) { ferr(r, 'sec', 'bind.e.keyRow'); ok = false; } else fok(r, 'sec');
-      if (name) names[ln] = 1; if (UID.test(uid)) uids[uid] = 1; if (KEY.test(key)) keys[key] = 1; if (KEY.test(sec)) keys[sec] = 1;
-      key = sec = ''; clearKeys(r);
-      r.classList.toggle('bad', !ok);
-      (ok ? good : bad).push(ok ? { row: r, name: name.slice(0, 40), uid: uid, label: inp(r, 'label').value.trim().slice(0, 40) } : r);
+  var FIELD = { NAME_REQUIRED: 'name', NAME_TAKEN: 'name', UID_INVALID: 'uid', UID_TAKEN: 'uid' };
+  $('#f').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var go = $('#go'); if (go.disabled) return; go.disabled = true;
+    var made = [], bad = 0, chain = Promise.resolve();
+    rows().forEach(function (r) {
+      chain = chain.then(function () {
+        fieldErr(r, 'name', ''); fieldErr(r, 'uid', '');
+        return API.createAccount({ name: inp(r, 'name').value, uid: inp(r, 'uid').value.trim(), label: inp(r, 'label').value })
+          .then(function (res) { made.push(res.id); r.remove(); }, function (err) { bad++; fieldErr(r, FIELD[err.code] || 'name', FIELD[err.code] ? t('bind.e.' + err.code) : err.message, err.code); });
+      });
     });
-    keys = null;
-    var saved = good.map(function (g) {
-      var a = A.upsertAccount({ id: S.editId || undefined, name: g.name, uid: g.uid, label: g.label, device: 'web', status: 'pending', reason: '', checkedAt: Date.now() });
-      g.row.remove(); return a.id;
+    chain.then(function () {
+      go.disabled = false;
+      if (made.length) { S.open = made[0]; S.unbound = null; }
+      if (!bad) { S.adding = false; resetForm(); }
+      else { numberRows(); $('#sum').hidden = !made.length; S.sum = made.length ? { ok: made.length, bad: bad } : null; $('#sumT').textContent = S.sum ? t('bind.sum', S.sum) : ''; var first = document.querySelector('#rows .fld.err input'); if (first) first.focus(); }
+      return refresh();
+    }).then(function () {
+      if (made.length) { var k = document.querySelector('.brow.open'); if (k) k.scrollIntoView({ block: 'start', behavior: RM.matches ? 'auto' : 'smooth' }); }
     });
-    if (saved.length) { A.setActive(saved[saved.length - 1]); $('#welcome').classList.remove('on'); }
-    if (bad.length) {
-      S.multiSeen = S.multiSeen || filled.length > 1;
-      S.sum = { k: saved.length ? 'bind.sum.part' : 'bind.sum.none', p: { ok: saved.length, bad: bad.length } };
-      $('#sum').hidden = false; render();
-      if (saved.length) toast(A.t('bind.savedN', { n: saved.length }));
-      var first = document.querySelector('#rows .fld.err input');
-      if (first) { first.focus(); if (first.scrollIntoView) first.scrollIntoView({ block: 'center', behavior: RM.matches ? 'auto' : 'smooth' }); }
-      return;
-    }
-    S.sum = null; $('#sum').hidden = true; $('#sumT').textContent = '';
-    toast(saved.length > 1 ? A.t('bind.savedN', { n: saved.length }) : A.t('bind.saved', { name: good[0].name }));
-    if (saved.length > 1) showBatch(saved); else showRes(saved[0]);
-  }
-  $('#f').addEventListener('submit', function (ev) { ev.preventDefault(); submit(); });
-  $('#rows').addEventListener('input', function (e) {
-    var t = e.target; if (!t.matches('input')) return;
-    if (t.name && /-uid$/.test(t.name)) { var c = t.value.replace(/\D/g, ''); if (c !== t.value) t.value = c; }
-    var f = t.closest('.fld'); if (f && f.classList.contains('err')) { f.classList.remove('err'); t.removeAttribute('aria-invalid'); }
   });
-  $('#rows').addEventListener('click', function (e) {
-    var t;
-    if ((t = e.target.closest('[data-eye]'))) { var i = t.parentNode.querySelector('input'); i.type = i.type === 'password' ? 'text' : 'password'; t.setAttribute('aria-pressed', String(i.type === 'text')); return; }
-    if ((t = e.target.closest('[data-rmrow]'))) {
-      var r = t.closest('.arow'), next = r.nextElementSibling || r.previousElementSibling; clearKeys(r); r.remove();
-      if (!rows().length) addRow(); numberRows();
-      if (!document.querySelector('#rows .arow.bad')) { $('#sum').hidden = true; S.sum = null; }
-      var nb = (next && next.querySelector('[data-rmrow]:not([hidden])')) || $('#addRow'); nb.focus();
-    }
+  $('#addRow').addEventListener('click', function () { addRow(true); });
+  $('#addBtn').addEventListener('click', function () { S.adding = true; render(); inp(rows()[0], 'name').focus(); });
+  $('#cancel').addEventListener('click', function () { S.adding = false; resetForm(); render(); });
+  $('#rows').addEventListener('click', function (e) { var b = e.target.closest('[data-rmrow]'); if (b) { b.closest('.arow').remove(); numberRows(); } });
+
+  /* ---------- step ④: the single API Key field, cleared on submit ---------- */
+  document.addEventListener('submit', function (e) {
+    var f = e.target.closest && e.target.closest('[data-keyform]'); if (!f) return;
+    e.preventDefault();
+    var id = f.dataset.keyform, input = f.querySelector('[data-key]'), v = input.value.trim();
+    input.value = ''; // cleared immediately, before anything else happens
+    API.demoControls.setNextOutcome(S.outcome === 'pass' ? 'pass' : S.outcome);
+    API.submitApiKey(id, v).then(function () {
+      delete S.keyErr[id]; S.chkAt[id] = Date.now(); return refresh();
+    }, function (err) {
+      S.keyErr[id] = err && err.code === 'KEY_FORMAT' ? 'KEY_FORMAT' : 'GEN'; renderList();
+      var n = document.querySelector('.brow[data-id="' + id + '"] input[data-key]'); if (n) n.focus();
+    });
+    v = null;
   });
-  $('#addRow').addEventListener('click', function () { S.multiSeen = true; addRow(null, true); });
-  $('#checks').addEventListener('change', function () { if (Array.prototype.every.call(document.querySelectorAll('[data-ck]'), function (c) { return c.checked; })) this.classList.remove('err'); });
-  $('#cancel').addEventListener('click', function () { var d = A.accounts(); resetForm(); if (d.list.length) showRes(S.resId && find(S.resId) ? S.resId : d.list[d.list.length - 1].id); });
-  // leaving the page never keeps keys in the form (bfcache)
-  window.addEventListener('pagehide', function () { rows().forEach(clearKeys); });
 
-  /* ---------- result ---------- */
-  function note(kind, html) { return '<div class="note ' + kind + '">' + (kind === 'bad' ? IC.bad : IC.warn) + '<span>' + html + '</span></div>'; }
-  function showRes(id) { S.view = 'res'; S.resId = id; S.batch = null; S.editId = null; render(); scrollCard(); }
-  function showBatch(ids) { S.view = 'res'; S.batch = ids; S.resId = null; S.editId = null; render(); scrollCard(); }
-  function scrollCard() { if (mobile.matches) { var c = $('#panel'); if (c.getBoundingClientRect().top < 0 && c.scrollIntoView) c.scrollIntoView({ block: 'start' }); } }
-  function flow(sim) {
-    return '<ul class="flow">' + [['y', '✓', 's1'], ['y', '✓', 's2'], ['', '·', 's3'], ['', '·', 's4'], [sim ? 'w' : 'n', sim ? '~' : '!', sim ? 's5sim' : 's5']].map(function (f, k) {
-      return '<li class="' + f[0] + '"><i>' + f[1] + '</i><span><b>' + (k + 1) + '. ' + esc(A.t('bind.st.' + f[2].replace('sim', ''))) + '</b>' + esc(A.t('bind.st.' + f[2] + 'P')) + '</span></li>';
-    }).join('') + '</ul>';
+  /* ---------- demo block: next simulated outcome ---------- */
+  function renderDemoBox() {
+    var sel = $('#outSel');
+    sel.innerHTML = '<option value="pass">' + esc(t('bind.outPass')) + '</option>' + API.failureCodes().map(function (c) { return '<option value="' + esc(c) + '">' + esc(c + ' · ' + API.getFailureText(c).title) + '</option>'; }).join('');
+    sel.value = S.outcome;
   }
-  function renderRes() {
-    var el = $('#resView');
-    if (S.batch) {
-      var list = S.batch.map(find).filter(Boolean);
-      if (!list.length) { el.innerHTML = ''; return; }
-      el.innerHTML = '<div class="rhd"><span class="ic pending">' + IC.clock + '</span><div><h3>' + esc(A.t('bind.r.batchT', { n: list.length })) + '</h3><p>' + esc(A.t('bind.r.batchP')) + '</p></div></div>' +
-        '<ul class="bl">' + list.map(function (a) { return '<li><b>' + esc(a.name) + '</b><small>' + esc(a.uid) + '</small><em>' + esc(A.statusText(a.status)) + '</em></li>'; }).join('') + '</ul>' +
-        flow(false) +
-        '<div class="ract"><a class="btn pri block" href="' + esc(A.routes.app) + '">' + esc(A.t('bind.toApp')) + '</a><button type="button" class="btn ghost block" data-add>' + esc(A.t('bind.addMore')) + '</button></div>';
-      return;
-    }
-    var a = S.resId && find(S.resId);
-    if (!a) { el.innerHTML = ''; return; }
-    if (A.isDemo(a)) {
-      el.innerHTML = '<div class="rhd"><span class="ic pending">' + IC.flask + '</span><div><h3>' + esc(A.accountName(a)) + '</h3><p>' + esc(A.t('bind.demoP')) + '</p></div></div>' +
-        '<dl class="kv"><dt>' + esc(A.t('bind.kv.name')) + '</dt><dd>' + esc(A.accountName(a)) + '</dd><dt>' + esc(A.t('bind.kv.status')) + '</dt><dd>' + esc(A.t('acct.demo.st')) + '</dd><dt>' + esc(A.t('bind.kv.keys')) + '</dt><dd>' + esc(A.t('bind.demoKeys')) + '</dd></dl>' +
-        note('warn', esc(A.t('bind.demoNote'))) +
-        '<div class="ract"><button type="button" class="btn pri block" data-add>' + esc(A.t('bind.demoReal')) + '</button><a class="btn ghost block" href="' + esc(A.routes.app) + '">' + esc(A.t('bind.toApp')) + '</a></div>';
-      return;
-    }
-    var st = a.status || 'pending', h = '';
-    var hd = st === 'verified' ? ['verified', IC.check, 'bind.r.okT', 'bind.r.okP'] : st === 'failed' ? ['failed', IC.bad, 'bind.r.badT', 'bind.r.badP'] : ['pending', IC.clock, 'bind.r.pendT', 'bind.r.pendP'];
-    h += '<div class="rhd"><span class="ic ' + hd[0] + '">' + hd[1] + '</span><div><h3>' + esc(A.t(hd[2])) + '</h3><p>' + esc(A.t(hd[3], { name: a.name })) + '</p></div></div>';
-    h += '<dl class="kv"><dt>' + esc(A.t('bind.kv.name')) + '</dt><dd>' + esc(a.name) + '</dd><dt>' + esc(A.t('bind.kv.uid')) + '</dt><dd class="mono">' + esc(a.uid) + '</dd>' +
-      (a.label ? '<dt>' + esc(A.t('bind.kv.label')) + '</dt><dd>' + esc(a.label) + '</dd>' : '') +
-      '<dt>' + esc(A.t('bind.kv.status')) + '</dt><dd>' + esc(A.statusText(st)) + '</dd><dt>' + esc(A.t('bind.kv.keys')) + '</dt><dd>' + esc(A.t('bind.kv.keysV')) + '</dd></dl>';
-    if (st === 'failed') {
-      var r = a.reason || 'key';
-      h += note('bad', esc(A.t('bind.fail.' + r)));
-      h += '<ol class="fixl"><li>' + esc(A.t('bind.fix.' + r)) + '</li><li>' + esc(A.t('bind.fix.again')) + '</li></ol>';
-      h += '<div class="ract"><button type="button" class="btn pri block" data-re="' + esc(a.id) + '">' + esc(A.t('bind.again')) + '</button>' +
-        (r === 'key' ? '' : '<button type="button" class="btn ghost block" data-seestep>' + esc(A.t('bind.seeStep')) + '</button>') + '</div>';
-    } else {
-      var sim = st === 'verified';
-      h += flow(sim);
-      h += '<div class="ract">' + (sim ? '<a class="btn pri block" href="' + esc(A.routes.app) + '">' + esc(A.t('bind.toApp')) + '</a>' : '') +
-        '<button type="button" class="btn ' + (sim ? 'ghost' : 'pri') + ' block" data-add>' + esc(A.t('bind.addMore')) + '</button>' +
-        (sim ? '' : '<a class="btn ghost block" href="' + esc(A.routes.app) + '">' + esc(A.t('bind.toApp')) + '</a>') + '</div>';
-    }
-    h += '<div class="sim"><h4>' + IC.flask.replace('<svg', '<svg width="15" height="15" style="fill:none;stroke:currentColor;stroke-width:2"') + esc(A.t('bind.simH')) + '</h4><p>' + esc(A.t('bind.simP')) + '</p><div class="b3">' +
-      ['ok', 'ip', 'perm', 'key'].map(function (k) { return '<button type="button" class="btn sm ghost" data-sim="' + k + '">' + esc(A.t('bind.sim' + k.charAt(0).toUpperCase() + k.slice(1))) + '</button>'; }).join('') + '</div></div>';
-    el.innerHTML = h;
-  }
+  $('#outSel').addEventListener('change', function () { S.outcome = this.value; API.demoControls.setNextOutcome(this.value); });
 
-  /* ---------- render all ---------- */
+  /* ---------- render ---------- */
   function render() {
-    document.title = A.t('bind.title');
+    document.title = t('bind.title');
     A.apply(document);
     var s = A.session();
     if (s) $('#av').textContent = (s.name || s.email).slice(0, 1).toUpperCase();
-    $('#panel').classList.toggle('res', S.view === 'res');
-    var n = A.accounts().list.length, sk = $('#skipBtn');
-    sk.href = A.routes.app; sk.textContent = A.t(n ? 'bind.back' : 'bind.skip');
-    $('#srcl').textContent = A.t('bind.srcl', { g: B.source.guide, d: B.source.date });
-    renderList(); head(); renderRes();
+    var real = S.list.filter(function (a) { return !isDemo(a); }).length, n = S.list.length;
+    var form = S.adding || !real;
+    $('#formH').textContent = n ? t('bind.listH', { n: n }) : t('bind.newT');
+    $('#formS').textContent = n ? '' : t('bind.newS');
+    $('#formView').hidden = !form; $('#fh').hidden = !n; $('#cancel').hidden = !(S.adding && real);
+    $('#addBtn').hidden = form;
+    var sk = $('#skipBtn'); sk.href = A.routes.app; sk.textContent = t(real ? 'bind.back' : 'bind.skip');
+    $('#srcl').textContent = t('bind.srcl', { g: B.source.guide, d: B.source.date });
+    numberRows(); relabel(); renderUnbound(); renderList();
+    if (S.sec) secFill();
   }
-  function renderAll() { render(); stop(); draw(false); caption(); schedule(); }
+  function renderAll() { renderDemoBox(); render(); stop(); draw(false); caption(); schedule(); }
 
   /* ---------- events ---------- */
   document.addEventListener('click', function (e) {
-    var t;
-    if ((t = e.target.closest('[data-copy]'))) { e.preventDefault(); copy(t.dataset.copy); return; }
-    if ((t = e.target.closest('[data-re]'))) { e.stopPropagation(); if (A.isDemo(t.dataset.re)) { showRes(t.dataset.re); return; } showForm(t.dataset.re); inp(rows()[0], 'key').focus(); return; }
-    if ((t = e.target.closest('[data-rm]'))) {
+    var t0;
+    if ((t0 = e.target.closest('[data-copy]'))) { e.preventDefault(); copy(t0.dataset.copy, t('bind.copied', { ip: t0.dataset.copy })); return; }
+    if ((t0 = e.target.closest('[data-copypub]'))) { var k = S.kits[t0.dataset.copypub]; if (k) copy(k.publicKeyPem, t('bind.pubCopied')); return; }
+    if ((t0 = e.target.closest('[data-rm]'))) {
       e.stopPropagation();
-      var id = t.dataset.rm;
+      var id = t0.dataset.rm;
       if (S.rm !== id) { S.rm = id; renderList(); var b = document.querySelector('[data-rm="' + id + '"]'); if (b) b.focus(); return; }
-      var a = find(id); A.removeAccount(id); S.rm = null; toast(A.t('bind.removed', { name: a ? A.accountName(a) : '' }));
-      if (S.batch) { S.batch = S.batch.filter(function (x) { return x !== id; }); if (!S.batch.length) { showForm(); return; } }
-      if (S.resId === id || S.editId === id) showForm(); else render();
-      return;
+      unbind(id); return;
     }
-    if ((t = e.target.closest('[data-acc]'))) { S.rm = null; A.setActive(t.dataset.acc); showRes(t.dataset.acc); return; }
-    if (e.target.closest('[data-add]')) { showForm(); inp(rows()[0], 'name').focus(); return; }
-    if (e.target.closest('[data-seestep]')) { C.playing = false; $('#tutorial').open = true; show(PERM_CLIP, false); $('#car').scrollIntoView({ block: 'center', behavior: RM.matches ? 'auto' : 'smooth' }); return; }
-    if ((t = e.target.closest('[data-sim]'))) {
-      var sim = t.dataset.sim, cur = find(S.resId); if (!cur || A.isDemo(cur)) return;
-      A.upsertAccount({ id: cur.id, status: sim === 'ok' ? 'verified' : 'failed', reason: sim === 'ok' ? '' : sim, checkedAt: Date.now() });
-      render(); return;
-    }
+    if ((t0 = e.target.closest('[data-acc]'))) { S.rm = null; var aid = t0.dataset.acc; S.open = S.open === aid ? null : aid; if (S.open) A.setActive(aid); renderList(); var h = document.querySelector('[data-acc="' + aid + '"]'); if (h) h.focus(); stop(); draw(false); schedule(); return; }
+    if ((t0 = e.target.closest('[data-retest]'))) { var rid = t0.dataset.retest; API.retest(rid).then(function () { delete S.det[rid]; return refresh(); }).then(function () { var n = document.querySelector('.brow[data-id="' + rid + '"] input[data-key]'); if (n) n.focus(); }); return; }
+    if ((t0 = e.target.closest('[data-secopen]'))) { openSec(t0.dataset.secopen); return; }
+    if ((t0 = e.target.closest('[data-seeclip]'))) { C.playing = false; $('#tutorial').open = true; show(+t0.dataset.seeclip, false); $('#car').scrollIntoView({ block: 'center', behavior: RM.matches ? 'auto' : 'smooth' }); return; }
+    if (e.target.closest('[data-unclose]')) { S.unbound = null; renderUnbound(); return; }
     if (S.rm && !e.target.closest('.acc')) { S.rm = null; renderList(); }
   });
+  $('#secClose').addEventListener('click', closeSec);
+  $('#secUnbind').addEventListener('click', function () { if (!S.secSure) { S.secSure = true; secFill(); return; } var id = S.sec; closeSec(); unbind(id); });
   document.addEventListener('keydown', function (e) {
-    var t = e.target.closest && e.target.closest('[data-acc]');
-    if (t && e.target === t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); t.click(); }
+    if (e.key === 'Escape' && S.sec) { closeSec(); return; }
+    var tg = e.target.closest && e.target.closest('[data-acc]');
+    if (tg && e.target === tg && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); tg.click(); }
   });
-  function copy(text) {
-    var done = function () { toast(A.t('bind.copied', { ip: text })); };
+  function copy(text, msg) {
+    var done = function () { toast(msg); };
     if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback); else fallback();
     function fallback() { var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); done(); } catch (e) {} ta.remove(); }
   }
   var tt;
   function toast(m) { var el = $('#toast'); el.textContent = m; el.classList.add('on'); clearTimeout(tt); tt = setTimeout(function () { el.classList.remove('on'); }, 2400); }
-  // phones: a focused field is kept clear of the fixed bar and the keyboard
   document.addEventListener('focusin', function (e) {
-    if (!mobile.matches || !e.target.matches || !e.target.matches('#f input')) return;
-    var el = e.target.closest('.fld,.chk') || e.target;
+    if (!mobile.matches || !e.target.matches || !e.target.matches('#panel input')) return;
+    var el = e.target.closest('.fld') || e.target;
     setTimeout(function () {
       var vv = window.visualViewport, r = el.getBoundingClientRect(), top = parseFloat(getComputedStyle(document.querySelector('.bar')).height) || 60;
       var bottom = vv ? vv.height + vv.offsetTop : innerHeight;
@@ -697,32 +776,37 @@ html[data-theme="day"] .cap-tx strong{color:#eaecef}html[data-theme="day"] .cap-
   });
   window.addEventListener('scroll', function () { document.body.classList.toggle('scrolled', scrollY > 4); }, { passive: true });
 
-  window.addEventListener(A.events.lang, renderAll);
-  window.addEventListener(A.events.accounts, function () { if (!A.session()) return; if (S.resId && !find(S.resId)) { S.resId = null; if (S.view === 'res' && !S.batch) S.view = 'form'; } render(); });
+  window.addEventListener(A.events.lang, function () { S.det = {}; renderAll(); refresh(); });
+  window.addEventListener(A.events.accounts, function () { if (A.session()) refresh(); });
   window.addEventListener(A.events.session, function () { if (!A.session()) A.requireUser(location.pathname + location.search); });
 
   /* ---------- boot ---------- */
   try {
+    if (!API) throw new Error('TDApi missing');
     if (RM.matches) document.documentElement.classList.add('bn-nomo');
     $('[data-href="site"]').href = A.routes.site;
     A.mountLangToggle($('#lang'), { theme: function () { return document.documentElement.dataset.theme === 'day' ? 'light' : 'dark'; } });
     A.mountMenu($('#av'), { context: 'account', theme: function () { return document.documentElement.dataset.theme === 'day' ? 'light' : 'dark'; }, logoutTo: A.routes.site });
     if (qs.get('first') === '1') $('#welcome').classList.add('on');
-    var acc = A.accounts(), reId = qs.get('id'), ea = reId && find(reId);
-    if (ea && A.isDemo(reId)) { A.setActive(reId); S.view = 'res'; S.resId = reId; resetForm(); }
-    else if (ea) { S.editId = reId; resetForm({ name: ea.name, uid: ea.uid, label: ea.label }); }
-    else if (qs.get('add') === '1' || !acc.list.length) { resetForm(); }
-    else { resetForm(); S.view = 'res'; S.resId = acc.active !== 'all' && find(acc.active) ? acc.active : acc.list[acc.list.length - 1].id; }
-    // drop one-shot flags from the address bar so a refresh doesn't replay them
+    if (qs.get('add') === '1') S.adding = true;
+    var reId = qs.get('id');
     if (qs.has('first') || qs.has('add') || qs.has('id')) { ['first', 'add', 'id'].forEach(function (k) { qs.delete(k); }); history.replaceState(null, '', location.pathname + (qs.toString() ? '?' + qs : '') + location.hash); }
+    resetForm();
+    API.demoControls.setNextOutcome('pass');
     renderAll();
-    $('#panel').classList.remove('boot');
+    API.me().then(function (m) { $('#obNote').hidden = !(m && m.onboarding && !m.onboarding.agreed); });
+    // ?id= reruns step ④ only: same public key, paste the API Key again
+    var start = reId && !A.isDemo(reId) ? API.retest(reId).then(function () { S.open = reId; }, function () {}) : Promise.resolve(reId && (S.open = reId));
+    start.then(refresh).then(function () {
+      if (!S.open) { var need = S.list.filter(function (a) { return !isDemo(a) && ['awaiting_key', 'failed', 'checking'].indexOf(a.status) >= 0; })[0]; if (need) { S.open = need.id; render(); } }
+      $('#panel').classList.remove('boot');
+      if (reId) { var n = document.querySelector('.brow.open input[data-key]'); if (n) n.focus(); }
+      stop(); draw(false); schedule();
+    });
   } catch (err) {
-    // Never fall back to the API form: keep it hidden and ask for a reload.
     try { console.error(err); } catch (_) {}
-    var bp = $('#panel'); bp.classList.add('boot'); bp.classList.remove('res');
-    var bv = $('#resView'); bv.style.display = 'block';
-    bv.innerHTML = '<p class="bootErr">' + esc(A.t('bind.bootErr')) + '</p>';
+    var bp = $('#panel'); bp.classList.add('boot');
+    $('#unNote').innerHTML = '<p class="bootErr">' + esc(A.t('bind.bootErr')) + '</p>';
   }
 })();
 </script>

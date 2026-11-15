@@ -12,8 +12,67 @@
   'use strict';
   if (global.TDAccount) return;
 
-  /* day / night is the website's choice (localStorage '3dt.theme' = 'day' | 'night', default night); this module only reads it */
-  function themeKey() { try { return localStorage.getItem('3dt.theme') === 'day' ? 'day' : 'night'; } catch (e) { return 'night'; } }
+  /* r42: two theme groups. The website and the log-in / sign-up page share '3dt.theme.site' (default night): the page a
+     visitor signs in on looks like the website they came from. The dashboard and the pages behind it (connect, bind,
+     onboard) share '3dt.theme.app' (default pure-white day). A page names its group with <html data-theme-key="...">;
+     without one, the dashboard group is assumed, except on the website itself, which runs its own switch. */
+  var meTag = document.currentScript, meDs = (meTag && meTag.dataset) || {};
+  var THEME_KEY = document.documentElement.getAttribute('data-theme-key') || (meDs.site && !meDs.app ? '' : '3dt.theme.app');
+  var THEME_DEF = THEME_KEY === '3dt.theme.site' ? 'night' : 'day';
+  function themeKey() { try { var v = localStorage.getItem(THEME_KEY); return v === 'night' || v === 'day' ? v : THEME_DEF; } catch (e) { return THEME_DEF; } }
+
+  /* r42 · day / night "dye": the new palette spreads out as a circle from the point that was clicked, over the whole
+     page (3D scene, background, cards, dialogs), instead of every colour fading at once. View Transitions API: the old
+     page is a still picture, the new one is live underneath and is revealed by a growing clip. Reduced motion, a hidden
+     tab or a browser without the API: the switch is instant. Nothing here touches navigation. */
+  /* r44: 700 → 480 ms and a curve without the slow start / slow tail of r43's ease-in-out (.62,0,.24,1): the circle
+     starts at a visible radius, so the click answers on the first frame, runs near-linear through the middle and lands
+     without a pause. Colours change once, inside the transition (html.tdt-vt kills every CSS transition until it ends). */
+  var REVEAL_MS = 480, REVEAL_EASE = 'cubic-bezier(.3,.45,.6,.95)';
+  function revealOrigin(src) {
+    if (src && typeof src.clientX === 'number' && (src.clientX || src.clientY)) return [src.clientX, src.clientY];
+    var el = src && src.getBoundingClientRect ? src : src && src.currentTarget && src.currentTarget.getBoundingClientRect ? src.currentTarget : null;
+    if (el) { var b = el.getBoundingClientRect(); if (b.width) return [b.left + b.width / 2, b.top + b.height / 2]; }
+    return [document.documentElement.clientWidth - 40, 40];
+  }
+  function reveal(apply, src) {
+    var de = document.documentElement, rm = global.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (rm || document.hidden || !document.startViewTransition) { apply(); return Promise.resolve('instant'); }
+    if (!document.getElementById('tdt-css')) {
+      var c = document.createElement('style'); c.id = 'tdt-css';
+      c.textContent = '::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}::view-transition-old(root){z-index:1}::view-transition-new(root){z-index:2}html.tdt-vt,html.tdt-vt *{transition:none!important}';
+      (document.head || de).appendChild(c);
+    }
+    var o = revealOrigin(src), x = o[0], y = o[1], w = de.clientWidth, h = innerHeight, r = Math.ceil(Math.hypot(Math.max(x, w - x), Math.max(y, h - y))) + 2, vt;
+    de.classList.add('tdt-vt');
+    try { vt = document.startViewTransition(function () { apply(); }); } catch (e) { de.classList.remove('tdt-vt'); apply(); return Promise.resolve('instant'); }
+    vt.ready.then(function () {
+      var r0 = Math.min(48, Math.round(r * .06));
+      de.animate({ clipPath: ['circle(' + r0 + 'px at ' + x + 'px ' + y + 'px)', 'circle(' + r + 'px at ' + x + 'px ' + y + 'px)'] },
+        { duration: global.TD_REVEAL_MS || REVEAL_MS, easing: REVEAL_EASE, pseudoElement: '::view-transition-new(root)' });
+    }, function () {});
+    var done = function () { de.classList.remove('tdt-vt'); return 'reveal'; };
+    return vt.finished.then(done, done);
+  }
+  /* switch this page's group (account pages and connect use it; the website and the dashboard call reveal() with their own switch) */
+  function setTheme(v, src) {
+    if (!THEME_KEY) return;
+    v = v === 'night' ? 'night' : 'day';
+    try { localStorage.setItem(THEME_KEY, v); } catch (e) {}
+    var de = document.documentElement; if (de.getAttribute('data-theme') === v) return;
+    reveal(function () { de.setAttribute('data-theme', v); try { global.dispatchEvent(new CustomEvent('td:theme', { detail: v })); } catch (x) {} }, src);
+  }
+  /* round day/night button with the website's moon / sun, for pages that have no other switch */
+  var MOON = '<svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
+  var SUN = '<svg class="s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
+  function mountThemeToggle(btn) {
+    if (!btn || !THEME_KEY) return null;
+    ensureCss(); btn.type = 'button'; btn.classList.add('tdt-tm'); btn.innerHTML = MOON + SUN;
+    function lab() { var day = document.documentElement.dataset.theme === 'day'; btn.setAttribute('aria-label', t(day ? 'theme.toNight' : 'theme.toDay')); btn.title = btn.getAttribute('aria-label'); btn.setAttribute('aria-pressed', String(!day)); }
+    btn.addEventListener('click', function (e) { setTheme(document.documentElement.dataset.theme === 'day' ? 'night' : 'day', e); });
+    global.addEventListener('td:theme', lab); global.addEventListener('td:lang', lab); lab();
+    return { render: lab };
+  }
 
   /* arriving from the website's "going in" move: the page opens out of the same black, with nothing to click while it does */
   try {
@@ -22,22 +81,23 @@
       sessionStorage.removeItem('td-door');
       if (Date.now() - dt < 5000) {
         var rm = global.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches, st = document.createElement('style');
-        st.textContent = 'html.td-arrive::after{content:"";position:fixed;inset:0;z-index:2147483647;background:' + (themeKey() === 'day' ? '#f1f0ef' : '#06090b') + ';pointer-events:none;animation:tdArrive ' + (rm ? '.2s' : '.6s .08s') + ' cubic-bezier(.3,0,.2,1) forwards}@keyframes tdArrive{to{opacity:0;visibility:hidden}}';
+        st.textContent = 'html.td-arrive::after{content:"";position:fixed;inset:0;z-index:2147483647;background:' + ((function () { try { return localStorage.getItem('3dt.theme.site') === 'day'; } catch (e) { return false; } })() ? '#ffffff' : '#06090b') + ';pointer-events:none;animation:tdArrive ' + (rm ? '.2s' : '.6s .08s') + ' cubic-bezier(.3,0,.2,1) forwards}@keyframes tdArrive{to{opacity:0;visibility:hidden}}';
         (document.head || document.documentElement).appendChild(st); document.documentElement.classList.add('td-arrive');
         setTimeout(function () { document.documentElement.classList.remove('td-arrive'); }, 1000);
       }
     }
   } catch (e) {}
 
-  var VERSION = '1.3.1';
-  var K = { lang: '3dt.lang', session: '3dt.session', users: '3dt.demoUsers', accts: '3dt.accounts:' };
+  var VERSION = '1.5.0';
+  var K = { lang: '3dt.lang', session: '3dt.session', returning: '3dt.returning', users: '3dt.demoUsers', accts: '3dt.accounts:' };
   var EV = { lang: 'td:lang', session: 'td:session', accounts: 'td:accounts', theme: 'td:theme' };
-  /* another tab (the website) switched day/night: pages that opted in (html[data-theme]) follow at once */
+  /* another tab of the same group switched day/night: follow it (dyed in from this page's own switch when the tab is visible, instant when hidden) */
   global.addEventListener('storage', function (e) {
-    if (e.key !== '3dt.theme') return;
-    var root = document.documentElement;
-    if (root.hasAttribute('data-theme')) root.setAttribute('data-theme', themeKey());
-    try { global.dispatchEvent(new CustomEvent(EV.theme, { detail: themeKey() })); } catch (x) {}
+    if (!THEME_KEY || e.key !== THEME_KEY) return;
+    var root = document.documentElement, v = themeKey();
+    if (root.hasAttribute('data-theme') && root.getAttribute('data-theme') !== v) {
+      reveal(function () { root.setAttribute('data-theme', v); try { global.dispatchEvent(new CustomEvent(EV.theme, { detail: v })); } catch (x) {} }, document.querySelector('.tdt-tm,[data-theme-set="' + v + '"]'));
+    } else { try { global.dispatchEvent(new CustomEvent(EV.theme, { detail: v })); } catch (x) {} }
   });
 
   /* ---------- routes: one origin, configurable from the script tag or window.TD_ROUTES ---------- */
@@ -51,11 +111,13 @@
     app: abs(ds.app, '../app/index.html#/dashboard'),
     me: abs(ds.me, '../app/index.html#/me'),
     auth: base + 'auth.html',
-    bind: base + 'bind.html'
+    bind: base + 'bind.html',
+    connect: base + 'connect.html'
   };
   // aliases the website already reads (signup / login / bind / dashboard)
   ROUTES.signup = ROUTES.auth + '?mode=register';
   ROUTES.login = ROUTES.auth + '?mode=login';
+  ROUTES.entry = ROUTES.auth; // r42 · generic "Log in / Sign up": no mode, the page picks (returning → log in, new → sign up)
   ROUTES.dashboard = ROUTES.app;
   /* The website's tag sets data-site but no data-app. Remember where that page really lives on this origin, so
      "back to website" from the dashboard or account pages returns there even when a preview serves the site
@@ -150,27 +212,29 @@
 
   add({
     zh: {
-      'lang.label': '语言', 'lang.zh': '中文', 'lang.en': 'EN',
+      'lang.label': '语言', 'lang.zh': '中文', 'lang.en': 'EN', 'theme.toNight': '切换到夜间', 'theme.toDay': '切换到日间',
       'acct.login': '登录', 'acct.register': '注册', 'acct.logout': '退出登录', 'acct.guest': '未登录',
       'acct.guestHint': '登录后可绑定币安子账户、查看策略运行情况。',
       'acct.menu': '账户菜单', 'acct.demoUser': '本机账号', 'acct.defaultUser': '3dtrading 用户',
       'acct.binance': '币安子账户', 'acct.all': '全部账户', 'acct.allSub': '合并查看 {n} 个子账户',
       'acct.none': '还没有绑定币安子账户', 'acct.bindNew': '绑定新的币安子账户', 'acct.bindFirst': '去绑定第一个子账户',
       'acct.toApp': '进入控制台', 'acct.toSite': '回到官网', 'acct.me': '我的',
-      'acct.st.pending': '待接入测试', 'acct.st.verified': '测试通过 · 未连接币安', 'acct.st.failed': '校验未通过',
+      'acct.st.awaiting_key': '等待贴回 API Key', 'acct.st.checking': '接入测试中', 'acct.st.verified': '测试通过 · 演示', 'acct.st.failed': '测试未通过',
+      'acct.st.observing': '试运行（只观察）· 演示', 'acct.st.running': '运行中 · 演示', 'acct.st.halted': '已停机', 'acct.st.unbound': '已解绑', 'acct.st.unknown': '处理中',
       'acct.demo.name': '示例账户', 'acct.demo.sub': '示例数据 · 未连接币安', 'acct.demo.st': '示例数据 · 未连接币安',
       'demo.note': '账号与子账户只保存在本机浏览器，未连接币安，也没有真实校验。',
       'demo.badge': '示例数据'
     },
     en: {
-      'lang.label': 'Language', 'lang.zh': '中文', 'lang.en': 'EN',
+      'lang.label': 'Language', 'lang.zh': '中文', 'lang.en': 'EN', 'theme.toNight': 'Switch to night', 'theme.toDay': 'Switch to day',
       'acct.login': 'Log in', 'acct.register': 'Sign up', 'acct.logout': 'Log out', 'acct.guest': 'Not signed in',
       'acct.guestHint': 'Sign in to link Binance sub-accounts and follow your strategy.',
       'acct.menu': 'Account menu', 'acct.demoUser': 'Local account', 'acct.defaultUser': '3dtrading user',
       'acct.binance': 'Binance sub-accounts', 'acct.all': 'All sub-accounts', 'acct.allSub': 'Combined · {n} total',
       'acct.none': 'No Binance sub-account linked yet', 'acct.bindNew': 'Link a Binance sub-account', 'acct.bindFirst': 'Link your first sub-account',
       'acct.toApp': 'Open dashboard', 'acct.toSite': 'Back to website', 'acct.me': 'Me',
-      'acct.st.pending': 'Awaiting connection test', 'acct.st.verified': 'Test passed · Binance not connected', 'acct.st.failed': 'Check failed',
+      'acct.st.awaiting_key': 'Waiting for your API Key', 'acct.st.checking': 'Connection test running', 'acct.st.verified': 'Test passed · demo', 'acct.st.failed': 'Test failed',
+      'acct.st.observing': 'Trial run (observe only) · demo', 'acct.st.running': 'Running · demo', 'acct.st.halted': 'Halted', 'acct.st.unbound': 'Unbound', 'acct.st.unknown': 'Processing',
       'acct.demo.name': 'Sample account', 'acct.demo.sub': 'Sample data · not connected to Binance', 'acct.demo.st': 'Sample data · not connected to Binance',
       'demo.note': 'Your account and sub-accounts stay in this browser only. Binance is not connected and nothing is actually verified.',
       'demo.badge': 'Sample data'
@@ -183,7 +247,7 @@
   function users() { var u = getJSON(K.users); return Array.isArray(u) ? u : []; }
   function startSession(u) {
     var s = { v: 1, demo: true, email: u.email, name: u.name || u.email.split('@')[0], since: Date.now() };
-    setJSON(K.session, s);
+    setJSON(K.session, s); set(K.returning, '1');
     emit(EV.session, { session: s });
     emit(EV.accounts, accounts());
     return s;
@@ -201,8 +265,11 @@
     if (!u) return { ok: false, code: 'not_found' };
     return { ok: true, session: startSession(u) };
   }
+  /* r42 · someone who has signed in or out on this browser before is "returning": the generic entry (auth.html with no
+     ?mode) opens on Log in for them and on Sign up for everyone else. Only the flag '1' is kept: no email, no password. */
+  function returning() { return get(K.returning) === '1'; }
   function logout(opt) {
-    del(K.session);
+    del(K.session); set(K.returning, '1');
     emit(EV.session, { session: null });
     emit(EV.accounts, accounts());
     if (!opt || opt.redirect !== false) location.href = (opt && opt.to) || ROUTES.site;
@@ -239,7 +306,14 @@
   }
   function removeAccount(id) { var d = accounts(); d.list = d.list.filter(function (a) { return a.id !== id; }); if (d.active === id) d.active = 'all'; saveAccounts(d); }
   function setActive(id) { var d = accounts(); if (id !== 'all' && !d.list.some(function (a) { return a.id === id; })) return; d.active = id; saveAccounts(d); }
-  function statusText(s) { return t('acct.st.' + (s || 'pending')); }
+  /* r38: 8 account statuses from the backend contract. Legacy data: pending → awaiting_key (old 'verified' / 'failed' keep
+     their meaning). Anything unknown reads 「处理中」 and never throws. */
+  var STATUSES = ['awaiting_key', 'checking', 'verified', 'failed', 'observing', 'running', 'halted', 'unbound'];
+  var TONES = { awaiting_key: 'wait', checking: 'wait', verified: 'ok', failed: 'bad', observing: 'ok', running: 'ok', halted: 'bad', unbound: 'off' };
+  function normStatus(s) { s = s == null || s === '' || s === 'pending' ? 'awaiting_key' : String(s); return s; }
+  function statusKnown(s) { return STATUSES.indexOf(normStatus(s)) >= 0; }
+  function statusText(s) { s = normStatus(s); return t('acct.st.' + (statusKnown(s) ? s : 'unknown')); }
+  function statusTone(s) { return TONES[normStatus(s)] || 'wait'; }
   /* demo sub-account seeded by the dashboard (id 'demo-binance'): simulated data only, never connected to Binance */
   var DEMO_ID = 'demo-binance';
   function isDemo(a) { return !!a && (a === DEMO_ID || a.id === DEMO_ID); }
@@ -260,7 +334,7 @@
   /* ---------- UI: styles ---------- */
   function ensureCss() {
     if (document.getElementById('tda-css')) return;
-    var l = document.createElement('link'); l.id = 'tda-css'; l.rel = 'stylesheet'; l.href = base + 'td-account.css?v=20261113-r31';
+    var l = document.createElement('link'); l.id = 'tda-css'; l.rel = 'stylesheet'; l.href = base + 'td-account.css?v=r42';
     document.head.appendChild(l);
   }
 
@@ -328,7 +402,7 @@
           h += '<a class="tda-mi add" role="menuitem" href="' + esc(ROUTES.bind) + '"><span class="tda-ic">' + ICON.plus + '</span><span class="tda-tx"><b>' + esc(t('acct.bindFirst')) + '</b><small>' + esc(t('acct.none')) + '</small></span></a>';
         } else {
           if (A.list.length > 1) h += acctRow('all', t('acct.all'), t('acct.allSub', { n: A.list.length }), A.active === 'all', '');
-          A.list.forEach(function (a) { h += acctRow(a.id, accountName(a), accountSub(a), A.active === a.id, isDemo(a) ? 'demo' : (a.status || 'pending')); });
+          A.list.forEach(function (a) { h += acctRow(a.id, accountName(a), accountSub(a), A.active === a.id, isDemo(a) ? 'demo' : statusTone(a.status)); });
           h += '<a class="tda-mi add" role="menuitem" href="' + esc(ROUTES.bind + '?add=1') + '"><span class="tda-ic">' + ICON.plus + '</span><span class="tda-tx"><b>' + esc(t('acct.bindNew')) + '</b></span></a>';
         }
         h += '<hr>';
@@ -426,8 +500,10 @@
     lang: lang, setLang: setLang, t: t, i18n: add, apply: apply,
     session: session, register: register, login: login, logout: logout, requireUser: requireUser, authUrl: authUrl,
     accounts: accounts, upsertAccount: upsertAccount, removeAccount: removeAccount, setActive: setActive, statusText: statusText,
+    statusTone: statusTone, normStatus: normStatus, statuses: function () { return STATUSES.slice(); },
     DEMO_ID: DEMO_ID, isDemo: isDemo, accountName: accountName, accountSub: accountSub,
-    mountMenu: mountMenu, mountLangToggle: mountLangToggle, dodo: dodo, theme: themeKey,
+    mountMenu: mountMenu, mountLangToggle: mountLangToggle, dodo: dodo, theme: themeKey, themeKey: function () { return THEME_KEY; },
+    setTheme: setTheme, reveal: reveal, revealMs: REVEAL_MS, revealEase: REVEAL_EASE, mountThemeToggle: mountThemeToggle, returning: returning,
     displayName: displayName, DEFAULT_NAME: '3dtrading 用户',
     getSession: getSession, onChange: onChange, openMenu: openMenu
   };

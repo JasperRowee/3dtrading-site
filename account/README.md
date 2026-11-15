@@ -1,4 +1,4 @@
-# 3dtrading 账户 / 语言公共模块 · 接入说明（v1.1.0，演示版）
+# 3dtrading 账户 / 语言公共模块 · 接入说明（r38，演示版）
 
 负责人：Sova。目录：`/Users/sen/.chorus2/workspaces/ba7a4ad4-cec3-4a41-85fe-153e0b18442b/3dtrading-account/`
 统一预览（同源，localStorage 共享）：http://127.0.0.1:8796/ → `/site/` 官网 · `/app/` 后台方案二 · `/account/` 本模块。完整路线：官网 → 注册/登录 → 连接币安（可跳过）→ 方案二后台
@@ -8,12 +8,15 @@
 | 文件 | 作用 |
 |---|---|
 | `td-account.js` / `td-account.css` | 公共模块：会话、币安账户列表、语言、共享头像菜单（样式全部在 `.tda-*` 下，不影响宿主） |
-| `auth.html` | 注册 / 登录（`?mode=register|login&next=`），注册后进入 `bind.html?first=1` |
+| `auth.html` | 注册 / 登录（`?mode=register|login&next=`），全部经 `TDApi`；注册后进入 `onboard.html?first=1` |
+| `onboard.html` | r38：风险披露与协议确认（待法务定稿）→ 选方案（演示数值）→ `bind.html?first=1` |
+| `api-adapter.js` | r38：`TDApi` 演示适配层（会话、协议、方案、绑定、失败码）；页面只调它，不直接读写存储 |
 | `bind.html` | 连接币安子账户：左侧黑底轮播（代码复刻币安网页 9 个画面，自动切换、可手动上一步/下一步/暂停，字幕同步），右侧只有表单、反馈和「暂时跳过」。电脑一屏不滚动；手机上方轮播、下方紧凑表单 |
 | `bind-bn.js`, `bind-bn.css` | 轮播里的币安复刻界面（中英两套文字）；不用截图、不访问币安、无类密钥字符串 |
-| `bind-steps.js` | 共用设置：IP 白名单、权限格子、示例名称；`ipsConfirmed` / `permsConfirmed` |
+| `bind-steps.js` | 共用设置：示例名称、核对日期（r38 起 IP 与权限只来自 `TDApi.getBindKit`） |
 | `BINANCE-SOURCES.md` | 复刻依据、核对日期、不登录无法核实的项 |
-| `page.css`, `img/`, `assets/` | 页面样式、指南 PDF 截图（只作核对依据，页面不引用）、logo |
+| `page.css`, `img/` | 页面样式、指南 PDF 截图（只作核对依据，页面不引用）。r38 起不含币安标志图片 |
+| `_test/` | 账户模块测试，见 `_test/README.md` |
 
 ## 引入
 ```html
@@ -54,10 +57,22 @@
 7. 未登录 / 无账户 / 账户状态 pending、failed 时，后台应显示对应空态，不展示假数据为“已连接”。
 
 ## 教程替换（团队核实后）
-改 `bind-steps.js`：`ipsConfirmed` / `permsConfirmed` 改为 `true`，页面自动去掉“待确认”标签；界面文字改 `bind-bn.js` 里的 `W.zh` / `W.en`，依据记在 `BINANCE-SOURCES.md`。
+IP 与权限由后端 `getBindKit` 下发；界面文字改 `bind-bn.js` 里的 `W.zh` / `W.en`，依据记在 `BINANCE-SOURCES.md`。
 
 ## 真实后端需要的接口（缺口）
 `POST /auth/register|login|logout`、`GET /me`（httpOnly 会话 cookie）；`POST /binance/accounts`（服务端加密保存密钥，并测试 API：权限、IP 白名单、统一账户），`GET /binance/accounts`，`POST /binance/accounts/:id/verify`，`DELETE /binance/accounts/:id`。接入后把 `register/login/upsertAccount/verify` 换成请求即可，页面结构不用改。
+
+## r38（2026-11-13）：两步绑定、8 种状态、安全页
+以下内容取代 r20 起关于 Key/Secret 表单、`pending`/`verified` 状态、IP 写死的描述（历史段落保留作记录）。
+- **全部经 `TDApi`**（`api-adapter.js`）：页面不直接读写账户存储。
+- **两步绑定**（每个子账户一行，最多 8 行，各自 ②–⑤）：① 名称/UID → `createAccount`；② 公钥卡（完整公钥、复制、指纹、「公钥是公开的，可以放心复制」、示例公钥 · 演示，权限与 IP 来自 `getBindKit`）；③ 币安里「自行生成 → 粘贴公钥 → 复制 API Key」（示意）；④ 只贴 API Key（64 位校验，提交即清空，逐项打勾）；⑤ 通过 → 试运行（只观察），失败 → 原因 + 怎么改 + 问 Dodo。
+- **没有 Secret 输入框**；完整 API Key 不进 localStorage / sessionStorage，只留首 4 / 末 4（`apiKeyHint`）。
+- `?id=` 走 `retest`：同一把公钥，只重做 ④。
+- 状态 8 种经 `TDAccount.statusInfo`，未知显示「处理中」；旧 `pending` 视为 `awaiting_key`。
+- 失败码 9 个，文字来自 `getFailureText`；`SIGNATURE_MISMATCH` / `IP_MISMATCH` 弹红色安全页（「请立即到币安删除这个 API」「我们已通知你的邮箱 / Telegram」，标「演示模拟，未实际发送」）。
+- 解绑确认后提示「请到币安删除这个 API」并显示首 4 / 末 4。
+- 页面「演示」块可选下一次结果（通过或 9 个失败码之一，`setNextOutcome`）。
+- 「问 Dodo」链接：`../app/index.html?ask=dodo&topic=<CODE>#/dashboard`（后台尚未读取该参数）。
 
 ## 演示子账户（11:55）
 绑定页、共享菜单里的 `demo-binance`：名称随语言，副标题写“未连接币安”，状态点是灰色；不显示重新校验、不进 API 表单、没有模拟接入测试按钮；`?id=demo-binance` 打开说明卡；可两次确认删除；普通账户的重新校验不变。测试：`_test/demo.js`（20 项）。
@@ -65,7 +80,7 @@
 ## r20（2026-11-12）：多子账户、节选动画、去掉电脑版/手机版切换
 **多子账户契约（后台照此读取，结构未变）**
 - 一次提交多组 = 多次 `upsertAccount`，每组一条：`{id, name, uid, label, device:'web', status:'pending', reason:'', at, checkedAt}`，存于 `3dt.accounts:<email>` 的 `list`；`active` 设为本次最后保存的那条。
-- 字段只有这些，**没有 Key / Secret**：密钥只在表单内存中比较格式与是否重复，校验后立即清空，不写入任何存储或日志。
+- （r38 已取代）字段只有这些，**没有 Key / Secret**：密钥只在表单内存中比较格式与是否重复，校验后立即清空，不写入任何存储或日志。
 - 状态：前端只会写 `pending`（显示「待接入测试 / Awaiting connection test」）。`verified` / `failed` 只来自绑定页的「演示：模拟」按钮，页面标明是模拟；真实状态需服务端接口。
 - 逐组校验：名称必填、不与已有账户或本次其他组重名（不分大小写）；UID 6–12 位数字、不重复；Key/Secret 各 64 位字母数字、两者不同、不与本次其他组复用。通过的组立即保存并移出表单，失败的组保留名称/UID/标签与各自错误，密钥清空需重贴；顶部提示「已保存 N 个（待接入测试），M 个没有保存」，用错误样式，不出成功页。
 - 一次最多 8 组；重新校验（`?id=`）只有一组，不能加组；「暂时跳过」直接回后台，不建账户。

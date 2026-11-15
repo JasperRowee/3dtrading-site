@@ -1,9 +1,13 @@
 /* 3dtrading · coded replica of Binance's web screens for creating a sub-account API key.
- * Built in HTML/CSS from the 2026.10.10 setup guide (real zh dark-mode screens) and Binance's public FAQs;
- * the Binance logo images are the official files served on binance.com (see account/BINANCE-SOURCES.md).
+ * Built in HTML/CSS from the 2026.10.10 setup guide (real zh dark-mode screens) and Binance's public FAQs (see account/BINANCE-SOURCES.md).
+ * r38: no Binance logo (plain text only), no Secret Key, no private key. The self-generated (Ed25519) screen is 「示意」:
+ * it is not checked against a live Binance page. IPs, permissions and the public key come from cfg.kit (bind.html: TDApi.getBindKit; connect.html: TDApi.getConnectKit).
  * No screenshots, no network. Names, UIDs and keys are made-up examples (account "3dtrading"), never real ones.
- * window.TD_BN.scenes[i] = { h, cap:{zh:{t,x},en:{t,x}}, html(lang, cfg) }.
- * In each scene, [data-t] marks what the cursor clicks and [data-focus] what the camera keeps in view. */
+ * cfg = { nameEx, labelEx, keyEx, kit: { publicKeyPem, fingerprint, ips:[...], perms:[{key,required,forbidden,zh,en}] } | null }
+ * window.TD_BN.scenes[i] = { h, cap:{zh:{t,x},en:{t,x}}, html(lang, cfg) }; window.TD_BN.clips[i] = { html(lang, cfg) }.
+ * In each scene, [data-t] marks what the cursor clicks and [data-focus] what the camera keeps in view.
+ * r44: connect.html makes this replica the page itself — the guide marks one real click target per moment (a [data-t],
+ * .bn-tr .more, .bn-newapi or .bn-edit) and the user clicks it in the replica to move on. */
 (function (global) {
   'use strict';
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -20,17 +24,17 @@
       mTitle: '创建子账户', mType: '子账户类型', mTypeV: '虚拟邮箱创建', mName: '虚拟邮箱创建', mHint: '请输入字符串，我们将为您创建一个虚拟邮箱进行注册。', mNote: '注意：虚拟邮箱不能用于登录子账户。请使用主账户创建子账户API来管理子账户。', ok: '确认',
       dd1: ['转入', '允许合约', '启用期权', '删除'], dd2: ['转入', '开通统一账户', '允许合约', '启用期权', '删除'],
       stp: '自成交预防', createApi: '创建API', apiCnt: 'API',
-      notes: ['1. 每个子账户最多可以创建30个 API Key。', '2. 请勿将您的API密钥、HMAC密钥、Ed25519或RSA私钥透露给任何人，以免造成资产损失。', '3. 为提高您账户的安全性，建议仅授予可信IP访问权限。', '4. 请在创建API密钥前完成身份认证。'],
+      notes: ['1. 每个子账户最多可以创建30个 API Key。', '2. 请勿将您的API密钥或私钥透露给任何人，以免造成资产损失。', '3. 为提高您账户的安全性，建议仅授予可信IP访问权限。', '4. 请在创建API密钥前完成身份认证。'],
       apiCols: ['邮箱', '标签', '现货账户', '杠杆账户', '合约账户', 'IP 限制'],
-      kTitle: '选择API密钥类型', k1: '系统生成', k1p: '使用HMAC对称加密方式运作。您将获得API密钥和HMAC密钥。请将该API密钥和HMAC密钥视为密码一样妥善保管，切勿与任何第三方分享。',
-      k2: '自行生成', k2p: '使用Ed25519或RSA非对称加密方式运作。您将获得API密钥，且必须通过软件（如币安密钥生成器）自行创建一对公钥和私钥，然后仅向币安提供公钥。', next: '下一步',
+      kTitle: '选择API密钥类型', k1: '系统生成', k1p: '使用HMAC对称加密方式运作。3dtrading 的绑定不用这一种。',
+      k2: '自行生成', k2p: '使用Ed25519非对称加密方式运作。粘贴 3dtrading 给你的公钥，币安会生成 API 密钥。', next: '下一步',
       cTitle: '创建API', cSub: '子账户', cLabel: 'API 标签',
-      qr: '扫码获取地址', lbl: '标签', pm: '统一账户', warn: '请务必立即复制您的 API 密钥和私钥。离开此页面后，它们将不会再完整显示。',
-      key: 'API 密钥:', sec: '密钥:', copy: 'Copy', perm: 'API权限:', edit: '编辑',
+      qr: '扫码获取地址', lbl: '标签', pm: '统一账户', warn: '复制 API 密钥，贴回 3dtrading 的绑定页。', pub: '公钥:', pubPh: '粘贴 3dtrading 给你的公钥',
+      key: 'API 密钥:', copy: '复制', perm: 'API权限:', edit: '编辑权限',
       ipT: 'IP访问限制', ipAny: '无限制(缺乏安全)', ipAnyW: '这个API密钥允许任何地址访问，不推荐。', ipOnly: '只访问受信任的IP(推荐)', ipPh: '输入多个IP地址时，请使用空格隔开。'
     },
     en: {
-      brand: 'BINANCE', acct: '3dtrading', uid: '1024 3366', homeH: ['Trade 24/7', 'One account, every market'], est: 'Estimated Balance', estV: '0.00 USDT', pnl: "Today's PnL", pnlV: '+0.00 USDT', homeB: ['Deposit', 'Trade', 'Convert'], nav: ['Buy Crypto', 'Markets', 'Trade', 'Futures', 'Earn', 'Square', 'Institutional', 'AI', 'More'], navDd: [0, 0, 1, 1, 1, 1, 1, 1, 1], dep: 'Deposit',
+      brand: 'Binance', acct: '3dtrading', uid: '1024 3366', homeH: ['Trade 24/7', 'One account, every market'], est: 'Estimated Balance', estV: '0.00 USDT', pnl: "Today's PnL", pnlV: '+0.00 USDT', homeB: ['Deposit', 'Trade', 'Convert'], nav: ['Buy Crypto', 'Markets', 'Trade', 'Futures', 'Earn', 'Square', 'Institutional', 'AI', 'More'], navDd: [0, 0, 1, 1, 1, 1, 1, 1, 1], dep: 'Deposit',
       side: ['Dashboard', 'Assets', 'Orders', 'Rewards Hub', 'Referral', 'Account', 'Sub Accounts'], sideDd: [0, 1, 1, 0, 0, 1, 1],
       sub: ['Account Management', 'API Management', 'Asset Management', 'Order Management', 'Transaction History', 'Login History', 'Trading Data'],
       menu: ['Dashboard', 'Assets', 'Orders', 'Account', 'Referral', 'Rewards Hub', 'Sub Accounts', 'Settings'], logout: 'Log Out', sw: 'Switch Sub Account', tags: ['Regular User', 'Verified'],
@@ -40,20 +44,20 @@
       mTitle: 'Create Sub Account', mType: 'Sub-account type', mTypeV: 'Create with virtual email', mName: 'Create with virtual email', mHint: 'Enter a string and we will create a virtual email to register with.', mNote: 'Note: the sub-account can only be operated by the master account through API. Please create an API Key for the sub-account.', ok: 'Confirm',
       dd1: ['Transfer In', 'Enable Futures', 'Enable Options', 'Delete'], dd2: ['Transfer In', 'Enable Portfolio Margin', 'Enable Futures', 'Enable Options', 'Delete'],
       stp: 'Self-Trade Prevention', createApi: 'Create API', apiCnt: 'API',
-      notes: ['1. Each subaccount can create up to 30 API Keys.', '2. Do not disclose your API Key, Secret Key (HMAC) or Private Key (Ed25519, RSA) to anyone to avoid asset losses.', '3. It is recommended to restrict access to trusted IPs only to increase your account security.', '4. Please complete KYC before creating an API Key.'],
+      notes: ['1. Each subaccount can create up to 30 API Keys.', '2. Do not disclose your API Key or private key to anyone to avoid asset losses.', '3. It is recommended to restrict access to trusted IPs only to increase your account security.', '4. Please complete KYC before creating an API Key.'],
       apiCols: ['Email', 'Label', 'Spot', 'Margin', 'Futures', 'IP restriction'],
-      kTitle: 'Choose API Key type', k1: 'System generated', k1p: 'Works using HMAC symmetric encryption. An API Key and Secret Key will be provided to you. Please keep these keys secure and treat it like your password. Do not share the keys with any third parties.',
-      k2: 'Self-generated', k2p: 'Works using Ed25519 or RSA asymmetric encryption. You will be provided with an API Key and must create a public-private key pair via software (for example: Binance Key Generator), then provide the public key to Binance.', next: 'Next',
+      kTitle: 'Choose API Key type', k1: 'System generated', k1p: 'Works using HMAC symmetric encryption. 3dtrading binding does not use this type.',
+      k2: 'Self-generated', k2p: 'Works using Ed25519 asymmetric encryption. Paste the public key 3dtrading gives you and Binance creates the API Key.', next: 'Next',
       cTitle: 'Create API', cSub: 'Sub Account', cLabel: 'API Label',
-      qr: 'Scan to get address', lbl: 'Label', pm: 'Portfolio Margin', warn: 'Make sure you copy your API Key and Secret Key now. They will not be shown in full again after you leave this page.',
-      key: 'API Key', sec: 'Secret Key', copy: 'Copy', perm: 'API restrictions:', edit: 'Edit',
+      qr: 'Scan to get address', lbl: 'Label', pm: 'Portfolio Margin', warn: 'Copy the API Key and paste it back on the 3dtrading binding page.', pub: 'Public key', pubPh: 'Paste the public key from 3dtrading',
+      key: 'API Key', copy: 'Copy', perm: 'API restrictions:', edit: 'Edit restrictions',
       ipT: 'IP access restrictions:', ipAny: 'Unrestricted (Less Secure)', ipAnyW: 'This API Key allows access from any IP address. This is not recommended.', ipOnly: 'Restrict access to trusted IPs only (Recommended)', ipPh: 'When entering more than one IP address, separate them with spaces.'
     }
   };
 
   var I = {
-    mark: '<img class="bn-mark" src="assets/binance/binance-mark.png" alt="" width="22" height="22">',
-    word: '<img class="bn-word" src="assets/binance/binance-logo-horizontal.png" alt="Binance" width="120" height="64">',
+    // r38: no Binance logo image or drawn mark — plain text only
+    word: '<b class="bn-wordt">Binance</b>',
     dd: '<svg class="dd" viewBox="0 0 10 10"><path d="M2.5 3.8 5 6.3l2.5-2.5"/></svg>',
     up: '<svg class="dd" viewBox="0 0 10 10"><path d="M2.5 6.2 5 3.7l2.5 2.5"/></svg>',
     tri: '<svg class="tri" viewBox="0 0 10 10"><path d="M2.5 3.8h5L5 6.6z"/></svg>',
@@ -92,7 +96,7 @@
   };
 
   function nav(w, hot) {
-    return '<div class="bn-top"><span class="bn-logo">' + (w === W.en ? I.word : I.mark + '<b>' + esc(w.brand) + '</b>') + '</span>' +
+    return '<div class="bn-top"><span class="bn-logo">' + (w === W.en ? I.word : '<b class="bn-wordt">' + esc(w.brand) + '</b>') + '</span>' +
       '<nav class="bn-nav">' + w.nav.map(function (n, i) { return '<span>' + esc(n) + (w.navDd[i] ? I.dd : '') + '</span>'; }).join('') + '</nav><i class="bn-sp"></i>' +
       '<span class="bn-ic">' + I.search + '</span><span class="bn-dep">' + I.down + esc(w.dep) + '</span>' +
       '<span class="bn-ic' + (hot ? '" data-t="av' : '') + '">' + I.user + '</span><span class="bn-ic">' + I.wallet + '</span><span class="bn-ic dotted">' + I.msg + '</span><span class="bn-ic">' + I.dl + '</span><span class="bn-ic">' + I.globe + '</span><span class="bn-ic">' + I.moon + '</span></div>';
@@ -125,7 +129,7 @@
       '<div class="bn-tbl"><div class="bn-th">' + w.cols.map(function (c, i) { return '<span class="c' + i + '">' + esc(c) + '</span>'; }).join('') + '</div>' + row + '</div>';
   }
   function apiPage(w) {
-    return head(w, w.apiTitle, '<span class="bn-btn yd">' + esc(w.stp) + '</span><span class="bn-btn g">+ ' + esc(w.createApi) + '</span><span class="bn-mut">' + esc(w.apiCnt) + ' (0)</span>') +
+    return head(w, w.apiTitle, '<span class="bn-btn yd">' + esc(w.stp) + '</span><span class="bn-btn g bn-newapi">+ ' + esc(w.createApi) + '</span><span class="bn-mut">' + esc(w.apiCnt) + ' (0)</span>') +
       '<ol class="bn-notes">' + w.notes.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>' +
       '<div class="bn-filt"><div class="bn-lab"><small>' + esc(w.fSub) + '</small>' + sel('', w.fAll, 'w2') + '</div><span class="bn-btn yd">' + esc(w.search) + '</span><span class="bn-btn g">' + esc(w.reset) + '</span></div>' +
       '<div class="bn-tbl api"><div class="bn-th">' + w.apiCols.map(function (c) { return '<span>' + esc(c) + '</span>'; }).join('') + '</div></div>';
@@ -134,23 +138,28 @@
   function ddMenu(items, hot, grey) {
     return '<div class="bn-dd">' + items.map(function (x, i) { return '<span' + (i === hot ? ' data-t="dd"' : '') + (i === grey ? ' class="off"' : '') + '>' + esc(x) + '</span>'; }).join('') + '</div>';
   }
+  function kitOf(cfg) { return (cfg && cfg.kit) || null; }
+  function shortPub(cfg, w) { if (cfg && cfg.pubText) return cfg.pubText; var k = kitOf(cfg); return k ? k.fingerprint : (w === W.en ? 'shown after you apply' : '申请绑定后显示'); }
+  function ipsOf(cfg) { var k = kitOf(cfg); return k && k.ips && k.ips.length ? k.ips : null; }
+  function permsOf(cfg) { var k = kitOf(cfg); return k && k.perms ? k.perms : []; }
   function keyPage(w, cfg, part) {
-    var perms = cfg.perms.map(function (p) {
-      return '<span class="bn-ck' + (p.on ? ' on' : '') + (p.fixed ? ' fix' : '') + '"><i></i><u>' + esc(w === W.en ? p.en : p.zh) + '</u>' + (p.edit ? '<em>' + esc(w.edit) + '</em>' : '') + '</span>';
-    }).join('');
-    var keyRow = function (lab, n, hot) {
-      return '<div class="bn-kl">' + esc(lab) + '</div><div class="bn-kr"><span class="bn-kv">' + esc(n ? cfg.secretEx : cfg.keyEx) + '</span><span class="bn-copy"' + (hot ? ' data-t="copy"' : '') + '>' + esc(w.copy) + '</span></div>';
-    };
+    var en = w.brand === 'Binance'; // r44: w is often a merged copy (gw / hw), so compare by value — the English permission grid was showing Chinese
+    var perms = permsOf(cfg).map(function (p) {
+      return '<span class="bn-ck' + (p.required ? ' on' : '') + (p.forbidden ? ' off' : '') + '"><i></i><u>' + esc(en ? p.en : p.zh) + '</u></span>';
+    }).join('') || '<span class="bn-ck"><u>' + esc(en ? 'Permission list appears after you apply' : '申请绑定后显示权限清单') + '</u></span>';
+    var ips = ipsOf(cfg);
     return '<div class="bn-key">' +
       '<div class="bn-qr"><div class="q"></div><span>' + esc(w.qr) + '</span></div>' +
-      '<div class="bn-kd"><div class="bn-kl">' + esc(w.lbl) + '</div><div class="bn-tags"><span class="t1">HMAC</span><span class="t2">' + esc(w.pm) + '</span><b>' + esc(cfg.labelEx) + '</b></div>' +
+      '<div class="bn-kd"><div class="bn-kl">' + esc(w.lbl) + '</div><div class="bn-tags"><span class="t1">Ed25519</span><span class="t2">' + esc(w.pm) + '</span><b>' + esc(cfg.labelEx) + '</b></div>' +
       '<div class="bn-warn">' + I.info + '<span>' + esc(w.warn) + '</span></div>' +
-      '<div' + (part === 'keys' ? ' data-focus' : '') + '>' + keyRow(w.key, 0, part === 'keys') + keyRow(w.sec, 1, false) + '</div>' +
-      '<div class="bn-perm"' + (part === 'perm' ? ' data-focus' : '') + '><div class="bn-kl">' + esc(w.perm) + '</div><div class="bn-grid">' + perms + '</div>' +
+      '<div' + (part === 'keys' ? ' data-focus' : '') + '>' +
+      '<div class="bn-kl">' + esc(w.pub) + '</div><div class="bn-kr"><span class="bn-kv">' + esc(shortPub(cfg, w)) + '</span></div>' +
+      '<div class="bn-kl">' + esc(w.key) + '</div><div class="bn-kr" data-slot="key"><span class="bn-kv">' + esc(cfg.keyEx) + '</span><span class="bn-copy"' + (part === 'keys' ? ' data-t="copy"' : '') + '>' + esc(w.copy) + '</span></div></div>' +
+      '<div class="bn-perm"' + (part === 'perm' ? ' data-focus' : '') + '><div class="bn-kl bn-plh"><span>' + esc(w.perm) + '</span><span class="bn-edit">' + esc(w.edit) + '</span></div><div class="bn-grid">' + perms + '</div>' +
       '<div class="bn-ipt">' + esc(w.ipT) + '</div>' +
       '<div class="bn-rad"><i></i>' + esc(w.ipAny) + ' <em>' + esc(w.ipAnyW) + '</em></div>' +
       '<div class="bn-rad on"><i></i>' + esc(w.ipOnly) + '</div>' +
-      '<div class="bn-chips">' + cfg.ips.map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') + '</div>' +
+      '<div class="bn-chips" data-slot="ips">' + (ips || []).map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') + '</div>' +
       '<div class="bn-ipin"><span>' + esc(w.ipPh) + '</span><b' + (part === 'perm' ? ' data-t="ipok"' : '') + '>' + esc(w.ok) + '</b></div></div>' +
       '</div></div>';
   }
@@ -180,7 +189,7 @@
         var w = W[l];
         return frame(w, 0, amPage(w, 0), modal(w.mTitle,
           '<div class="bn-f"><small>' + esc(w.mType) + '</small><div class="bn-in sel">' + esc(w.mTypeV) + I.tri + '</div></div>' +
-          '<div class="bn-f"><small>' + esc(w.mName) + '</small><div class="bn-in focus">' + esc(cfg.nameEx) + '<i class="caret"></i></div><p>' + esc(w.mHint) + '</p></div>' +
+          '<div class="bn-f"><small>' + esc(w.mName) + '</small><div class="bn-in focus" data-slot="name">' + esc(cfg.nameEx) + '<i class="caret"></i></div><p>' + esc(w.mHint) + '</p></div>' +
           '<p class="bn-mnote">' + esc(w.mNote) + '</p><span class="bn-btn y block" data-t="ok">' + esc(w.ok) + '</span>', 'tall'));
       } },
     { h: 640, cap: {
@@ -192,13 +201,13 @@
         en: { t: 'Turn on Portfolio Margin', x: 'Click “···” and enable Portfolio Margin. Activate Portfolio Margin and confirm account eligibility before creating the API key.' } },
       html: function (l) { var w = W[l]; return frame(w, 0, amPage(w, 1, { menu: ddMenu(w.dd2, 1, 2) })); } },
     { h: 640, cap: {
-        zh: { t: '选择「系统生成」', x: '左侧「API管理」→ 右上角「+ 创建API」，选「系统生成」，点下一步。' },
-        en: { t: 'Choose “System generated”', x: 'Open API Management, click “+ Create API”, choose System generated and click Next.' } },
+        zh: { t: '选择「自行生成」（示意）', x: '左侧「API管理」→ 右上角「+ 创建API」，选「自行生成」，点下一步。' },
+        en: { t: 'Choose “Self-generated” (illustration)', x: 'Open API Management, click “+ Create API”, choose Self-generated and click Next.' } },
       html: function (l) {
         var w = W[l];
         return frame(w, 1, apiPage(w), modal(w.kTitle,
-          '<div class="bn-opt on">' + I.keyA + '<div><b>' + esc(w.k1) + '</b><p>' + esc(w.k1p) + '</p></div><i class="corner"></i></div>' +
-          '<div class="bn-opt">' + I.keyB + '<div><b>' + esc(w.k2) + '</b><p>' + esc(w.k2p) + '</p></div></div>' +
+          '<div class="bn-opt">' + I.keyA + '<div><b>' + esc(w.k1) + '</b><p>' + esc(w.k1p) + '</p></div></div>' +
+          '<div class="bn-opt on">' + I.keyB + '<div><b>' + esc(w.k2) + '</b><p>' + esc(w.k2p) + '</p></div><i class="corner"></i></div>' +
           '<span class="bn-btn y block" data-t="next">' + esc(w.next) + '</span>', 'wide'));
       } },
     { h: 640, cap: {
@@ -208,25 +217,27 @@
         var w = W[l];
         return frame(w, 1, apiPage(w), modal(w.cTitle,
           '<div class="bn-f"><small>' + esc(w.cSub) + '</small><div class="bn-in sel">3dtusdt01_virtual@example.com' + I.tri + '</div></div>' +
-          '<div class="bn-f"><small>' + esc(w.cLabel) + '</small><div class="bn-in">' + esc(cfg.labelEx) + '</div></div>' +
+          '<div class="bn-f"><small>' + esc(w.cLabel) + '</small><div class="bn-in" data-slot="label">' + esc(cfg.labelEx) + '</div></div>' +
           '<span class="bn-btn y block" data-t="next2">' + esc(w.next) + '</span>'));
       } },
     { h: 860, cap: {
-        zh: { t: '立即复制两项密钥', x: '复制 API Key 与 Secret Key（Secret Key 在币安端仅显示一次；如采用私有云独立部署，直接在你本人云环境内配置，无需提交至外部网页）。' },
-        en: { t: 'Copy both keys now', x: 'Copy the API Key and Secret Key (shown only once on Binance; for private cloud deployments, configure keys directly inside your own cloud environment).' } },
+        zh: { t: '粘贴公钥 → 复制 API Key（示意）', x: '粘贴 3dtrading 给你的公钥，币安生成 API Key 后点 Copy，贴回绑定页。没有任何 Secret 或私钥要复制。' },
+        en: { t: 'Paste the public key → copy the API Key (illustration)', x: 'Paste the public key 3dtrading gave you; when Binance creates the API Key, click Copy and paste it back. There is no Secret or private key to copy.' } },
       html: function (l, cfg) { var w = W[l]; return frame(w, 1, head(w, w.apiTitle, '') + keyPage(w, cfg, 'keys')); } },
     { h: 930, cap: {
-        zh: { t: '权限与 IP 白名单', x: '仅勾选读取与约定的现货/统一账户交易权限，严禁勾选提现与跨账户转账；选择「只访问受信任的 IP」并填入专属授权 IP 后保存。' },
-        en: { t: 'Permissions and trusted IPs', x: 'Enable only Read and agreed Spot/Portfolio Margin trading—keep Withdrawals and Universal Transfer off. Select “Restrict access to trusted IPs only” and save.' } },
+        zh: { t: '权限与 IP 白名单', x: '按绑定页给出的清单勾选权限，提现必须关闭；选择「只访问受信任的 IP」，填入绑定页给出的 IP 后保存。' },
+        en: { t: 'Permissions and trusted IPs', x: 'Tick the permissions listed on the binding page and keep Withdrawals off. Select “Restrict access to trusted IPs only”, enter the IPs from the binding page and save.' } },
       html: function (l, cfg) { var w = W[l]; return frame(w, 1, head(w, w.apiTitle, '') + keyPage(w, cfg, 'perm')); } }
   ];
 
   // Purpose-built playback panels. They are laid out at the viewport width, never cropped from a full page.
+  // Panel 3 (self-generated → paste public key → copy API Key) is 「示意」: no checked source for Binance's live screen.
   function playback(l, cfg, step) {
-    var en = l === 'en';
+    var en = l === 'en', kit = kitOf(cfg);
     function t(zh, eng) { return esc(en ? eng : zh); }
-    function field(label, value) { return '<label class="demo-field"><small>' + label + '</small><code>' + esc(value) + '</code></label>'; }
+    function field(label, value, cls) { return '<label class="demo-field' + (cls ? ' ' + cls : '') + '"><small>' + label + '</small><code>' + esc(value) + '</code></label>'; }
     function action(label) { return '<span class="demo-action" data-t="action">' + label + '</span>'; }
+    var later = en ? 'Shown after you apply' : '申请绑定后显示';
     var body = '';
     if (step === 0) {
       body = '<h2>' + t('创建子账户', 'Create sub-account') + '</h2>' +
@@ -235,25 +246,115 @@
         '<p class="demo-note">3dtusdt01_virtual@example.com</p>' + action(t('创建子账户', 'Create sub-account'));
     } else if (step === 1) {
       body = '<h2>' + t('创建 API', 'Create API') + '</h2>' +
-        '<div class="demo-choice">' + t('系统生成', 'System generated') + '<span>○</span></div>' +
-        '<div class="demo-choice selected">' + t('自行设置', 'Self-configured') + '<span>●</span></div>' +
-        field(t('系统生成的公钥 · 演示', 'System-generated public key · demo'), cfg.publicEx) +
-        action(t('使用公钥创建', 'Create with public key'));
+        field(t('子账户', 'Sub-account'), '3dtusdt01_virtual@example.com') +
+        field(t('API 标签', 'API label'), cfg.labelEx) +
+        '<p class="demo-note">' + t('点下一步后，由你本人完成币安的安全验证。', 'After Next, pass Binance’s security check yourself.') + '</p>' +
+        action(t('下一步', 'Next'));
     } else if (step === 2) {
-      body = '<h2>' + t('保存连接密钥', 'Save connection keys') + '</h2>' +
-        field('API Key', cfg.keyEx) + field(t('私钥 · 系统生成', 'Private key · system generated'), cfg.privateEx) +
-        '<p class="demo-note">' + t('仅供演示的假密钥，不能用于连接账户。', 'Dummy keys for this demo; cannot connect an account.') + '</p>' +
-        action(t('保存密钥', 'Save keys'));
+      body = '<h2>' + t('自行生成 · 粘贴公钥', 'Self-generated · paste public key') + ' <em class="demo-tag">' + t('示意', 'Illustration') + '</em></h2>' +
+        '<div class="demo-choice">' + t('系统生成', 'System generated') + '<span>○</span></div>' +
+        '<div class="demo-choice selected">' + t('自行生成', 'Self-generated') + '<span>●</span></div>' +
+        field(t('公钥 · 3dtrading 给你的', 'Public key · from 3dtrading'), kit ? kit.fingerprint : later) +
+        field('API Key', cfg.keyEx) +
+        '<p class="demo-note">' + t('只复制 API Key 贴回来；没有 Secret，也没有私钥。示例值不能用于连接账户。', 'Copy only the API Key back. There is no Secret and no private key. Example values cannot connect an account.') + '</p>' +
+        action(t('复制 API Key', 'Copy API Key'));
     } else {
+      var perms = kit && kit.perms ? kit.perms : [];
       body = '<h2>' + t('设置 API 权限', 'Set API permissions') + '</h2>' +
-        '<div class="demo-perms"><span>✓ ' + t('读取', 'Read') + '</span><span>✓ ' + t('交易', 'Trade') + '</span><span class="disabled">× ' + t('提现关闭', 'Withdrawals off') + '</span></div>' +
+        '<div class="demo-perms">' + (perms.length ? perms.map(function (p) {
+          return '<span' + (p.forbidden ? ' class="disabled"' : '') + '>' + (p.forbidden ? '× ' : '✓ ') + esc(en ? p.en : p.zh) + '</span>';
+        }).join('') : '<span>' + esc(later) + '</span>') + '</div>' +
         '<div class="demo-choice selected">' + t('只访问受信任的 IP', 'Trusted IPs only') + '<span>●</span></div>' +
-        field(t('专属授权 IP', 'Assigned IP addresses'), cfg.ips.join(' · ')) + action(t('保存权限', 'Save permissions'));
+        field(t('授权 IP · 演示', 'Allowed IPs · demo'), kit && kit.ips && kit.ips.length ? kit.ips.join(' · ') : later) + action(t('保存权限', 'Save permissions'));
     }
-    return '<div class="demo-panel"><header><span class="bn-logo">' + I.mark + ' BINANCE</span><small>' + t('连接演示', 'Connection demo') + '</small></header><section>' + body + '</section></div>';
+    return '<div class="demo-panel"><header><span class="bn-logo"><b class="bn-wordt">Binance</b></span><small>' + t('连接演示 · 示意', 'Connection demo · illustration') + '</small></header><section>' + body + '</section></div>';
   }
   var clips = [0, 1, 2, 3].map(function (step) {
     return { html: function (l, cfg) { return playback(l, cfg, step); } };
   });
-  global.TD_BN = { scenes: scenes, clips: clips, width: 1100, words: W };
+  /* r41 · 「系统生成」(HMAC) path for connect.html: the same Binance replica, but Binance generates the API Key and
+   * Secret Key and the user pastes both into 3dtrading. Example values only (never real). bind.html keeps the Ed25519 set above. */
+  var HW = {
+    zh: { k1p: '使用HMAC对称加密方式运作。返回 API Key 和 Secret Key，3dtrading 用这一种。', k2p: '使用Ed25519非对称加密方式运作。需要自备公钥，这里不用。',
+      warn: '请妥善保存 Secret Key，并按币安页面的实际提示操作，和 API Key 一起贴到 3dtrading 的连接页。', sec: 'Secret Key:', key: 'API Key:' },
+    en: { k1p: 'Works using HMAC symmetric encryption. Returns an API Key and a Secret Key; 3dtrading uses this type.', k2p: 'Works using Ed25519 asymmetric encryption. Needs your own public key; not used here.',
+      warn: 'Keep the Secret Key safe and follow what Binance’s page tells you; paste it with the API Key on the 3dtrading connect page.', sec: 'Secret Key', key: 'API Key' }
+  };
+  function hw(l) { var b = W[l], o = {}, k; for (k in b) o[k] = b[k]; for (k in HW[l]) o[k] = HW[l][k]; return o; }
+  function hKeyPage(w, cfg, part) {
+    var en = w.brand === 'Binance';
+    var perms = permsOf(cfg).map(function (p) {
+      return '<span class="bn-ck' + (p.required ? ' on' : '') + (p.forbidden ? ' off' : '') + '"><i></i><u>' + esc(en ? p.en : p.zh) + '</u></span>';
+    }).join('');
+    var ips = ipsOf(cfg);
+    return '<div class="bn-key">' +
+      '<div class="bn-qr"><div class="q"></div><span>' + esc(w.qr) + '</span></div>' +
+      '<div class="bn-kd"><div class="bn-kl">' + esc(w.lbl) + '</div><div class="bn-tags"><span class="t1">HMAC</span><span class="t2">' + esc(w.pm) + '</span><b>' + esc(cfg.labelEx) + '</b></div>' +
+      '<div class="bn-warn">' + I.info + '<span>' + esc(w.warn) + '</span></div>' +
+      '<div' + (part === 'keys' ? ' data-focus' : '') + '>' +
+      '<div class="bn-kl">' + esc(w.key) + '</div><div class="bn-kr" data-slot="key"><span class="bn-kv">' + esc(cfg.keyEx) + '</span><span class="bn-copy">' + esc(w.copy) + '</span></div>' +
+      '<div class="bn-kl">' + esc(w.sec) + '</div><div class="bn-kr" data-slot="sec"><span class="bn-kv">' + esc(cfg.secretEx) + '</span><span class="bn-copy"' + (part === 'keys' ? ' data-t="copy"' : '') + '>' + esc(w.copy) + '</span></div></div>' +
+      '<div class="bn-perm"' + (part === 'perm' ? ' data-focus' : '') + '><div class="bn-kl bn-plh"><span>' + esc(w.perm) + '</span><span class="bn-edit">' + esc(w.edit) + '</span></div><div class="bn-grid">' + perms + '</div>' +
+      '<div class="bn-ipt">' + esc(w.ipT) + '</div>' +
+      '<div class="bn-rad"><i></i>' + esc(w.ipAny) + ' <em>' + esc(w.ipAnyW) + '</em></div>' +
+      '<div class="bn-rad on"><i></i>' + esc(w.ipOnly) + '</div>' +
+      '<div class="bn-chips" data-slot="ips">' + (ips || []).map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') + '</div>' +
+      '<div class="bn-ipin"><span>' + esc(w.ipPh) + '</span><b' + (part === 'perm' ? ' data-t="ipok"' : '') + '>' + esc(w.ok) + '</b></div></div>' +
+      '</div></div>';
+  }
+  var hmac = [scenes[0], scenes[1], scenes[2], scenes[3], scenes[4],
+    { h: 640, cap: {
+        zh: { t: '选择「系统生成」', x: '左侧「API管理」→ 右上角「+ 创建API」，选「系统生成」，点下一步。' },
+        en: { t: 'Choose “System generated”', x: 'Open API Management, click “+ Create API”, choose System generated and click Next.' } },
+      html: function (l) {
+        var w = hw(l);
+        return frame(w, 1, apiPage(w), modal(w.kTitle,
+          '<div class="bn-opt on">' + I.keyA + '<div><b>' + esc(w.k1) + '</b><p>' + esc(w.k1p) + '</p></div><i class="corner"></i></div>' +
+          '<div class="bn-opt">' + I.keyB + '<div><b>' + esc(w.k2) + '</b><p>' + esc(w.k2p) + '</p></div></div>' +
+          '<span class="bn-btn y block" data-t="next">' + esc(w.next) + '</span>', 'wide'));
+      } },
+    scenes[6],
+    { h: 860, cap: {
+        zh: { t: '复制 API Key 和 Secret Key', x: '完成币安的安全验证后，页面显示 API Key 和 Secret Key。离开这一步前请妥善保存 Secret Key，两项都复制下来。' },
+        en: { t: 'Copy the API Key and Secret Key', x: 'After Binance’s security check the page shows the API Key and Secret Key. Keep the Secret Key safe before you leave this step; copy both.' } },
+      html: function (l, cfg) { var w = hw(l); return frame(w, 1, head(w, w.apiTitle, '') + hKeyPage(w, cfg, 'keys')); } },
+    { h: 930, cap: {
+        zh: { t: '权限与 IP 白名单', x: '点「编辑」，按连接页的清单勾选权限，提现保持关闭；选「只访问受信任的 IP」，填入连接页给出的 IP 后保存。' },
+        en: { t: 'Permissions and trusted IPs', x: 'Click Edit, tick the permissions listed on the connect page and keep Withdrawals off. Choose “Restrict access to trusted IPs only”, enter the IPs from the connect page and save.' } },
+      html: function (l, cfg) { var w = hw(l); return frame(w, 1, head(w, w.apiTitle, '') + hKeyPage(w, cfg, 'perm')); } }
+  ];
+  /* r43 · connect.html one-screen guide. The same replica pages, plus the two screens the guide needs that the
+   * carousel did not have: the key-type choice with EITHER option selected, and the self-generated 「创建API」 form with a
+   * public-key box (示意 — Binance's live form was not checked; see BINANCE-SOURCES.md). Neutral wording only: no
+   * 3dtrading commentary inside the Binance replica. [data-slot] marks where the guide lays its own copy / input control. */
+  var GW = {
+    zh: { k1p: '使用 HMAC 对称加密方式运作。币安生成 API Key 和 Secret Key。', k2p: '使用 Ed25519 或 RSA 非对称加密方式运作。你提供公钥，币安生成 API Key。',
+      pubL: '公钥', pubPh: '粘贴公钥（Ed25519 / RSA）', warnS: '复制 API Key。自行生成的密钥没有 Secret Key。', warnH: '请妥善保存 Secret Key，并按币安页面的实际提示操作。' },
+    en: { k1p: 'Works using HMAC symmetric encryption. Binance generates an API Key and a Secret Key.', k2p: 'Works using Ed25519 or RSA asymmetric encryption. You provide the public key and Binance generates the API Key.',
+      pubL: 'Public key', pubPh: 'Paste the public key (Ed25519 / RSA)', warnS: 'Copy the API Key. A self-generated key has no Secret Key.', warnH: 'Keep the Secret Key safe and follow what Binance’s page tells you.' }
+  };
+  function gw(l, warn) { var o = hw(l); o.k1p = GW[l].k1p; o.k2p = GW[l].k2p; o.warn = warn === 'self' ? GW[l].warnS : GW[l].warnH; return o; }
+  var guide = {
+    home: scenes[0], create: scenes[1], vmail: scenes[2], futures: scenes[3], pm: scenes[4],
+    type: function (l, kind) {
+      var w = gw(l), self = kind === 'self';
+      return frame(w, 1, apiPage(w), modal(w.kTitle,
+        '<div class="bn-opt' + (self ? '' : ' on') + '" data-slot="optSys">' + I.keyA + '<div><b>' + esc(w.k1) + '</b><p>' + esc(w.k1p) + '</p></div>' + (self ? '' : '<i class="corner"></i>') + '</div>' +
+        '<div class="bn-opt' + (self ? ' on' : '') + '" data-slot="optSelf">' + I.keyB + '<div><b>' + esc(w.k2) + '</b><p>' + esc(w.k2p) + '</p></div>' + (self ? '<i class="corner"></i>' : '') + '</div>' +
+        '<span class="bn-btn y block" data-t="next">' + esc(w.next) + '</span>', 'wide'));
+    },
+    label: scenes[6],
+    pub: function (l, cfg) {
+      var w = gw(l, 'self');
+      return frame(w, 1, apiPage(w), modal(w.cTitle,
+        '<div class="bn-f"><small>' + esc(w.cSub) + '</small><div class="bn-in sel">3dtusdt01_virtual@example.com' + I.tri + '</div></div>' +
+        '<div class="bn-f"><small>' + esc(w.cLabel) + '</small><div class="bn-in">' + esc(cfg.labelEx) + '</div></div>' +
+        '<div class="bn-f"><small>' + esc(GW[l].pubL) + '</small><div class="bn-in bn-ta" data-slot="pub">' + esc(GW[l].pubPh) + '</div></div>' +
+        '<span class="bn-btn y block" data-t="next3">' + esc(w.next) + '</span>', 'tall'));
+    },
+    selfKeys: function (l, cfg) { var w = gw(l, 'self'); return frame(w, 1, head(w, w.apiTitle, '') + keyPage(w, cfg, 'keys')); },
+    sysKeys: function (l, cfg) { var w = gw(l, 'hmac'); return frame(w, 1, head(w, w.apiTitle, '') + hKeyPage(w, cfg, 'keys')); },
+    perm: function (l, cfg, kind) { var w = gw(l, kind); return frame(w, 1, head(w, w.apiTitle, '') + (kind === 'self' ? keyPage(w, cfg, 'perm') : hKeyPage(w, cfg, 'perm'))); }
+  };
+  global.TD_BN = { scenes: scenes, clips: clips, hmac: hmac, guide: guide, width: 1100, words: W };
 })(window);

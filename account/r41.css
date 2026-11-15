@@ -1,0 +1,14 @@
+/* r41 · loaded last on every account page (auth, bind, onboard).
+   1. The bar logo has the same visual size and left inset as the website's bar logo at the same width
+      (website: 34px tall, inset clamp(20px,4vw,56px); at ≤760px 22px tall, inset 16px).
+   2. Day / night eases over 0.6 s when the dashboard's choice changes in another tab (html.thx is set for that moment only). */
+.bar{padding-left:max(clamp(20px,4vw,56px),env(safe-area-inset-left));padding-right:max(clamp(20px,4vw,56px),env(safe-area-inset-right))}
+.bar .logo img{height:34px;width:auto}
+@media (max-width:760px){.bar{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}.bar .logo img{height:22px}}
+html.thx body,html.thx body *{transition:background-color .6s ease,color .6s ease,border-color .6s ease,box-shadow .6s ease,fill .6s ease,stroke .6s ease!important}
+/* 3. Day on account pages is the dashboard's pure white (background, bar and sheets), the same as the dashboard */
+html[data-theme=day]{--bg:#ffffff;--sf:#ffffff;--sfHi:#ffffff;--sf2:#f3f4f4;--sf3:#eceeee}
+html[data-theme=day] body{background:#ffffff}
+html[data-theme=day] .bar{background:rgba(255,255,255,.92)!important}
+html[data-theme=day] .bar::before{background:#ffffff}
+html[data-theme=day] .card{background:#ffffff!important}

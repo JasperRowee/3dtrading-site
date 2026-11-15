@@ -7,8 +7,8 @@
 .bn-top{display:flex;align-items:center;gap:6px;height:56px;padding:0 20px;border-bottom:1px solid #2b3139;background:#181a20;position:relative;z-index:2}
 .bn-logo{display:flex;align-items:center;gap:6px;margin-right:16px;color:#f0b90b}
 .bn-logo b{font-size:17px;font-weight:700;letter-spacing:.02em}
-.bn-mark{width:22px;height:22px;display:block}
-.bn-word{height:64px;width:120px;display:block;margin:0 -6px 0 -10px}
+.bn-wordt{font-weight:600;letter-spacing:0;color:inherit;font-size:14px}
+.demo-tag{font-style:normal;font-size:11px;font-weight:600;padding:1px 7px;border-radius:999px;border:1px solid currentColor;opacity:.8;margin-left:6px;vertical-align:middle}
 .bn-nav{display:flex;gap:18px;font-size:14px;font-weight:500}
 .bn-nav span{display:flex;align-items:center;white-space:nowrap}
 .bn-sp{flex:1}
@@ -130,6 +130,8 @@
 .bn-ck.fix i{background:#5e6673;border-color:#5e6673}
 .bn-ck.fix u{text-decoration:none;color:#b7bdc6}
 .bn-ck u{text-decoration:underline dashed #848e9c;text-underline-offset:4px}
+.bn-ck.off i{border-color:#f6465d}
+.bn-ck.off u{color:#f6465d}
 .bn-ck em{font-style:normal;color:#848e9c;margin-left:6px}
 .bn-ipt{font-size:13px;color:#b7bdc6;margin-bottom:14px}
 .bn-rad{display:flex;align-items:center;gap:9px;font-size:13px;margin-bottom:14px}
@@ -143,7 +145,7 @@
 .bn-ipin b{color:#eaecef;font-weight:500;padding:6px 10px;border-radius:4px}
 /* annotations (ours, not Binance's): highlight ring + cursor */
 .bn [data-t]{position:relative;transition:box-shadow .3s,transform .15s}
-.bn [data-t].hot{box-shadow:0 0 0 2px #2fdcbc,0 0 0 7px rgba(47,220,188,.22);border-radius:6px;animation:bn-ring 1.6s ease-in-out infinite}
+.bn .hot,.bn [data-t].hot{box-shadow:0 0 0 2px #2fdcbc,0 0 0 7px rgba(47,220,188,.22);border-radius:6px;animation:bn-ring 1.6s ease-in-out infinite}
 .bn [data-t].press{transform:scale(.94)}
 @keyframes bn-ring{50%{box-shadow:0 0 0 2px #2fdcbc,0 0 0 11px rgba(47,220,188,.08)}}
 .bn-cur{position:absolute;left:0;top:0;z-index:9;width:30px;height:30px;margin:-4px 0 0 -6px;pointer-events:none;transition:transform .9s cubic-bezier(.45,0,.2,1),opacity .3s}
@@ -187,3 +189,17 @@
 .demo-note{font-size:11px;line-height:1.5;color:#848e9c;margin:0;overflow-wrap:anywhere}
 .demo-perms{display:flex;gap:12px;flex-wrap:wrap;color:#eaecef;font-size:13px}.demo-perms .disabled{color:#848e9c}
 @media(max-width:600px){.demo-panel{padding:12px 16px}.demo-panel section{gap:8px}.demo-panel h2{font-size:18px;margin:6px 0}.demo-field code{padding:8px 10px}.demo-choice{padding:8px 10px}}
+.bn-in.bn-ta{height:76px;align-items:flex-start;padding-top:10px;color:#848e9c}
+
+/* r44 · connect.html: the replica is the page. Click targets, the 「编辑权限」 button, and the phase-0 states
+   (menu / dropdown / modal not opened yet). */
+.bn-plh{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:760px}
+.bn-edit{display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:6px;border:1px solid #474d57;color:#eaecef;font-size:12.5px;font-weight:500}
+.bn .hot{cursor:pointer;position:relative;z-index:2}
+.bn .bn-opt{cursor:pointer}
+.bn .hot:focus-visible,.bn .bn-opt:focus-visible{outline:2px solid #2fdcbc;outline-offset:3px}
+#bn[data-ph="0"] .bn-um,#bn[data-ph="0"] .bn-dd,#bn[data-ph="0"] .bn-modal,#bn[data-ph="0"] .bn-dim{display:none}
+.bn .hot.nudge{animation:bn-nudge .5s ease-in-out}
+@keyframes bn-nudge{25%{transform:scale(1.06)}60%{transform:scale(.97)}}
+@media (prefers-reduced-motion:reduce){.bn .hot,.bn .hot.nudge{animation:none!important}}
+.bn-chips[data-slot]:empty{min-height:44px;margin-bottom:14px} /* r44: room for our IP allow-list control */

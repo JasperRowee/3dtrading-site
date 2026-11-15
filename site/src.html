@@ -6,7 +6,7 @@
 <title>3dtrading · 收益增强策略</title>
 <script>/* one site for every screen: the old computer/phone switch is retired; day or night is remembered (night by default) */
 try{localStorage.removeItem('3dtrading.dash.layout')}catch(e){}
-try{document.documentElement.dataset.theme=localStorage.getItem('3dt.theme')==='day'?'day':'night'}catch(e){document.documentElement.dataset.theme='night'}</script>
+try{var L=localStorage,o=L.getItem('3dt.theme');if(o!==null){if(L.getItem('3dt.theme.site')===null)L.setItem('3dt.theme.site',o==='day'?'day':'night');L.removeItem('3dt.theme')}document.documentElement.dataset.theme=L.getItem('3dt.theme.site')==='day'?'day':'night'}catch(e){document.documentElement.dataset.theme='night'}</script>
 <style>
 :root{
   --bg:#06090b;--ink:#f3f5f6;--ink2:#8a929b;--ink3:#4b525a;--brand:#2fdcbc;--bn:#f0b90b;--up:#0ecb81;--dn:#f6465d;
@@ -132,7 +132,9 @@ html[data-theme=day] .door{background:#ffffff}
 html[data-theme=day] .blk.c .logo{filter:drop-shadow(0 0 30px rgba(255,255,255,.9))}
 html[data-theme=day] .acts .pr,html[data-theme=day] .go .pr{background:#2fdcbc;color:#04261f}
 html[data-theme=day] .acts .pr:hover,html[data-theme=day] .go .pr:hover{background:#25c7aa}
-html.thx canvas{transition:opacity .18s}html.thx.dim canvas{opacity:.15}
+/* r41 · day/night crossfade: a snapshot of the old frame fades out over the new palette; page colours ease with it */
+#thsnap{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;transition:opacity .7s cubic-bezier(.4,0,.2,1)}
+html.thx body,html.thx .bar,html.thx .bar *,html.thx .blk,html.thx .blk *,html.thx .door,html.thx .toast,html.thx .tm{transition:background-color .7s ease,color .7s ease,box-shadow .7s ease,text-shadow .7s ease,border-color .7s ease!important}
 /* the day/night switch: a small round button left of sign in */
 .tm{all:unset;cursor:pointer;width:40px;height:40px;border-radius:20px;display:inline-flex;align-items:center;justify-content:center;margin-left:auto;margin-right:10px;color:#e9edf0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18);transition:background .2s}
 .tm:hover{background:rgba(255,255,255,.06)}.tm svg{width:18px;height:18px}.tm .sun{display:none}
@@ -164,8 +166,13 @@ html[data-theme=day] .tm .sun{display:block}html[data-theme=day] .tm .moon{displ
 /* 10: one small real way into the chat, pinned near the Dodo who answers */
 .talk{position:fixed;z-index:7;left:0;top:0;height:44px;padding:0 20px;border-radius:22px;display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#04211c;font:700 15px var(--sans);text-decoration:none;cursor:pointer;box-shadow:0 10px 30px rgba(47,220,188,.3);opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap}
 .talk.on{opacity:1;pointer-events:auto}.talk::before{content:"";width:8px;height:8px;border-radius:4px;background:#04211c;opacity:.6}
+/* r40 · 10: the way in is the last line of the thread: same height as a question, brand fill, a chat mark instead of a dot */
+.talk{height:40px;padding:0 18px 0 14px;border-radius:20px;font-size:14.5px;box-shadow:0 8px 22px -6px rgba(20,160,135,.45),inset 0 0 0 1px rgba(255,255,255,.18)}
+.talk::before{width:16px;height:16px;border-radius:0;opacity:1;background:#04211c;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z'/%3E%3C/svg%3E") center/contain no-repeat}
+.talk::after{content:"→";margin-left:2px;font-weight:600}
 </style>
-<script src="../account/td-account.js?v=20261113-r31" data-site="../site/index.html"></script>
+<script src="../account/td-account.js?v=r44" data-site="../site/index.html"></script>
+<meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/dodo-180.png?v=20261112">
 <link rel="manifest" href="../manifest.webmanifest?v=20261112">
@@ -183,7 +190,7 @@ html[data-theme=day] .tm .sun{display:block}html[data-theme=day] .tm .moon{displ
 <header class="bar">
   <a class="home" id="home" href="#" aria-label="3dtrading，回到首页" title="回到首页"><img class="logo" src="../account/assets/3dtrading-logo-white.svg" alt="3dtrading"></a>
   <button class="tm" id="thm" aria-label="切换白天 / 黑夜" title="白天 / 黑夜"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg></button>
-  <div class="acts" id="acts"><a class="gh" data-go="login">登录</a><a class="pr" data-go="signup">接入体验</a></div>
+  <div class="acts" id="acts"><a class="pr" data-go="signup">登录/注册</a></div>
 </header>
 
 <section class="copy" id="copy" aria-live="polite">
@@ -220,12 +227,12 @@ html[data-theme=day] .tm .sun{display:block}html[data-theme=day] .tm .moon{displ
   <div class="blk" id="b7">
     <div class="ey"><b>07</b>资金归属</div>
     <h2>你的账户，<br><span class="y">我们的策略</span></h2>
-    <p>本金始终留在你本人的币安子账户。API 仅按协议开放约定交易与必要查询，<b>永久关闭提款及跨账户转账</b>，申赎权限接入前逐项确认。</p>
+    <p>本金始终留在你本人的币安子账户。提现永远关闭；万向划转只用于在你这个子账户自己的钱包之间调度保证金，任何不是系统计划内发起的划转都会立即停机并通知你。</p>
   </div>
   <div class="blk" id="b8">
     <div class="ey"><b>08</b>授权边界</div>
     <h2>密钥加密隔离，<br><em>白名单 IP 唯一校验</em></h2>
-    <p>API 密钥全程加密隔离存储，币安端强制绑定受信任服务器白名单 IP，外部环境无法调用；机构与专户客户亦支持私有云独立部署。</p>
+    <p>我们给你公钥，你在币安绑定；能下单的私钥只在我们隔离的签名服务器里，从不经过网页。钥匙只认我们服务器的 IP，提现永远关闭。</p>
   </div>
   <div class="blk" id="b9">
     <div class="ey"><b>09</b>核心价值</div>
@@ -352,7 +359,7 @@ const PH = 5.2, BOT = .45, PMAX = PH + 1.5;
 let KZ = 4.6; const SCR = [2.6, 11, KZ];   // phones: the screen hangs nearer the Dodo (set in resize)
 
 /* ---------- the places round the sphere (x, z on the floor). 01–06 stand in front; from 07 the camera goes round clockwise ---------- */
-const S7 = { x0: 24, x1: 38, gate: 23, lanes: [[8, '必要查询', 1], [5, '约定交易', 1], [2, '提款与跨账户转账', 0]] };   // right: the gate and its three lanes (cell indices)
+const S7 = { x0: 24, x1: 38, gate: 23, lanes: [[8, '必要查询', 1], [5, '约定交易', 1], [2, '提现', 0]] };   // right: the gate and its three lanes (cell indices)
 const S8 = { ix: 26, iz: -23, H: 15, ZB: -46, SY: 17.5, GB: [40, -61] };   // right-rear: the key tower, the boundary in front of Binance (z), the port's height, the assets' spot
 /* 08's closed bay (x 15–57, z −46…−76) took 09's old ground, so 09 and 10 move left (and 10 a little forward) as whole scenes:
    their fields, pillars, Dodo, names and their camera stops all go by D9 / DV10 */
@@ -364,7 +371,7 @@ function pos9(u) { const P = S9.P, top = 1.75; if (u < H9[0][0]) return [P[0][0]
   for (let k = 0; k < 3; k++) { const [a, b, i, j] = H9[k]; if (u <= b) { const v = sg(u, a, b), e = eio(v); return [L(P[i][0], P[j][0], e), top + Math.sin(PI * v) * 3.2, L(P[i][1], P[j][1], e), v > 0 && v < 1 ? Math.sin(PI * v) : 0]; }
     if (k < 2 && u < H9[k + 1][0]) return [P[j][0], top, P[j][1], 0]; }
   if (u < HUB9[0]) return [P[0][0], top, P[0][1], 0]; const v = sg(u, HUB9[0], HUB9[1]), e = eio(v); return [L(P[0][0], S9.c[0], e), L(top, 2.05, e) + Math.sin(PI * v) * 3, L(P[0][1], S9.c[1], e), v > 0 && v < 1 ? Math.sin(PI * v) : 0]; }
-const S10 = { path: [[-23.8, -26.5, 1.3], [-28, -31.5, 2.4], [-26.5, -35, 1.9]].map(([x, z, h]) => [x + DV10[0], z + DV10[1], h]) };   // left: one Dodo on its pillar, already facing you; Telegram and Discord on two pillars beside it
+const S10 = { path: [[-34, -23, 6.2], [-28, -31.5, 2.4], [-26.5, -35, 1.9]].map(([x, z, h]) => [x + DV10[0], z + DV10[1], h]) };   // left: one Dodo on its pillar, already facing you; Telegram and Discord on two pillars beside it
 const S11 = { x0: -20, z: 14, rise: .1 };                                                            // left: black stairs out to a door in the sphere wall
 
 /* ---------- camera stops, one per step. A stop can also move inside its own step (kf: [progress, p, l]) ---------- */
@@ -387,7 +394,7 @@ const TOUR = [
   // 09: a stable overview of three column platforms; Dodo connects them within the scene
   mvc({ p: [10, 27, -29], l: [7.5, 0, -58] }, v9),
   // 10: in front of one Dodo; it comes towards us and its reply comes out to the screen
-  mvc({ p: [-13.5, 5.6, -28.5], l: [-26, 3, -24] }, v10),
+  mvc({ p: [-13.5, 5.6, -28.5], l: [-34, 5, -23] }, v10),
   { p: [-46, 9, 25], l: [-100, 13, 13] },
 ];
 const CAM = () => (ML ? [
@@ -405,9 +412,9 @@ const CAM = () => (ML ? [
   { p: [-5, 9.6, -27.5], l: [4.6, 6.4, 6], sx: .14, sy: .02 },
   { p: [-1.4, 11, -24.5], l: [5.6, 7.6, 6], sx: .14, sy: .02 },
   { p: [-4, 60, -34], l: [3, 0, 9], sx: .16, sy: .06 },
-].map((c, i) => !mob && i >= 1 && i <= 4 ? (LSQ() ? near(c, LQK) : shx(near(c, KNEAR), [0, KUP[i - 1], 0])) : mob && !ML && i >= 1 && i <= 4 ? shx(near(c, MKN[i - 1]), [MKX[i - 1], MKY[i - 1], 0]) : c)).concat(TOUR.map((c, i) => ML ? near({ ...c, sx: 0, sy: .12, ...(MTOUR[i] || {}) }, MNEAR[i]) : mob && i === 0 && W < H ? { ...c, ...M7, sx: 0, sy: 0 } : mob && i === 2 ? near(shx({ ...c, sx: 0, sy: 0 }, -5), 1.4) : mob && i === 1 ? { ...c, ...M8, sx: 0, sy: 0 } : i === 1 && LSQ() ? near({ ...c, sx: +(QP.get('lsx') || .2), sy: 0 }, +(QP.get('lsk') || 1.5)) : mob && i === 3 ? { ...c, p: QP.has('m10p') ? QP.get('m10p').split(',').map(Number) : v10([-20, 11, -16.5]), l: QP.has('m10l') ? QP.get('m10l').split(',').map(Number) : v10([-26, 1.5, -31]), sx: 0, sy: 0 } : { ...c, sx: 0, sy: 0 })).map((c, i) => !mob && !LSQ() && i >= 1 && i <= 9 ? near(c, 1.10) : c); // desktop: a little more room for the ground columns, same aim and timing
+].map((c, i) => !mob && i >= 1 && i <= 4 ? (LSQ() ? near(c, LQK) : shx(near(c, KNEAR), [0, KUP[i - 1], 0])) : mob && !ML && i >= 1 && i <= 4 ? shx(near(c, MKN[i - 1]), [MKX[i - 1], MKY[i - 1], 0]) : c)).concat(TOUR.map((c, i) => ML ? near({ ...c, sx: 0, sy: .12, ...(MTOUR[i] || {}) }, MNEAR[i]) : mob && i === 0 && W < H ? { ...c, ...M7, sx: 0, sy: 0 } : mob && i === 2 ? near(shx({ ...c, sx: 0, sy: 0 }, -5), 1.4) : mob && i === 1 ? { ...c, ...M8, sx: 0, sy: 0 } : i === 1 && LSQ() ? near({ ...c, sx: +(QP.get('lsx') || .2), sy: 0 }, +(QP.get('lsk') || 1.5)) : mob && i === 3 ? { ...c, p: QP.has('m10p') ? QP.get('m10p').split(',').map(Number) : v10([-12, 14, -12]), l: QP.has('m10l') ? QP.get('m10l').split(',').map(Number) : v10([-34, 5, -23]), sx: 0, sy: 0 } : { ...c, sx: 0, sy: 0 })).map((c, i) => !mob && !LSQ() && i >= 1 && i <= 9 ? near(c, 1.10) : c); // desktop: a little more room for the ground columns, same aim and timing
 /* phones keep 09's copy on top, so its fields go back to the middle (the computer moves them right of the copy) */
-// 08 on a portrait phone: its own path, solved so tower+Dodo+key (start), key->port (middle) and tower/port/BINANCE/labels (end) all sit below the copy
+// 08 on a portrait phone: its own path, solved so tower+Dodo+key (start), key->port (middle) and tower/port/Binance words/labels (end) all sit below the copy
 // a phone held sideways: the copy takes the left side, so 08 moves to the right half and steps back
 const LSQ = () => !mob && H < 520 && matchMedia('(pointer: coarse)').matches;
 // 07 on a portrait phone: up high, looking down the three lanes, so all three and their names fit without turning
@@ -439,12 +446,29 @@ function pose(c, a) {
 const BUL = [null, [0, 0, 0], [.6, .4, 0], [0, -.8, 0], [.4, .4, 0], [-4, 6, 6], [10, -10, 8], [0, 0, 0], [0, 0, 0], [-2, 3, 0], [0, 7, 0]];
 
 /* ---------- motion: one spring along the steps. One gesture = one step; a gesture the other way turns it round at once ---------- */
-const K = { t: 0, v: 0, tgt: 0 }, A = new Array(NS).fill(0); A[0] = 1;
+// camera pace per move (01→02 … 10→11): the camera spring runs this much faster than the scene's own actions; path and easing stay the same.
+// Measured settle times (old → new): 2.28→1.93, 2.85→2.35, 2.23→1.86, 2.03→1.72, 3.33→2.53, 2.78→2.28, 2.93→2.40 ×3, 2.93→2.47 s
+const LAND = .085;   // landing deceleration for the scene clock (K), in units of its spring rate² (see frame)
+/* r41 · the camera (CK) no longer runs on a spring with a separate slow "adaptive" mode for back moves and mid-flight retargets
+   (that mode capped it at ~0.5 step/s and is what made going back, or swiping again while moving, feel heavy and stall).
+   One law for every case: it chases the speed of a stopping curve (√(2·dec·distance), softened in the last few %), capped at a
+   cruise speed, and the speed itself follows within ~60 ms. Forward, back, a second swipe mid-move, a turn-round: all the same,
+   speed is never thrown away. CPACE: per move (01→02 … 10→11), longer arcs a little slower so every move reads at the same visual pace.
+   CRUN: with a further step already queued, cruise a little faster through the stop in between instead of braking into it. */
+const CPACE = [1.0, .86, 1.04, 1.08, .78, .88, .84, .84, .84, .8], CV = 1.25, CDEC = 1.9, CACC = 10.5, CGAIN = 16, CSOFT = .06, CRUN = 1.45, CKICK = .4;
+const KLAG = .5;   // the scene clock may trail the camera by at most this much (only reached when moves are chained fast); single moves keep their own pace
+function camStep(m, dt) { const d = m.tgt - m.t, ad = Math.abs(d), sd = Math.sign(d);
+  const k = CPACE[clamp(Math.floor(clamp(d >= 0 ? m.t : m.t - 1e-6, 0, NS - 1.01)), 0, CPACE.length - 1)];
+  const vstop = Math.sqrt(2 * CDEC * k * k * ad + (CSOFT * k) ** 2) - CSOFT * k, vd = sd * Math.min(CV * k * (ad > 1.02 ? CRUN : 1), vstop);
+  m.v += clamp((vd - m.v) * CGAIN, -CACC * k, CACC * k) * dt; m.t += m.v * dt;
+  if (sd && (m.tgt - m.t) * sd < 0) { m.t = m.tgt; m.v = 0; }
+  if (Math.abs(m.tgt - m.t) < 2e-3 && Math.abs(m.v) < .04) { m.t = m.tgt; m.v = 0; } }
+const CK = { t: 0, v: 0, tgt: 0, speed: 1 }, K = { t: 0, v: 0, tgt: 0 }, A = new Array(NS).fill(0); A[0] = 1;
 const DUR = [0, 1.1, .2, 2.6, 1.4, .3, 7, 5.4, 8.5, 6, 4.2];
 // Trading actions and construction start with travel; 02 retains its introduction beat.
 const PRE = [0, .3, 0, 1.1, 1.1, 0, 0, 1.1, 1.1, 0, 0], REACT = .3, WT = new Array(NS).fill(0);
 let leaving = false;
-function routes() { const r = (window.TDAccount && TDAccount.routes) || {}; return { signup: r.signup || '../account/auth.html?mode=register', login: r.login || '../account/auth.html?mode=login', dashboard: r.dashboard || '../app/index.html#/dashboard', ai: '../app/index.html#/ai' }; }
+function routes() { const r = (window.TDAccount && TDAccount.routes) || {}; return { signup: r.entry || '../account/auth.html', login: r.login || '../account/auth.html?mode=login', dashboard: r.dashboard || '../app/index.html#/dashboard', ai: '../app/index.html#/ai' }; }
 const user = () => { try { return window.TDAccount && TDAccount.getSession(); } catch (e) { return null; } };
 /* going in (sign in, sign up, the dashboard): one short move, the same every time. The scene rushes forward, the screen closes to black
    round our logo from where you clicked, then the next page opens out of that black. A second click while it plays does nothing */
@@ -462,6 +486,9 @@ addEventListener('pageshow', e => { if (!e.persisted) return; leaving = false; d
 function targetStep(tg) {
   if (tg === K.tgt) return;
   const adaptive = tg < K.tgt || Math.abs(K.tgt - K.t) > .025 || Math.abs(K.v) > .04;
+  // the camera judges its own state: it may already be at rest while the scene still plays out
+  // the camera: from rest it starts with a small kick so the first frame already moves; moving, it just gets a new target (speed kept)
+  const dir = Math.sign(tg - CK.t); CK.tgt = tg; if (dir && CK.v * dir < .05) CK.v = dir * CKICK * CPACE[clamp(Math.floor(dir > 0 ? CK.t : CK.t - 1e-6), 0, CPACE.length - 1)];
   K.adaptive = adaptive;
   const direction = Math.sign(tg - K.tgt); K.tgt = tg;
   if (!adaptive) { if (Math.sign(K.v) === -direction) K.v *= .2; K.v += direction * .45; }
@@ -469,12 +496,12 @@ function targetStep(tg) {
 let GATE = false, PEND = null; const go = (d, why) => { if (GATE) return;   // the motion layer over 01 is up: nothing moves under it
   if (PEND && PEND.d !== d) PEND = null;   // turned round: a held step the other way is dropped
   if (d > 0 && K.tgt === NS - 1) { if (K.t > NS - 1.2 && A[NS - 1] > .5) enter('signup'); return; }
-  if (d * (K.tgt - K.t) > WH.QMAX) {   // one step already waits beyond the one playing: never pile up. A separate swipe or notch that lands now is
+  if (d * (CK.tgt - CK.t) > WH.QMAX) {   // one step already waits beyond the one playing: never pile up. A separate swipe or notch that lands now is
     if (why !== 'drive' && !PEND) { PEND = { d, at: performance.now() }; setTimeout(pendTry, 40); }   // held (one at most, PEND ms) and plays once the slot frees; a held drag's repeat is just dropped
     return; }
   const tg = clamp(K.tgt + d, 0, NS - 1); if (tg === K.tgt) return; targetStep(tg);
  };
-function pendTry() { if (!PEND) return; if (performance.now() - PEND.at > WH.PEND) { PEND = null; return; } if (PEND.d * (K.tgt - K.t) <= WH.QMAX) { const d = PEND.d; PEND = null; go(d); return; } setTimeout(pendTry, 40); }
+function pendTry() { if (!PEND) return; if (performance.now() - PEND.at > WH.PEND) { PEND = null; return; } if (PEND.d * (CK.tgt - CK.t) <= WH.QMAX) { const d = PEND.d; PEND = null; go(d); return; } setTimeout(pendTry, 40); }
 const jump = i => { PEND = null; if (i === K.tgt) return; targetStep(i);
  };
 /* one gesture = one step. A gesture is split from the next by a short silence (QUIET), by the wheel turning the other way, or by the
@@ -522,26 +549,39 @@ cv.addEventListener('click', e => { if (!(K.tgt === NS - 1 && K.t > NS - 1.2 && 
   if (pDown && (Math.hypot(e.clientX - pDown[0], e.clientY - pDown[1]) > 10 || performance.now() - pDown[2] > 700)) return;
   if (inQuad(DOORQ, e.clientX, e.clientY, mob ? 18 : 10)) enter('signup', e); });
 window.__door = () => DOORQ && DOORQ.map(p => [Math.round(p.x), Math.round(p.y)]);
-const wire = root => root.querySelectorAll('[data-go]').forEach(a => { const k = a.dataset.go; a.href = routes()[k]; a.addEventListener('click', e => { e.preventDefault(); enter(k, e); }); });
+/* r41 · only the door (clicking it, or scrolling past the last scene) plays the dive. Every ordinary link here is a plain link:
+   no dive, no black overlay, no wait, and no 'td-door' mark, so the next page opens directly */
+const hrefFor = k => { const r = routes(); return user() ? (k === 'ai' ? r.ai : r.dashboard) : k === 'ai' ? r.signup : (r[k] || r.signup); };
+const wire = root => root.querySelectorAll('[data-go]').forEach(a => { a.href = hrefFor(a.dataset.go); });
 wire(document);
 function syncAuth() { const u = user(), r = routes();
-  const acts = document.getElementById('acts'); acts.innerHTML = u ? `<a class="pr" data-go="dashboard">进入后台</a>` : `<a class="gh" data-go="login">登录</a><a class="pr" data-go="signup">接入体验</a>`; wire(acts);
+  const acts = document.getElementById('acts'); const en = (() => { try { return localStorage.getItem('3dt.lang') === 'en'; } catch (e) { return false; } })();
+  acts.innerHTML = u ? `<a class="pr" data-go="dashboard">${en ? 'Dashboard' : '进入后台'}</a>` : `<a class="pr" data-go="signup">${en ? 'Log in / Sign up' : '登录/注册'}</a>`; wire(document);
   document.getElementById('hint').textContent = u ? '点击门，或继续下滑进入后台' : '点击门，或继续下滑进入'; }
 syncAuth(); addEventListener('storage', syncAuth);
 /* day / night: the scene redraws itself in the other palette (textures are rebuilt, the colour map is cleared), the page follows by CSS. Remembered */
 const thc = document.getElementById('thc'), barLogo = document.querySelector('.bar .logo'), doorLogo = document.querySelector('#door img');
-function setTheme(day, quick) { DAY = day ? 1 : 0; de.dataset.theme = day ? 'day' : 'night'; try { localStorage.setItem('3dt.theme', de.dataset.theme); } catch (e) {}
+function setTheme(day, quick) { DAY = day ? 1 : 0; de.dataset.theme = day ? 'day' : 'night'; try { localStorage.setItem('3dt.theme.site', de.dataset.theme); } catch (e) {}
   TMAP.clear(); IMG = DAY ? IMGD : IMGN; LOGO = DAY ? LOGOD : LOGON; for (const k in TX) TX[k].at = -9; PT.forEach(t => t && (t.at = -9)); PTM.forEach(t => t && (t.at = -9));
   const lg = DAY ? '../account/assets/3dtrading-logo.svg' : '../account/assets/3dtrading-logo-white.svg'; barLogo.src = lg; doorLogo.src = lg; thc.content = DAY ? '#ffffff' : '#06090b';
-  if (!quick && !RM) { de.classList.add('thx', 'dim'); setTimeout(() => de.classList.remove('dim'), 60); setTimeout(() => de.classList.remove('thx'), 400); } }
-document.getElementById('thm').addEventListener('click', e => { e.stopPropagation(); setTheme(!DAY); });
+  if (!quick && !RM) { de.classList.add('thx'); clearTimeout(setTheme.t); setTheme.t = setTimeout(() => de.classList.remove('thx'), 760); } }
+/* the snapshot is taken before the palette changes, laid over the canvas, then faded: one smooth 0.7 s gradient instead of a flash */
+function themeSnap() { if (RM) return; try { let sn = document.getElementById('thsnap'); if (sn) sn.remove(); sn = document.createElement('canvas'); sn.id = 'thsnap'; sn.width = cv.width; sn.height = cv.height; sn.getContext('2d').drawImage(cv, 0, 0); sn.style.opacity = '1'; cv.after(sn);
+  requestAnimationFrame(() => requestAnimationFrame(() => { sn.style.opacity = '0'; setTimeout(() => sn.remove(), 760); })); } catch (e) {} }
+const setThemeNow = setTheme; setTheme = function (day, quick) { if (!quick && (day ? 1 : 0) !== DAY) themeSnap(); setThemeNow(day, quick); };
+/* another site tab switched: follow it (the dashboard's choice is separate and is not listened to here) */
+/* r42 · the switch dyes the page from the button outward (scene, bar, panels, door): see TDAccount.reveal. Without it
+   (no account module, reduced motion) the r41 cross-fade above stays */
+const dyeTheme = (day, src) => { if (window.TDAccount && TDAccount.reveal && !RM) TDAccount.reveal(() => setThemeNow(day, true), src); else setTheme(day); };
+addEventListener('storage', e => { if (e.key === '3dt.theme.site' && (e.newValue === 'day' ? 1 : 0) !== DAY) dyeTheme(e.newValue === 'day', document.getElementById('thm')); });
+document.getElementById('thm').addEventListener('click', e => { e.stopPropagation(); dyeTheme(!DAY, e); });
 if (DAY) setTimeout(() => setTheme(1, 1), 0);
 
 // mouse look
 let mx = 0, my = 0, smx = 0, smy = 0, mT = -9;
 addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; mT = performance.now(); });
 document.addEventListener('mouseleave', () => { mx = my = 0; });
-{ const m = location.search.match(/[?&]at=(\w+)/); if (m) { const n = m[1] === 'end' ? NS : clamp(parseInt(m[1]) || 1, 1, NS); K.t = K.tgt = n - 1; for (let s = 1; s < n; s++) A[s] = 1; de.classList.add('snap'); setTimeout(() => de.classList.remove('snap'), 400); } }
+{ const m = location.search.match(/[?&]at=(\w+)/); if (m) { const n = m[1] === 'end' ? NS : clamp(parseInt(m[1]) || 1, 1, NS); CK.t = CK.tgt = K.t = K.tgt = n - 1; for (let s = 1; s < n; s++) A[s] = 1; de.classList.add('snap'); setTimeout(() => de.classList.remove('snap'), 400); } }
 
 /* ---------- HTML bits ---------- */
 const BLK = Array.from({ length: NS }, (_, i) => document.getElementById('b' + (i + 1))), cue = document.getElementById('cue');
@@ -553,7 +593,7 @@ let side = -1;
 BLK.forEach(b => b.querySelectorAll('h1,h2').forEach(h => { h.innerHTML = h.innerHTML.split(/<br\s*\/?>/i).map(l => `<span class="ln"><span>${l}</span></span>`).join(''); }));
 let inS = -1;
 function syncHTML() {
-  const s = Math.abs(K.t - K.tgt) < .86 ? K.tgt : Math.round(clamp(K.t, 0, NS - 1)), ins = Math.abs(K.t - K.tgt) < .45 ? K.tgt : -1;
+  const s = Math.abs(CK.t - CK.tgt) < .86 ? CK.tgt : Math.round(clamp(CK.t, 0, NS - 1)), ins = Math.abs(CK.t - CK.tgt) < (CK.tgt === 5 ? .78 : .45) ? CK.tgt : -1;   // r41: copy is tied to the camera, so it is there when the camera lands
   if (ins !== inS) { inS = ins; BLK.forEach((b, i) => b.classList.toggle('in', i === ins)); }
   if (s === side) return; side = s;
   railB.forEach((b, i) => b.classList.toggle('on', i === s)); cue.classList.toggle('off', s === NS - 1);
@@ -570,10 +610,13 @@ function anchors(only, a) {
   const cms0 = CMS, cmy0 = CMY; ANC = cams.map((c, i) => { if (only != null && i !== only) return ANC[i]; CMS = MSS[i]; CMY = MSYS[i]; const [cp, cl] = pose(c, only != null ? a : CPA[i]); setCam(cp, cl, c.sx, c.sy); const kk = C.F / D, ux = (W * sp[i][0] - C.cx) / kk, uy = (C.cy - H * sp[i][1]) / kk, e = ENT[i];
     return { w: [0, 1, 2].map(j => C.p[j] + C.f[j] * D + C.r[j] * ux + C.u[j] * uy), e: [0, 1, 2].map(j => C.r[j] * e[0] + C.u[j] * e[1] + C.f[j] * e[2]), k: kk }; }); CMS = cms0; CMY = cmy0;
 }
-function placeCopy(t) { const SP = SPOT();
+// t: the scene's clock decides when copy shows; ct: the camera's clock decides where it sits, so it is at rest the moment the camera is
+function placeCopy(t, ct = t) { const SP = SPOT();
   BLK.forEach((b, i) => { const a = ANC[i], dt = t - i, late = i >= 6; let o = late ? 1 - sm((Math.abs(dt) - .06) / .4) : 1 - sm((Math.abs(dt) - .1) / .5);
-    const dr = late && dt > 0 ? 0 : 3.2;   // 07 on: leaving, the copy stays put in the space and the camera leaves it behind (cut by the screen edge), it never drifts along with the move
-    const w = a ? a.w.map((v, j) => v - a.e[j] * dt * dr) : null, q = o > .01 && w ? pr(...w) : null;
+    if (i === 5 && dt < 0) o = 1 - sm((Math.abs(dt) - .15) / .75);
+    if (i === 9 && dt > 0) o *= 1 - sm(sg(t, 9.01, 9.16));
+    const dr = late && ct - i > 0 ? 0 : 3.2;   // 07 on: leaving, the copy stays put in the space and the camera leaves it behind (cut by the screen edge), it never drifts along with the move
+    const w = a ? a.w.map((v, j) => v - a.e[j] * (ct - i) * dr) : null, q = o > .01 && w ? pr(...w) : null;
     if (!q) { if (b._v) { b.style.opacity = 0; b._v = 0; b.style.pointerEvents = 'none'; } return; }
     const sc = clamp(q.k / a.k, .55, 1.7); o *= clamp((1.7 - sc) / .3);
     const c = b.classList.contains('c');
@@ -596,7 +639,7 @@ const PT = [];
 let HIT = null, nextHit = 1.2, hitN = 0, LBLCL = true, LCW = 1;
 /* the logo goes home: a short fade to the page colour hides the jump, then everything is put back as on a fresh load of 01 */
 const homeEl = document.getElementById('home'), hfadeEl = document.getElementById('hfade'); let HOMING = false;
-function homeReset() { K.t = K.tgt = 0; K.v = 0; A.fill(0); A[0] = 1; WT.fill(0); PEND = null; HOLDU = null; GOLD.clear();
+function homeReset() { Object.assign(CK, {t:0,v:0,tgt:0,speed:1}); K.t = K.tgt = 0; K.v = 0; A.fill(0); A[0] = 1; WT.fill(0); PEND = null; HOLDU = null; GOLD.clear();
   HIT = null; nextHit = T + 1.2; WS.fired = false; WS.acc = 0; WS.dir = 0; WS.t = -1e9; side = -1; inS = -1; smx = smy = 0;
   BLK.forEach(b => b.classList.remove('in')); de.classList.add('snap'); setTimeout(() => de.classList.remove('snap'), 400); }
 function goHome(e) { if (e) e.preventDefault(); if (GATE || HOMING) return; doorEl.classList.remove('on', 'rm');
@@ -921,8 +964,6 @@ const bill = (t, c, w, a) => plane(t, c, C.r, [0, 1, 0], w, a);
 const check = (x, X, Y, ok) => { x.lineWidth = 4; x.lineCap = 'round'; x.lineJoin = 'round'; x.strokeStyle = ok ? BN.up : '#6b737d'; x.beginPath();
   if (ok) { x.moveTo(X - 10, Y); x.lineTo(X - 2, Y + 8); x.lineTo(X + 12, Y - 9); } else { x.moveTo(X - 9, Y - 9); x.lineTo(X + 9, Y + 9); x.moveTo(X + 9, Y - 9); x.lineTo(X - 9, Y + 9); } x.stroke(); };
 const lock = (x, X, Y, s, c) => { x.strokeStyle = c; x.lineWidth = s * .16; x.beginPath(); x.arc(X, Y - s * .25, s * .32, PI, 0); x.stroke(); x.fillStyle = c; x.beginPath(); x.roundRect(X - s * .5, Y - s * .25, s, s * .8, s * .14); x.fill(); };
-function bnMark(x, X, Y, s) { x.fillStyle = BN.y; const d = (cx, cy, r) => { x.beginPath(); x.moveTo(cx, cy - r); x.lineTo(cx + r, cy); x.lineTo(cx, cy + r); x.lineTo(cx - r, cy); x.closePath(); x.fill(); };
-  d(X, Y, s * .22); d(X, Y - s * .5, s * .2); d(X, Y + s * .5, s * .2); d(X - s * .5, Y, s * .2); d(X + s * .5, Y, s * .2); }
 /* 07: the three lanes are named on the floor */
 function laneTex(i) { const [, name, ok] = S7.lanes[i], t = tex('lane' + i + (ML ? 'm' : '') + (DAY ? 'd' : ''), 520, 150); if (t.at === 1) return t; t.at = 1; const x = t.g; x.clearRect(0, 0, 520, 150);   // the name only: green is allowed, red is closed, nothing else said
   let fs = 50; x.font = font(fs, 800); while (x.measureText(name).width > 420 && fs > 26) { fs -= 1; x.font = font(fs, 800); } const tw = x.measureText(name).width, pw = tw + 74, x0 = 260 - pw / 2;
@@ -930,7 +971,7 @@ function laneTex(i) { const [, name, ok] = S7.lanes[i], t = tex('lane' + i + (ML
   x.fillStyle = ok ? '#2ee096' : '#ff5c72'; x.beginPath(); x.arc(x0 + 30, 75, 7, 0, 2 * PI); x.fill();
   txt(x, name, x0 + 48, 75 + fs * .36, DAY ? (ok ? '!#197653' : '!#b43c50') : ok ? '#9ff3cf' : '#ffa3b0', font(fs, 800)); return t; }
 /* ---------- 08: the key, made and kept by us; Binance only answers our address ---------- */
-const KEYS = 'k3Q9vF2mX7aT1pLz8RwN4cY6hJ0sB5dG2uE9iK7oV3qM1xW8nC4';
+const KEYS = 'EXAMPLE-NOT-A-REAL-KEY-3dtrading-demo';   // shown typing then masked; deliberately not key-shaped
 function keyTex(u) {
   const KW = 1000, KH2 = 640, t = tex('key', KW, KH2), key = Math.round(u * 60); if (t.at === key) return t; t.at = key; const x = t.g;
   x.clearRect(0, 0, KW, KH2); x.fillStyle = 'rgba(12,18,20,.92)'; x.beginPath(); x.roundRect(4, 4, KW - 8, KH2 - 8, 28); x.fill(); x.strokeStyle = 'rgba(47,220,188,.35)'; x.lineWidth = 2; x.stroke();
@@ -964,8 +1005,8 @@ function keyTexM(u) {
   const nb = sm((u - .7) / .15); x.globalAlpha = nb; txt(x, '别人拿到也用不了', 32, 424, '#ff9aa8', font(36, 700)); x.globalAlpha = 1;
   return t;
 }
-function bnLogoTex() { const t = tex('bnlogo', 520, 200); if (t.at === 1) return t; t.at = 1; const x = t.g; x.clearRect(0, 0, 520, 200);
-  x.shadowColor = 'rgba(240,185,11,.7)'; x.shadowBlur = 24; bnMark(x, 96, 100, 120); txt(x, 'BINANCE', 186, 124, BN.y, font(64, 800)); x.shadowBlur = 0; return t; }
+function bnLogoTex() { const t = tex('bnlogo', 520, 200), k = DAY ? 2 : 1; if (t.at === k) return t; t.at = k; const x = t.g; x.clearRect(0, 0, 520, 200);   // no Binance mark: words only
+  txt(x, '在你的币安子账户里运行', 260, 116, DAY ? '!#1f3a36' : '#e6eaed', font(40, 700), 'center'); return t; }
 const BAZ0 = 160 * DEG, BEL = 20 * DEG; let BAZ = BAZ0; let BSZ = 1;   // a narrow phone sees less to each side: 08's Binance logo (and the line's end) moves toward the middle so it stays whole at either turn limit
 /* ---------- 09: a name over each field ---------- */
 function labTex(i, l) { const [, , name, col] = S9.P[i], t = tex('lab' + i, 520, 170), key = Math.round(l * 30); if (t.at === key) return t; t.at = key; const x = t.g; x.clearRect(0, 0, 520, 170);
@@ -1151,27 +1192,21 @@ function msgB(s, X, Y, px, a) { g.save(); g.globalAlpha = a; g.font = font(px, 6
 /* 10: no card and no screen: the chat happens in the space round the Dodo; one small real button goes into it */
 const HD = {}, talkEl = document.getElementById('talk');
 function talkAt(X, Y, a) { if (a < .5 || X == null) { if (talkEl._v) { talkEl._v = 0; talkEl.classList.remove('on'); } return; }
-  const w = talkEl.offsetWidth || 150; talkEl.style.transform = `translate(${clamp(X - w / 2, 12, W - w - 12).toFixed(1)}px,${clamp(Y, 70, H - 60).toFixed(1)}px)`; if (!talkEl._v) { talkEl._v = 1; talkEl.classList.add('on'); } }
+  const w = talkEl.offsetWidth || 150; talkEl.style.transform = `translate(${clamp(O10.talkLeft ? X : X - w / 2, 12, W - w - 12).toFixed(1)}px,${clamp(Y, 70, H - 60).toFixed(1)}px)`; if (!talkEl._v) { talkEl._v = 1; talkEl.classList.add('on'); } }
 /* 10: three ways in — 3dtrading, Telegram, Discord — as round tokens hung in the air around the Dodo, no screens, no words passed.
    One at a time, a message (the channel's colour) flies in along a soft arc; the Dodo hops and turns to it; an answer (teal) flies back
    and the token rings. Where they hang is fixed in the space, set from the camera's rest at 10, so they leave with the scene */
 const CH10 = [{ k: 'web', n: '官网', c: '#2fdcbc' }, { k: 'tg', n: 'Telegram', c: '#2aa3df' }, { k: 'dc', n: 'Discord', c: '#5865f2' }];
-const CH10D = [[-2.7, 2.6], [0, 3.4], [2.7, 2.6]], CH10M = [[-2.1, 2.9], [0, 3.5], [2.1, 2.9]], CH10P = 5.4;   // offsets from the Dodo (camera right, up); seconds per channel
-function chanTex(kind) { const t = tex('ch' + kind, 220, 220); if (t.at === 1) return t; t.at = 1; const x = t.g, ch = CH10.find(c => c.k === kind); x.clearRect(0, 0, 220, 220);
-  x.fillStyle = hexA(ch.c, .18); x.beginPath(); x.arc(110, 110, 106, 0, PI * 2); x.fill();
-  x.fillStyle = kind === 'web' ? '#0b1114' : ch.c; x.beginPath(); x.arc(110, 110, 84, 0, PI * 2); x.fill(); x.strokeStyle = kind === 'web' ? ch.c : 'rgba(255,255,255,.28)'; x.lineWidth = kind === 'web' ? 6 : 3; x.stroke();
-  x.fillStyle = '#ffffff'; x.strokeStyle = '#ffffff'; x.lineJoin = 'round'; x.lineCap = 'round';
-  if (kind === 'web') { txt(x, '3d', 110, 134, ch.c, font(72, 800), 'center'); }
-  else if (kind === 'tg') { x.beginPath(); x.moveTo(58, 106); x.lineTo(160, 66); x.lineTo(140, 156); x.lineTo(108, 132); x.lineTo(92, 150); x.lineTo(90, 124); x.closePath(); x.fill();
-    x.strokeStyle = ch.c; x.lineWidth = 6; x.beginPath(); x.moveTo(90, 124); x.lineTo(150, 78); x.stroke(); }
-  else { x.beginPath(); x.moveTo(62, 140); x.bezierCurveTo(58, 104, 70, 82, 84, 74); x.quadraticCurveTo(96, 70, 98, 78); x.lineTo(122, 78); x.quadraticCurveTo(124, 70, 136, 74); x.bezierCurveTo(150, 82, 162, 104, 158, 140);
-    x.quadraticCurveTo(146, 152, 132, 154); x.lineTo(126, 142); x.lineTo(94, 142); x.lineTo(88, 154); x.quadraticCurveTo(74, 152, 62, 140); x.closePath(); x.fill();
-    x.fillStyle = ch.c; x.beginPath(); x.ellipse(92, 116, 9, 11, 0, 0, PI * 2); x.ellipse(128, 116, 9, 11, 0, 0, PI * 2); x.fill(); }
-  return t; }
+const CH10D = [null, [-5.6, 10.5], [5.6, 10.5]], CH10M = [null, [-4.2, 1.5], [4.2, 1.5]], CH10P = 5.4;   // [0] is you: its line runs out of the screen towards the viewer   // offsets from the Dodo (camera right, up); seconds per channel
+const TGP = new Path2D('M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z'), DCP = new Path2D('M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z');
+function chanTex(kind) { const t = tex('ch' + kind, 220, 220); if (t.at === 1) return t; t.at = 1; const x = t.g; RAWC++; x.save(); x.clearRect(0, 0, 220, 220);
+  if (kind === 'tg') { x.fillStyle = '#ffffff'; x.beginPath(); x.arc(110, 110, 92, 0, PI * 2); x.fill(); x.translate(10, 10); x.scale(200 / 24, 200 / 24); x.fillStyle = '#26A5E4'; x.fill(TGP); }
+  else { x.fillStyle = '#5865F2'; x.beginPath(); x.arc(110, 110, 100, 0, PI * 2); x.fill(); x.translate(50, 54); x.scale(120 / 24, 120 / 24); x.fillStyle = '#ffffff'; x.fill(DCP); }
+  x.restore(); RAWC--; return t; }
 let CH10W = null, CH10K = '';
 function ch10World() { const key = (mob ? 'm' : 'd') + W + 'x' + H + (D10 ? D10.join() : ''); if (CH10W && CH10K === key) return CH10W; if (!D10) return null; CH10K = key;
-  const c = CAM()[9], [cp, cl] = pose(c, 1), f = nrm(sub3(cl, cp)), r = nrm([f[2], 0, -f[0]]), u = cross3(f, r), O = (mob ? CH10M : CH10D), base = [D10[0], D10[1] + 1.1, D10[2]];
-  return CH10W = O.map(([a, b]) => add3(base, add3(mul3(r, a), mul3(u, b)))); }
+  const V10X = mob ? 2.4 : 1.1, V10Y = mob ? 4.4 : 2.6, c = CAM()[9], [cp, cl] = pose(c, 1), f = nrm(sub3(cl, cp)), r = nrm([f[2], 0, -f[0]]), forward = nrm([f[0], 0, f[2]]), O = (mob ? CH10M : CH10D), base = [D10[0], mob ? D10[1] - .6 : 1.5, D10[2]];   // phones: level with the Dodo, so the two marks stay clear of the questions
+  return CH10W = O.map(o => o ? add3(base, add3(mul3(r, o[0]), mul3(forward, -o[1]))) : [cp[0] + forward[0] * 4 + r[0] * V10X, cp[1] - V10Y, cp[2] + forward[2] * 4 + r[2] * V10X]); }   // [0]: just under the camera's rest, a little to the right of the questions and the talk button, so the line comes from you without crossing their words
 const cyc10 = () => { const v = T / CH10P, k = Math.floor(v) % 3; return { k, ph: v - Math.floor(v) }; };   // which channel speaks now, and how far along: in .0–.34, Dodo .34–.52, back .5–.84, ring .84–1
 const bez3 = (A0, B0, v, lift) => { const m = [(A0[0] + B0[0]) / 2, (A0[1] + B0[1]) / 2 + lift, (A0[2] + B0[2]) / 2], w = 1 - v; return [0, 1, 2].map(j => w * w * A0[j] + 2 * w * v * m[j] + v * v * B0[j]); };
 function soonTex(kind) { const t = tex('soon' + kind, 460, 150); if (t.at === 1) return t; t.at = 1; const x = t.g, tg = kind === 'tg', col = tg ? '#2aa3df' : '#5865f2'; x.clearRect(0, 0, 460, 150);
@@ -1244,6 +1279,9 @@ function gyBoot() { if (!touchDev || !window.DeviceOrientationEvent) return; let
 addEventListener('orientationchange', recal); if (screen.orientation) screen.orientation.addEventListener('change', recal);
 document.addEventListener('visibilitychange', () => { if (!GY.on) return; if (document.hidden) gyListen(false); else { gyListen(true); recal(); } });
 addEventListener('pagehide', () => gyListen(false));
+// r41: turning the phone between portrait and landscape moves the reference edge; take the new hold as straight ahead
+const gyTurn = () => { if (GY.on) recal(); };
+addEventListener('orientationchange', gyTurn); if (screen.orientation && screen.orientation.addEventListener) screen.orientation.addEventListener('change', gyTurn);
 window.__gy = GY;
 
 /* ---------- frame ---------- */
@@ -1258,19 +1296,35 @@ const vis = (t, c, a = .32, b = .72) => 1 - sm(sg(Math.abs(t - c), a, b));
 function frame(now) {
   FN++;
   const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
-  const seg = Math.floor(clamp(Math.min(K.t, K.tgt), 0, NS - 1.01)), wn = seg === 0 ? 1.8 : seg === 1 ? 1.55 : seg === 4 ? 1.3 : seg === 5 ? 1.6 : seg >= 6 ? 1.5 : 2.1;
-  if (RM) { K.t = K.tgt; K.v = 0; } else {
-    if (K.adaptive) {
-      const desired = clamp(wn * (K.tgt - K.t) / 2, -.48, .48);
-      const acc = clamp(2 * wn * (desired - K.v), -.85, .85);
-      K.v += acc * dt; K.t += K.v * dt;
+  if (RM) { CK.t = CK.tgt; CK.v = 0; } else camStep(CK, dt);
+  for (const motion of [K]) {
+    const stepDt = dt;
+  const seg = Math.floor(clamp(Math.min(motion.t, motion.tgt), 0, NS - 1.01)), wn = (seg === 0 ? 1.8 : seg === 1 ? 1.55 : seg === 4 ? 1.3 : seg === 5 ? 1.6 : seg >= 6 ? 1.5 : 2.1);
+  if (RM) { motion.t = motion.tgt; motion.v = 0; } else {
+    if (motion.adaptive) {
+      const desired = clamp(wn * (motion.tgt - motion.t) / 2, -.48, .48);
+      const a0 = 2 * wn * (desired - motion.v), lim = .85;
+      const acc = clamp(a0, -lim, lim);
+      motion.v += acc * stepDt; motion.brk = acc * motion.v < 0; motion.t += motion.v * stepDt;
     } else {
-      const acc = wn * wn * (K.tgt - K.t) - 2 * .9 * wn * K.v;
-      K.v += acc * dt; K.t += K.v * dt;
+      const acc = wn * wn * (motion.tgt - motion.t) - 2 * .9 * wn * motion.v;
+      motion.v += acc * stepDt; motion.brk = acc * motion.v < 0; motion.t += motion.v * stepDt;
     }
-    if (K.t < -.04) { K.t = -.04; K.v = Math.max(0, K.v); }
-    if (K.t > NS - .96) { K.t = NS - .96; K.v = Math.min(0, K.v); }
+    // landing: a spring only creeps up on its stop (the last few % took a second or more, so the camera and the copy kept drifting after
+    // the scene had settled). Once the move is already braking, never let it go slower than a constant-deceleration stop would, and
+    // lay it down exactly on the stop. The body of the move (up to ~90 % of the way) keeps its old pace; nothing else is sped up.
+    { const d = motion.tgt - motion.t, ad = Math.abs(d);
+      if (ad < 1e-3 && Math.abs(motion.v) < .05) { motion.t = motion.tgt; motion.v = 0; }
+      else if (d * motion.v > 0 && ad < .5) { const vf = Math.sqrt(2 * LAND * wn * wn * ad), sg0 = Math.sign(d);
+        if (Math.abs(motion.v) < vf && (motion.landing || motion.brk)) { motion.landing = 1; motion.v = sg0 * vf; }
+        if (Math.abs(motion.v) * stepDt >= ad) { motion.t = motion.tgt; motion.v = 0; } }
+      if (d * motion.v <= 0 || ad >= .5) motion.landing = 0; }
+    if (motion.t < -.04) { motion.t = -.04; motion.v = Math.max(0, motion.v); }
+    if (motion.t > NS - .96) { motion.t = NS - .96; motion.v = Math.min(0, motion.v); }
   }
+  }
+  // chained fast, the scene clock is pulled along so it never trails the camera by more than KLAG (what is on screen stays the camera's)
+  if (K.tgt === CK.tgt) { const lag = CK.t - K.t; if (Math.abs(lag) > KLAG) { const sd = Math.sign(lag); K.t = CK.t - sd * KLAG; if (K.v * sd < CK.v * sd) K.v = CK.v; } }
   const t = clamp(K.t, 0, NS - 1); LBLCL = t < 5.5; LCW = LBLCL ? 1 : 1 - sm(Math.abs(t - Math.round(t)) / .12);   // 07 on: kept on screen only while at rest, let go as soon as the camera moves
   for (let s = 1; s < NS; s++) {
     const early = PRE[s], near = K.t > s - (early || .03);
@@ -1286,24 +1340,25 @@ function frame(now) {
 
   // camera between stop i and i+1, swinging out along BUL on the way. A stop can also move inside its own step
   for (let i = 6; i < NS; i++) if (Math.abs(t - i) < 1.2) anchors(i, A[i]);
-  CMS = mob ? msAt(t) : MS; CMY = msyAt(t); if (mob) XTRA = xtraFor(CMS);
+  const ct = clamp(CK.t, 0, NS - 1);   // everything that frames the shot follows the camera's own clock
+  CMS = mob ? msAt(ct) : MS; CMY = msyAt(ct); if (mob) XTRA = xtraFor(CMS);
   HHF = Math.atan((W / 2) / ((H / 2) / Math.tan(.42) * (mob ? CMS : 1)));   // half the view's width: from 02 on, turning stops when the middle of the scene reaches the screen edge
-  const cams = CAM(), i0 = Math.min(NS - 2, Math.floor(t)), u = t - i0, ca = cams[i0], cb = cams[i0 + 1], idle = RM ? 0 : 1;
+  const cams = CAM(), i0 = Math.min(NS - 2, Math.floor(ct)), u = ct - i0, ca = cams[i0], cb = cams[i0 + 1], idle = RM ? 0 : 1;
   const [cap, cal] = pose(ca, A[i0]), [cbp, cbl] = pose(cb, A[i0 + 1]);
   const lu = i0 ? sm(u) : eio(sg(u, .1, 1)), pu = i0 ? sm(u) : eio(sg(u, 0, .9)), bw = Math.sin(PI * pu), bv = BUL[i0 + 1] || [0, 0, 0];
   let P = cap.map((v, i) => L(v, cbp[i], pu) + bv[i] * bw * (ML ? 1.3 : 1) + (i === 0 ? Math.sin(T * .13) * .25 * idle : i === 1 ? Math.sin(T * .17) * .12 * idle : 0));
-  let Lk = cal.map((v, i) => L(v, cbl[i], lu) + (i === 0 ? Math.sin(T * .1) * .8 * idle * (t < 1 ? 1 - t : 0) : 0));
-  setCam(P, Lk, L(ca.sx, cb.sx, pu), L(ca.sy, cb.sy, pu)); placeCopy(t);
-  { const wide = Math.max(1 - sm(sg(t, 0, .7)), .5 * sm(sg(t, 5.5, 6.2))), yw = L(.07, .3, wide), pt = (gl || LOOKY != null) && (mob || touchDev) ? L(.11, .2, wide) : L(.04, .16, wide), d = Lk.map((v, i) => v - P[i]), n = Math.hypot(...d);
+  let Lk = cal.map((v, i) => L(v, cbl[i], lu) + (i === 0 ? Math.sin(T * .1) * .8 * idle * (ct < 1 ? 1 - ct : 0) : 0));
+  setCam(P, Lk, L(ca.sx, cb.sx, pu), L(ca.sy, cb.sy, pu)); placeCopy(ct, ct);
+  { const wide = Math.max(1 - sm(sg(ct, 0, .7)), .5 * sm(sg(ct, 5.5, 6.2))), yw = L(.07, .3, wide), pt = (gl || LOOKY != null) && (mob || touchDev) ? L(.11, .2, wide) : L(.04, .16, wide), d = Lk.map((v, i) => v - P[i]), n = Math.hypot(...d);
     // the mouse (or the phone turning) turns the head: left and right, the same in every step
     // the wider turn is for the six models on the first page; later steps keep a modest extra so their subject stays in view
-    const p1 = 1 - sm(sg(t, 0, .7)), ex = (touchDev || mob) && XTRA ? XTRA * L(XL, 1, p1) : XA0 * p1;
-    const turn = mob || touchDev ? smx * 2 * L(HHF * .92, .3 + (XTRA || XA0), p1) : smx * 2 * ((touchDev || mob) && XTRA ? yw * L(YN, 1, p1) * (1 - .75 * sm(sg(t, 9.3, 10))) * (1 - (mob ? +(QP.get('k8') || .15) : 0) * (1 - sm(Math.min(1, Math.abs(t - 7) / .6)))) : yw) + smx * 2 * ex; let orb = (mob || touchDev) ? turn * ORB * sm(sg(t, .3, 1)) : 0;
+    const p1 = 1 - sm(sg(ct, 0, .7)), ex = (touchDev || mob) && XTRA ? XTRA * L(XL, 1, p1) : XA0 * p1;
+    const turn = mob || touchDev ? smx * 2 * L(HHF * .92, .3 + (XTRA || XA0), p1) : smx * 2 * ((touchDev || mob) && XTRA ? yw * L(YN, 1, p1) * (1 - .75 * sm(sg(ct, 9.3, 10))) * (1 - (mob ? +(QP.get('k8') || .15) : 0) * (1 - sm(Math.min(1, Math.abs(ct - 7) / .6)))) : yw) + smx * 2 * ex; let orb = (mob || touchDev) ? turn * ORB * sm(sg(ct, .3, 1)) : 0;
     // on touch screens, from 02 on, most of that same turn swings the camera around the subject instead of away from it, so the freedom of 01 stays but the subject stays in view
     // 08 runs from the tower close by to Binance far off on the wall, and 01's turn is ~50° each way: on a portrait phone the camera
     // swings that whole turn round the middle of what the step is showing right now, and steps back as it swings, so near and far both stay in view
-    const w8 = mob ? 1 - sm(Math.min(1, Math.abs(t - 7) / .6)) : 0;
-    if (w8 > 0 && ORB) orb = L(orb, turn * sm(sg(t, .3, 1)), w8);
+    const w8 = mob ? 1 - sm(Math.min(1, Math.abs(ct - 7) / .6)) : 0;
+    if (w8 > 0 && ORB) orb = L(orb, turn * sm(sg(ct, .3, 1)), w8);
     if (orb) { const c = Math.cos(orb), s2 = Math.sin(orb), d2 = [d[0] * c + d[2] * s2, d[1], -d[0] * s2 + d[2] * c], c8 = w8 > 0 ? mid8(A[7]) : null, pc = c8 ? [L(Lk[0], c8[0], w8), L(Lk[2], c8[1], w8)] : [Lk[0], Lk[2]];
       const vx = P[0] - pc[0], vz = P[2] - pc[1], back = 1 + DK8 * w8 * Math.abs(smx) * 2;
       P = [pc[0] + (vx * c + vz * s2) * back, P[1], pc[1] + (-vx * s2 + vz * c) * back]; d[0] = d2[0]; d[2] = d2[2]; }
@@ -1313,8 +1368,8 @@ function frame(now) {
   setCam(P, Lk, L(ca.sx, cb.sx, pu), L(ca.sy, cb.sy, pu));
 
   // Fit the entire trading composition together on phones; panning still moves it as one unit.
-  if (mob && t > .6 && t < 4.5) {
-    const fit = sm(sg(t, .6, 1)) * (1 - sm(sg(t, 4.1, 4.5)));
+  if (mob && ct > .6 && ct < 4.5) {
+    const fit = sm(sg(ct, .6, 1)) * (1 - sm(sg(ct, 4.1, 4.5)));
     const pts = [[KX(0) - .45, 18.42], [KX(0) - .45 + 15.4, 18.42], [KX(0) - .45, 4.1], [KX(0) - .45 + 15.4, 4.1]].map(([x,y]) => pr(x,y,KZ));
     if (pts.every(Boolean)) {
       const left = Math.min(...pts.map(p=>p.x)), right = Math.max(...pts.map(p=>p.x));
@@ -1345,7 +1400,7 @@ function frame(now) {
   const hot = Math.sin(PI * sg(A[3], .175, .7));
   const alarm = closed && A[3] > .3;
   // how far each place round the sphere is built
-  const a7 = sm(sg(t, 5.2, 6)) * (1 - sm(sg(t, 7.2, 8))), a8 = sm(sg(t, 6.2, 7)) * (1 - sm(sg(t, 9, 9.8))), a9 = sm(sg(t, 7.2, 8)) * (1 - sm(sg(t, 9.6, 10.4))), a10 = sm(sg(t, 8.2, 9)), a11 = sm(sg(t, 9.2, 10));
+  const a7 = sm(sg(t, 5.2, 6)) * (1 - sm(sg(t, 7.2, 8))), a8 = sm(sg(t, 6.2, 7)), a9 = sm(sg(t, 7.2, 8)) * (1 - sm(sg(t, 9.6, 10.4))), a10 = sm(sg(t, 8.2, 9)), a11 = sm(sg(t, 9.2, 10));
   const wl = sm(sg(A[6], .45, .62)) * a7;                                  // 07: the optional whitelist
   // the gold area holds the account: its area follows the money and keeps creeping out one pillar at a time
   const wlc = wl * vis(t, 6, .3, .7), gA = 1;   // the gold stays gold all the way round
@@ -1378,11 +1433,13 @@ function frame(now) {
   if (a11 > .01 && doorU > .01) { const da = LY.daz, rr = SR * .985, elY = y => Math.asin((y - SC[1]) / rr), yb = LY.dtop - .3, yt = LY.dtop + 8.2, e0 = elY(yb), e1 = elY(yt), hw2 = 1.5 * PS() / (rr * Math.cos(e0)) * eio(doorU);
     const q = [pr(...onS(da - hw2, e1, rr)), pr(...onS(da + hw2, e1, rr)), pr(...onS(da + hw2, e0, rr)), pr(...onS(da - hw2, e0, rr))], a = a11 * doorU;
     DOORQ = !q.some(v => !v) && a > .5 ? q : null;
-    if (!q.some(v => !v)) { const c = pr(...onS(da, (e0 + e1) / 2, rr)); glow(c.x, c.y, c.k * 30, '#bff5ea', .28 * a);
-      const gr = g.createLinearGradient(0, q[0].y, 0, q[3].y); gr.addColorStop(0, `rgba(190,255,240,${(.85 * a).toFixed(3)})`); gr.addColorStop(1, `rgba(245,255,252,${(.97 * a).toFixed(3)})`);
-      g.save(); g.shadowColor = '#bff5ea'; g.shadowBlur = 60 * a; g.fillStyle = gr; g.beginPath(); q.forEach((p, i) => i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y)); g.closePath(); g.fill(); g.restore();
-      const fl = pr(...onS(da, e0, rr * .97)); if (fl) glow(fl.x, fl.y, fl.k * 14, '#ffffff', .22 * a);
-      }
+    if (!q.some(v => !v)) { const c = pr(...onS(da, (e0 + e1) / 2, rr)); if (DAY) RAWC++;   // same panel, glow and strength day and night (as 725590f); daytime only changes the colours
+      const gl0 = DAY ? '#2fdcbc' : '#bff5ea', top = DAY ? [26, 150, 126] : [190, 255, 240], bot = DAY ? [47, 205, 172] : [245, 255, 252];
+      glow(c.x, c.y, c.k * 30, gl0, (.28 * a));
+      const gr = g.createLinearGradient(0, q[0].y, 0, q[3].y); gr.addColorStop(0, `rgba(${top},${(.85 * a).toFixed(3)})`); gr.addColorStop(1, `rgba(${bot},${(.97 * a).toFixed(3)})`);
+      g.save(); g.shadowColor = gl0; g.shadowBlur = 60 * a; g.fillStyle = gr; g.beginPath(); q.forEach((p, i) => i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y)); g.closePath(); g.fill(); g.restore();
+      const fl = pr(...onS(da, e0, rr * .97)); if (fl) glow(fl.x, fl.y, fl.k * 14, DAY ? '#2fdcbc' : '#ffffff', .22 * a);
+      if (DAY) RAWC--; }
     if (logU > .01) { const lt = logoTex(), LW = ML ? 17 : 30, lh = LW * lt.h / lt.w; layer(logU * a11, () => { g.imageSmoothingQuality = 'high'; onWall(lt, lt.c, LGS, da, elY(yt + 2.4 + lh / 2 + (1 - logU) * 1.5), LW / rr, lh / rr, 1, 12, 2); }); } }
 
   /* cells that stand tall in a place (so they stay drawn when only their top is in view) */
@@ -1533,7 +1590,7 @@ function frame(now) {
     const jh = (a, b) => { const v = sg(U8, a, b); return v > 0 && v < 1 ? Math.sin(PI * v) * .6 : 0; };
     put(x, twh, z, () => dodo(x, L(.5, twh, a8), z, { a: a8, s: .85, ph: 2, face: -1, hop: jh(.16, .24) + jh(.36, .44), lx: U8 < .3 ? -1 : -4, ly: -6 }));
     // the boundary, with its port: it rises as the key flies, the port's teeth close on the key
-    const a8w = a8 * (1 - sm(sg(t, 7.25, 7.8))), bu = sm(sg(U8, .17, .3)), bs = sm(sg(U8, .21, .36));
+    const a8w = a8, bu = sm(sg(U8, .17, .3)), bs = sm(sg(U8, .21, .36));
     // the boundary: a front face across Binance's side, and two side faces running back to the wall, so the assets sit in a closed bay
     const x0 = 15, x1 = 57, ZB = S8.ZB, ZE = ZB - 30, YT = 24;
     if (bs > .01 && a8w > .01) [x0, x1].forEach(xs => put(xs, 10, (ZB + ZE) / 2, () => { const yt = L(.3, YT, bs), za = ZB, zb = L(ZB, ZE, Math.min(1, bs * 1.4));
@@ -1643,43 +1700,59 @@ function frame(now) {
       if (LB9[i] > .02) { if (DAY) tag9(p, q.x, q.y, px, la9 * LB9[i] * ru); else { lbl(p[2], q.x, q.y, '#ffffff', 15, px, la9 * LB9[i] * ru, 1); lbl(p[4], q.x, q.y + px * 1.15, '#b4bec7', 12, Math.max(12, px * .58), la9 * LB9[i] * ru * .9); } } }); }
   // 10: 3dtrading, Telegram and Discord around the Dodo, each tied to it by a faint arc. In turn each sends it a message (a light in the channel's
   // colour), the Dodo hops and looks over, an answer (teal) goes back and the channel rings. Only who talks to whom is shown, never what is said
-  { let tx10 = null, ty10 = null; const la10 = a10 * (1 - sm(sg(t, 9.35, 9.8))), cw = ch10World();
+  { let tx10 = null, ty10 = null; const la10 = a10 * (1 - sm(sg(t, 9.01, 9.16))), cw = ch10World();
   if (la10 > .01 && D10 && cw) { const U = A[9], { k: ck, ph } = cyc10(), on = sm(sg(U, .2, .32)), Dm = [D10[0], D10[1] + 1.2, D10[2]], lift = mob ? .9 : 1.2;
     CH10.forEach((ch, k) => { const P = cw[k], ru = sm(sg(U, .03 + k * .06, .15 + k * .06)), a = la10 * ru; if (a < .01) return;
       const pts = []; for (let n = 0; n <= 24; n++) pts.push(bez3(P, Dm, n / 24, lift)); line3(pts, a * (k === ck ? .34 : .16) * (DAY ? 1.4 : 1), ch.c, 1.4, DAY ? 0 : 6);
-      const q = pr(...P); if (!q) return; const sz = mob ? 1 : 1.1, rr = q.k * sz * .5;
-      if (!DAY) glow(q.x, q.y, rr * 2.2, ch.c, .22 * a);
+      if (k === 0) return;   // you: only the line, no logo
+      const q = pr(...P); if (!q) return; const sz = mob ? 1.3 : .95, rr = q.k * sz * .5;
+      { g.save(); if (DAY) RAWC++; g.globalAlpha = a; g.shadowColor = DAY ? 'rgba(18,48,42,.12)' : 'rgba(0,0,0,.45)'; g.shadowBlur = rr * .9; g.shadowOffsetY = rr * .18;   // r40: a glass plate behind each token so it sits in the space instead of being pasted on
+        g.fillStyle = DAY ? 'rgba(255,255,255,.9)' : 'rgba(18,24,28,.82)'; g.beginPath(); g.arc(q.x, q.y, rr * 1.42, 0, PI * 2); g.fill(); g.shadowColor = 'transparent';
+        g.lineWidth = 1.2; g.strokeStyle = hexA(ch.c, k === ck ? .55 : .28); g.stroke(); if (DAY) RAWC--; g.restore(); }
       bill(chanTex(ch.k), P, sz, a);
       if (k === ck && on > .01) { const rp = sg(ph, .84, 1); if (rp > 0 && rp < 1) { g.save(); g.globalAlpha = a * on * (1 - rp); g.strokeStyle = ch.c; g.lineWidth = 2; g.beginPath(); g.arc(q.x, q.y, rr * (1.05 + .9 * eio(rp)), 0, PI * 2); g.stroke(); g.restore(); } }
-      lbl(ch.n, q.x, q.y + rr + 17, DAY ? '!#3c454d' : '#c9d1d8', 12, 12, a * .95); });
+      lbl(ch.n, q.x, q.y + rr * 1.42 + 18, DAY ? '!#33403d' : '#d5dde2', 12.5, 12.5, a * .95); });
     if (on > .01) { const ch = CH10[ck], P = cw[ck], vi = sg(ph, 0, .34), vo = sg(ph, .5, .84);
-      const dot = (v, A0, B0, col) => { for (let n = 0; n < 4; n++) { const w = v - n * .035; if (w <= 0 || w >= 1) continue; const q = pr(...bez3(A0, B0, eio(w), lift)); if (q) glow(q.x, q.y, Math.max(6, q.k * (.75 - n * .14)), col, la10 * on * (.95 - n * .22)); } };
+      const dot = (v, A0, B0, col) => { if (v <= 0 || v >= 1) return; const q = pr(...bez3(A0, B0, eio(v), lift)); if (!q) return;
+        g.save(); if (DAY) RAWC++; g.globalAlpha = la10 * on; g.fillStyle = col;
+        const r = clamp(q.k * .08, 2, 4); g.beginPath(); g.arc(q.x, q.y, r, 0, PI * 2); g.fill(); if (DAY) RAWC--; g.restore(); };
       if (vi > 0 && vi < 1) dot(vi, P, Dm, ch.c);
       if (vo > 0 && vo < 1) dot(vo, Dm, P, '#2fdcbc');
-      const hr = sg(ph, .34, .58); if (hr > 0 && hr < 1) { const q = pr(...Dm); if (q) { glow(q.x, q.y, q.k * (1.6 + 1.2 * eio(hr)), ch.c, .4 * la10 * on * (1 - hr)); g.save(); g.globalAlpha = la10 * on * (1 - hr) * .8; g.strokeStyle = ch.c; g.lineWidth = 2; g.beginPath(); g.arc(q.x, q.y, q.k * (1.1 + 1.3 * eio(hr)), 0, PI * 2); g.stroke(); g.restore(); } } }
-    S9.P.forEach((p, i) => { const end = [D10[0], D10[1], D10[2]]; line3([[p[0], .9, p[1]], [S9.c[0], .9, S9.c[1]], end], la10 * .35, CH10[i].c, 1.4, 0); });
+    }
+    // r40: the 09 field lines run in quieter, so the three channel arcs read first
+    S9.P.forEach((p, i) => { const end = [D10[0], D10[1], D10[2]]; line3([[p[0], .9, p[1]], [S9.c[0], .9, S9.c[1]], end], la10 * .18, CH10[i].c, 1.2, 0); });
+    // r40: a thin teal ring round the top of the Dodo's pillar, so the far Dodo reads as the one being asked
+    { const ring = []; for (let n = 0; n <= 40; n++) { const an = n / 40 * 2 * PI; ring.push([D10[0] + Math.cos(an) * .78, D10[1] + .03, D10[2] + Math.sin(an) * .78]); }
+      line3(ring, la10 * (DAY ? .75 : .6) * (.8 + .2 * Math.sin(T * 2.2)), '#2fdcbc', 1.6, DAY ? 0 : 8); }
     const dq = pr(...Dm);
     if (dq) {
-      const cx = clamp(dq.x, mob ? W * .5 : 240, mob ? W * .5 : W - 240);
-      const askY = clamp(dq.y - (mob ? 62 : 84), mob ? 220 : 175, H - 260);
-      const answerY = Math.min(H - 125, Math.max(askY + 150, dq.y + 68));
-      const questions = ['现在多空配平了吗？', '账户净权益是多少？', '现在有哪些持仓？'];
-      const answers = ['多空各 5 BTC，已配对', '216,000 USDT · 已扣浮亏', 'BTCUSDT · 多 5 / 空 5'];
-      msgB(questions[ck], cx, askY, mob ? 15 : 19, la10);
-      const ready = ph > .3;
-      g.save(); g.globalAlpha = la10; g.shadowBlur = 0;
-      const aw = Math.min(W - 32, mob ? 340 : 430), ax = cx - aw / 2;
-      g.fillStyle = DAY ? '!rgba(237,245,242,.96)' : 'rgba(15,33,31,.96)';
-      g.beginPath(); g.roundRect(ax, answerY, aw, 76, 14); g.fill();
-      g.textAlign = 'left'; g.font = font(12, 700); g.fillStyle = DAY ? '!#197c69' : '#5fe3c4';
-      g.fillText('Dodo · 对话演示', ax + 16, answerY + 23);
-      g.font = font(mob ? 16 : 20, 600); g.fillStyle = DAY ? '!#183b34' : '#e5f5f0';
-      g.fillText(ready ? answers[ck] : '正在查看…', ax + 16, answerY + 53); g.restore();
-      O10.conversation = { question: questions[ck], answer: ready ? answers[ck] : null, box: [ax, answerY, aw, 76] };
+      // r40: the questions are a short chat thread under the Dodo. Each is asked from one channel (its dot and name on the right);
+      // the one whose channel is speaking now lights up in that channel's colour, in step with the light travelling along its arc
+      const questions = ['现在多空配平了吗？', '账户净权益是多少？', '现在有哪些持仓？'], QCH = [2, 1, 0];
+      const fs = mob ? 14 : 15, ph10 = mob ? 34 : 38, gap = mob ? 8 : 9, pad = 16;
+      g.save(); if (DAY) RAWC++;
+      g.font = font(fs, 600); const tw = questions.map(q => g.measureText(q).width); g.font = font(12, 600); const nw = QCH.map(c => g.measureText(CH10[c].n).width);
+      const ws = tw.map((w, i) => pad + 8 + 10 + w + 24 + nw[i] + pad), bw = Math.max(...ws, mob ? 0 : 280), cx = W * (mob ? .5 : .42), x0 = Math.round(cx - bw / 2);
+      // on a phone the Telegram / Discord tokens sit at the sides of the thread: start it under their names, not across them
+      let chB = 0; if (mob) cw.forEach(P => { const q = pr(...P); if (q && q.y < H * .8) chB = Math.max(chB, q.y + q.k * 1.3 * .5 * 1.42 + 18 + 16); });
+      const top = Math.round(Math.min(Math.max(H * (mob ? .6 : .58), dq.y + 96, chB), H - (mob ? 236 : 248)));
+      questions.forEach((question, i) => {
+        const c = CH10[QCH[i]], y = top + i * (ph10 + gap), act = QCH[i] === ck ? on * sm(sg(ph, 0, .1)) * (1 - sm(sg(ph, .9, 1))) : 0;
+        g.globalAlpha = la10 * (.86 + .14 * act) * sm(sg(U, .1 + i * .05, .22 + i * .05));
+        g.shadowColor = DAY ? 'rgba(18,48,42,.10)' : 'rgba(0,0,0,.35)'; g.shadowBlur = 18; g.shadowOffsetY = 6;
+        g.fillStyle = DAY ? 'rgba(255,255,255,.92)' : 'rgba(17,23,26,.84)'; g.beginPath(); g.roundRect(x0, y, bw, ph10, ph10 / 2); g.fill();
+        g.shadowColor = 'transparent'; g.shadowBlur = 0; g.shadowOffsetY = 0;
+        g.lineWidth = 1 + .6 * act; g.strokeStyle = act > .02 ? hexA(c.c, .25 + .65 * act) : (DAY ? 'rgba(20,52,46,.12)' : 'rgba(255,255,255,.10)'); g.stroke();
+        g.fillStyle = c.c; g.beginPath(); g.arc(x0 + pad + 4, y + ph10 / 2, 4, 0, PI * 2); g.fill();
+        g.textAlign = 'left'; g.font = font(fs, 600); g.fillStyle = DAY ? '#16312c' : '#eaf4f1'; g.fillText(question, x0 + pad + 18, y + ph10 / 2 + fs * .36);
+        g.font = font(12, 600); g.fillStyle = DAY ? '#6b7c78' : '#8d9ca1'; g.textAlign = 'right'; g.fillText(c.n, x0 + bw - pad, y + ph10 / 2 + 4.3);
+      });
+      if (DAY) RAWC--; g.restore();
+      O10.conversation = { questions, from: QCH.map(c => CH10[c].n), box: [x0, top, bw, 3 * ph10 + 2 * gap], transparent: false };
     }
     O10.ch = cw.map(P => { const q = pr(...P); return q ? [Math.round(q.x), Math.round(q.y)] : null; }); O10.k = ck; O10.ph = ph;
-    // the one real way in: under the Dodo's pillar
-    const qb = pr(D10[0], D10[1] - (LQ ? 1.6 : mob ? 2.6 : 1.4), D10[2]); if (qb) { tx10 = qb.x; ty10 = O10.conversation ? O10.conversation.box[1] + 88 : qb.y + 8; }
+    // the one real way in: the last line of the thread, under the three questions (and clear of the 向下 cue in the middle)
+    const qb = pr(D10[0], D10[1] - (LQ ? 1.6 : mob ? 2.6 : 1.4), D10[2]); if (qb) { const bx = O10.conversation && O10.conversation.box; tx10 = bx ? bx[0] + (mob ? bx[2] / 2 : 0) : qb.x; ty10 = bx ? bx[1] + bx[3] + (mob ? 14 : 16) : qb.y + 8; O10.talkLeft = !mob && !!bx; }
     talkAt(tx10, ty10, la10 * sm(sg(U, .06, .16))); } else talkAt(null, null, 0); }
   requestAnimationFrame(frame);
 }
@@ -1696,7 +1769,7 @@ function xtraFor(ms) { const x = Math.max(0, Math.atan(1.6 * Math.tan(.42)) - Ma
 function resize() { BLK.forEach(b => b._h = 0); DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; mob = W < 760; ringFor(); BAZ = BAZ0 + (mob ? +(QP.get('bz') || -3.8) * DEG : 0); BSZ = mob ? +(QP.get('bs') || 1) : 1; KZ = SCR[2] = ML ? 3.2 : 4.6; KH = ML ? 8.4 : mob ? 6.4 : 7.6; XTRA = xtraFor(mob ? MS : 1); LQ = LSQ(); setTimeout(() => { CPR = LQ ? Math.max(0, ...BLK.map(b => b.getBoundingClientRect().right).filter(r => r > 0 && r < W * .6)) : 0; }, 300); cv.width = W * DPR; cv.height = H * DPR; cells(); anchors(); initWall(); initCoins(); }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(resize, 120); });
 resize(); gyBoot();
-window.__dive = { K, A, go, jump, GY, story: () => ({...HD}), camera: () => ({ p: C.p.slice(), f: C.f.slice() }), poses: () => CAM().map(c => [0, .25, .5, .75, 1].map(a => pose(c, a))), xtra: () => XTRA, smx: () => +smx.toFixed(3),
+window.__dive = { K, CK, A, go, jump, GY, gyStart, gyFeed: (al, be, ga) => onOri({ alpha: al, beta: be, gamma: ga }), gyTurn, lookNow: () => [+smx.toFixed(3), +smy.toFixed(3)], story: () => ({...HD}), camera: () => ({ p: C.p.slice(), f: C.f.slice() }), poses: () => CAM().map(c => [0, .25, .5, .75, 1].map(a => pose(c, a))), xtra: () => XTRA, smx: () => +smx.toFixed(3),
   look: v => { LOOKQ = v == null ? null : clamp(v, -.5, .5); }, lookY: v => { LOOKY = v == null ? null : clamp(v, -.5, .5); }, smy: () => +smy.toFixed(3), wlog: WLOG, WH, WS, wsim: seq => { const keep = JSON.stringify(WS), lg = WLOG.length, out = []; Object.assign(WS, { acc: 0, t: -1e9, dir: 0, at: -1e9, fdir: 0, fired: false, lo: 0, peak: 0, rise: 0, win: [], b: [], ds: -1e9, cnt: 0 }); seq.forEach(([t, d]) => { const r = wheelStep(t, d); if (r) out.push([Math.round(t), r, WLOG[WLOG.length - 1][2]]); }); WLOG.length = lg; Object.assign(WS, JSON.parse(keep)); return out; }, gate: () => GATE, o9: O9, o10: O10, home: () => goHome(), theme: d => setTheme(d), day: () => DAY, lbx: LBX, hbx: () => HBX, kbx: () => KBX, hold: v => { HOLDU = v; },   // test: hold the look like ?look= does
   // test: where 08's Binance logo lands on screen [left, right, top, bottom]
   dk8: v => { DK8 = v; }, bs: v => { BSZ = v; }, M8, snap: v => { LOOKQ = v; smx = v; },

@@ -1,15 +1,16 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme-key="3dt.theme.site">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="robots" content="noindex">
 <title>3dtrading · 登录 / 注册</title>
-<script>/* day / night follows the website (localStorage '3dt.theme'); night is the default */
-try{document.documentElement.dataset.theme=localStorage.getItem('3dt.theme')==='day'?'day':'night'}catch(e){document.documentElement.dataset.theme='night'}</script>
-<link rel="stylesheet" href="page.css?v=20261113-r31">
+<script>/* r42: log-in / sign-up looks like the website it is entered from: same day / night key as the website ('3dt.theme.site', default night) and the same colours.
+   The dashboard keeps its own '3dt.theme.app'. The old shared '3dt.theme' is migrated exactly as the website does. */
+try{var L=localStorage,o=L.getItem('3dt.theme');if(o!==null){if(L.getItem('3dt.theme.site')===null)L.setItem('3dt.theme.site',o==='day'?'day':'night');L.removeItem('3dt.theme')}document.documentElement.dataset.theme=L.getItem('3dt.theme.site')==='day'?'day':'night'}catch(e){document.documentElement.dataset.theme='night'}</script>
+<link rel="stylesheet" href="page.css?v=20261113-r38">
 <style>
-#orb{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
+#orb,#gx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}
 body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(120% 80% at 80% 10%,rgba(47,220,188,.07),transparent 55%),linear-gradient(180deg,transparent 60%,rgba(0,0,0,.5))}
 .bar{background:rgba(7,9,10,.88)}
 .wrap{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);min-height:calc(100svh - var(--barH) - env(safe-area-inset-top))}
@@ -91,9 +92,9 @@ form .note{margin-bottom:16px}
 }
 @media (prefers-reduced-motion:reduce){.hero .dodo{animation:none}}
 </style>
-<link rel="stylesheet" href="day.css?v=20261113-r31">
+<link rel="stylesheet" href="day.css?v=20261113-r38">
 <style>/* r22 UI polish over the r21 planet layout (planet position, size and depth unchanged) */
-#orb{position:fixed}
+#orb,#gx{position:fixed}
 .bar{background:linear-gradient(180deg,rgba(7,9,10,.86),rgba(7,9,10,.6));-webkit-backdrop-filter:saturate(1.3) blur(16px);backdrop-filter:saturate(1.3) blur(16px)}
 .bar .logo{padding:6px 0;transition:opacity .2s}
 .bar .logo:hover{opacity:.82}
@@ -131,7 +132,7 @@ form .note{margin-bottom:16px}
 #go:active{transform:translateY(1px)}
 #go:focus-visible{outline:2px solid #fff;outline-offset:3px}
 .foot{margin-top:20px}
-@media (max-width:1180px){.pts{grid-template-columns:1fr;max-width:420px;border-top:0}.pts li,.pts li+li{display:flex;gap:12px;padding:12px 0;margin:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.07)!important}.pts li b{margin:0 0 2px}}
+@media (max-width:1180px){.pts{grid-template-columns:1fr;max-width:420px;border-top:0}html[data-theme] .pts li,html[data-theme] .pts li+li{display:flex;gap:12px;padding:12px 0;margin:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.07)!important}.pts li b{margin:0 0 2px}}
 @media (max-width:900px){
   .pts{display:none}
   .hero{padding:30px 22px 6px}
@@ -143,6 +144,28 @@ form .note{margin-bottom:16px}
   .card .inp input{height:50px;font-size:16px}
 }
 @media (prefers-reduced-motion:reduce){.tabs .ink,#go,.pts .k{transition:none}}
+/* r41 · a lower, lighter card: no stepper, no name field, one short agreement line whose full text opens in place */
+.card{padding:26px 28px 20px}
+.tabs{margin-bottom:20px}
+.card h2{font-size:23px;margin-bottom:4px}
+.card .sub{font-size:13.5px;margin-bottom:16px}
+.card .fld{margin-bottom:12px}
+.card .inp input{height:46px}
+.fld>span{margin-bottom:6px}
+.meter{margin-top:6px}
+.agl{display:flex;align-items:flex-start;gap:10px;justify-content:space-between}
+.agl .chk{flex:1;font-size:13.5px;line-height:1.5}
+.agx{flex:none;font-size:13px;white-space:nowrap;padding-top:1px}
+.agdoc{margin:10px 0 2px;padding:12px 14px;border-radius:12px;max-height:min(260px,38svh);overflow:auto;font-size:13px;line-height:1.6;color:var(--ink2);background:rgba(255,255,255,.035);box-shadow:inset 0 0 0 1px var(--line)}
+.agdoc b{display:block;color:var(--ink);font-size:13.5px}.agdoc small{display:block;color:var(--warn);margin:2px 0 6px}
+.agdoc ol{margin:0;padding-left:18px}.agdoc li+li{margin-top:4px}
+.demo-l{margin:4px 0 12px;font-size:12.5px;line-height:1.5;color:var(--ink3)}
+#go{height:48px}
+.foot{margin-top:14px}
+@media (max-width:900px){.card{padding:18px 16px 16px}.tabs{margin-bottom:16px}.card h2{font-size:21px}.card .sub{font-size:13.5px;margin-bottom:12px}.card .inp input{height:46px}.side{padding:14px 12px 28px}}
+@media (max-width:900px) and (max-height:760px){.hero{display:none}.side{padding-top:10px}}
+html[data-theme=day] .agdoc{background:#f6f7f7;box-shadow:inset 0 0 0 1px rgba(15,23,30,.08)}
+/* logo size and inset: see r41.css (shared by every account page) */
 /* day: light sky, white sheet, the same hierarchy */
 html[data-theme=day] .bar{background:linear-gradient(180deg,rgba(241,240,239,.92),rgba(241,240,239,.66))}
 html[data-theme=day] .eyebrow{color:var(--brandD)}
@@ -173,27 +196,121 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#06090b">
-<script>(function(){function tc(){var m=document.querySelector('meta[name=theme-color]');if(m)m.content=document.documentElement.dataset.theme==='day'?'#f1f0ef':'#06090b'}tc();addEventListener('td:theme',tc)})()</script>
-</head>
+<script>(function(){function tc(){var m=document.querySelector('meta[name=theme-color]');if(m)m.content=document.documentElement.dataset.theme==='day'?'#ffffff':'#06090b'}tc();addEventListener('td:theme',tc)})()</script>
+<link rel="stylesheet" href="r41.css?v=r41">
+<style>/* r42 · website colours, no header, floating logo at the website's coordinates */
+:root{--barH:0px}
+html[data-theme=night]{--bg:#06090b}
+html,body{background:var(--bg)}
+body{padding-top:0}
+.top{position:absolute;z-index:5;top:0;left:0;right:0;height:84px;display:flex;align-items:center;gap:0;padding:0 max(clamp(20px,4vw,56px),env(safe-area-inset-right)) 0 max(clamp(20px,4vw,56px),env(safe-area-inset-left));pointer-events:none}
+.top>*{pointer-events:auto}
+.top .logo{display:block;line-height:0;margin-right:auto;border-radius:6px;transition:opacity .2s}
+.top .logo:hover{opacity:.82}
+.top .logo img{height:34px;width:auto;display:block}
+.top .logo .lg-d{display:none}
+html[data-theme=day] .top .logo .lg-n{display:none}
+html[data-theme=day] .top .logo .lg-d{display:block}
+.top .logo:focus-visible{outline:2px solid var(--brand);outline-offset:6px}
+.wrap{min-height:100svh;padding-top:84px;box-sizing:border-box}
+.hero{padding-top:clamp(20px,6vh,84px)}
+@media (min-width:901px){.side{padding-top:16px;padding-bottom:32px}}
+@media (max-width:760px){
+  .top{height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+  .top .logo img{height:22px}
+}
+@media (max-width:900px){.wrap{padding-top:calc(52px + env(safe-area-inset-top))}.hero{padding-top:22px}}
+@media (min-width:761px) and (max-width:900px){.wrap{padding-top:84px}}
+/* the website's night is #06090b; the card and fields keep their glass on it. Day is the website's white */
+html[data-theme=day] body::after{background:radial-gradient(70% 60% at 6% 0%,rgba(255,206,120,.16),transparent 60%),radial-gradient(90% 70% at 100% 0%,rgba(47,220,188,.06),transparent 60%),linear-gradient(180deg,transparent 55%,rgba(10,138,115,.045))}
+html[data-theme=day] .card{box-shadow:0 0 0 1px rgba(15,23,30,.06),0 30px 70px -34px rgba(15,35,45,.32),0 2px 10px -4px rgba(15,35,45,.06)}
+</style>
+<style>/* r44 · one scene, day and night alike: no card shell (the form stands on a soft local veil), a short left column
+   (title, one line, three short notes), a planet that reads as a sphere below the copy, a galaxy that flows toward it.
+   Day is bright and airy (pale sky to white, no grey haze); night is calmer and more legible. */
+html[data-theme=night]{--ink2:#c3ccc9;--ink3:#97a3a0}
+html[data-theme=day]{--bg:#f6fbfd;--ink2:#3c4a52;--ink3:#56646b}
+html[data-theme=day],html[data-theme=day] body{background:linear-gradient(180deg,#eef8fc 0%,#f8fcfd 46%,#ffffff 100%)}
+body::after{background:radial-gradient(70% 60% at 85% 0%,rgba(47,220,188,.06),transparent 60%),linear-gradient(180deg,transparent 70%,rgba(0,0,0,.28))}
+html[data-theme=day] body::after{background:radial-gradient(60% 55% at 0% 0%,rgba(178,226,250,.5),transparent 65%),radial-gradient(55% 50% at 100% 0%,rgba(180,242,230,.42),transparent 62%),radial-gradient(70% 60% at 50% 110%,rgba(200,236,248,.45),transparent 70%)}
+/* left column */
+.hero{padding:clamp(28px,9vh,104px) clamp(32px,6vw,104px) 24px}
+.hero h1{font-size:clamp(40px,4.3vw,62px);line-height:1.06;letter-spacing:-.034em;margin:0 0 16px;font-weight:760}
+.hero h1 em{background:linear-gradient(92deg,#d9c48c 0%,#8fe9d3 32%,#2fdcbc 78%);-webkit-background-clip:text;background-clip:text;color:transparent}
+html[data-theme=day] .hero h1{color:#0f1c22}
+html[data-theme=day] .hero h1 em{background:linear-gradient(92deg,#0a7f6b 0%,#0f9a82 55%,#16b395 100%);-webkit-background-clip:text;background-clip:text}
+.hero p.lede{font-size:17px;line-height:1.6;margin:0 0 26px;max-width:26em;color:var(--ink2)}
+html[data-theme=day] .hero p.lede{color:#3c4a52}
+.pts{display:flex;flex-direction:column;flex-wrap:nowrap;gap:10px;max-width:620px;border:0!important;grid-template-columns:none}
+html[data-theme] .pts li,html[data-theme] .pts li+li{display:flex;align-items:center;gap:9px;padding:0!important;margin:0!important;box-shadow:none!important;font-size:14px;line-height:1.4;color:var(--ink)}
+.pts li b{margin:0!important;font-size:14px;font-weight:600;color:inherit}
+.pts .k{width:26px;height:26px;border-radius:8px;flex:none}
+.pts .k svg{width:15px;height:15px}
+.pts li:nth-child(2) .k{background:rgba(47,220,188,.12);color:var(--brand)}
+html[data-theme=day] .pts li{color:#1d2a30}
+html[data-theme=day] .pts .k{background:rgba(10,138,115,.1)!important;color:var(--brandD)!important}
+/* the form: no shell, no thick shadow — a soft veil behind it keeps it legible over the galaxy */
+.side{position:relative}
+.card,html[data-theme=day] .card{background:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;box-shadow:none!important;border-radius:0;padding:8px 4px 4px;max-width:400px}
+.card::before{content:"";position:absolute;left:-60px;right:-60px;top:-50px;bottom:-50px;z-index:-1;height:auto;pointer-events:none;background:radial-gradient(closest-side,rgba(6,9,11,.72),rgba(6,9,11,.42) 60%,transparent)}
+html[data-theme=day] .card::before{background:radial-gradient(closest-side,rgba(255,255,255,.82),rgba(255,255,255,.5) 60%,transparent)}
+/* login / sign-up: two words with a sliding underline, not a filled pill */
+.tabs,html[data-theme=day] .tabs{display:flex;gap:26px;height:auto;padding:0;margin:0 0 22px;border-radius:0;background:none;box-shadow:none}
+.tabs button{height:36px;padding:0;font-size:17px;font-weight:650;border-radius:0;color:var(--ink3)}
+.tabs button[aria-selected="true"],html[data-theme=day] .tabs button[aria-selected="true"]{color:var(--ink)}
+.tabs .ink,html[data-theme=day] .tabs .ink{top:auto;bottom:-2px;left:0;height:2px;width:var(--iw,36px);border-radius:2px;background:var(--brand);box-shadow:none;transform:translateX(var(--ix,0px));transition:transform .35s var(--ease),width .35s var(--ease)}
+html[data-theme=day] .tabs .ink{background:var(--brandD)}
+.tabs[data-mode="register"] .ink{transform:translateX(var(--ix,0px))}
+.card h2{font-size:22px;margin:0 0 4px}
+.card .sub{font-size:14px;margin:0 0 18px;color:var(--ink2)}
+.fld>span{color:var(--ink2)}
+.card .inp input{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.14)}
+html[data-theme=day] .card .inp input{background:rgba(255,255,255,.92);border-color:rgba(15,40,50,.14)}
+#go,#go:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 18px -12px rgba(47,220,188,.6)}
+html[data-theme=day] #go,html[data-theme=day] #go:hover{box-shadow:0 8px 18px -12px rgba(10,138,115,.55)}
+.row2{margin:-2px 0 16px}
+/* the password-free demo entry, under the form */
+.demo-go{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:16px;font-size:13.5px;color:var(--ink2)}
+.demo-btn{appearance:none;border:0;background:none;padding:6px 2px;display:inline-flex;align-items:center;gap:6px;font:inherit;font-weight:650;color:var(--brand);cursor:pointer;border-radius:8px}
+.demo-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .25s var(--ease)}
+.demo-btn:hover svg{transform:translateX(3px)}
+.demo-btn:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.demo-btn[disabled]{opacity:.5;cursor:default}
+.demo-go small{font-size:12.5px;color:var(--ink3)}
+html[data-theme=day] .demo-btn{color:var(--brandD)}
+.card.signed .demo-go{display:none}
+.done .who{background:rgba(127,127,127,.08)}
+@media (min-width:901px){.wrap{min-height:100svh;height:100svh;overflow:hidden}.side{padding-top:0;padding-bottom:20px;align-items:center}}
+@media (min-width:901px) and (max-height:620px){.wrap{height:auto;overflow:visible}}
+@media (max-width:900px){
+  .hero{padding:16px 20px 0}
+  .hero h1{font-size:28px;margin:0 0 6px;max-width:none}.hero h1 br{display:none}
+  .hero p.lede{font-size:14.5px;margin:0}
+  .card{padding:4px 2px 0}.card::before{left:-20px;right:-20px}.side{overflow-x:clip}
+  .side{padding:14px 18px 28px}
+  .tabs{margin-bottom:14px}
+  .card h2{font-size:20px}.card .sub{margin-bottom:12px}
+}
+@media (max-width:900px) and (max-height:760px){.hero{display:block}.hero p.lede{display:none}.side{padding-top:6px}}
+@media (prefers-reduced-motion:reduce){.tabs .ink,.demo-btn svg{transition:none}}
+</style>
 <body>
-<canvas id="orb" aria-hidden="true"></canvas>
-<header class="bar">
-  <a class="logo" href="#" data-href="site" data-i18n-attr="aria-label:auth.toSite"><img class="lg-n" src="assets/3dtrading-logo-white.svg" alt="3dtrading" width="91" height="22"><img class="lg-d" src="assets/3dtrading-logo.svg" alt="3dtrading" width="91" height="22"></a>
-  <span class="sp"></span>
-  <span class="demo-pill" data-i18n="auth.demoPill">交互演示环境 · 未连接真实后端</span>
+<canvas id="gx" aria-hidden="true"></canvas><canvas id="orb" aria-hidden="true"></canvas>
+<!-- r42 · no header: the logo stands on its own at the website's exact place and size; day / night and language sit at the top right -->
+<div class="top">
+  <a class="logo" href="#" data-href="site" data-i18n-attr="aria-label:auth.toSite"><img class="lg-n" src="assets/3dtrading-logo-white.svg" alt="3dtrading" width="141" height="34"><img class="lg-d" src="assets/3dtrading-logo.svg" alt="3dtrading" width="141" height="34"></a>
+  <button id="thm"></button>
   <div id="lang"></div>
-</header>
+</div>
 
 <main class="wrap">
   <section class="hero" aria-labelledby="hh">
-    <div class="dodo" id="dodo" aria-hidden="true"></div>
-    <p class="eyebrow" data-i18n="auth.eyebrow">3dtrading 收益增强策略</p>
     <h1 id="hh" data-i18n-html="auth.h1">你的账户，<br><em>我们的策略</em></h1>
-    <p class="lede" data-i18n="auth.lede">连接你本人的币安子账户，在约定 API 权限边界内执行多空配对与循环配置，争取扩大合资格计奖资产规模。</p>
+    <p class="lede" data-i18n="auth.lede">连接你本人的币安子账户，策略在你自己的账户里运行。</p>
     <ul class="pts">
-      <li><span class="k"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/></svg></span><span><b data-i18n="auth.p1t">本人子账户自持</b><span data-i18n="auth.p1">仅按约定开放必要查询与交易权限，永久关闭提款及跨账户转账。</span></span></li>
-      <li><span class="k"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l2 2M14 9l2 2"/></svg></span><span><b data-i18n="auth.p2t">密钥加密隔离</b><span data-i18n="auth.p2">API 凭证全程加密隔离存储，亦支持将执行程序独立部署于你的私有云环境。</span></span></li>
-      <li><span class="k"><svg viewBox="0 0 24 24"><path d="M12 3.5 5 6.5v5c0 4.3 3 7.8 7 9 4-1.2 7-4.7 7-9v-5z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span><span><b data-i18n="auth.p3t">白名单 IP 唯一校验</b><span data-i18n="auth.p3">币安端强制绑定受信任服务器 IP 白名单，任何外部非授权地址均无法调用。</span></span></li>
+      <li><span class="k"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/></svg></span><b data-i18n="auth.p1t">资金留在你本人的子账户</b></li>
+      <li><span class="k"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l2 2M14 9l2 2"/></svg></span><b data-i18n="auth.p2t">只用你授权的 API 权限</b></li>
+      <li><span class="k"><svg viewBox="0 0 24 24"><path d="M12 3.5 5 6.5v5c0 4.3 3 7.8 7 9 4-1.2 7-4.7 7-9v-5z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span><b data-i18n="auth.p3t">随时可在币安删除 API</b></li>
     </ul>
   </section>
 
@@ -206,13 +323,9 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
       </div>
 
       <form id="f" novalidate role="tabpanel" aria-labelledby="t-login">
-        <p class="steps" data-only="register"><i class="on" data-n="1" data-i18n="auth.s1">创建账号</i><s></s><i data-n="2" data-i18n="auth.s2">核对子账户授权</i><s></s><i data-n="3" data-i18n="auth.s3">启动策略演示</i></p>
         <h2 id="ft"></h2>
         <p class="sub" id="fs"></p>
         <div class="note bad alert" id="alert" role="alert"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg><span id="alertT"></span></div>
-
-        <label class="fld" data-only="register" id="fName"><span><span data-i18n="auth.name">怎么称呼你</span><em data-i18n="auth.optional">选填</em></span>
-          <div class="inp"><input id="name" name="name" autocomplete="nickname" maxlength="40" data-i18n-attr="placeholder:auth.namePh"></div></label>
 
         <label class="fld" id="fEmail"><span data-i18n="auth.email">邮箱</span>
           <div class="inp"><input id="email" name="email" type="email" inputmode="email" autocomplete="email" required data-i18n-attr="placeholder:auth.emailPh"></div>
@@ -233,15 +346,15 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
         <div class="note info fp" id="fp"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg><span data-i18n="auth.forgotNote">演示环境还不能找回密码。正式上线后会通过邮箱验证码重置。</span></div>
 
         <div class="fld" data-only="register" id="fAgree">
-          <label class="chk"><input type="checkbox" id="agree"><span data-i18n-html="auth.agree">我已阅读并同意<b>《合作服务协议》</b>与<b>《风险披露》</b>：知悉资金留存本人子账户不代表交易不会亏损；账面余额增加不等于净权益翻倍；历史表现与条件测算不代表未来收益，退出须按四步标准流程执行。</span></label>
+          <div class="agl"><label class="chk"><input type="checkbox" id="agree" aria-describedby="agDoc"><span data-i18n="auth.agree">我已阅读并同意《合作服务协议与风险披露》</span></label>
+            <button type="button" class="link agx" id="agOpen" aria-expanded="false" aria-controls="agDoc" data-i18n="auth.agOpen">查看全文</button></div>
+          <div class="agdoc" id="agDoc" hidden tabindex="0" role="region" data-i18n-attr="aria-label:auth.agTitle"><b id="agT"></b><small id="agN"></small><ol id="agL"></ol></div>
           <div class="msg" id="mAgree"></div>
         </div>
 
-        <div class="note"><svg viewBox="0 0 24 24"><path d="M12 3.5 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.01"/></svg><span data-i18n="auth.demo">演示：不会创建真实账号，也不会校验或保存密码。邮箱只保存在这台电脑的浏览器里。</span></div>
-
         <button class="btn pri block" type="submit" id="go"></button>
-        <p class="foot" id="swap"></p>
       </form>
+      <div class="demo-go" id="demoBox"><span data-i18n="auth.demoOr">先看看？</span><button type="button" class="demo-btn" id="demoGo"><span data-i18n="auth.demoGo">进入演示</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button><small data-i18n="auth.demoNote">无需密码，示例数据</small></div>
 
       <div class="done" id="done" aria-live="polite">
         <h2 data-i18n="auth.signedT">你已登录</h2>
@@ -255,7 +368,8 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
   </section>
 </main>
 
-<script src="td-account.js?v=20261113-r31"></script>
+<script src="td-account.js?v=r44"></script>
+<script src="api-adapter.js?v=r43"></script>
 <script>
 (function () {
   'use strict';
@@ -265,56 +379,55 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
       'auth.title': '3dtrading · 登录 / 注册', 'auth.toSite': '回到 3dtrading 官网', 'auth.demoPill': '交互演示环境 · 未连接真实后端', 'auth.tabs': '登录或注册',
       'auth.h1': '你的账户，<br><em>我们的策略</em>',
       'auth.eyebrow': '3dtrading 收益增强策略', 'auth.s1': '创建账号', 'auth.s2': '核对子账户授权', 'auth.s3': '启动策略演示',
-      'auth.lede': '连接你本人的币安子账户，在约定 API 权限边界内执行多空配对与循环配置，争取扩大合资格计奖资产规模。',
-      'auth.p1t': '本人子账户自持', 'auth.p1': '仅按约定开放必要查询与交易权限，永久关闭提款及跨账户转账。',
-      'auth.p2t': '密钥加密隔离', 'auth.p2': 'API 凭证全程加密隔离存储，亦支持将执行程序独立部署于你的私有云环境。',
-      'auth.p3t': '白名单 IP 唯一校验', 'auth.p3': '币安端强制绑定受信任服务器 IP 白名单，任何外部非授权地址均无法调用。',
-      'auth.loginT': '登录演示账号', 'auth.loginS': '登录后继续查看你的专户策略与风控状态。',
-      'auth.regT': '创建演示账号', 'auth.regS': '下一步可查看币安子账户标准授权引导，也可先跳过直接进入演示控制台。',
+      'auth.lede': '连接你本人的币安子账户，策略在你自己的账户里运行。',
+      'auth.p1t': '资金留在你本人的子账户', 'auth.p2t': '只用你授权的 API 权限', 'auth.p3t': '随时可在币安删除 API',
+      'auth.loginT': '欢迎回来', 'auth.loginS': '登录后查看你的账户与策略状态。',
+      'auth.demoOr': '先看看？', 'auth.demoGo': '进入演示', 'auth.demoNote': '无需密码，示例数据', 'auth.demoName': '演示用户', 'auth.e.demo': '演示没有打开，请再试一次。',
+      'auth.regT': '创建账号', 'auth.regS': '注册后直接进入后台，币安账户可以稍后添加。',
       'auth.name': '怎么称呼你', 'auth.optional': '选填', 'auth.namePh': '例如 Jasper',
       'auth.email': '邮箱', 'auth.emailPh': 'name@example.com',
       'auth.pw': '密码', 'auth.pwRule': '至少 8 位，含字母和数字', 'auth.pw2': '再输入一次密码', 'auth.show': '显示或隐藏密码',
       'auth.forgot': '忘记密码？', 'auth.forgotNote': '演示环境还不能找回密码。正式上线后会通过邮箱验证码重置。',
-      'auth.agree': '我已阅读并同意<b>《合作服务协议》</b>与<b>《风险披露》</b>：知悉资金留存本人子账户不代表交易不会亏损；账面余额增加不等于净权益翻倍；历史表现与条件测算不代表未来收益，退出须按四步标准流程执行。',
-      'auth.demo': '演示：不会创建真实账号，也不会校验或保存密码。邮箱只保存在这台电脑的浏览器里。',
-      'auth.goLogin': '登录', 'auth.goReg': '创建演示账号',
-      'auth.swapToReg': '还没有账号？<button type="button" class="link" data-to="register">注册</button>',
-      'auth.swapToLogin': '已经有账号？<button type="button" class="link" data-to="login">登录</button>',
+      'auth.agree': '我已阅读并同意《合作服务协议与风险披露》', 'auth.agOpen': '查看全文', 'auth.agClose': '收起', 'auth.agTitle': '合作服务协议与风险披露',
+      'auth.r1': '资金留存在本人子账户，不代表交易不会亏损。', 'auth.r2': '账面余额增加不等于净权益翻倍。', 'auth.r3': '历史表现与条件测算不代表未来收益。', 'auth.r4': '退出须按四步标准流程执行。',
+      'auth.r5': '参与条件以 3dtrading 当前方案说明为准（此前方案：参与资金不低于 20 万 USDT、币安账户达到 VIP2）。注册时不再填写资金规模和风格，但接入前仍按实际要求核对，不因注册而免除。',
+      'auth.goLogin': '登录', 'auth.goReg': '同意并注册',
       'auth.e.email': '请输入有效的邮箱地址。', 'auth.e.pw': '请输入密码。', 'auth.e.pwRule': '密码至少 8 位，并同时包含字母和数字。',
-      'auth.e.pw2': '两次输入的密码不一致。', 'auth.e.agree': '请先阅读并同意合作服务协议和风险披露。',
+      'auth.e.pw2': '两次输入的密码不一致。', 'auth.e.agree': '请先勾选同意合作服务协议与风险披露。',
       'auth.e.exists': '这个邮箱已经注册过了。<button type="button" class="link" data-to="login">直接登录</button>',
       'auth.e.notFound': '这台电脑上还没有用这个邮箱注册过（演示账号只存在本机）。<button type="button" class="link" data-to="register">去注册</button>',
-      'auth.signedT': '你已登录演示账号', 'auth.switchUser': '换一个账号', 'auth.cont': '继续', 'auth.toBind': '去连接币安', 'auth.toApp': '进入控制台'
+      'auth.signedT': '你已登录', 'auth.switchUser': '换一个账号', 'auth.cont': '继续', 'auth.toBind': '去连接币安', 'auth.toApp': '进入控制台'
     },
     en: {
       'auth.title': '3dtrading · Log in / Sign up', 'auth.toSite': 'Back to the 3dtrading website', 'auth.demoPill': 'Interactive demo · No live backend', 'auth.tabs': 'Log in or sign up',
-      'auth.h1': 'Your account,<br><em>our strategy</em>',
+      'auth.h1': 'Your account, <br><em>our strategy</em>',
       'auth.eyebrow': '3dtrading yield enhancement', 'auth.s1': 'Sign up', 'auth.s2': 'Verify sub-account API', 'auth.s3': 'Launch demo',
-      'auth.lede': 'Connect your own Binance sub-account. Execute delta-paired yield enhancement within agreed API boundaries while principal stays in your account.',
-      'auth.p1t': 'Held in your sub-account', 'auth.p1': 'Only agreed read and trading permissions are enabled. Withdrawals and cross-account transfers remain permanently off.',
-      'auth.p2t': 'Encrypted key isolation', 'auth.p2': 'API credentials are stored in encrypted isolation, with dedicated private cloud deployment available for full environment control.',
-      'auth.p3t': 'Strict IP whitelisting', 'auth.p3': 'Binance only accepts requests from whitelisted server IPs, blocking any unauthorized external calls.',
-      'auth.loginT': 'Log in to the demo', 'auth.loginS': 'Log in to view your sub-account strategy and risk metrics.',
-      'auth.regT': 'Create a demo account', 'auth.regS': 'Next, preview the standard Binance sub-account setup guide, or skip ahead to explore the demo console.',
+      'auth.lede': 'Connect your own Binance sub-account; the strategy runs inside your own account.',
+      'auth.p1t': 'Funds stay in your own sub-account', 'auth.p2t': 'Only the API permissions you grant', 'auth.p3t': 'Delete the API key on Binance anytime',
+      'auth.loginT': 'Welcome back', 'auth.loginS': 'Log in to see your account and strategy status.',
+      'auth.demoOr': 'Just looking?', 'auth.demoGo': 'Open the demo', 'auth.demoNote': 'No password, sample data', 'auth.demoName': 'Demo user', 'auth.e.demo': 'The demo did not open. Please try again.',
+      'auth.regT': 'Create an account', 'auth.regS': 'You go straight to the dashboard. Add your Binance account whenever you like.',
       'auth.name': 'What should we call you', 'auth.optional': 'Optional', 'auth.namePh': 'e.g. Jasper',
       'auth.email': 'Email', 'auth.emailPh': 'name@example.com',
       'auth.pw': 'Password', 'auth.pwRule': '8+ characters, letters and numbers', 'auth.pw2': 'Repeat password', 'auth.show': 'Show or hide password',
       'auth.forgot': 'Forgot password?', 'auth.forgotNote': 'Password reset is not available in this demo. After launch it will use an email code.',
-      'auth.agree': 'I have read and agree to the <b>Service Terms</b> and <b>Risk Disclosure</b>: keeping funds in my sub-account does not eliminate trading loss risk; gross balance expansion does not equal net equity doubling; past/modeled figures do not guarantee future returns, and exits follow the 4-step unwinding protocol.',
-      'auth.demo': 'Demo: no real account is created and no password is checked or stored. Your email stays in this browser only.',
-      'auth.goLogin': 'Log in', 'auth.goReg': 'Create demo account',
-      'auth.swapToReg': 'New here? <button type="button" class="link" data-to="register">Sign up</button>',
-      'auth.swapToLogin': 'Already have an account? <button type="button" class="link" data-to="login">Log in</button>',
+      'auth.agree': 'I have read and agree to the Service Terms & Risk Disclosure', 'auth.agOpen': 'Read', 'auth.agClose': 'Hide', 'auth.agTitle': 'Service Terms & Risk Disclosure',
+      'auth.r1': 'Keeping funds in my own sub-account does not eliminate trading loss risk.', 'auth.r2': 'A larger gross balance does not mean net equity has doubled.', 'auth.r3': 'Past and modelled figures do not guarantee future returns.', 'auth.r4': 'Exits follow the 4-step standard unwinding protocol.',
+      'auth.r5': 'Eligibility follows the current 3dtrading plan (previously: at least 200,000 USDT committed and a Binance account at VIP2). Capital range and style are no longer asked at sign-up, but eligibility is still checked before connecting; signing up does not waive it.',
+      'auth.goLogin': 'Log in', 'auth.goReg': 'Agree and sign up',
       'auth.e.email': 'Enter a valid email address.', 'auth.e.pw': 'Enter your password.', 'auth.e.pwRule': 'Use at least 8 characters with both letters and numbers.',
-      'auth.e.pw2': 'The passwords do not match.', 'auth.e.agree': 'Please read and accept the Service Terms and the Risk Disclosure.',
+      'auth.e.pw2': 'The passwords do not match.', 'auth.e.agree': 'Please tick to accept the Service Terms & Risk Disclosure.',
       'auth.e.exists': 'This email is already registered. <button type="button" class="link" data-to="login">Log in instead</button>',
       'auth.e.notFound': 'No account with this email on this computer yet (demo accounts live only in this browser). <button type="button" class="link" data-to="register">Sign up</button>',
-      'auth.signedT': 'You are signed in to the demo', 'auth.switchUser': 'Use another account', 'auth.cont': 'Continue', 'auth.toBind': 'Connect Binance', 'auth.toApp': 'Open dashboard'
+      'auth.signedT': 'You are signed in', 'auth.switchUser': 'Use another account', 'auth.cont': 'Continue', 'auth.toBind': 'Connect Binance', 'auth.toApp': 'Open dashboard'
     }
   });
 
   var qs = new URLSearchParams(location.search);
-  var mode = qs.get('mode') === 'register' ? 'register' : 'login';
+  /* r42 · ?mode=register / ?mode=login are kept as asked. The generic entry (no mode, e.g. the website's "Log in / Sign up" and its door)
+     opens on Log in for someone who has signed in or out on this browser before, and on Sign up for a first visit. */
+  var qm = qs.get('mode');
+  var mode = qm === 'register' || qm === 'login' ? qm : (A.returning() ? 'login' : 'register');
   var next = safeNext(qs.get('next'));
   function safeNext(n) {
     if (!n) return '';
@@ -322,16 +435,22 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
   }
   function dest() {
     if (next && next.indexOf('auth.html') < 0) return next;
-    return A.accounts().list.length ? A.routes.app : A.routes.bind;
+    return A.routes.app;
   }
 
-  $('#dodo').innerHTML = A.dodo();
   $('[data-href="site"]').href = A.routes.site;
   A.mountLangToggle($('#lang'), { theme: function () { return document.documentElement.dataset.theme === 'day' ? 'light' : 'dark'; } });
+  A.mountThemeToggle($('#thm'));
 
+  // r44 · the underline follows the selected word; re-measured after fonts load, on resize and on language change
+  function inkSync() { var tb = $('#t-' + mode), tk = $('#tabs'); if (tb && tk) { tk.style.setProperty('--ix', tb.offsetLeft + 'px'); tk.style.setProperty('--iw', tb.offsetWidth + 'px'); } }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(inkSync);
+  window.addEventListener('resize', inkSync);
+  if (window.ResizeObserver) { var ro = new ResizeObserver(function () { inkSync(); }); ['#t-login', '#t-register'].forEach(function (q) { var e = $(q); if (e) ro.observe(e); }); }
   function setMode(m, keep) {
     mode = m;
     $('#tabs').dataset.mode = m;
+    inkSync();
     ['login', 'register'].forEach(function (x) { var b = $('#t-' + x); b.setAttribute('aria-selected', x === m); b.tabIndex = x === m ? 0 : -1; });
     $('#f').setAttribute('aria-labelledby', 't-' + m);
     document.querySelectorAll('[data-only]').forEach(function (el) { el.hidden = el.getAttribute('data-only') !== m; });
@@ -346,7 +465,6 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
     $('#ft').textContent = A.t(mode === 'register' ? 'auth.regT' : 'auth.loginT');
     $('#fs').textContent = A.t(mode === 'register' ? 'auth.regS' : 'auth.loginS');
     $('#go').textContent = A.t(mode === 'register' ? 'auth.goReg' : 'auth.goLogin');
-    $('#swap').innerHTML = A.t(mode === 'register' ? 'auth.swapToLogin' : 'auth.swapToReg');
     // re-translate any visible error so switching language never leaves a stale message
     document.querySelectorAll('.fld.err .msg[data-k]').forEach(function (m) { m.textContent = A.t(m.dataset.k); });
     var al = $('#alertT'); if (al.dataset.k) al.innerHTML = A.t(al.dataset.k);
@@ -382,12 +500,20 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
   $('#f').addEventListener('submit', function (ev) {
     ev.preventDefault(); alertOff();
     if (!validate(false)) { var bad = document.querySelector('.fld.err input'); if (bad) bad.focus(); return; }
-    var email = $('#email').value.trim();
-    var r = mode === 'register' ? A.register({ email: email, name: $('#name').value }) : A.login({ email: email });
-    // the password never leaves this form: clear it right away
+    var email = $('#email').value.trim(), m = mode, go = $('#go');
+    // the password never leaves this form and is never stored: clear it before anything else happens
     $('#pw').value = ''; $('#pw2').value = ''; $('#meter').dataset.s = 0;
-    if (!r.ok) { alertOn(r.code === 'exists' ? 'auth.e.exists' : 'auth.e.notFound'); return; }
-    location.href = mode === 'register' ? A.routes.bind + '?first=1' : dest();
+    if (go) go.disabled = true;
+    var call = m === 'register' ? TDApi.register({ email: email }) : TDApi.login({ email: email });
+    call.then(function () {
+      // r41 · new accounts: the box ticked above is the agreement (recorded with its version), then straight into the dashboard.
+      // The dashboard shows the one-time "no account yet" prompt because of ?welcome=1; a normal log-in never carries it.
+      if (m !== 'register') { location.href = dest(); return; }
+      return TDApi.acceptAgreement({ version: AG && AG.version }).then(function () { location.href = welcomeUrl(); });
+    }).catch(function (e) {
+      if (go) go.disabled = false;
+      alertOn(e && e.code === 'EMAIL_EXISTS' ? 'auth.e.exists' : 'auth.e.notFound');
+    });
   });
 
   document.addEventListener('click', function (e) {
@@ -396,7 +522,27 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
     var eye = e.target.closest('[data-eye]'); if (eye) { var i = $('#' + eye.dataset.eye); i.type = i.type === 'password' ? 'text' : 'password'; eye.setAttribute('aria-pressed', i.type === 'text'); }
   });
   $('#tabs').addEventListener('keydown', function (e) { if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') { setMode(mode === 'login' ? 'register' : 'login'); $('#t-' + mode).focus(); } });
+  /* r44 · a password-free demo entry (replaces "log in to the demo account" with a password nobody checks): the same
+     local demo user the dashboard's own 「用演示账号进入」 uses, then straight to the dashboard. Nothing is sent anywhere. */
+  $('#demoGo').addEventListener('click', function () {
+    var b = this, o = { email: 'demo@3dtrading.local', name: A.t('auth.demoName') }; b.disabled = true;
+    TDApi.login(o).catch(function () { return TDApi.register(o); }).then(function () { location.href = dest(); }, function () { b.disabled = false; alertOn('auth.e.demo'); });
+  });
   $('#forgot').addEventListener('click', function () { $('#fp').classList.toggle('on'); });
+  function welcomeUrl() { var u = new URL(A.routes.app, location.href); u.searchParams.set('welcome', '1'); return u.pathname + u.search + u.hash; }
+  /* the full agreement and risk disclosure: same source as before (TDApi.getAgreement, still marked pending legal review) plus the four risk points
+     that used to be crammed into the checkbox line, and the eligibility note. Read in place; ticking is still a separate, explicit act */
+  var AG = null;
+  function agRender() {
+    if (!AG) return;
+    $('#agT').textContent = AG.title; $('#agN').textContent = AG.note;
+    var li = AG.sections.concat(['auth.r1', 'auth.r2', 'auth.r3', 'auth.r4', 'auth.r5'].map(function (k) { return A.t(k); }));
+    $('#agL').innerHTML = li.map(function (x) { return '<li>' + String(x).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }) + '</li>'; }).join('');
+    $('#agOpen').textContent = A.t($('#agDoc').hidden ? 'auth.agOpen' : 'auth.agClose');
+  }
+  function agLoad() { return TDApi.getAgreement().then(function (a) { AG = a; agRender(); }); }
+  $('#agOpen').addEventListener('click', function () { var d = $('#agDoc'); d.hidden = !d.hidden; this.setAttribute('aria-expanded', !d.hidden); agRender(); });
+  agLoad(); window.addEventListener(A.events.lang, agLoad);
 
   function signed() {
     var s = A.session(), c = $('#card');
@@ -405,11 +551,12 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
     $('#dIni').textContent = (s.name || s.email).slice(0, 1).toUpperCase();
     $('#dName').textContent = s.name; $('#dEmail').textContent = s.email;
     var d = dest(); $('#dGo').href = d;
-    $('#dGo').textContent = A.t(next ? 'auth.cont' : (A.accounts().list.length ? 'auth.toApp' : 'auth.toBind'));
+    $('#dGo').textContent = A.t(next ? 'auth.cont' : 'auth.toApp');
   }
-  $('#dOut').addEventListener('click', function () { A.logout({ redirect: false }); setMode(mode); $('#email').focus(); });
+  $('#dOut').addEventListener('click', function () { TDApi.logout({ redirect: false }).then(function () { setMode(mode); $('#email').focus(); }); });
 
   window.addEventListener(A.events.lang, text);
+  window.addEventListener(A.events.lang, function () { setTimeout(inkSync, 0); });
   window.addEventListener(A.events.session, signed);
   window.addEventListener('scroll', function () { document.body.classList.toggle('scrolled', scrollY > 4); }, { passive: true });
   // phones: a focused field is scrolled clear of the fixed bar and the keyboard (scroll-margin in page.css keeps it below the bar)
@@ -417,7 +564,7 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
     if (!matchMedia('(max-width:900px)').matches || !e.target.matches || !e.target.matches('input')) return;
     var el = e.target.closest('.fld,.chk') || e.target;
     setTimeout(function () {
-      var vv = window.visualViewport, r = el.getBoundingClientRect(), top = parseFloat(getComputedStyle(document.querySelector('.bar')).height) || 60;
+      var vv = window.visualViewport, r = el.getBoundingClientRect(), top = 8;
       var bottom = vv ? vv.height + vv.offsetTop : innerHeight;
       if (r.top < top + 8 || r.bottom > bottom - 12) el.scrollIntoView({ block: 'center' });
     }, 300);
@@ -427,155 +574,267 @@ html[data-theme=day] #go:focus-visible{outline-color:var(--brandD)}
 })();
 </script>
 <script>
-/* background planet (r22): same place, size and depth as the r21 orb (34276bc): desktop rises from the lower left
-   behind the text, phone sits large in the top right. Added on top: light from the upper left with a thin brand rim on
-   the lit edge, two tilted orbits whose far half passes behind the planet, slow particles and one gold satellite.
-   The added orbit details fade around the headline lines so the copy stays readable. Day has its own palette so the
-   sphere keeps its volume on the light sky. Reduced motion = one still frame. */
+/* background (r42).
+   NIGHT = the earliest night planet, restored as drawn in commit 28d0e36 (sova-account-r20, 2026-11-11, "Site v10 … redesigned
+   sign-in/sign-up", account/auth.html): 1100 Fibonacci dots, dark teal body #11191b → #06090a, a thin teal rim, seven gold
+   pillars, tilt −0.32, same size and place (desktop rises from the lower left, phone sits in the top right).
+   DAY = redrawn for the website's white: one light from the upper left (the same side as the warm glow in the page
+   background), a pearl body with a soft terminator, sky-coloured scattering on the lit limb, a shadow cast to the lower right.
+   AROUND IT (both themes, kept quiet): three depths of dust / stars that drift at different speeds and follow the pointer
+   by different amounts, a faint atmosphere, and one small far moon lit by the same light, so the empty space reads as space
+   with distance rather than a flat colour. Nothing is placed on the text lines. Reduced motion = one still frame.
+   r43: planet BODY and spin untouched (planetNight / planetDay body + dots + pillars, a = now * .00004 are byte-for-byte r42).
+   Only the light AROUND it changed: the hard teal ring / white limb stroke became a soft, light-facing atmosphere that
+   fades out over ~0.3R. Behind everything: a Milky Way band (clouds, a dark dust lane, dense star dust) that flows slowly
+   along its own length — clouds and stars at different speeds — and is faded wherever text sits. Day = a pale cool haze
+   with fine dark-teal dust. Reduced motion = still. */
 (function () {
   var cv = document.getElementById('orb'); if (!cv || !cv.getContext) return;
   var g = cv.getContext('2d'), W, H, dpr, cx, cy, R, mob;
   var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   function hash(i) { var x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
+  /* ---- 28d0e36, unchanged ---- */
   var N = 1100, P = [], GA = Math.PI * (3 - Math.sqrt(5));
   for (var i = 0; i < N; i++) { var y = 1 - 2 * (i + .5) / N, r = Math.sqrt(1 - y * y), t = GA * i; P.push([Math.cos(t) * r, y, Math.sin(t) * r]); }
   var GOLD = [[.3, .55, .2], [-.5, .62, .1], [.05, .8, -.2], [.62, .35, -.3], [-.2, .45, .55], [-.7, .3, -.35], [.4, .7, .45]];
   GOLD.forEach(function (q) { var l = Math.hypot(q[0], q[1], q[2]); q[0] /= l; q[1] /= l; q[2] /= l; });
-  var LX = -.5, LY = .62, LZ = .6; (function () { var l = Math.hypot(LX, LY, LZ); LX /= l; LY /= l; LZ /= l; })();
-  var LA = Math.atan2(LY, LX);
-  // orbits: radius (× R), tilt about x, roll about z, particle count, speed
-  var ORB = [{ a: 1.17, tx: .34, rz: -.2, n: 110, w: .00005 }, { a: 1.34, tx: .26, rz: -.13, n: 80, w: -.00003 }];
-  ORB.forEach(function (o, k) { o.ph = []; for (var j = 0; j < o.n; j++) o.ph.push([hash(j * 3.1 + k * 91) * Math.PI * 2, .4 + hash(j * 7.7 + k * 13) * .9, (hash(j * 5.3 + k) - .5) * .04]); });
-  var stars = [];
+  var tilt = -.32, ct = Math.cos(tilt), st = Math.sin(tilt);
+  function rot(p, a) { var c = Math.cos(a), s = Math.sin(a), x = p[0] * c + p[2] * s, z = -p[0] * s + p[2] * c, y = p[1]; return [x, y * ct - z * st, y * st + z * ct]; }
+  /* ---- day light: upper left, toward the viewer ---- */
+  var LX = -.55, LY = .6, LZ = .58; (function () { var l = Math.hypot(LX, LY, LZ); LX /= l; LY /= l; LZ /= l; })();
+  /* ---- depth field ---- */
+  var FIELD = [], MOON = null, boxes = [];
+  /* ---- r43 Milky Way: two periodic strips (clouds, stars) per theme, drawn along one diagonal and scrolled along it ---- */
+  var GX = { night: null, day: null }, GL = null, GM = null, BAND = { ang: 0, ox: 0, oy: 0, len: 0, wid: 0, per: 0 };
+  function rnd(seed) { var x = Math.sin(seed * 91.17 + 12.9) * 43758.5453; return x - Math.floor(x); }
+  function gauss(seed) { return (rnd(seed) + rnd(seed + .31) + rnd(seed + .67) + rnd(seed + .93) - 2) / 1.15; }
+  function strip(day, stars) {
+    var per = BAND.per, wid = BAND.wid, q = mob ? 1 : Math.min(1.5, dpr), c = document.createElement('canvas');
+    c.width = Math.ceil(per * q); c.height = Math.ceil(wid * q);
+    var x = c.getContext('2d'); x.scale(q, q);
+    function wrap(fn, px) { fn(px); if (px < wid) fn(px + per); if (px > per - wid) fn(px - per); }
+    if (!stars) {
+      x.globalCompositeOperation = day ? 'source-over' : 'lighter';
+      var nb = 90;
+      for (var i = 0; i < nb; i++) {
+        var px = rnd(i + 1) * per, py = wid / 2 + gauss(i + 5) * wid * .17, r = wid * (.1 + rnd(i + 9) * .22), k = rnd(i + 13);
+        var col = day ? (k < .5 ? '96,186,226' : k < .85 ? '60,200,176' : '214,184,120')
+                      : (k < .45 ? '47,200,178' : k < .8 ? '96,118,214' : '232,196,140');
+        var al = day ? .05 + rnd(i + 17) * .045 : .055 + rnd(i + 17) * .065;
+        wrap(function (X) { var gr = x.createRadialGradient(X, py, 0, X, py, r); gr.addColorStop(0, 'rgba(' + col + ',' + al + ')'); gr.addColorStop(1, 'rgba(' + col + ',0)'); x.fillStyle = gr; x.beginPath(); x.arc(X, py, r, 0, 7); x.fill(); }, px);
+      }
+      // dark dust lane slightly off the band's centre line
+      x.globalCompositeOperation = 'destination-out';
+      for (var j = 0; j < 70; j++) {
+        var lx = rnd(j + 201) * per, ly = wid * .47 + gauss(j + 207) * wid * .05 + Math.sin(lx / per * 6.283 * 2) * wid * .04, lr = wid * (.04 + rnd(j + 211) * .07);
+        wrap(function (X) { var gr = x.createRadialGradient(X, ly, 0, X, ly, lr); gr.addColorStop(0, 'rgba(0,0,0,' + (day ? .35 : .55) + ')'); gr.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = gr; x.beginPath(); x.arc(X, ly, lr, 0, 7); x.fill(); }, lx);
+      }
+    } else {
+      var n = Math.round(per * wid / (mob ? 260 : 170));
+      for (var s2 = 0; s2 < n; s2++) {
+        var sx = rnd(s2 + 401) * per, sy = wid / 2 + gauss(s2 + 409) * wid * .2, b = rnd(s2 + 419), z = b * b * b, sz = .5 + z * 1.6;
+        if (sy < 0 || sy > wid) continue;
+        var a2 = day ? .1 + z * .38 : .16 + z * .7;
+        x.fillStyle = day ? (b > .85 ? 'rgba(10,138,115,' + a2 + ')' : 'rgba(46,110,140,' + a2 + ')')
+                          : (b > .93 ? 'rgba(255,226,170,' + a2 + ')' : b > .8 ? 'rgba(150,240,222,' + a2 + ')' : 'rgba(214,228,240,' + a2 + ')');
+        wrap(function (X) { x.fillRect(X - sz / 2, sy - sz / 2, sz, sz); }, sx);
+      }
+    }
+    return c;
+  }
+  function galaxyTex(day) { var k = day ? 'day' : 'night'; if (!GX[k]) GX[k] = { clouds: strip(day, false), stars: strip(day, true) }; return GX[k]; }
+  function galaxyGeom() {
+    // desktop: from the upper right, through the gap between copy and form, down behind the planet. phone: across the top.
+    // r44: one direction you can see — from the upper right, across the upper middle, into the planet (the band flows that way)
+    var sx = W * 1.02, sy = mob ? H * .02 : -H * .04;
+    BAND.ang = Math.atan2(cy - sy, cx - sx);
+    BAND.ox = (sx + cx) / 2; BAND.oy = (sy + cy) / 2;
+    BAND.len = Math.hypot(W, H) * 1.3; BAND.wid = Math.min(mob ? 220 : 380, Math.max(W, H) * .32); BAND.per = Math.round(Math.max(900, BAND.wid * 2.6));
+    GX = { night: null, day: null };
+    // its own canvas under #orb, so the planet canvas is drawn exactly as before (no extra layer composited into it)
+    GL = GL || document.getElementById('gx'); if (GL) { GL.width = cv.width; GL.height = cv.height; }
+  }
+  function galaxyMask() {
+    // full strength everywhere except a feathered dip under each text block (copy, points, form, top bar)
+    GM = GM || document.createElement('canvas'); GM.width = Math.ceil(W / 4); GM.height = Math.ceil(H / 4);
+    var m = GM.getContext('2d'); m.setTransform(1, 0, 0, 1, 0, 0); m.clearRect(0, 0, GM.width, GM.height);
+    m.fillStyle = '#000'; m.fillRect(0, 0, GM.width, GM.height);
+    m.globalCompositeOperation = 'destination-out'; m.filter = 'blur(6px)'; m.fillStyle = 'rgba(0,0,0,.88)';
+    boxes.forEach(function (b) { m.fillRect(b[0] / 4, b[1] / 4, (b[2] - b[0]) / 4, (b[3] - b[1]) / 4); });
+    m.filter = 'none'; m.globalCompositeOperation = 'source-over';
+  }
+  var G_SPEED = { clouds: .007, stars: .02 }; // px per ms along the band: clouds slower than the star dust = depth
+  function galaxy(t, day) {
+    if (!GL) return;
+    var tex = galaxyTex(day), l = GL.getContext('2d'), per = BAND.per, wid = BAND.wid, len = BAND.len;
+    l.setTransform(1, 0, 0, 1, 0, 0); l.globalCompositeOperation = 'source-over'; l.clearRect(0, 0, GL.width, GL.height);
+    l.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var breathe = still ? 1 : .86 + .14 * Math.sin(t * .00025);
+    [['clouds', breathe], ['stars', still ? .9 : .8 + .2 * Math.sin(t * .0007)]].forEach(function (L) {
+      var img = tex[L[0]], off = still ? 0 : (t * G_SPEED[L[0]]) % per;
+      l.save(); l.translate(BAND.ox - mx * (L[0] === 'stars' ? 14 : 6), BAND.oy - my * (L[0] === 'stars' ? 10 : 4)); l.rotate(BAND.ang); l.globalAlpha = L[1];
+      for (var x0 = -len / 2 - per + off; x0 < len / 2; x0 += per) l.drawImage(img, x0, -wid / 2, per, wid);
+      l.restore();
+    });
+    if (GM) { l.setTransform(1, 0, 0, 1, 0, 0); l.globalCompositeOperation = 'destination-in'; l.drawImage(GM, 0, 0, GL.width, GL.height); l.globalCompositeOperation = 'source-over'; }
+  }
   function size() {
     dpr = Math.min(2, devicePixelRatio || 1); W = document.documentElement.clientWidth; H = innerHeight; mob = W < 900;
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-    if (mob) { R = W * .62; cx = W * .92; cy = 40; } else { R = Math.min(W * .36, H * .74); cx = W * .3; cy = H + R * .12; }
-    stars = [];
-    for (var s = 0; s < (mob ? 40 : 90); s++) stars.push([hash(s + .1) * W, hash(s + .7) * H, .4 + hash(s + .3) * .8, hash(s + .9)]);
+    place(0);
+    FIELD = []; var n = Math.round(W * H / (mob ? 7800 : 10500));
+    for (var s = 0; s < n; s++) {
+      var z = hash(s * 1.37 + .2); z = z * z; // most far away, a few near
+      FIELD.push({ x: hash(s + .1), y: hash(s + .7), z: z, ph: hash(s + .9) * 6.28, sp: .3 + hash(s + .3) * .7 });
+    }
+    measure();
   }
-  // keep the added orbit details off the actual text lines (eyebrow, headline, lede)
-  var boxes = [];
-  function measureText() {
+  /* r44 composition: a sphere you can read as a sphere. Desktop: below the left copy, between copy and form, with at least
+     ~62% of the disc on screen (r43: a 0.74H dome under the text that read as a dark wall). Phone: a small planet in the
+     upper right corner, more of it visible. Body, dots, pillars and spin are not touched here — only where and how big. */
+  function place(heroBottom, heroL, cardL) {
+    if (mob) { R = Math.min(W * .36, 170); cx = W - R * .32; cy = Math.max(R * .5, 70); return; }
+    var top = (heroBottom || H * .55) + Math.max(28, H * .05), vis = H - top;
+    R = Math.max(130, Math.min(W * .19, H * .4, vis / 1.24));
+    cx = heroL != null && cardL ? Math.min(heroL + R * 1.15, cardL - R * .55) : W * .3; cy = top + R;
+  }
+  function measure() {
     boxes = [];
-    document.querySelectorAll('.hero .eyebrow,.hero h1,.hero .lede').forEach(function (e) {
-      var r = document.createRange(); r.selectNodeContents(e); if (!r.getClientRects) return;
-      Array.prototype.forEach.call(r.getClientRects(), function (b) { if (b.width > 2) boxes.push([b.left - 12, b.top - 8, b.right + 12, b.bottom + 8]); });
-    });
-    document.querySelectorAll('.pts li b,.pts li span').forEach(function (e) { var b = e.getBoundingClientRect(); if (b.width > 2) boxes.push([b.left - 6, b.top - 4, b.right + 6, b.bottom + 4]); });
+    var hr = 0, cl = W, hb = 0, hl = null;
+    document.querySelectorAll('.hero h1,.hero .lede,.pts li').forEach(function (e) { var b = e.getBoundingClientRect(); if (b.height > 2) { hb = Math.max(hb, b.bottom); hl = hl == null ? b.left : Math.min(hl, b.left); } });
+    var cd = document.querySelector('.card'), cb = cd && cd.getBoundingClientRect();
+    place(hb, hl, cb && cb.width ? cb.left : 0); galaxyGeom();
+    document.querySelectorAll('.hero h1,.hero .lede,.pts li,.card,.top').forEach(function (e) { var b = e.getBoundingClientRect(); if (b.width > 2 && b.height > 2) { boxes.push([b.left - 14, b.top - 10, b.right + 14, b.bottom + 10]); if (e.classList.contains('card')) cl = b.left; else if (!e.classList.contains('top')) hr = Math.max(hr, b.right); } });
+    // the far moon sits in the open gap between the copy and the form, never on either
+    var mr = Math.max(9, Math.min(W, H) * .02);
+    MOON = !mob && cl - hr > mr * 7 ? { x: (hr + cl) / 2, y: Math.max(130, H * .2), r: mr } : null;
+    galaxyMask();
   }
-  function clear(x, y) {
-    var m = 1;
-    for (var i = 0; i < boxes.length; i++) {
-      var b = boxes[i], dx = Math.max(b[0] - x, 0, x - b[2]), dy = Math.max(b[1] - y, 0, y - b[3]), d = Math.sqrt(dx * dx + dy * dy);
-      if (d < 24) m = Math.min(m, .06 + .94 * d / 24);
-    }
-    return m;
-  }
-  var tilt = -.32, ct = Math.cos(tilt), st = Math.sin(tilt);
-  function rot(p, a) { var c = Math.cos(a), s = Math.sin(a), x = p[0] * c + p[2] * s, z = -p[0] * s + p[2] * c, y = p[1]; return [x, y * ct - z * st, y * st + z * ct]; }
-  function orbPt(o, th, rr) {
-    var x = Math.cos(th) * o.a * rr, z = Math.sin(th) * o.a * rr, c = Math.cos(o.tx), s = Math.sin(mob ? o.tx : -o.tx);
-    var y1 = -z * s, z1 = z * c, cr = Math.cos(o.rz), sr = Math.sin(o.rz);
-    return [x * cr - y1 * sr, x * sr + y1 * cr, z1];
-  }
-  function hidden(q) { return q[2] < 0 && q[0] * q[0] + q[1] * q[1] < 1; }
-  function off(x, y) { return x < -6 || y < -6 || x > W + 6 || y > H + 6; }
-  var t0 = 0;
-  function rings(t, front, day) {
-    ORB.forEach(function (o, k) {
-      g.lineWidth = day ? 1.1 : 1; var steps = 240;
-      for (var j = 0; j < steps; j++) {
-        var q = orbPt(o, j / steps * Math.PI * 2, 1), q2 = orbPt(o, (j + 1) / steps * Math.PI * 2, 1);
-        if ((q[2] >= 0) !== front || hidden(q)) continue;
-        var x = cx + q[0] * R, y = cy - q[1] * R; if (off(x, y)) continue;
-        var al = (front ? (day ? .36 : .3) : (day ? .14 : .1)) * (k ? .7 : 1) * clear(x, y);
-        g.strokeStyle = (day ? 'rgba(6,96,84,' : 'rgba(120,235,214,') + al.toFixed(3) + ')';
-        g.beginPath(); g.moveTo(x, y); g.lineTo(cx + q2[0] * R, cy - q2[1] * R); g.stroke();
-      }
-      for (var j = 0; j < o.n; j++) {
-        var ph = o.ph[j], q = orbPt(o, ph[0] + t * o.w * ph[1] * 1.6, 1 + ph[2]);
-        if ((q[2] >= 0) !== front || hidden(q)) continue;
-        var x = cx + q[0] * R, y = cy - q[1] * R; if (off(x, y)) continue;
-        var d = (q[2] / o.a + 1) / 2, al = (day ? .2 + .6 * d : .12 + .55 * d) * clear(x, y), sz = .8 + 1.6 * d;
-        g.fillStyle = (day ? 'rgba(4,104,90,' : 'rgba(150,245,226,') + al.toFixed(3) + ')';
-        g.fillRect(x - sz / 2, y - sz / 2, sz, sz);
-      }
-    });
-    // one gold satellite on the inner orbit, with a short fading trail
-    var o = ORB[0], th = 2.4 + t * .0001;
-    for (var j = 14; j >= 0; j--) {
-      var q = orbPt(o, th - j * .012, 1); if ((q[2] >= 0) !== front || hidden(q)) continue;
-      var x = cx + q[0] * R, y = cy - q[1] * R, f = 1 - j / 15, fm = clear(x, y); if (fm < .05 || off(x, y)) continue;
-      if (j === 0) {
-        var gr = mob ? 12 : 18, gl = g.createRadialGradient(x, y, 0, x, y, gr);
-        gl.addColorStop(0, (day ? 'rgba(214,150,30,' : 'rgba(245,210,122,') + ((day ? .4 : .45) * fm).toFixed(3) + ')'); gl.addColorStop(1, 'rgba(245,210,122,0)');
-        g.fillStyle = gl; g.beginPath(); g.arc(x, y, gr, 0, 7); g.fill();
-        var ga = g.globalAlpha; g.globalAlpha = ga * fm; g.fillStyle = day ? '#b07a0c' : '#ffe39a'; g.beginPath(); g.arc(x, y, mob ? 2.2 : 3, 0, 7); g.fill(); g.globalAlpha = ga;
-      } else { g.fillStyle = (day ? 'rgba(176,122,12,' : 'rgba(232,184,74,') + ((day ? .45 : .35) * f * f * fm).toFixed(3) + ')'; g.fillRect(x - 1, y - 1, 2, 2); }
+  function clear(x, y) { for (var i = 0; i < boxes.length; i++) { var b = boxes[i]; if (x > b[0] && x < b[2] && y > b[1] && y < b[3]) return .04; } return 1; }
+  var mx = 0, my = 0, tx = 0, ty = 0;
+  if (!still) addEventListener('pointermove', function (e) { tx = e.clientX / W - .5; ty = e.clientY / H - .5; }, { passive: true });
+  function field(t, day) {
+    for (var i = 0; i < FIELD.length; i++) {
+      var f = FIELD[i], z = f.z, drift = still ? 0 : t * .000004 * (.3 + z * 1.4) * f.sp;
+      var x = ((f.x + drift) % 1) * W - mx * (4 + z * 22), y = f.y * H - my * (3 + z * 16);
+      var dx = x - cx, dy = y - cy; if (dx * dx + dy * dy < R * R * 1.02) continue; // behind the planet
+      var tw = still ? .8 : .65 + .35 * Math.sin(t * .0011 * f.sp + f.ph), m = clear(x, y), s, al;
+      if (day) { s = .9 + z * 1.9; al = (.07 + .2 * z) * tw * m; g.fillStyle = (z > .6 ? 'rgba(10,138,115,' : 'rgba(40,62,72,') + al.toFixed(3) + ')'; g.beginPath(); g.arc(x, y, s / 2, 0, 7); g.fill(); }
+      else { s = .6 + z * 1.5; al = (.1 + .42 * z) * tw * m; g.fillStyle = (z > .7 ? 'rgba(130,240,218,' : 'rgba(205,226,222,') + al.toFixed(3) + ')'; g.fillRect(x - s / 2, y - s / 2, s, s); }
     }
   }
-  function draw(now) {
-    var day = document.documentElement.dataset.theme === 'day';
-    if (!t0) t0 = now; var el = still ? 1 : Math.min(1, (now - t0) / 1600), ein = 1 - Math.pow(1 - el, 3);
-    var t = now, a = t * .00004;
-    g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H); measureText();
-    if (!day) for (var s = 0; s < stars.length; s++) { var p = stars[s]; g.fillStyle = 'rgba(200,225,220,' + ((.08 + .22 * p[3]) * clear(p[0], p[1])).toFixed(3) + ')'; g.fillRect(p[0], p[1], p[2], p[2]); }
-    g.save(); g.globalAlpha = ein;
-    g.translate(cx, cy); var sc = .97 + .03 * ein; g.scale(sc, sc); g.translate(-cx, -cy);
-    // halo around the limb (r21), plus a soft contact shadow on the light sky in day
-    if (day) {
-      var sh = g.createRadialGradient(cx + R * .06, cy + R * .06, R * .9, cx + R * .06, cy + R * .06, R * 1.16);
-      sh.addColorStop(0, 'rgba(30,55,70,.16)'); sh.addColorStop(1, 'rgba(30,55,70,0)');
-      g.fillStyle = sh; g.beginPath(); g.arc(cx + R * .06, cy + R * .06, R * 1.16, 0, 7); g.fill();
-    }
-    var rim = g.createRadialGradient(cx, cy, R * .9, cx, cy, R * 1.12);
-    rim.addColorStop(0, 'rgba(47,220,188,0)'); rim.addColorStop(.45, day ? 'rgba(10,150,125,.14)' : 'rgba(47,220,188,.16)'); rim.addColorStop(1, 'rgba(47,220,188,0)');
-    g.fillStyle = rim; g.beginPath(); g.arc(cx, cy, R * 1.12, 0, 7); g.fill();
-    rings(t, false, day);
-    // body: r21 gradient, now lit from the upper left so it reads as a volume
-    var bd = g.createRadialGradient(cx + LX * R * .45, cy - LY * R * .45, R * .08, cx, cy, R * 1.02);
-    if (day) { bd.addColorStop(0, '#f5f4f2'); bd.addColorStop(.5, '#f1f0ef'); bd.addColorStop(.82, '#d0dbe0'); bd.addColorStop(1, '#b3c2ca'); }
-    else { bd.addColorStop(0, '#16282a'); bd.addColorStop(.55, '#0d1618'); bd.addColorStop(1, '#070b0c'); }
-    g.beginPath(); g.arc(cx, cy, R, 0, 7); g.fillStyle = bd; g.fill();
-    // dotted surface: r21 depth (front dots bigger and brighter, back dots faint) times the light
+  function moon(day) {
+    if (!MOON) return; var x = MOON.x - mx * 6, y = MOON.y - my * 4, r = MOON.r;
+    var h = g.createRadialGradient(x, y, r * .8, x, y, r * 3.2);
+    h.addColorStop(0, day ? 'rgba(10,138,115,.07)' : 'rgba(47,220,188,.07)'); h.addColorStop(1, 'rgba(47,220,188,0)');
+    g.fillStyle = h; g.beginPath(); g.arc(x, y, r * 3.2, 0, 7); g.fill();
+    var b = g.createRadialGradient(x + LX * r * .55, y - LY * r * .55, r * .1, x, y, r);
+    if (day) { b.addColorStop(0, '#ffffff'); b.addColorStop(.6, '#e6eef0'); b.addColorStop(1, '#b9cbcf'); }
+    else { b.addColorStop(0, '#1e2b2d'); b.addColorStop(.6, '#0e1517'); b.addColorStop(1, '#070a0b'); }
+    g.fillStyle = b; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill();
+    g.strokeStyle = day ? 'rgba(10,138,115,.35)' : 'rgba(110,240,215,.4)'; g.lineWidth = 1;
+    g.beginPath(); g.arc(x, y, r - .5, Math.PI * .72, Math.PI * 1.62); g.stroke();
+  }
+  function planetNight(a, px, py) {
+    var X = cx + px, Y = cy + py;
+    haloNightOut(X, Y);
+    // 28d0e36 from here
+    var bd = g.createRadialGradient(X - R * .3, Y - R * .4, R * .1, X, Y, R);
+    bd.addColorStop(0, '#11191b'); bd.addColorStop(1, '#06090a');
+    g.beginPath(); g.arc(X, Y, R, 0, 7); g.fillStyle = bd; g.fill();
+    haloNightIn(X, Y);
     for (var i = 0; i < N; i++) {
       var q = rot(P[i], a); if (q[2] < -.15) continue;
-      var x = cx + q[0] * R, y = cy - q[1] * R; if (off(x, y)) continue;
-      var k = (q[2] + .15) / 1.15, lam = Math.max(0, q[0] * LX + q[1] * LY + q[2] * LZ);
-      var al = (day ? .22 + .76 * k * k : .12 + .7 * k * k) * (day ? .78 + .3 * lam : .85 + .35 * lam);
-      g.fillStyle = (day ? 'rgba(5,112,94,' : 'rgba(47,220,188,') + Math.min(1, al).toFixed(3) + ')';
+      var x = X + q[0] * R, y = Y - q[1] * R, k = (q[2] + .15) / 1.15;
+      g.fillStyle = 'rgba(47,220,188,' + (.12 + .7 * k * k).toFixed(3) + ')';
       var s = .8 + 1.6 * k; g.fillRect(x - s / 2, y - s / 2, s, s);
     }
-    // gold pillars, r21 size
+    pillars(a, X, Y, false);
+  }
+  function pillars(a, X, Y, day) {
     GOLD.forEach(function (p, idx) {
       var q = rot(p, a); if (q[2] < .05) return;
-      var x0 = cx + q[0] * R, y0 = cy - q[1] * R, L = 1 + (idx % 3 + 1) * .07;
-      var x1 = cx + q[0] * R * L, y1 = cy - q[1] * R * L, f = Math.min(1, q[2] * 2);
+      var x0 = X + q[0] * R, y0 = Y - q[1] * R, L = 1 + (idx % 3 + 1) * .07;
+      var x1 = X + q[0] * R * L, y1 = Y - q[1] * R * L, f = Math.min(1, q[2] * 2);
       var gr = g.createLinearGradient(x0, y0, x1, y1);
-      if (day) { gr.addColorStop(0, 'rgba(176,122,18,' + (.25 * f) + ')'); gr.addColorStop(1, 'rgba(214,156,36,' + f + ')'); }
+      if (day) { gr.addColorStop(0, 'rgba(168,112,10,' + (.2 * f) + ')'); gr.addColorStop(1, 'rgba(214,150,30,' + f + ')'); }
       else { gr.addColorStop(0, 'rgba(232,184,74,' + (.15 * f) + ')'); gr.addColorStop(1, 'rgba(245,210,122,' + (.95 * f) + ')'); }
       g.strokeStyle = gr; g.lineWidth = mob ? 2.5 : 4; g.lineCap = 'round';
       g.beginPath(); g.moveTo(x0, y0); g.lineTo(x1, y1); g.stroke();
-      g.fillStyle = (day ? 'rgba(196,138,20,' : 'rgba(255,226,150,') + f + ')'; g.beginPath(); g.arc(x1, y1, mob ? 1.8 : 2.6, 0, 7); g.fill();
+      g.fillStyle = (day ? 'rgba(200,136,18,' : 'rgba(255,226,150,') + f + ')'; g.beginPath(); g.arc(x1, y1, mob ? 1.8 : 2.6, 0, 7); g.fill();
     });
-    // thin brand edge on the lit side only
-    var seg = 160;
-    for (var j = 0; j < seg; j++) {
-      var a0 = j / seg * Math.PI * 2, a1 = (j + 1.2) / seg * Math.PI * 2, m = Math.cos(a0 - LA); if (m <= 0) continue;
-      g.strokeStyle = (day ? 'rgba(8,138,115,' : 'rgba(110,240,215,') + (Math.pow(m, 2.2) * (day ? .6 : .7)).toFixed(3) + ')'; g.lineWidth = 1.4;
-      g.beginPath(); g.arc(cx, cy, R - .5, -a0, -a1, true); g.stroke();
+  }
+  function planetDay(a, px, py) {
+    var X = cx + px, Y = cy + py;
+    haloDayOut(X, Y);
+    // pearl body: bright where the light falls, cool blue-grey toward the terminator
+    var bd = g.createRadialGradient(X + LX * R * .5, Y - LY * R * .5, R * .05, X, Y, R * 1.04);
+    bd.addColorStop(0, '#ffffff'); bd.addColorStop(.4, '#f6faf9'); bd.addColorStop(.74, '#e2edee'); bd.addColorStop(1, '#bccfd3');
+    g.beginPath(); g.arc(X, Y, R, 0, 7); g.fillStyle = bd; g.fill();
+    // surface dots: the same 1100 points, deep teal, stronger in the light
+    for (var i = 0; i < N; i++) {
+      var q = rot(P[i], a); if (q[2] < -.15) continue;
+      var x = X + q[0] * R, y = Y - q[1] * R, k = (q[2] + .15) / 1.15, lam = Math.max(0, q[0] * LX + q[1] * LY + q[2] * LZ);
+      g.fillStyle = 'rgba(6,118,98,' + Math.min(.9, (.14 + .6 * k * k) * (.55 + .55 * lam)).toFixed(3) + ')';
+      var s = .8 + 1.6 * k; g.fillRect(x - s / 2, y - s / 2, s, s);
     }
-    rings(t, true, day);
+    pillars(a, X, Y, true);
+    haloDayIn(X, Y);
+  }
+  /* ---- r43 halos: an atmosphere, not a ring. Outside: a smooth exponential-like falloff over ~0.32R, offset toward
+     the light so the lit limb glows more than the far one. Inside: a thin limb brightening that fades into the body
+     (never deeper than 0.9R, so the body itself is untouched — verified by pixel hash). ---- */
+  function fall(gr, rgb, a0, stops) { stops.forEach(function (s) { gr.addColorStop(s[0], 'rgba(' + rgb + ',' + (a0 * s[1]).toFixed(4) + ')'); }); }
+  var FALL = [[0, 1], [.12, .62], [.28, .34], [.48, .15], [.7, .05], [1, 0]];
+  function haloNightOut(X, Y) {
+    var ox = X + LX * R * .035, oy = Y - LY * R * .035, gr = g.createRadialGradient(ox, oy, R * .99, ox, oy, R * 1.34);
+    fall(gr, '47,220,188', .24, FALL); g.fillStyle = gr; g.beginPath(); g.arc(ox, oy, R * 1.34, 0, 7); g.fill();
+    var wide = g.createRadialGradient(X, Y, R, X, Y, R * 1.75); // very wide, very faint scatter into the galaxy
+    fall(wide, '60,170,190', .035, FALL); g.fillStyle = wide; g.beginPath(); g.arc(X, Y, R * 1.75, 0, 7); g.fill();
+  }
+  function haloNightIn(X, Y) {
+    g.save(); g.beginPath(); g.arc(X, Y, R, 0, 7); g.clip();
+    var ix = X - LX * R * .05, iy = Y + LY * R * .05, gr = g.createRadialGradient(ix, iy, R * .95, ix, iy, R * 1.05); // starts at .95R from a centre shifted .05R: nothing inside .9R of the body is touched
+    gr.addColorStop(0, 'rgba(47,220,188,0)'); gr.addColorStop(.5, 'rgba(47,220,188,.08)'); gr.addColorStop(1, 'rgba(110,240,214,.38)');
+    g.fillStyle = gr; g.fillRect(X - R, Y - R, R * 2, R * 2); g.restore();
+  }
+  function haloDayOut(X, Y) {
+    var sx = X - LX * R * .06, sy = Y + LY * R * .06, sh = g.createRadialGradient(sx, sy, R * .97, sx, sy, R * 1.3); // soft contact shadow, away from the light
+    fall(sh, '24,52,64', .15, FALL); g.fillStyle = sh; g.beginPath(); g.arc(sx, sy, R * 1.3, 0, 7); g.fill();
+    var lx = X + LX * R * .05, ly = Y - LY * R * .05, sc = g.createRadialGradient(lx, ly, R * .99, lx, ly, R * 1.32); // sky scattering on the lit side
+    sc.addColorStop(0, 'rgba(130,222,240,.48)'); sc.addColorStop(.15, 'rgba(110,210,232,.26)'); sc.addColorStop(.35, 'rgba(110,200,225,.09)'); sc.addColorStop(.62, 'rgba(110,200,225,.03)'); sc.addColorStop(1, 'rgba(110,200,225,0)');
+    g.fillStyle = sc; g.beginPath(); g.arc(lx, ly, R * 1.32, 0, 7); g.fill();
+  }
+  function haloDayIn(X, Y) {
+    g.save(); g.beginPath(); g.arc(X, Y, R, 0, 7); g.clip();
+    var ix = X - LX * R * .07, iy = Y + LY * R * .07, gr = g.createRadialGradient(ix, iy, R * .97, ix, iy, R * 1.07); // lit limb only; never deeper than .9R into the body
+    gr.addColorStop(0, 'rgba(255,255,255,0)'); gr.addColorStop(.6, 'rgba(255,255,255,.22)'); gr.addColorStop(1, 'rgba(255,255,255,.7)');
+    g.fillStyle = gr; g.fillRect(X - R, Y - R, R * 2, R * 2); g.restore();
+  }
+  var t0 = 0;
+  function draw(now) {
+    var day = document.documentElement.dataset.theme === 'day';
+    if (!t0) t0 = now; var el = still ? 1 : Math.min(1, (now - t0) / 1400), ein = 1 - Math.pow(1 - el, 3);
+    mx += (tx - mx) * .04; my += (ty - my) * .04;
+    var a = now * .00004;
+    g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+    galaxy(now, day); field(now, day); moon(day);
+    g.save(); g.globalAlpha = ein;
+    if (day) planetDay(a, -mx * 8, -my * 6); else planetNight(a, -mx * 8, -my * 6);
     g.restore();
   }
   var raf = 0;
   function loop(t) { draw(t); raf = requestAnimationFrame(loop); }
   size(); addEventListener('resize', function () { size(); draw(performance.now()); });
   if (still) draw(performance.now()); else raf = requestAnimationFrame(loop);
-  addEventListener('td:theme', function () { if (still) draw(performance.now()); });
-  addEventListener('td:lang', function () { setTimeout(function () { size(); draw(performance.now()); }, 30); });
+  addEventListener('td:theme', function () { draw(performance.now()); });
+  addEventListener('td:lang', function () { setTimeout(function () { measure(); draw(performance.now()); }, 30); });
+  addEventListener('td:session', function () { setTimeout(function () { measure(); draw(performance.now()); }, 30); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); });
+  if (window.ResizeObserver) { var ro = new ResizeObserver(function () { measure(); }); ['.card', '.hero'].forEach(function (q) { var e = document.querySelector(q); if (e) ro.observe(e); }); }
   document.addEventListener('visibilitychange', function () { if (still) return; if (document.hidden) cancelAnimationFrame(raf); else raf = requestAnimationFrame(loop); });
+  window.__orb = { theme: function () { return document.documentElement.dataset.theme; }, night: '28d0e36', field: function () { return FIELD.length; },
+    galaxy: function () { return { angleDeg: Math.round(BAND.ang * 180 / Math.PI), width: BAND.wid, period: BAND.per, speed: G_SPEED, still: still }; } };
 })();
 </script>
 </body>
