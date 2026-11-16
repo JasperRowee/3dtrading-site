@@ -399,11 +399,11 @@
         h += '<div class="tda-hd"><span class="tda-av ini">' + esc((displayName(s) || '?').slice(0, 1).toUpperCase()) + '</span><div><b>' + esc(displayName(s)) + '</b><small>' + esc(s.email) + '</small></div></div>';
         h += '<div class="tda-sec">' + esc(t('acct.binance')) + '</div>';
         if (!A.list.length) {
-          h += '<a class="tda-mi add" role="menuitem" href="' + esc(ROUTES.bind) + '"><span class="tda-ic">' + ICON.plus + '</span><span class="tda-tx"><b>' + esc(t('acct.bindFirst')) + '</b><small>' + esc(t('acct.none')) + '</small></span></a>';
+          h += '<a class="tda-mi add" role="menuitem" href="' + esc(ROUTES.connect) + '"><span class="tda-ic">' + ICON.plus + '</span><span class="tda-tx"><b>' + esc(t('acct.bindFirst')) + '</b><small>' + esc(t('acct.none')) + '</small></span></a>';
         } else {
           if (A.list.length > 1) h += acctRow('all', t('acct.all'), t('acct.allSub', { n: A.list.length }), A.active === 'all', '');
           A.list.forEach(function (a) { h += acctRow(a.id, accountName(a), accountSub(a), A.active === a.id, isDemo(a) ? 'demo' : statusTone(a.status)); });
-          h += '<a class="tda-mi add" role="menuitem" href="' + esc(ROUTES.bind + '?add=1') + '"><span class="tda-ic">' + ICON.plus + '</span><span class="tda-tx"><b>' + esc(t('acct.bindNew')) + '</b></span></a>';
+          h += '<a class="tda-mi add" role="menuitem" href="' + esc(ROUTES.connect) + '"><span class="tda-ic">' + ICON.plus + '</span><span class="tda-tx"><b>' + esc(t('acct.bindNew')) + '</b></span></a>';
         }
         h += '<hr>';
         if (ctx !== 'app') h += itemHtml({ label: t('acct.toApp'), href: ROUTES.app, icon: ICON.app });

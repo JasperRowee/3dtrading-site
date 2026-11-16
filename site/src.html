@@ -171,7 +171,7 @@ html[data-theme=day] .tm .sun{display:block}html[data-theme=day] .tm .moon{displ
 .talk::before{width:16px;height:16px;border-radius:0;opacity:1;background:#04211c;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z'/%3E%3C/svg%3E") center/contain no-repeat}
 .talk::after{content:"→";margin-left:2px;font-weight:600}
 </style>
-<script src="../account/td-account.js?v=r44" data-site="../site/index.html"></script>
+<script src="../account/td-account.js?v=r45b" data-site="../site/index.html"></script>
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/dodo-180.png?v=20261112">
@@ -1376,7 +1376,10 @@ function frame(now) {
       const scale = Math.min(1, (W - 32) / (right - left));
       C.F *= L(1, scale, fit);
       const mid = C.cx + ((left + right) / 2 - C.cx) * L(1, scale, fit);
-      C.cx += (W / 2 - mid + smx * W * .3) * fit;
+      // r45: recentring the composition here also cancels the head turn above, so the pan must carry the turn itself, in the SAME
+      // direction as 01, 06–11 and the mouse (turn right → the scene slides left). r44 and before added +smx·W·.3 here: in 02–05 on phones
+      // the view therefore moved the opposite way of every other step (root cause of "from 02 the gyro logic changes"; tools/gyro-r45.mjs)
+      C.cx += (W / 2 - mid - smx * W * PANF) * fit;
     }
   }
 
@@ -1760,6 +1763,7 @@ function frame(now) {
 /* a narrow phone view sees less to each side than the computer's, so its turn goes further: by the difference between the two half-views
    (computer taken at 16:10). That never shows more than the computer shows at its own mouse limit, so no new edges come into view */
 let XTRA = 0, HHF = .4; const XA = .2, XA0 = +(QP.get('xa0') || .18), XL = QP.has('xl') ? +QP.get('xl') : 0, YN = +(QP.get('yn') || .6), EU = +(QP.get('eu') || .035);   // XL: share of the phone's extra turn kept after the first page; YN: and of the usual turn, since a narrow view swings further off its subject. EU: at the turn limit of the first page, lift the eyes a touch so the end model's top is not cut   // XA0: on the first page of a wide screen, a little further too, so its two end models come fully in. XA: and a little more on a narrow phone, so the end models come fully in, not just their inner half
+const PANF = +(QP.get('panf') || .65);   // r45: phones 02–05, how far a full turn slides the fitted composition (share of the screen width at smx = .5 is PANF/2), tuned so 02–05 move about as far as 06–11
 const ORB = QP.has('orb') ? +QP.get('orb') : 0;   // 0: the phone turns the head in place, like 01 and the computer; the camera itself never moves sideways
 let DK8 = +(QP.get('dk8') || .5);
 // 08: the middle of what the step shows: the Dodo on its tower, then on to the port, then the whole path to Binance and the assets
@@ -1769,7 +1773,7 @@ function xtraFor(ms) { const x = Math.max(0, Math.atan(1.6 * Math.tan(.42)) - Ma
 function resize() { BLK.forEach(b => b._h = 0); DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; mob = W < 760; ringFor(); BAZ = BAZ0 + (mob ? +(QP.get('bz') || -3.8) * DEG : 0); BSZ = mob ? +(QP.get('bs') || 1) : 1; KZ = SCR[2] = ML ? 3.2 : 4.6; KH = ML ? 8.4 : mob ? 6.4 : 7.6; XTRA = xtraFor(mob ? MS : 1); LQ = LSQ(); setTimeout(() => { CPR = LQ ? Math.max(0, ...BLK.map(b => b.getBoundingClientRect().right).filter(r => r > 0 && r < W * .6)) : 0; }, 300); cv.width = W * DPR; cv.height = H * DPR; cells(); anchors(); initWall(); initCoins(); }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(resize, 120); });
 resize(); gyBoot();
-window.__dive = { K, CK, A, go, jump, GY, gyStart, gyFeed: (al, be, ga) => onOri({ alpha: al, beta: be, gamma: ga }), gyTurn, lookNow: () => [+smx.toFixed(3), +smy.toFixed(3)], story: () => ({...HD}), camera: () => ({ p: C.p.slice(), f: C.f.slice() }), poses: () => CAM().map(c => [0, .25, .5, .75, 1].map(a => pose(c, a))), xtra: () => XTRA, smx: () => +smx.toFixed(3),
+window.__dive = { K, CK, A, go, jump, GY, prj: (x, y, z) => { const v = pr(x, y, z); return v ? [+v.x.toFixed(1), +v.y.toFixed(1)] : null; }, subj: i => pose(CAM()[i], 1)[1],  gyStart, gyFeed: (al, be, ga) => onOri({ alpha: al, beta: be, gamma: ga }), gyTurn, lookNow: () => [+smx.toFixed(3), +smy.toFixed(3)], story: () => ({...HD}), camera: () => ({ p: C.p.slice(), f: C.f.slice() }), poses: () => CAM().map(c => [0, .25, .5, .75, 1].map(a => pose(c, a))), xtra: () => XTRA, smx: () => +smx.toFixed(3),
   look: v => { LOOKQ = v == null ? null : clamp(v, -.5, .5); }, lookY: v => { LOOKY = v == null ? null : clamp(v, -.5, .5); }, smy: () => +smy.toFixed(3), wlog: WLOG, WH, WS, wsim: seq => { const keep = JSON.stringify(WS), lg = WLOG.length, out = []; Object.assign(WS, { acc: 0, t: -1e9, dir: 0, at: -1e9, fdir: 0, fired: false, lo: 0, peak: 0, rise: 0, win: [], b: [], ds: -1e9, cnt: 0 }); seq.forEach(([t, d]) => { const r = wheelStep(t, d); if (r) out.push([Math.round(t), r, WLOG[WLOG.length - 1][2]]); }); WLOG.length = lg; Object.assign(WS, JSON.parse(keep)); return out; }, gate: () => GATE, o9: O9, o10: O10, home: () => goHome(), theme: d => setTheme(d), day: () => DAY, lbx: LBX, hbx: () => HBX, kbx: () => KBX, hold: v => { HOLDU = v; },   // test: hold the look like ?look= does
   // test: where 08's Binance logo lands on screen [left, right, top, bottom]
   dk8: v => { DK8 = v; }, bs: v => { BSZ = v; }, M8, snap: v => { LOOKQ = v; smx = v; },

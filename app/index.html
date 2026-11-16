@@ -8,7 +8,7 @@
 try{localStorage.removeItem('3dtrading.dash.layout')}catch(e){}</script>
 <title>3dtrading · 后台</title>
 <script>window.TD_ROUTES={app:location.pathname+'#/dashboard',me:location.pathname+'#/me'};</script>
-<script src="../account/td-account.js?v=r44" data-site="../site/index.html" data-app="index.html#/dashboard"></script>
+<script src="../account/td-account.js?v=r45b" data-site="../site/index.html" data-app="index.html#/dashboard"></script>
 <script src="../account/api-adapter.js?v=r43"></script>
 <script src="demo-dashboard.js?v=r44"></script>
 <script>/* r38：不再自动建立演示登录，也不再跳去登录页。未登录时后台自己显示「未登录」，由用户选择登录或用演示账号进入。
@@ -2549,7 +2549,8 @@ function loadAccts() {
 const stTx = a => a.real ? (a.live ? '币安只读 · 实时' : '币安只读 · 读取失败') : a.demo && a.live ? '示例数据 · 演示' : a.loading ? '处理中' : a.live ? `${a.si.label} · 演示数据` : a.si ? a.si.label : '处理中';
 const subTx = a => a.demo ? '未连接币安 · 示例数据 · 演示' : `${a.uid} · ${stTx(a)}`;
 /* r41: adding a new account opens the full Binance connect page (API Key + Secret Key); an existing account's progress stays on bind.html */
-const bindUrl = id => id ? TDAccount.routes.bind + '?id=' + encodeURIComponent(id) : (TDAccount.routes.connect || TDAccount.routes.bind + '?add=1');
+/* r45b: every binding entry (new or re-bind) opens connect.html: system-generated (HMAC) keys only. bind.html (self-generated) is no longer linked. */
+const bindUrl = () => TDAccount.routes.connect || TDAccount.routes.bind + '?add=1';
 if (DD) Object.assign(SIM, DD.accounts || {});
 loadAccts();
 

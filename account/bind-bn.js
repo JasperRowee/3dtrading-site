@@ -336,13 +336,8 @@
   function gw(l, warn) { var o = hw(l); o.k1p = GW[l].k1p; o.k2p = GW[l].k2p; o.warn = warn === 'self' ? GW[l].warnS : GW[l].warnH; return o; }
   var guide = {
     home: scenes[0], create: scenes[1], vmail: scenes[2], futures: scenes[3], pm: scenes[4],
-    type: function (l, kind) {
-      var w = gw(l), self = kind === 'self';
-      return frame(w, 1, apiPage(w), modal(w.kTitle,
-        '<div class="bn-opt' + (self ? '' : ' on') + '" data-slot="optSys">' + I.keyA + '<div><b>' + esc(w.k1) + '</b><p>' + esc(w.k1p) + '</p></div>' + (self ? '' : '<i class="corner"></i>') + '</div>' +
-        '<div class="bn-opt' + (self ? ' on' : '') + '" data-slot="optSelf">' + I.keyB + '<div><b>' + esc(w.k2) + '</b><p>' + esc(w.k2p) + '</p></div>' + (self ? '<i class="corner"></i>' : '') + '</div>' +
-        '<span class="bn-btn y block" data-t="next">' + esc(w.next) + '</span>', 'wide'));
-    },
+    /* r45b: API Management list only. The key-type dialog is not drawn at all: 3dtrading uses system-generated (HMAC) keys only */
+    apis: function (l) { var w = gw(l); return frame(w, 1, apiPage(w)); },
     label: scenes[6],
     pub: function (l, cfg) {
       var w = gw(l, 'self');
