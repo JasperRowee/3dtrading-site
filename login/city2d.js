@@ -1,14 +1,4 @@
-/* r51 fallback (only when WebGL is unavailable): the r50 2D drawing, with the plaza grid removed.
-   r50 · 3dtrading log-in background: our own city, and one great LED sphere in it.
-   Composition follows Jasper's reference (attachments/a68fb519…png) exactly: a huge sphere rising from the bottom left,
-   cut by the bottom edge; centre at 30% of the width and 109.7% of the height, radius 72.5% of the height, so its top
-   sits at 37% of the height and its left edge leaves the frame at 69% of the height. A faint orbit ring crosses the
-   foreground; a short gold streak lies on the sphere's right shoulder.
-   The city is ours, not a real one: towers drawn as candlestick bodies with a wick (spire) and a lit cap — teal for
-   rising, a few warm/red — standing on a plaza that runs to a teal horizon line. Far towers are paler, near ones darker.
-   Layers: a baked backdrop (sky, stars, city, plaza) + the sphere redrawn each frame (~30 fps): a static LED lattice
-   plus a slowly drifting light band seen only through the LEDs. Paused when the tab is hidden; reduced motion = one
-   still frame. Phones: the same idea scaled so the sphere's arc rises behind the headline, above the form. */
+/* r54: single default deep-space login scene; r53 daytime sphere size, finer LED lattice, upper-right mobile crop. */
 (function () {
   'use strict';
   var D = document, root = D.documentElement, cv = D.getElementById('city');
@@ -23,20 +13,15 @@
 
   /* geometry: desktop is the reference's ratios; phones put the arc behind the headline */
   function geo() {
-    var mob = W <= 900, cx, cy, R, hz;
-    if (!mob) { cx = W * .30; cy = H * 1.097; R = H * .725; hz = H * .70; }
-    else {
-      var hero = D.querySelector('.hero'), hb = hero ? hero.getBoundingClientRect().bottom + (window.scrollY || 0) : H * .34;
-      R = Math.min(W * .72, 340); cx = W * .30; cy = Math.max(118, hb * .44) + R; hz = hb - 18;   // same reading as the reference: the arc's top just under the headline's first line, cut by the form
-    }
-    return { mob: mob, cx: cx, cy: cy, R: R, hz: hz, tilt: .32 };
+    var mob = W <= 900, R = mob ? Math.min(W*.72,340)*1.15 : H*.725*1.15;
+    return {mob:mob,cx:W*(mob?.96:.30),cy:mob?84:H*1.097,R:R,hz:H,tilt:.32};
   }
 
   var PAL = {
     night: { sky0: '#030507', sky1: '#071012', sky2: '#0b1a1a', far: [16, 27, 29], near: [9, 15, 17], win: 'rgba(120,235,214,', warm: 'rgba(240,190,90,',
       plaza0: '#071011', plaza1: '#040708', grid: 'rgba(62,230,198,.06)', hzl: 'rgba(62,230,198,.32)',
       body0: '#0a1414', body1: '#040808', dot: [70, 150, 135], dotA: .28, rim: [94, 236, 207], lit: [80, 240, 205], gold: [233, 196, 106] },
-    day: { sky0: '#eef5f4', sky1: '#e1edeb', sky2: '#d2e4e0', far: [176, 199, 196], near: [124, 152, 150], win: 'rgba(255,255,255,', warm: 'rgba(214,150,40,',
+    day: { sky0: '#1fc4a8', sky1: '#7fdcca', sky2: '#c8f4ea', far: [176, 199, 196], near: [124, 152, 150], win: 'rgba(255,255,255,', warm: 'rgba(214,150,40,',
       plaza0: '#cfe0dc', plaza1: '#c3d7d3', grid: 'rgba(10,125,104,.07)', hzl: 'rgba(10,125,104,.28)',
       body0: '#f7fbfa', body1: '#dbe9e6', dot: [40, 120, 108], dotA: .22, rim: [10, 150, 124], lit: [10, 160, 132], gold: [196, 146, 40] }
   };
@@ -64,35 +49,12 @@
     c.fillStyle = eg; c.fillRect(x, top, w, h);
   }
   function bakeBg() {
-    var P = day ? PAL.day : PAL.night, c = bg.getContext('2d'), r = rnd(4207);
-    c.setTransform(DPR, 0, 0, DPR, 0, 0); c.clearRect(0, 0, W, H);
-    var hz = G.hz, sk = c.createLinearGradient(0, 0, 0, hz);
-    sk.addColorStop(0, P.sky0); sk.addColorStop(.62, P.sky1); sk.addColorStop(1, P.sky2); c.fillStyle = sk; c.fillRect(0, 0, W, hz + 1);
-    if (!day) { for (var i = 0; i < (W * H) / 5200; i++) { var sx = r() * W, sy = r() * hz * .9, sa = .12 + r() * .45; c.fillStyle = 'rgba(200,240,232,' + sa.toFixed(2) + ')'; c.fillRect(sx, sy, r() < .08 ? 1.6 : 1, r() < .08 ? 1.6 : 1); } }
-    /* glow over the city */
-    var gl = c.createRadialGradient(W * .62, hz, 0, W * .62, hz, W * .6); gl.addColorStop(0, day ? 'rgba(255,255,255,.55)' : 'rgba(47,220,188,.10)'); gl.addColorStop(1, 'rgba(0,0,0,0)');
-    c.fillStyle = gl; c.fillRect(0, 0, W, hz);
-    /* far row then near row; the near towers are taller towards the right, framing the form, and lower near the sphere */
-    var s = G.mob ? .62 : 1;
-    [[P.far, .9, 0], [P.near, 1, 1]].forEach(function (row) {
-      var col = row[0], near = row[2], x = -20;
-      while (x < W + 20) {
-        var w = (near ? 34 + r() * 46 : 22 + r() * 30) * s, u = x / W;
-        var prof = Math.max(Math.pow(Math.max(0, 1 - u / .12), 1.5), Math.pow(u, 1.1)), hMax = near ? H * (.12 + .3 * prof) : H * (.12 + .16 * r());   // tall at the left edge and towards the right, lower behind the sphere
-        var h = (hMax * (.45 + r() * .55)) * (G.mob ? .66 : 1) + (near ? 0 : H * (G.mob ? .025 : .05));
-        var base = hz + (near ? 2 : 0);
-        tower(x, c, base, w, h, col, P, r, near);
-        x += w + (near ? (6 + r() * 26) : (2 + r() * 10)) * s;
-      }
-    });
-    /* the horizon: a thin teal line where the plaza meets the city */
-    var hl = c.createLinearGradient(0, 0, W, 0); hl.addColorStop(0, 'rgba(0,0,0,0)'); hl.addColorStop(.25, P.hzl); hl.addColorStop(.8, P.hzl); hl.addColorStop(1, 'rgba(0,0,0,0)');
-    c.fillStyle = hl; c.fillRect(0, hz, W, 1.2);
-    /* plaza (r51: no grid) */
-    var pg = c.createLinearGradient(0, hz, 0, H); pg.addColorStop(0, P.plaza0); pg.addColorStop(1, P.plaza1); c.fillStyle = pg; c.fillRect(0, hz + 1.2, W, H - hz);
-    /* the sphere's glow on the city and plaza */
-    var sg = c.createRadialGradient(G.cx, G.cy, G.R * .9, G.cx, G.cy, G.R * 1.55); sg.addColorStop(0, rgba(P.rim, day ? .16 : .13)); sg.addColorStop(1, rgba(P.rim, 0));
-    c.fillStyle = sg; c.fillRect(0, 0, W, H);
+    var c=bg.getContext('2d'), r=rnd(4207);
+    c.setTransform(DPR,0,0,DPR,0,0); c.fillStyle='#02050c'; c.fillRect(0,0,W,H);
+    var halo=c.createRadialGradient(G.cx,G.cy,G.R*.7,G.cx,G.cy,G.R*1.8);
+    halo.addColorStop(0,'rgba(24,116,125,.12)'); halo.addColorStop(1,'rgba(0,0,0,0)');
+    c.fillStyle=halo; c.fillRect(0,0,W,H);
+    for(var i=0;i<W*H/6400;i++){c.fillStyle='rgba(180,216,232,'+(.15+r()*.4)+')';c.fillRect(r()*W,r()*H,1,1);}
   }
 
   /* ---------- the sphere: body + LED lattice (static), lit LEDs (masked by a moving light each frame) ---------- */
@@ -104,7 +66,7 @@
     var bd = a.createRadialGradient(cx - R * .35, cy - R * .6, R * .1, cx, cy, R); bd.addColorStop(0, P.body0); bd.addColorStop(1, P.body1);
     a.fillStyle = bd; a.beginPath(); a.arc(cx, cy, R, 0, 6.2832); a.fill();
     /* LED lattice: rings of latitude on a sphere tilted towards us; spacing ~ 10 px at the reference size */
-    var step = Math.max(6.5, R / 70) / R, dot = Math.max(1.1, R / 420);
+    var step = Math.max(3.2, Math.min(4.5,R / 155)) / R, dot = Math.max(.8, R / 700);
     for (var ph = -1.5; ph <= 1.5; ph += step) {
       var cp = Math.cos(ph), sp = Math.sin(ph), n = Math.max(6, Math.round(6.2832 * cp / step));
       for (var i = 0; i < n; i++) {
@@ -156,7 +118,7 @@
   function kick() { if (!raf && !D.hidden) raf = requestAnimationFrame(loop); }
   function build() {
     var r = cv.getBoundingClientRect(); W = Math.round(r.width); H = Math.round(r.height); if (!W || !H) return;
-    DPR = Math.min(2, window.devicePixelRatio || 1); day = root.dataset.theme === 'day'; G = geo();
+    DPR = Math.min(2, window.devicePixelRatio || 1); day = false; G = geo();
     var w = Math.round(W * DPR), h = Math.round(H * DPR); cv.width = w; cv.height = h;
     bg = mk(w, h); lat = mk(w, h); lit = mk(w, h); tmp = mk(w, h);
     bakeBg(); bakeSphere(); frame(performance.now()); kick();

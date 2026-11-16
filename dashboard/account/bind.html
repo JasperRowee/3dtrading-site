@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex">
 <title>3dtrading · 连接币安子账户</title>
 <script>/* r41: day / night follows the dashboard (localStorage '3dt.theme.app'); day is the default. The website keeps its own '3dt.theme.site'. */
-try{var L=localStorage,o=L.getItem('3dt.theme');if(o!==null){if(L.getItem('3dt.theme.site')===null)L.setItem('3dt.theme.site',o==='day'?'day':'night');L.removeItem('3dt.theme')}document.documentElement.dataset.theme=L.getItem('3dt.theme.app')==='night'?'night':'day'}catch(e){document.documentElement.dataset.theme='day'}</script>
+/* r55: fixed theme, no switch */ document.documentElement.dataset.theme='day';try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}</script>
 <link rel="stylesheet" href="page.css?v=20261113-r38">
 <link rel="stylesheet" href="bind-bn.css?v=20261113-r38">
 <style>

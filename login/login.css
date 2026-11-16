@@ -1,11 +1,11 @@
-/* r49 · 3dtrading 登录 / 注册 — 独立预览。一个样式表，白天 / 夜晚共用同一套间距与组件，只换颜色。 */
+/* r54: single default deep-space login scene; r53 daytime sphere size, finer LED lattice, upper-right mobile crop. */
 :root{--barH:76px;--ease:cubic-bezier(.2,.8,.2,1);--brand:#2fdcbc;--onb:#03241e;
   --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
 html[data-theme=night]{--bg:#05070a;--ink:#f1f5f4;--ink2:#aab6b3;--ink3:#76847f;--line:rgba(255,255,255,.09);--acc:#3ee6c6;
   --panel:rgba(8,12,15,.7);--panelB:rgba(255,255,255,.08);--field:rgba(255,255,255,.035);--fieldB:rgba(255,255,255,.12);--fieldBh:rgba(255,255,255,.22);
   --fieldF:rgba(255,255,255,.055);--ring:rgba(47,220,188,.18);--bad:#ff8080;--badBg:rgba(255,99,105,.09);--soft:rgba(255,255,255,.045);
   --chip:rgba(8,12,15,.6);--shadow:0 40px 90px -40px rgba(0,0,0,.85);color-scheme:dark}
-html[data-theme=day]{--bg:#d4e3e0;--ink:#0d1a1c;--ink2:#3a4c4f;--ink3:#617275;--line:rgba(14,40,44,.1);--acc:#0a7d68;
+html[data-theme=day]{--bg:#bfeee3;--ink:#0d1a1c;--ink2:#3a4c4f;--ink3:#617275;--line:rgba(14,40,44,.1);--acc:#0a7d68;
   --panel:rgba(255,255,255,.8);--panelB:rgba(255,255,255,.95);--field:#fff;--fieldB:rgba(14,40,44,.14);--fieldBh:rgba(14,40,44,.26);
   --fieldF:#fff;--ring:rgba(10,125,104,.14);--bad:#c43239;--badBg:rgba(196,50,57,.07);--soft:rgba(14,40,44,.04);
   --chip:rgba(255,255,255,.78);--shadow:0 36px 80px -40px rgba(20,60,64,.45);color-scheme:light}
@@ -53,7 +53,10 @@ html[data-theme=day] .hero h1 em{background-image:linear-gradient(96deg,#0a7d68 
 .pts .k{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;background:var(--chip);border:1px solid var(--panelB)}
 .pts svg{width:14px;height:14px;fill:none;stroke:var(--acc);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .hero::before{content:"";position:absolute;z-index:-1;left:0;right:-6%;top:18%;bottom:6%;pointer-events:none;background:radial-gradient(70% 60% at 32% 50%,rgba(3,6,7,.5),rgba(3,6,7,.22) 58%,transparent 80%)}
-html[data-theme=day] .hero::before{background:radial-gradient(70% 60% at 32% 50%,rgba(240,246,250,.5),rgba(240,246,250,.18) 58%,transparent 80%)}
+html[data-theme=day] .hero::before{background:radial-gradient(70% 60% at 32% 50%,rgba(246,253,251,.55),rgba(240,252,248,.2) 58%,transparent 80%)}
+/* r53 · while day/night switches, the page's own colours ease across with the scene's wipe */
+html.thx body,html.thx .card,html.thx .card *,html.thx .top *,html.thx .hero *,html.thx .orbnav,html.thx .orbnav button{transition:background-color 1.1s var(--ease),border-color 1.1s var(--ease),color 1.1s var(--ease),box-shadow 1.1s var(--ease),fill 1.1s,stroke 1.1s!important}
+@media (prefers-reduced-motion:reduce){html.thx *{transition:none!important}}
 html[data-theme=night] .hero h1,html[data-theme=night] .hero .lede{text-shadow:0 1px 18px rgba(0,0,0,.5)}
 .side{display:flex;align-items:center;justify-content:center;padding:24px clamp(28px,5vw,80px) 40px}
 
@@ -171,7 +174,14 @@ html[data-theme=night] .hero h1,html[data-theme=night] .hero .lede{text-shadow:0
 .orbnav button:hover{background:rgba(220,240,236,.75)}
 .orbnav button[aria-pressed="true"]{background:#3ee6c6;transform:scale(1.25)}
 .orbnav button:focus-visible{outline:2px solid #3ee6c6;outline-offset:3px}
-html[data-theme="day"] .orbnav{background:rgba(255,255,255,.55)}
+html[data-theme="day"] .orbnav{background:rgba(255,255,255,.6);box-shadow:0 6px 20px -10px rgba(8,80,70,.4)}
 html[data-theme="day"] .orbnav button{background:rgba(20,50,54,.28)}
 html[data-theme="day"] .orbnav button[aria-pressed="true"]{background:#0a8a72}
 @media (max-width:900px){.orbnav{display:none}}
+
+/* r54: the mobile globe is cropped into the upper-right corner, above the form. */
+@media(max-width:900px){
+ .hero{padding-top:230px;min-height:410px;justify-content:flex-end}
+ .hero .lede{max-width:28em}
+ .hero::before{top:170px;background:linear-gradient(transparent,rgba(2,5,12,.82))}
+}

@@ -21,12 +21,12 @@
   try {
     var q = new URLSearchParams(location.search);
     if (q.get('lang') === 'zh' || q.get('lang') === 'en') set('lang', q.get('lang'));
-    if (q.get('theme') === 'day' || q.get('theme') === 'night') set('theme', q.get('theme'));
+    /* r55: ?theme= is ignored; one fixed dark look */ try { g.localStorage.removeItem(NS + 'theme'); } catch (e) {}
   } catch (e) { /* no URLSearchParams */ }
 
   /* ---------- language ---------- */
   /* read once per page, so another open tab switching language never half-changes this one */
-  var CUR = { lang: get('lang') === 'en' ? 'en' : 'zh', theme: get('theme') === 'day' ? 'day' : 'night' };
+  var CUR = { lang: get('lang') === 'en' ? 'en' : 'zh', theme: 'night' };
   function lang() { return CUR.lang; }
   var DICT = { zh: {}, en: {} };
   function i18n(d) { ['zh', 'en'].forEach(function (l) { var s = d && d[l]; if (s) for (var k in s) DICT[l][k] = s[k]; }); }
@@ -53,7 +53,7 @@
 
   /* ---------- day / night (the main page only; the tutorial is always a dark Binance screen) ---------- */
   function theme() { return CUR.theme; }
-  function setTheme(v) { if (v !== 'day' && v !== 'night') return; CUR.theme = v; set('theme', v); document.documentElement.dataset.theme = v; emit(EV.theme, { theme: v }); }
+  function setTheme(v) { return; /* r55: no switching */ if (v !== 'day' && v !== 'night') return; CUR.theme = v; set('theme', v); document.documentElement.dataset.theme = v; emit(EV.theme, { theme: v }); }
 
   /* ---------- the binding kit (examples until a backend supplies real values) ---------- */
   function examplePub(id) {

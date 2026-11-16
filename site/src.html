@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>3dtrading · 收益增强策略</title>
-<script>/* one site for every screen: the old computer/phone switch is retired; day or night is remembered (night by default) */
-try{document.documentElement.dataset.theme=localStorage.getItem('r49site.theme')==='day'?'day':'night'}catch(e){document.documentElement.dataset.theme='night'}</script>
+<script>/* r55: one fixed night scene; the day/night switch is retired and any old saved choice is cleared */
+document.documentElement.dataset.theme='night';try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}</script>
 <style>
 :root{
   --bg:#06090b;--ink:#f3f5f6;--ink2:#8a929b;--ink3:#4b525a;--brand:#2fdcbc;--bn:#f0b90b;--up:#0ecb81;--dn:#f6465d;
@@ -213,7 +213,6 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 
 <header class="bar">
   <a class="home" id="home" href="#" aria-label="3dtrading，回到首页" title="回到首页"><img class="logo" src="assets/3dtrading-logo-white.svg" alt="3dtrading"></a>
-  <button class="tm" id="thm" aria-label="切换白天 / 黑夜" title="白天 / 黑夜"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg></button>
   <div class="acts" id="acts"><a class="pr" data-go="signup">登录/注册</a></div>
 </header>
 
@@ -285,7 +284,7 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 
 <div class="door" id="door" aria-hidden="true"><img src="assets/3dtrading-logo-white.svg" alt=""></div>
 
-<script src="i18n/r48.js?v=3"></script>
+<script src="i18n/r48.js?v=r55"></script>
 <script>
 const LOGOS = /*LOGOS*/{};
 (() => {
@@ -629,9 +628,7 @@ const setThemeNow = setTheme; setTheme = function (day, quick) { if (!quick && (
 /* r42 · the switch dyes the page from the button outward (scene, bar, panels, door): see TDAccount.reveal. Without it
    (no account module, reduced motion) the r41 cross-fade above stays */
 const dyeTheme = (day, src) => { if (window.TDAccount && TDAccount.reveal && !RM) TDAccount.reveal(() => setThemeNow(day, true), src); else setTheme(day); };
-addEventListener('storage', e => { if (e.key === 'r49site.theme' && (e.newValue === 'day' ? 1 : 0) !== DAY) dyeTheme(e.newValue === 'day', document.getElementById('thm')); });
-document.getElementById('thm').addEventListener('click', e => { e.stopPropagation(); dyeTheme(!DAY, e); });
-if (DAY) setTimeout(() => setTheme(1, 1), 0);
+/* r55: no day/night switch, no following other tabs; the scene stays night */
 
 // mouse look
 let mx = 0, my = 0, smx = 0, smy = 0, mT = -9;

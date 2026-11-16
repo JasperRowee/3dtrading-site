@@ -26,7 +26,7 @@
   }));
   const button = document.createElement('button');
   button.id = 'site-lang'; button.className = 'tm'; button.textContent = en ? '中文' : 'EN';
-  button.style.cssText = 'margin-left:0;font-size:12px;flex-shrink:0';
+  button.style.cssText = 'margin-left:auto;font-size:12px;flex-shrink:0';  // r55: the day/night button it used to follow is gone
   button.setAttribute('aria-label', en ? 'Switch to Chinese' : '切换英文');
   button.onclick = () => {
     try { localStorage.setItem('r49site.lang', en ? 'zh' : 'en'); } catch (_) {}
@@ -34,7 +34,7 @@
     if (window.__dive) url.searchParams.set('at', String(window.__dive.CK.tgt + 1));
     location.replace(url);
   };
-  document.getElementById('thm').after(button);
+  document.getElementById('acts').before(button);
   addEventListener('storage', e => {
     if (e.key === 'r49site.lang' && (e.newValue === 'en') !== en) {
       const url = new URL(location.href);

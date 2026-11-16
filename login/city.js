@@ -1,19 +1,4 @@
-/* r51 · 3dtrading log-in background — a realistic city of our own, with the great LED sphere standing in it.
-   Rendered in 3D (three.js, vendored in ./vendor/three, no network). Nothing here is a real place.
-
-   Composition is unchanged from r50 (Jasper's reference a68fb519…png): on desktop the sphere's centre is at 30% of the
-   width and 109.7% of the height, radius 72.5% of the height (top at 37.2%); on phones the arc rises just under the
-   headline. To keep that exact, the camera is built from the sphere: its optical axis passes through the sphere's centre
-   (setViewOffset puts the principal point on the circle's centre), so the sphere projects to an exact circle of the
-   reference radius, and the camera pitch puts the horizon where the layout wants it.
-
-   The city: instanced towers with procedural facades (glass curtain walls, office ribbons, housing, concrete grids),
-   lit windows at night and sun + sky light by day; streets with lane marks and street-light pools (no grid lines);
-   car-light streams (white heading towards us, red away); red aviation lights on tall roofs; haze for depth.
-   The sphere: an LED lattice in latitude rows, ray-traced per pixel so the outline is a perfect circle, showing five
-   contents in turn (brand mark, candlestick chart, the Dodo eye, coin bands around the sphere, a teal-gold aurora).
-   LEDs behind the headline / lede / feature row are dimmed so the text stays readable.
-   Paused when the tab is hidden; reduced motion = one still frame, no auto-advance; no WebGL = the 2D fallback. */
+/* r55: deep space with nebula, Milky-Way band, galaxy, three star layers, parallax dust and a slow camera drift. r54: single default deep-space login scene; r53 daytime sphere size, finer LED lattice, upper-right mobile crop. */
 import * as THREE from './vendor/three/build/three.module.min.js';
 import { EffectComposer } from './vendor/three/jsm/postprocessing/EffectComposer.js';
 import { RenderPass } from './vendor/three/jsm/postprocessing/RenderPass.js';
@@ -26,7 +11,7 @@ let RM = null; try { RM = matchMedia('(prefers-reduced-motion: reduce)'); } catc
 function fallback(why) {
   if (window.__city && window.__city.mode === '2d') return;
   window.__cityWhy = why || 'webgl';
-  const s = D.createElement('script'); s.src = 'city2d.js?v=r51'; D.body.appendChild(s);
+  const s = D.createElement('script'); s.src = 'city2d.js?v=r54'; D.body.appendChild(s);
 }
 
 let renderer = null;
@@ -50,9 +35,10 @@ function start() {
   cv.addEventListener('webglcontextrestored', () => { build(true); }, false);
 
   const scene = new THREE.Scene();
-  const cam = new THREE.PerspectiveCamera(50, 1, 2, 16000);
+  const cam = new THREE.PerspectiveCamera(50, 1, 2, 32000);
   const S = new THREE.Vector3(0, 22, 0), SR = 60;              // the sphere: 120 m across, sunk 38 m into its plaza
   const PX = 150, PZ = 120, ROAD = 24;                          // street grid of the city (blocks 126 × 96 m)
+  const PR = 205, SEA = -2.4;                                   // r53 day: the sphere's own small plaza (radius) and the sea level below its edge
 
   /* ---------- shared uniforms (theme-dependent values are set in applyTheme) ---------- */
   const U = {
@@ -67,21 +53,119 @@ function start() {
     float fogAmt(float dist){ return 1. - exp(-pow(dist * uFogK, 1.55)); }
     float h21(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }`;
 
-  /* ---------- sky ---------- */
-  const skyU = { uZen: u(col('#000')), uHor: u(col('#000')), uGlow: u(col('#000')), uNight: U.uNight };
+  /* ---------- sky: r55 deep space ----------
+     Painted in the screen's own pixels as seen from the resting camera (basis uRt/uUp/uFw, set in build), but read from
+     the world direction, so when the camera drifts the whole sky slides behind the sphere: true parallax at infinity.
+     Layers, back to front: near-black blue base, a faint Milky-Way band of dense star dust, a teal nebula that hugs the
+     sphere's limb on the side away from the form, one small distant galaxy, three star layers (fine / mid / few bright
+     with halos and a slow twinkle). Everything is damped behind the log-in card. */
+  const skyU = { uZen: u(col('#000')), uHor: u(col('#000')), uGlow: u(col('#000')), uNight: U.uNight, uTime: U.uTime, uSun: U.uSun, uCloudL: u(col('#fff')), uCloudD: u(col('#000')), uSunC: U.uSunC,
+    uRt: u(new THREE.Vector3(1, 0, 0)), uUp: u(new THREE.Vector3(0, 1, 0)), uFw: u(new THREE.Vector3(0, 0, -1)),
+    uC: u(new THREE.Vector2(0, 0)), uWH: u(new THREE.Vector2(1, 1)), uFp: u(1000), uDiscS: u(new THREE.Vector3(0, 0, 1)),
+    uCard: u(new THREE.Vector4(-9e3, -9e3, -9e3, -9e3)), uNebDir: u(new THREE.Vector2(.7, -.7)), uBand: u(new THREE.Vector4(.5, .1, 1, 0)),
+    uGal: u(new THREE.Vector4(.2, .15, .5, .05)), uStill: u(0) };
   const sky = new THREE.Mesh(new THREE.SphereGeometry(12000, 32, 16), new THREE.ShaderMaterial({
     side: THREE.BackSide, depthWrite: false, uniforms: skyU,
     vertexShader: `varying vec3 vD; void main(){ vD = position; vec4 p = projectionMatrix * modelViewMatrix * vec4(position,1.); gl_Position = p.xyww; }`,
-    fragmentShader: `uniform vec3 uZen, uHor, uGlow; uniform float uNight; varying vec3 vD;
-      float hs(vec3 p){ p = fract(p * .3183099 + .1); p *= 17.; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
-      void main(){ vec3 d = normalize(vD); float e = d.y;
-        vec3 c = mix(uHor, uZen, pow(clamp(e, 0., 1.), .5));
-        c += uGlow * exp(-max(e, 0.) * 11.) * (.55 + .45 * smoothstep(-.3, .7, d.x));
-        if (uNight > .5 && e > .02) { vec3 q = d * 380.; vec3 id = floor(q); float h = hs(id);
-          if (h > .9965) { vec3 f = fract(q) - .5; float s = smoothstep(.22, 0., length(f)); c += vec3(.75, .86, .9) * s * (h - .9965) / .0035 * smoothstep(.02, .25, e) * .9; } }
-        gl_FragColor = vec4(c, 1.); }`
+    fragmentShader: `uniform float uTime, uStill, uFp; uniform vec3 uRt, uUp, uFw, uDiscS; uniform vec2 uC, uWH, uNebDir; uniform vec4 uCard, uBand, uGal; varying vec3 vD;
+      float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+      float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
+        return mix(mix(hash(i), hash(i + vec2(1., 0.)), f.x), mix(hash(i + vec2(0., 1.)), hash(i + vec2(1., 1.)), f.x), f.y); }
+      float fbm(vec2 p){ float a = .5, s = 0.; mat2 m = mat2(1.6, 1.2, -1.2, 1.6); for (int i = 0; i < 5; i++) { s += a * noise(p); p = m * p; a *= .5; } return s; }
+      vec3 starCol(float h){ return h < .64 ? vec3(.80, .88, 1.) : h < .88 ? vec3(.56, .96, .88) : vec3(1., .85, .62); }
+      /* one star per cell, kept away from the cell edge so no neighbour lookups are needed; sizes in CSS px */
+      vec3 stars(vec2 P, float cell, float prob, float rad, float gain, float twk, float halo, float seed){
+        vec2 g = P / cell, id = floor(g), f = fract(g);
+        float h = hash(id + seed); if (h > prob) return vec3(0.);
+        vec2 o = .22 + .56 * vec2(hash(id + seed + 1.7), hash(id + seed + 5.3));
+        float dp = length((f - o) * cell), b = hash(id + seed + 3.1);
+        float tw = 1. + (1. - uStill) * twk * sin(uTime * (.5 + 1.6 * b) + h * 61.);
+        float k = exp(-dp * dp / (rad * rad)) + halo * exp(-dp / (rad * 6.));
+        return starCol(hash(id + seed + 7.3)) * k * gain * (.3 + .7 * b * b) * tw;
+      }
+      void main(){
+        vec3 d = normalize(vD); float z = dot(d, uFw);
+        vec3 c = vec3(.0011, .0024, .0060);
+        if (z > .05) {
+          vec2 P = uC + vec2(dot(d, uRt), -dot(d, uUp)) / z * uFp;     /* CSS px of the resting view */
+          vec2 n = P / uWH.y;
+          /* base: the lower sky is a touch bluer, as if lit by the sphere */
+          c += vec3(.0004, .0016, .0030) * smoothstep(0., 1., P.y / uWH.y);
+          /* the log-in card: decoration fades behind it */
+          vec2 cq = max(max(uCard.xy - P, P - uCard.zw), 0.); float card = 1. - smoothstep(0., 60., length(cq));
+          float calm = 1. - .7 * card;
+          /* the sphere's limb */
+          vec2 v = P - uDiscS.xy; float R = uDiscS.z, dd = length(v) - R, side = dot(normalize(v), uNebDir);
+          float out1 = max(dd, 0.);
+          c += vec3(.010, .055, .050) * exp(-out1 / (R * .03)) * .55 + vec3(.004, .020, .024) * exp(-out1 / (R * .16)) * .6;
+          /* Milky-Way band */
+          vec2 bd = normalize(uBand.zw); float bl = dot(n - uBand.xy, vec2(-bd.y, bd.x));
+          float band = exp(-bl * bl / .0085) * (.55 + .45 * smoothstep(.25, .7, fbm(n * 3.1 + 2.)));
+          float bt = fbm(n * 7. + vec2(4.1, 1.3));
+          c += vec3(.0040, .0068, .0105) * band * (.5 + bt) * calm;
+          c *= 1. - .45 * band * smoothstep(.55, .78, fbm(n * 11. + 9.));      /* thin dark lanes */
+          /* teal nebula on the open side of the sphere, slowly drifting */
+          vec2 q = n * 2.4 + vec2(.0, -uTime * .0035 * (1. - uStill));
+          vec2 w = vec2(fbm(q + 1.7), fbm(q + vec2(8.3, 2.8)));
+          float f = fbm(q * 1.25 + 2.1 * w);
+          float rim = exp(-pow((dd / R - .12) / .15, 2.)) * smoothstep(-.05, .9, side) * smoothstep(-.02, .05, dd / R);
+          float wisp = rim * smoothstep(.45, .9, f);
+          vec3 neb = mix(vec3(.002, .012, .020), vec3(.010, .075, .064), smoothstep(.5, .85, f)) * wisp * 1.4;
+          neb += vec3(.030, .120, .105) * pow(max(f - .62, 0.) * 2.6, 2.2) * rim;     /* bright filaments */
+          neb += vec3(.040, .028, .010) * pow(max(w.x - .66, 0.) * 3., 2.) * rim * .6; /* a trace of the brand gold */
+          neb *= 1. - .6 * smoothstep(.5, .8, fbm(q * 2.7 + 5.)) * step(0., dd);      /* dust lanes */
+          c += neb * calm * step(0., dd);
+          /* one distant galaxy, tilted */
+          vec2 gl = n - uGal.xy; float ca = cos(uGal.z), sa = sin(uGal.z); gl = vec2(ca * gl.x + sa * gl.y, -sa * gl.x + ca * gl.y);
+          float ge = length(vec2(gl.x, gl.y * 3.4)) / uGal.w;
+          c += (vec3(.020, .024, .030) * exp(-ge * ge * 2.2) + vec3(.16, .14, .11) * exp(-ge * ge * 60.)) * (.7 + .3 * fbm(gl * 90.)) * calm;
+          /* stars: denser along the band and the nebula, thinner behind the card */
+          float dens = (.75 + 1.6 * band * bt + .5 * rim) * calm;
+          vec3 st = stars(P, 6., .055 * dens, .48, .45, 0., 0., 1.)
+                  + stars(P + 3.1, 19., .11 * dens, .62, .80, .10, 0., 2.)
+                  + stars(P + 7.7, 72., .26 * min(dens, 1.4), .95, 1.7, .22, .05, 3.);
+          c += st * step(0., dd);
+        }
+        gl_FragColor = vec4(c, 1.);
+      }`
   }));
   sky.frustumCulled = false; sky.renderOrder = -10; scene.add(sky);
+
+  /* ---------- r55 · two dust layers at finite depth: they slide against the sky and the sphere as the camera drifts ----------
+     far: fine motes beyond the sphere; near: a few soft, larger motes between the camera and the sphere. Both stay off
+     the sphere's face (masked in screen space) and are faint behind the card. Rebuilt for every layout in build(). */
+  const dustU = { uTime: U.uTime, uDpr: u(1), uDiscD: u(new THREE.Vector3(0, 0, 1)), uCardD: u(new THREE.Vector4(-9e3, -9e3, -9e3, -9e3)), uStill: u(0) };
+  function dustLayer(order) {
+    const m = new THREE.Points(new THREE.BufferGeometry(), new THREE.ShaderMaterial({ uniforms: dustU, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
+      vertexShader: `uniform float uTime, uDpr, uStill; attribute float aSz, aA, aPh; attribute vec3 aC; varying float vA; varying vec3 vC;
+        void main(){ vec3 p = position; p.y += (1. - uStill) * sin(uTime * .11 + aPh) * aSz * .9;
+          vec4 mv = modelViewMatrix * vec4(p, 1.); gl_Position = projectionMatrix * mv; gl_PointSize = aSz * uDpr;
+          vA = aA * (1. + (1. - uStill) * .18 * sin(uTime * (.3 + fract(aPh) * .6) + aPh * 7.)); vC = aC; }`,
+      fragmentShader: `uniform vec3 uDiscD; uniform vec4 uCardD; varying float vA; varying vec3 vC;
+        void main(){ vec2 pc = gl_PointCoord - .5; float r = length(pc) * 2.; if (r > 1.) discard;
+          vec2 fc = gl_FragCoord.xy; if (length(fc - uDiscD.xy) < uDiscD.z) discard;
+          float inCard = step(uCardD.x, fc.x) * step(fc.x, uCardD.z) * step(uCardD.y, fc.y) * step(fc.y, uCardD.w);
+          float a = pow(1. - r, 1.8) * vA * (1. - .75 * inCard); gl_FragColor = vec4(vC * a, a); }` }));
+    m.frustumCulled = false; m.renderOrder = order; scene.add(m); return m;
+  }
+  const dustFar = dustLayer(-9), dustNear = dustLayer(5);
+  function fillDust(pts, n, z0, z1, sz0, sz1, a0, a1, seed) {
+    const r = rng(seed), P = new Float32Array(n * 3), SZ = new Float32Array(n), A = new Float32Array(n), PH = new Float32Array(n), C = new Float32Array(n * 3);
+    const fw = new THREE.Vector3(), rt = skyU.uRt.value, up = skyU.uUp.value; fw.copy(skyU.uFw.value);
+    const pal = [[.70, .86, 1.], [.42, .92, .82], [1., .86, .62]];
+    for (let i = 0; i < n; i++) {
+      const x = (r() * 1.2 - .1) * W, y = (r() * 1.2 - .1) * H, zz = z0 + (z1 - z0) * r();
+      const k = zz / G.f;
+      tmpD.copy(cam.position).addScaledVector(fw, zz).addScaledVector(rt, (x - G.cx) * k).addScaledVector(up, -(y - G.cy) * k);
+      P[i * 3] = tmpD.x; P[i * 3 + 1] = tmpD.y; P[i * 3 + 2] = tmpD.z;
+      SZ[i] = sz0 + (sz1 - sz0) * Math.pow(r(), 2.2); A[i] = a0 + (a1 - a0) * r(); PH[i] = r() * 40;
+      const h = r(), cc = pal[h < .62 ? 0 : h < .9 ? 1 : 2]; C.set(cc, i * 3);
+    }
+    const g = pts.geometry; g.setAttribute('position', new THREE.BufferAttribute(P, 3)); g.setAttribute('aSz', new THREE.BufferAttribute(SZ, 1));
+    g.setAttribute('aA', new THREE.BufferAttribute(A, 1)); g.setAttribute('aPh', new THREE.BufferAttribute(PH, 1)); g.setAttribute('aC', new THREE.BufferAttribute(C, 3));
+    g.computeBoundingSphere();
+  }
+  const tmpD = new THREE.Vector3();
 
   /* ---------- ground: streets, pavements, lots, the sphere's plaza ---------- */
   const gU = Object.assign({ uAsph: u(col('#000')), uLot: u(col('#000')), uWalk: u(col('#000')), uPlaza: u(col('#000')), uLamp: u(col('#ff9a45')), uMark: u(col('#fff')), uRing: u(col('#2fdcbc')) }, U);
@@ -297,12 +381,131 @@ function start() {
   })();
   scene.add(beaconPts);
 
+  /* ---------- r53 · day: a small round plaza around the sphere, its stone edge, and the open sea beyond ---------- */
+  const dayG = new THREE.Group(); scene.add(dayG);
+  const LIT = `uniform vec3 uSun, uSunC, uSkyC, uS, uC; uniform float uSR, uShine; varying vec3 vW, vN;
+    float sphShadow(vec3 p){ vec3 oc = p - uS; float b = dot(oc, uSun), c = dot(oc, oc) - uSR * uSR, h = b * b - c;
+      if (h < 0.) return 1.; float t = -b - sqrt(h); return t > 0. ? 1. - .62 * smoothstep(0., 6., sqrt(h)) : 1.; }`;
+  const litMat = (hex, shine, inst) => new THREE.ShaderMaterial({
+    uniforms: Object.assign({ uC: u(col(hex)), uSR: u(SR), uShine: u(shine || 0) }, U), defines: inst ? { INST: 1 } : {},
+    vertexShader: `varying vec3 vW, vN; void main(){
+      #ifdef INST
+        mat4 M = modelMatrix * instanceMatrix;
+      #else
+        mat4 M = modelMatrix;
+      #endif
+      vec4 w = M * vec4(position, 1.); vW = w.xyz; vN = normalize(mat3(M) * normal); gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: FOG + LIT + `void main(){ vec3 n = normalize(vN), V = normalize(cameraPosition - vW); float df = max(dot(n, uSun), 0.);
+      vec3 c = uC * (uSkyC * (.55 + .25 * n.y) + uSunC * df * 1.05 * sphShadow(vW));
+      c += uSunC * pow(max(dot(reflect(-uSun, n), V), 0.), 40.) * uShine;
+      gl_FragColor = vec4(fogMix(c, length(cameraPosition - vW)), 1.); }`
+  });
+  /* the plaza: pale stone in rings and radial courses, a dark granite band round the sphere's foot, a granite border at the edge */
+  const plazaU = Object.assign({ uStone: u(col('#e9e4d8')), uStone2: u(col('#d9d2c3')), uGran: u(col('#4c5458')), uJoint: u(col('#b8b0a0')), uSR: u(SR), uPR: u(PR) }, U);
+  const plaza = new THREE.Mesh(new THREE.CircleGeometry(PR, 256), new THREE.ShaderMaterial({
+    uniforms: plazaU,
+    vertexShader: `varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position,1.); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: FOG + `uniform vec3 uS, uSun, uSunC, uSkyC, uStone, uStone2, uGran, uJoint; uniform float uSR, uPR; varying vec3 vW;
+      float band(float x, float e){ float w = fwidth(x) * .75 + 1e-4; return 1. - smoothstep(e - w, e + w, x); }
+      float sphShadow(vec3 p){ vec3 oc = p - uS; float b = dot(oc, uSun), c = dot(oc, oc) - uSR * uSR, h = b * b - c;
+        if (h < 0.) return 1.; float t = -b - sqrt(h); return t > 0. ? 1. - .62 * smoothstep(0., 8., sqrt(h)) : 1.; }
+      void main(){ vec2 p = vW.xz - uS.xz; float r = length(p), a = atan(p.y, p.x), dist = length(cameraPosition - vW);
+        float foot = sqrt(uSR * uSR - uS.y * uS.y);
+        float ring = floor(r / 4.2), slab = floor(a * r / 4.2 / 1.6 + ring * .37);
+        float tone = h21(vec2(ring, slab));
+        vec3 c = mix(uStone, uStone2, tone * .7);
+        float joints = max(band(abs(fract(r / 4.2) - .5) * 4.2, .05), band(abs(fract(a * r / 4.2 / 1.6 + ring * .37) - .5) * 1.6 * 4.2 / 4.2, .04));
+        c = mix(c, uJoint, joints * .55 * (1. - smoothstep(150., 600., dist)));
+        float gr = step(r, foot + 9.) + step(uPR - 7., r);           /* granite at the sphere's foot and at the edge */
+        c = mix(c, uGran * mix(.9, 1.1, tone), clamp(gr, 0., 1.));
+        c = mix(c, uStone * 1.05, band(abs(r - foot - 9.), .35) + band(abs(r - (uPR - 7.)), .3));
+        vec3 L = uSkyC * .62 + uSunC * max(uSun.y, 0.) * 1.15 * sphShadow(vW);
+        c *= L;
+        c *= 1. - .45 * exp(-max(r - foot, 0.) / 3.5);                /* contact shade where the sphere meets the ground */
+        gl_FragColor = vec4(fogMix(c, dist), 1.); }`
+  }));
+  plaza.rotation.x = -Math.PI / 2; plaza.position.set(S.x, 0, S.z); dayG.add(plaza);
+  /* the edge: a stone sea wall down to the water, a capped balustrade on top */
+  const wall = new THREE.Mesh(new THREE.CylinderGeometry(PR, PR + .6, -SEA + 1.2, 256, 1, true), litMat('#c9c1b0', .05)); wall.position.set(S.x, (SEA - 1.2) / 2, S.z); dayG.add(wall);
+  const capR = new THREE.Mesh(new THREE.RingGeometry(PR - .55, PR + .05, 256), litMat('#f1ede4', .15)); capR.rotation.x = -Math.PI / 2; capR.position.set(S.x, 1.08, S.z); dayG.add(capR);
+  const capF = new THREE.Mesh(new THREE.CylinderGeometry(PR + .05, PR + .05, .16, 256, 1, true), litMat('#e8e3d8', .1)); capF.position.set(S.x, 1.0, S.z); dayG.add(capF);
+  { const n = Math.round(2 * Math.PI * PR / 1.15), g = new THREE.BoxGeometry(.22, .92, .22); g.translate(0, .46, 0);
+    const im = new THREE.InstancedMesh(g, litMat('#ece7dc', 0, true), n), m = new THREE.Matrix4();
+    for (let i = 0; i < n; i++) { const a = i / n * Math.PI * 2; m.makeRotationY(-a); m.setPosition(S.x + Math.cos(a) * (PR - .25), 0, S.z + Math.sin(a) * (PR - .25)); im.setMatrixAt(i, m); }
+    im.frustumCulled = false; dayG.add(im); }
+  /* lamp posts round the plaza, and benches between them */
+  { const n = 36, g = new THREE.CylinderGeometry(.09, .14, 6.5, 8); g.translate(0, 3.25, 0);
+    const gh = new THREE.BoxGeometry(.9, .22, .35); gh.translate(.3, 6.45, 0);
+    const gb = new THREE.BoxGeometry(2.4, .45, .6); gb.translate(0, .22, 0);
+    const posts = new THREE.InstancedMesh(g, litMat('#3d4549', .4, true), n), heads = new THREE.InstancedMesh(gh, litMat('#3d4549', .4, true), n), benches = new THREE.InstancedMesh(gb, litMat('#a8896a', .05, true), n);
+    const m = new THREE.Matrix4();
+    for (let i = 0; i < n; i++) { const a = (i + .5) / n * Math.PI * 2, rr = PR - 4.5; m.makeRotationY(-a + Math.PI); m.setPosition(S.x + Math.cos(a) * rr, 0, S.z + Math.sin(a) * rr); posts.setMatrixAt(i, m); heads.setMatrixAt(i, m);
+      const b2 = a + Math.PI / n; m.makeRotationY(-b2 + Math.PI / 2); m.setPosition(S.x + Math.cos(b2) * (PR - 5), 0, S.z + Math.sin(b2) * (PR - 5)); benches.setMatrixAt(i, m); }
+    [posts, heads, benches].forEach(o => { o.frustumCulled = false; dayG.add(o); }); }
+  /* people strolling on the plaza: tiny figures that give the sphere its true size */
+  const pplU = Object.assign({ uSz: u(1.75), uMinPx: u(1.2) }, U);
+  const people = (() => {
+    const r = rng(5353), A = [], C = [];
+    for (let i = 0; i < 150; i++) { const rr = 70 + Math.pow(r(), .7) * (PR - 82); A.push(r() * 6.2832, rr, (r() < .5 ? -1 : 1) * (.25 + r() * .5) / rr, r()); C.push(r()); }
+    const geo = new THREE.BufferGeometry(); geo.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(A.length / 4 * 3), 3));
+    geo.setAttribute('aP', new THREE.Float32BufferAttribute(A, 4)); geo.setAttribute('aC', new THREE.Float32BufferAttribute(C, 1));
+    const p = new THREE.Points(geo, new THREE.ShaderMaterial({ uniforms: pplU, transparent: true, depthWrite: false,
+      vertexShader: `uniform float uF, uPx, uSz, uMinPx, uTime; uniform vec3 uS; attribute vec4 aP; attribute float aC; varying float vDist; varying vec3 vC; varying float vK;
+        void main(){ float a = aP.x + aP.z * uTime; vec3 w = vec3(uS.x + cos(a) * aP.y, .9, uS.z + sin(a) * aP.y);
+          vec4 mv = viewMatrix * vec4(w, 1.); vDist = length(mv.xyz); gl_Position = projectionMatrix * mv; gl_PointSize = clamp(uSz * uF / max(-mv.z, 1.), uMinPx, 14.) * uPx;
+          vC = aC < .3 ? vec3(.12, .14, .16) : aC < .5 ? vec3(.92, .9, .86) : aC < .62 ? vec3(.16, .32, .5) : aC < .72 ? vec3(.62, .22, .2) : aC < .85 ? vec3(.35, .33, .3) : vec3(.85, .7, .42); vK = aP.w; }`,
+      fragmentShader: FOG + `varying float vDist; varying vec3 vC; varying float vK;
+        void main(){ vec2 q = gl_PointCoord - .5; q.y = -q.y;
+          float body = step(abs(q.x), .13) * step(-.5, q.y) * step(q.y, .24), head = step(length(q - vec2(0., .36)), .11);
+          float a = max(body, head); if (a < .5) discard;
+          vec3 c = mix(vC, vec3(.78, .6, .5), head * .7) * .85; gl_FragColor = vec4(fogMix(c, vDist), 1.); }` }));
+    p.frustumCulled = false; return p;
+  })();
+  dayG.add(people);
+  /* the sea: wind ripples on long swells, sky reflected by Fresnel, a sun glitter path, foam where it meets the wall */
+  const seaU = Object.assign({ uDeep: u(col('#05535a')), uShal: u(col('#0f8f87')), uHorC: u(col('#000')), uZenC: u(col('#000')), uFoam: u(col('#f4fbf8')), uPR: u(PR) }, U);
+  const sea = new THREE.Mesh(new THREE.PlaneGeometry(30000, 30000, 1, 1), new THREE.ShaderMaterial({
+    uniforms: seaU,
+    vertexShader: `varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position,1.); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }`,
+    fragmentShader: FOG + `uniform vec3 uS, uSun, uSunC, uDeep, uShal, uHorC, uZenC, uFoam; uniform float uTime, uPR; varying vec3 vW;
+      float vn(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3. - 2. * f);
+        return mix(mix(h21(i), h21(i + vec2(1, 0)), f.x), mix(h21(i + vec2(0, 1)), h21(i + vec2(1, 1)), f.x), f.y); }
+      void main(){
+        vec2 p = vW.xz; float r = length(p - uS.xz); if (r < uPR - .5) discard;
+        vec3 V = cameraPosition - vW; float dist = length(V); V /= dist;
+        float fw = length(fwidth(p)) + 1e-3;
+        /* a sum of travelling waves, each faded out once it is smaller than a pixel */
+        vec2 g = vec2(0.);
+        for (int k = 0; k < 9; k++) { float fk = float(k);
+          float ang = fk * 2.39996 + .4, lam = 90. * pow(.63, fk), amp = lam * .045;
+          vec2 dir = vec2(cos(ang), sin(ang)); float w = 6.2832 / lam, ph = dot(dir, p) * w + uTime * sqrt(9.81 * w) * .9 + fk * 1.7;
+          float keep = 1. - smoothstep(.25, .7, fw / lam);
+          g += dir * cos(ph) * w * amp * keep; }
+        /* fine wind ripples (value noise), only near */
+        float rp = 1. - smoothstep(.3, 1.4, fw); vec2 qn = p * .35 + vec2(uTime * .25, uTime * .12);
+        float e = .5, n0 = vn(qn); g += vec2(vn(qn + vec2(e, 0.)) - n0, vn(qn + vec2(0., e)) - n0) * .9 * rp;
+        vec3 n = normalize(vec3(-g.x, 1., -g.y));
+        float fr = .02 + .98 * pow(1. - max(dot(n, V), 0.), 5.);
+        vec3 R = reflect(-V, n); R.y = abs(R.y);
+        vec3 sky = mix(uHorC, uZenC, smoothstep(0., .62, pow(R.y, .62)));
+        float sd = max(dot(R, uSun), 0.);
+        vec3 body = mix(uShal, uDeep, smoothstep(0., 1., -dot(V, vec3(0., -1., 0.)) * 1.4));
+        vec3 c = mix(body, sky, clamp(fr, 0., 1.));
+        c += uSunC * (pow(sd, 900.) * 6. + pow(sd, 90.) * .45 + pow(sd, 12.) * .06);
+        /* the sphere's shadow on the water */
+        { vec3 oc = vW - uS; float b = dot(oc, uSun), cc = dot(oc, oc) - 3600., h = b * b - cc; if (h > 0. && -b - sqrt(h) > 0.) c *= .7; }
+        float foam = exp(-(r - uPR) / 1.6) * (.55 + .45 * vn(p * .6 + uTime * .3)) + exp(-(r - uPR) / 6.) * .25 * step(.62, vn(p * .25 - uTime * .2));
+        c = mix(c, uFoam, clamp(foam, 0., 1.) * (1. - smoothstep(300., 1400., dist)));
+        gl_FragColor = vec4(fogMix(c, dist), 1.); }`
+  }));
+  sea.rotation.x = -Math.PI / 2; sea.position.set(S.x, SEA, S.z - 9000); sea.renderOrder = -5; dayG.add(sea);
+
   /* ---------- the LED sphere ---------- */
   const blank = new THREE.DataTexture(new Uint8Array(4), 1, 1); blank.needsUpdate = true;
   const sU = {
     uR: u(SR), uBB: u(SR * 1.3), uRight: u(new THREE.Vector3(1, 0, 0)), uUp: u(new THREE.Vector3(0, 1, 0)), uVP: u(new THREE.Matrix4()),
     uDisc: u(new THREE.Vector3(0, 0, 1)), uRes: u(new THREE.Vector2(1, 1)), uDpr: u(1), uCell: u(.01),
-    uTexA: u(blank), uTexB: u(blank), uModeA: u(0), uModeB: u(0), uMix: u(0), uScroll: u(0),
+    uTexA: u(blank), uTexB: u(blank), uModeA: u(0), uModeB: u(0), uMix: u(0), uScroll: u(0), uTR: u(new THREE.Vector4(-1, -1, 1, 1)), uBase: u(col('#000')), uBase2: u(col('#000')),
     uRects: u([0, 1, 2, 3].map(() => new THREE.Vector4(-9e3, -9e3, -9e3, -9e3))), uDim: u(.22),
     uShell: u(col('#000')), uOff: u(col('#000')), uRim: u(col('#000')), uGold: u(col('#e9c46a')), uGain: u(2), uLow: u(col('#000')),
     uAurA: u(col('#2fdcbc')), uAurB: u(col('#e9c46a')),
@@ -313,7 +516,7 @@ function start() {
     vertexShader: `uniform vec3 uS, uRight, uUp; uniform float uBB; varying vec3 vW;
       void main(){ vec3 w = uS + (uRight * position.x + uUp * position.y) * uBB; vW = w; gl_Position = projectionMatrix * viewMatrix * vec4(w, 1.); }`,
     fragmentShader: `
-      uniform vec3 uS, uDisc, uShell, uOff, uRim, uGold, uLow, uSun, uAurA, uAurB; uniform float uR, uDpr, uCell, uMix, uScroll, uDim, uGain, uNight, uTime, uModeA, uModeB;
+      uniform vec3 uS, uDisc, uShell, uOff, uRim, uGold, uLow, uSun, uAurA, uAurB, uBase, uBase2; uniform vec4 uTR; uniform float uR, uDpr, uCell, uMix, uScroll, uDim, uGain, uNight, uTime, uModeA, uModeB;
       uniform vec2 uRes; uniform mat4 uVP; uniform sampler2D uTexA, uTexB; uniform vec4 uRects[4]; varying vec3 vW;
       const float PI = 3.14159265, TAU = 6.2831853;
       vec4 aurora(vec3 p){
@@ -338,30 +541,46 @@ function start() {
         float t = -b - sqrt(max(hh, 0.)); vec3 P = ro + rd * t; if (P.y < 0.) discard;
         vec3 n = normalize(P - uS), V = -rd;
         float phi = asin(clamp(n.y, -1., 1.)), lam = atan(n.x, n.z);
+        /* r53: by day a continuous, sharp picture (as on the real sphere), sampled per pixel — screen-space for the framed schemes
+           (their texture covers only the visible face, so it stays crisp), latitude–longitude for the bands.
+           At night it stays as r52: a lattice of LEDs, each sampled once at its centre. */
         float i = floor((phi + PI * .5) / uCell), phc = (i + .5) * uCell - PI * .5;
         float nl = max(3., floor(TAU * cos(phc) / uCell)), dl = TAU / nl;
         float j = floor((lam + PI) / dl), lac = (j + .5) * dl - PI;
         vec2 lc = vec2((lam - lac) * cos(phi) / uCell, (phi - phc) / uCell);
-        float px = max(fwidth(phi), fwidth(lam) * cos(phi)) / uCell;            /* cells per pixel */
-        float rad = .33, aa = px * .8 + .02;
-        float dotm = 1. - smoothstep(rad - aa, rad + aa, length(lc));
-        dotm = mix(dotm, .55, smoothstep(.28, .7, px));                          /* limb: average, no moiré */
-        /* content, sampled once per LED at its centre */
-        vec3 nc = vec3(cos(phc) * sin(lac), sin(phc), cos(phc) * cos(lac));
-        vec4 cl = uVP * vec4(uS + nc * uR, 1.); vec2 nd = cl.xy / cl.w;
-        vec2 sp = vec2((nd.x * .5 + .5) * uRes.x, (.5 - nd.y * .5) * uRes.y);
-        vec2 q = vec2(sp.x - uDisc.x, uDisc.y - sp.y) / uDisc.z, uvS = q * .5 + .5;
-        vec2 uvL = vec2(fract((lac + uScroll) / TAU + .5), (phc + PI / 3.) / (PI * 5. / 6.));
-        vec4 C = mix(slot(uTexA, uModeA, uvS, uvL, nc), slot(uTexB, uModeB, uvS, uvL, nc), uMix);
+        float cpx = max(fwidth(phi), fwidth(lam) * cos(phi)) / uCell, aa = cpx * .8 + .02;
+        float dotm = mix(1. - smoothstep(.33 - aa, .33 + aa, length(lc)), .55, smoothstep(.28, .7, cpx));
+        vec2 sp; vec2 uvL; vec3 nS = n;
+        if (uNight > .5) {
+          vec3 nc = vec3(cos(phc) * sin(lac), sin(phc), cos(phc) * cos(lac)); nS = nc;
+          vec4 cl = uVP * vec4(uS + nc * uR, 1.); vec2 nd = cl.xy / cl.w;
+          sp = vec2((nd.x * .5 + .5) * uRes.x, (.5 - nd.y * .5) * uRes.y);
+          uvL = vec2(fract((lac + uScroll) / TAU + .5), (phc + PI / 3.) / (PI * 5. / 6.));
+        } else {
+          sp = vec2(gl_FragCoord.x / uDpr, uRes.y - gl_FragCoord.y / uDpr);
+          uvL = vec2(fract((lam + uScroll) / TAU + .5), (phi + PI / 3.) / (PI * 5. / 6.));
+        }
+        vec2 q = vec2(sp.x - uDisc.x, uDisc.y - sp.y) / uDisc.z, uvS = (q - uTR.xy) / (uTR.zw - uTR.xy);
+        vec4 C = mix(slot(uTexA, uModeA, uvS, uvL, nS), slot(uTexB, uModeB, uvS, uvL, nS), uMix);
         float dm = 0.;
         for (int k = 0; k < 4; k++) { vec4 r = uRects[k]; vec2 dd = max(r.xy - sp, sp - r.zw); dm = max(dm, 1. - smoothstep(-26., 20., max(dd.x, dd.y))); }
         float lvl = mix(1., uDim, dm), face = clamp(dot(n, V), 0., 1.), facing = pow(face, .35);
-        vec3 led;
-        if (uNight > .5) led = uOff + C.rgb * C.a * uGain * lvl * facing;
-        else led = uOff + C.rgb * C.a * uGain * lvl * facing;
         vec3 R = reflect(-V, n);
-        vec3 shell = uNight > .5 ? uShell * (.55 + .45 * n.y) : uShell * (.7 + .3 * max(dot(n, uSun), 0.)) + vec3(.22) * pow(max(dot(R, uSun), 0.), 14.);
-        vec3 col = mix(shell, led, dotm);
+        /* the screen's own ground: a faint lit field over the whole sphere, brighter at the top */
+        float fl = .5 + .5 * sin(lam * 2. + phi * 3. + uTime * .12) * sin(phi * 4. - uTime * .09);
+        vec3 ground = mix(uBase2, uBase, smoothstep(-.4, .9, n.y) * .8 + fl * .2);
+        vec3 col;
+        if (uNight > .5) col = mix(uShell * (.55 + .45 * n.y), uOff + C.rgb * C.a * uGain * lvl * facing, dotm);   /* r52 night, unchanged */
+        else {
+          /* day: a bright screen in sunlight — light ground, the picture laid over it, gently darker towards the limb */
+          col = mix(ground, C.rgb, clamp(C.a * lvl, 0., 1.));
+          col *= mix(.7, 1., pow(face, .6));
+          col += vec3(.16) * pow(max(dot(R, uSun), 0.), 10.) + vec3(.05) * pow(1. - face, 3.);
+        }
+        /* a fine panel weave only where the screen is large on the page: gives the surface scale without breaking the picture */
+        vec2 pw = abs(fract(vec2(lam * cos(phi), phi) * uR / 1.6) - .5);
+        float px = max(fwidth(phi), fwidth(lam) * cos(phi)) * uR / 1.6;
+        if (uNight < .5) col *= 1. - .05 * (1. - smoothstep(.2, .55, px)) * (1. - smoothstep(.0, .08, min(pw.x, pw.y)));
         /* a thin light line on the silhouette (as in the reference), strongest upper-left, plus a faint sheen */
         float ePx = (uR - dc) / aw, side = .25 + .75 * smoothstep(-.4, .9, dot(n, normalize(vec3(-.72, .62, .3))));
         col += uRim * (exp(-ePx / 1.3) * .9 + exp(-ePx / 14.) * .1 + pow(1. - face, 6.) * .05) * side;
@@ -370,13 +589,13 @@ function start() {
         vec2 fp = vec2(gl_FragCoord.x / uDpr, uRes.y - gl_FragCoord.y / uDpr);
         float an = .365 * PI; vec2 A = uDisc.xy + vec2(cos(an), -sin(an)) * uDisc.z * .985, B = A + normalize(vec2(-.38, 1.)) * uDisc.z * .11;
         float hs; float sd = sdSeg(fp, A, B, hs), th = max(1.1, uDisc.z / 330.);
-        col += uGold * (1. - smoothstep(th * .5, th * .5 + 1., sd)) * pow(1. - hs, 1.3) * (uNight > .5 ? 2.2 : 1.1);
+        col += uGold * (1. - smoothstep(th * .5, th * .5 + 1., sd)) * pow(1. - hs, 1.3) * (uNight > .5 ? 2.2 : 0.);
         gl_FragColor = vec4(col, alpha); }`
   }));
   sphere.frustumCulled = false; sphere.renderOrder = 10; scene.add(sphere);
 
   /* ---------- sphere contents (2D canvases → textures) ---------- */
-  const N = 512;
+  let TW = 512, TH = 512, KS = 1; const LK = () => ledDay ? KS * .6 : KS;   /* line weights: finer on the crisp day screen, as r52 on the night LEDs */     /* r53: the framed schemes' canvas covers only the visible face of the sphere, at screen resolution */
   const mkC = (w, h) => { const c = D.createElement('canvas'); c.width = w; c.height = h; return c; };
   const SCH = [
     { id: 'brand', mode: 0, zh: '品牌', en: 'Brand' },
@@ -387,16 +606,24 @@ function start() {
   ];
   SCH.forEach(s => {
     if (s.mode === 2) return;
-    s.cv = s.mode === 1 ? mkC(2048, 512) : mkC(N, N); s.cx = s.cv.getContext('2d');
+    s.cv = s.mode === 1 ? mkC(4096, 1024) : mkC(TW, TH); s.cx = s.cv.getContext('2d');
     s.tex = new THREE.CanvasTexture(s.cv); s.tex.colorSpace = THREE.SRGBColorSpace; s.tex.generateMipmaps = false; s.tex.minFilter = THREE.LinearFilter;
     if (s.mode === 1) s.tex.wrapS = THREE.RepeatWrapping;
   });
-  const ledDay = false; /* r52: LED content always drawn bright (dark shell by day too) */
+  let ledDay = false; /* r53: by day the sphere is a bright screen, so its pictures are drawn dark-on-light */
+  function sizeTex() {           /* fit the framed canvases to the visible face, about one texel per device pixel */
+    const sw = (VIS.x1 - VIS.x0) * G.R, sh = (VIS.y1 - VIS.y0) * G.R, k = Math.min(1, 1900 / (Math.max(sw, sh) * DPR));
+    const w = Math.max(256, Math.round(sw * DPR * k)), h = Math.max(256, Math.round(sh * DPR * k));
+    KS = w / (VIS.x1 - VIS.x0) / 256;
+    if (w === TW && h === TH) return; TW = w; TH = h;
+    SCH.forEach(s => { if (s.mode !== 0) return; s.cv.width = TW; s.cv.height = TH; s.tex.dispose();
+      s.tex = new THREE.CanvasTexture(s.cv); s.tex.colorSpace = THREE.SRGBColorSpace; s.tex.generateMipmaps = false; s.tex.minFilter = THREE.LinearFilter; s.tex.anisotropy = 4; });
+  }
   const logo = new Image(); let logoOK = false; logo.onload = () => { logoOK = true; tintLogo(); drawAll(); }; logo.src = 'assets/3dtrading-logo-white.svg';
   let logoT = null;
   function tintLogo() {
     if (!logoOK) return;
-    const w = 732, h = Math.round(732 * 88.29564 / 366.41956), c = mkC(w, h), x = c.getContext('2d');
+    const w = 1800, h = Math.round(1800 * 88.29564 / 366.41956), c = mkC(w, h), x = c.getContext('2d');
     x.drawImage(logo, 0, 0, w, h); x.globalCompositeOperation = 'source-in';
     const gr = x.createLinearGradient(0, 0, w, 0);
     if (ledDay) { gr.addColorStop(0, '#08806b'); gr.addColorStop(1, '#0d9a7c'); } else { gr.addColorStop(0, '#5eeccf'); gr.addColorStop(.6, '#a7e9c8'); gr.addColorStop(1, '#e3d79f'); }
@@ -407,16 +634,16 @@ function start() {
   const twinkle = (() => { const r = rng(99), a = []; for (let i = 0; i < 160; i++) a.push([r(), r(), r(), r()]); return a; })();
 
   let W = 0, H = 0, DPR = 1, day = false, G = null, ST = null, VIS = null, still = !!(RM && RM.matches);
-  const toCx = qx => (qx * .5 + .5) * N, toCy = qy => (.5 - qy * .5) * N;
+  const toCx = qx => (qx - VIS.x0) / (VIS.x1 - VIS.x0) * TW, toCy = qy => (VIS.y1 - qy) / (VIS.y1 - VIS.y0) * TH;
 
   function ambient(c, t, a) {          /* faint twinkling LEDs over the visible face */
     const x0 = toCx(VIS.x0), x1 = toCx(VIS.x1), y0 = toCy(VIS.y1), y1 = toCy(VIS.y0);
     for (const p of twinkle) { const k = .5 + .5 * Math.sin(t * (.6 + p[2] * 1.6) + p[3] * 40); if (k < .55) continue;
       c.fillStyle = (p[2] < .8 ? (ledDay ? 'rgba(10,140,118,' : 'rgba(80,230,200,') : (ledDay ? 'rgba(190,140,40,' : 'rgba(240,200,110,')) + (a * (k - .55) / .45).toFixed(3) + ')';
-      c.fillRect(x0 + p[0] * (x1 - x0), y0 + p[1] * (y1 - y0), 3, 3); }
+      c.beginPath(); c.arc(x0 + p[0] * (x1 - x0), y0 + p[1] * (y1 - y0), 1.1 * KS, 0, 6.2832); c.fill(); }
   }
   function drawBrand(t) {
-    const s = SCH[0], c = s.cx; c.clearRect(0, 0, N, N); ambient(c, t, .55);
+    const s = SCH[0], c = s.cx; c.clearRect(0, 0, TW, TH); if (!ledDay) ambient(c, t, .55);
     const X0 = toCx(ST.x0), X1 = toCx(ST.x1), Y0 = toCy(ST.y1), Y1 = toCy(ST.y0), w = X1 - X0, h = Y1 - Y0;
     if (logoT) {
       const ar = logoT.width / logoT.height; let lh = Math.min(h * .52, w * .78 / ar), lw = lh * ar;
@@ -429,12 +656,12 @@ function start() {
       c.fillStyle = g; c.fillRect(x, y - 4, lw, lh + 8); c.restore();
       /* a thin rule under it, with a travelling bead */
       const ry = y + lh + h * .13, rw = lw * .62, rx = X0 + (w - rw) / 2;
-      c.fillStyle = ledDay ? 'rgba(8,128,107,.55)' : 'rgba(62,230,198,.45)'; c.fillRect(rx, ry, rw, 2.2);
-      const bx = rx + ((still ? .6 : (t * .22) % 1)) * rw; c.fillStyle = ledDay ? '#c4922a' : '#f0cf7a'; c.fillRect(bx - 5, ry - 1.4, 10, 5);
+      const K = LK(); c.fillStyle = ledDay ? 'rgba(8,128,107,.55)' : 'rgba(62,230,198,.45)'; c.fillRect(rx, ry, rw, 2.2 * K);
+      const bx = rx + ((still ? .6 : (t * .22) % 1)) * rw; c.fillStyle = ledDay ? '#c4922a' : '#f0cf7a'; c.fillRect(bx - 5 * K, ry - 1.4 * K, 10 * K, 5 * K);
     }
   }
   function drawCandles(t) {
-    const s = SCH[1], c = s.cx; c.clearRect(0, 0, N, N);
+    const s = SCH[1], c = s.cx; c.clearRect(0, 0, TW, TH);
     const X0 = toCx(VIS.x0) + 6, X1 = toCx(Math.min(VIS.x1, ST.x1 + .25)) - 6, Y0 = toCy(ST.y1), Y1 = toCy(ST.y0), w = X1 - X0, h = Y1 - Y0;
     const n = 22, cw = w / n, off = still ? 40 : t * 1.25, i0 = Math.floor(off), fr = off - i0;
     let lo = 1e9, hi = -1e9; for (let k = 0; k <= n + 1; k++) { const d = series[(i0 + k) % series.length]; lo = Math.min(lo, d[2]); hi = Math.max(hi, d[1]); }
@@ -443,21 +670,22 @@ function start() {
     for (let k = 0; k <= n + 1; k++) {
       const d = series[(i0 + k) % series.length], x = X0 + (k - fr) * cw; if (x < X0 - cw || x > X1) continue;
       const isUp = d[3] >= d[0]; c.fillStyle = isUp ? up : dn;
-      c.fillRect(x + cw * .47, Y(d[1]), Math.max(1.5, cw * .07), Y(d[2]) - Y(d[1]));
+      c.fillRect(x + cw * .48, Y(d[1]), Math.max(1.5, cw * .04), Y(d[2]) - Y(d[1]));
       const yt = Y(Math.max(d[0], d[3])), yb = Y(Math.min(d[0], d[3])); c.fillRect(x + cw * .2, yt, cw * .6, Math.max(2, yb - yt));
       c.globalAlpha = .4; c.fillRect(x + cw * .2, Y1 - h * .14 * d[4], cw * .6, h * .14 * d[4]); c.globalAlpha = 1;   // volume
     }
     const last = series[(i0 + n) % series.length][3], ly = Y(last);
-    c.strokeStyle = ledDay ? 'rgba(8,128,107,.7)' : 'rgba(120,240,214,.75)'; c.lineWidth = 1.6; c.setLineDash([6, 5]); c.beginPath(); c.moveTo(X0, ly); c.lineTo(X1, ly); c.stroke(); c.setLineDash([]);
+    c.strokeStyle = ledDay ? 'rgba(8,128,107,.7)' : 'rgba(120,240,214,.75)'; c.lineWidth = 1.6 * LK(); c.setLineDash([6 * LK(), 5 * LK()]); c.beginPath(); c.moveTo(X0, ly); c.lineTo(X1, ly); c.stroke(); c.setLineDash([]);
   }
   function drawDodo(t) {
-    const s = SCH[2], c = s.cx; c.clearRect(0, 0, N, N); ambient(c, t, .35);
+    const s = SCH[2], c = s.cx; c.clearRect(0, 0, TW, TH); if (!ledDay) ambient(c, t, .35);
     const X0 = toCx(ST.x0), X1 = toCx(ST.x1), Y0 = toCy(ST.y1), Y1 = toCy(ST.y0), w = X1 - X0, h = Y1 - Y0;
     const D0 = Math.min(h * .96, w * .5), cx = X0 + w / 2, cy = Y0 + h / 2, k = D0 / 220.5;   // the face circle of dodo.svg (r 110.25)
     const gl = c.createRadialGradient(cx, cy, D0 * .3, cx, cy, D0 * .85); gl.addColorStop(0, ledDay ? 'rgba(31,224,191,.55)' : 'rgba(31,224,191,.45)'); gl.addColorStop(1, 'rgba(31,224,191,0)');
     c.fillStyle = gl; c.fillRect(cx - D0, cy - D0, D0 * 2, D0 * 2);
     c.save(); c.translate(cx, cy); c.scale(k, k); c.translate(-169, -169);
     c.fillStyle = '#fcf1e0'; c.globalAlpha = ledDay ? 1 : .5; c.beginPath(); c.arc(169, 169, 110.25, 0, 6.2832); c.fill(); c.globalAlpha = 1;
+    if (ledDay) { c.strokeStyle = '#0d7a66'; c.lineWidth = 5; c.stroke(); }
     /* the eye: blinks every few seconds, glances left and right */
     const bt = still ? 9 : t % 4.6, blink = bt < .16 ? 1 - Math.abs(bt - .08) / .08 : 0, look = still ? 0 : Math.sin(t * .7) * 7;
     c.save(); c.translate(210 + look, 140); c.scale(1, Math.max(.06, 1 - blink)); c.translate(-210, -140);
@@ -470,7 +698,7 @@ function start() {
     c.restore(); c.restore();
   }
   function drawCoins() {          /* bands around the sphere at the latitudes of the clear area (lat–long canvas) */
-    const s = SCH[3], c = s.cx, CW = 2048, CH = 512; c.clearRect(0, 0, CW, CH);
+    const s = SCH[3], c = s.cx, CW = 4096, CH = 1024; c.clearRect(0, 0, CW, CH);
     const yv = ph => (1 - (ph + Math.PI / 3) / (Math.PI * 5 / 6)) * CH;
     const qx = (ST.x0 + ST.x1) / 2, bands = [[.27, .46, 0], [.79, .36, 1]];
     const coins = [['BTC', '#f7931a', '₿'], ['ETH', '#8c8cf0', 'Ξ'], ['BNB', '#f0b90b', 'B'], ['SOL', '#14f195', 'S'], ['XRP', '#b8c4cc', 'X'], ['DOGE', '#c2a633', 'Ð']];
@@ -479,7 +707,7 @@ function start() {
       const p0 = latAt(qx, y + half), p1 = latAt(qx, y - half); if (p0 == null || p1 == null) continue;
       const ph = (p0 + p1) / 2, ya = yv(p0), yb = yv(p1), bh = yb - ya, kx = (CW / (2 * Math.PI)) / (CH / (Math.PI * 5 / 6)) / Math.max(.2, Math.cos(ph));
       c.fillStyle = ledDay ? 'rgba(10,125,104,.08)' : 'rgba(47,220,188,.10)'; c.fillRect(0, ya, CW, bh);
-      c.fillStyle = ledDay ? 'rgba(10,125,104,.45)' : 'rgba(62,230,198,.5)'; c.fillRect(0, ya, CW, 1.5); c.fillRect(0, yb - 1.5, CW, 1.5);
+      c.fillStyle = ledDay ? 'rgba(10,125,104,.45)' : 'rgba(62,230,198,.5)'; c.fillRect(0, ya, CW, 3); c.fillRect(0, yb - 3, CW, 3);
       c.save(); c.translate(0, ya); c.scale(kx, 1);
       const fs = bh * .74, span = CW / kx; c.font = `700 ${fs}px -apple-system,"SF Pro Display","Helvetica Neue",Arial,sans-serif`; c.textBaseline = 'middle';
       const items = kind === 1 ? [['3dtrading', null, null]].concat(coins.slice(0, 3)) : (kind === 0 ? coins : coins.slice().reverse());
@@ -503,14 +731,10 @@ function start() {
 
   /* ---------- geometry (identical to r50 on desktop) ---------- */
   function geo() {
-    const mob = W <= 900; let cx, cy, R, hz;
-    if (!mob) { cx = W * .30; cy = H * 1.097; R = H * .725; hz = H * .47; }   // r51: horizon behind the sphere's shoulders → the skyline rises on both sides
-    else {
-      const hero = D.querySelector('.hero'), hb = hero ? hero.getBoundingClientRect().bottom + (window.scrollY || 0) : H * .34;
-      R = Math.min(W * .72, 340); cx = W * .30; cy = Math.max(118, hb * .44) + R;
-      hz = cy - R * .62;           // r51: the horizon sits on the arc's shoulders so the skyline shows either side of it
-    }
-    return { mob, cx, cy, R, hz };
+    const mob = W <= 900;
+    const R = mob ? Math.min(W * .72, 340) * 1.15 : H * .725 * 1.15;
+    return { mob, cx: W * (mob ? .96 : .30), cy: mob ? 84 : H * 1.097,
+      R, hz: mob ? 84 - R * .62 : H * .47 };
   }
   const ray = new THREE.Raycaster(), sph = new THREE.Sphere(S, SR), hit = new THREE.Vector3();
   function latAt(qx, qy) {         /* disc coords → latitude on the sphere (radians) */
@@ -527,6 +751,8 @@ function start() {
     return out;
   }
   function stage(rects) {          /* the clear part of the visible face, in disc coords (y up) */
+    if (G.mob) return [{ x0: -.82, x1: -.08, y0: -.48, y1: .12 },
+      { x0: Math.max(-1, -G.cx/G.R), x1: Math.min(1,(W-G.cx)/G.R), y0: -1, y1: Math.min(1,G.cy/G.R) }];
     const vis = { x0: Math.max(-1, -G.cx / G.R), x1: Math.min(1, (W - G.cx) / G.R), y0: Math.max(-1, (G.cy - H) / G.R), y1: 1 };
     const card = D.getElementById('card'), cr = card && card.getBoundingClientRect(), sy = window.scrollY || 0;
     const tb = rects.length ? Math.max(...rects.map(r => r[3])) : 0;
@@ -553,38 +779,47 @@ function start() {
       fac: ['#0d1418', '#121a1f', '#16191b', '#121516', '#0d1012'], glass: '#0a1218', glassSky: '#1d3138', roof: '#0b0f12',
       asph: '#07090b', lot: '#0b0e10', walk: '#0f1316', plaza: '#0d1416', lamp: '#ffa24f', mark: '#cfd8d8', ring: '#3ee6c6', sphC: '#2fdcbc',
       shell: '#040708', off: '#0b1516', rim: '#3ee6c6', gold: '#e9c46a', low: '#1a1610', gain: 2.1, dim: .2, aurA: '#2fdcbc', aurB: '#e9c46a',
+      base: '#000000', base2: '#000000', cloudL: '#ffffff', cloudD: '#000000', seaDeep: '#000000', seaShal: '#000000',
       bloom: [.6, .45, .72] },
-    /* r52 · a real clear day: blue sky, warm sun, light haze; stone / concrete / brick / glass facades; dark LED shell */
-    day: { fog: '#b7cde0', fogK: 1 / 5200, zen: '#1d62c4', hor: '#c6def2', glow: '#fff0d4', sunC: '#fff0d8', skyC: '#9bb4cd',
+    /* r53 · day in the theme's teal: a teal sky with soft cloud, the open sea, a small stone plaza; the sphere is a bright screen */
+    day: { fog: '#bdeee3', fogK: 1 / 6800, zen: '#12b296', hor: '#c2f0e5', glow: '#fff4dc', sunC: '#fff2dc', skyC: '#b4ebe0',
       fac: ['#6f8796', '#cfcac0', '#c8b18e', '#a8735c', '#8d9296'], glass: '#26404f', glassSky: '#9cc2dd', roof: '#8a8d8c',
       asph: '#474c50', lot: '#8b9182', walk: '#bab5ab', plaza: '#d3ccbf', lamp: '#ffa24f', mark: '#f2f2ee', ring: '#2fdcbc', sphC: '#2fdcbc',
-      shell: '#97a1a6', off: '#717b81', rim: '#ffffff', gold: '#e9c46a', low: '#000000', gain: 1.5, dim: .25, aurA: '#2fdcbc', aurB: '#e9c46a',
-      bloom: [.22, .4, .9] }
+      shell: '#97a1a6', off: '#717b81', rim: '#ffffff', gold: '#d9a93e', low: '#000000', gain: 1.5, dim: .16, aurA: '#12b394', aurB: '#d6a43a',
+      base: '#f1faf7', base2: '#bcdcd4', cloudL: '#ffffff', cloudD: '#a6d9d0', seaDeep: '#06505a', seaShal: '#0c8a84',
+      bloom: [.12, .4, .95] }
   };
   function applyTheme() {
-    day = root.dataset.theme === 'day'; const P = day ? PAL.day : PAL.night;
+    day = false; const P = day ? PAL.day : PAL.night;
     U.uNight.value = day ? 0 : 1; U.uFogC.value.set(P.fog); U.uFogK.value = P.fogK; U.uSunC.value.set(P.sunC); U.uSkyC.value.set(P.skyC); U.uSphC.value.set(P.sphC);
     skyU.uZen.value.set(P.zen); skyU.uHor.value.set(P.hor); skyU.uGlow.value.set(P.glow).multiplyScalar(day ? .55 : 1);
     P.fac.forEach((h, i) => bU.uFac.value[i].set(h)); bU.uGlass.value.set(P.glass); bU.uGlassSky.value.set(P.glassSky); bU.uRoof.value.set(P.roof);
     gU.uAsph.value.set(P.asph); gU.uLot.value.set(P.lot); gU.uWalk.value.set(P.walk); gU.uPlaza.value.set(P.plaza); gU.uLamp.value.set(P.lamp); gU.uMark.value.set(P.mark); gU.uRing.value.set(P.ring);
     sU.uShell.value.set(P.shell); sU.uOff.value.set(P.off); sU.uRim.value.set(P.rim).multiplyScalar(day ? .5 : 1.1); sU.uGold.value.set(P.gold); sU.uLow.value.set(P.low);
     sU.uGain.value = P.gain; sU.uDim.value = P.dim; sU.uAurA.value.set(P.aurA); sU.uAurB.value.set(P.aurB);
-    lamps.visible = !day;
+    lamps.visible = false;
+    /* r53: night is the city as before; day is the plaza and the sea */
+    bMesh.visible = ground.visible = cars.visible = beaconPts.visible = dayG.visible = false;
+    sU.uBase.value.set(P.base); sU.uBase2.value.set(P.base2); skyU.uCloudL.value.set(P.cloudL); skyU.uCloudD.value.set(P.cloudD);
+    seaU.uDeep.value.set(P.seaDeep); seaU.uShal.value.set(P.seaShal); seaU.uHorC.value.set(P.hor); seaU.uZenC.value.set(P.zen);
+    U.uSun.value.copy(day ? SUN_DAY : SUN_NIGHT); ledDay = day;
     cars.material.blending = day ? THREE.NormalBlending : THREE.AdditiveBlending; cars.material.needsUpdate = true;
     carU.uSz.value = day ? 2.2 : 1.3;
     [bloom.strength, bloom.radius, bloom.threshold] = P.bloom;
     tintLogo();
   }
 
+  const SUN_NIGHT = new THREE.Vector3(-.5, .75, .45).normalize(), SUN_DAY = new THREE.Vector3(.3, .2, -.93).normalize();
   /* ---------- the camera, from the sphere ---------- */
   const tmpV = new THREE.Vector3();
-  function placeCamera() {
+  function placeCamera(yaw) {
+    yaw = yaw || 0;
     const f = G.mob ? 1.3 * Math.min(H, 1.6 * W) : 1.3 * H;
     const fullW = 2 * Math.max(G.cx, W - G.cx), fullH = 2 * Math.max(G.cy, H - G.cy);
     cam.fov = 2 * Math.atan(fullH / 2 / f) * 180 / Math.PI; cam.aspect = fullW / fullH;
     cam.setViewOffset(fullW, fullH, fullW / 2 - G.cx, fullH / 2 - G.cy, W, H);
     const th = Math.atan((G.cy - G.hz) / f), d = SR / Math.sin(Math.atan(G.R / f));
-    cam.position.set(S.x, S.y + d * Math.sin(th), S.z + d * Math.cos(th)); cam.up.set(0, 1, 0); cam.lookAt(S);
+    cam.position.set(S.x + d * Math.cos(th) * Math.sin(yaw), S.y + d * Math.sin(th), S.z + d * Math.cos(th) * Math.cos(yaw)); cam.up.set(0, 1, 0); cam.lookAt(S);
     cam.updateMatrixWorld(); cam.updateProjectionMatrix();
     sU.uVP.value.multiplyMatrices(cam.projectionMatrix, cam.matrixWorldInverse);
     sU.uRight.value.setFromMatrixColumn(cam.matrixWorld, 0); sU.uUp.value.setFromMatrixColumn(cam.matrixWorld, 1);
@@ -625,8 +860,15 @@ function start() {
       if (k >= 1) { cur = nxt; nxt = -1; tCur = now; sU.uMix.value = 0; bindSlots(); navLabels(); }
     } else if (!still && now - tCur > DUR) go(cur + 1, false);
     if (now - lastDraw > 33 || still) { lastDraw = now; drawScheme(cur, t); if (nxt >= 0) drawScheme(nxt, t); }
+    if (!still) {   /* r55: a slow orbit (about 90 s) plus a little of the mouse; the sphere stays put, space slides behind it */
+      smx += (pmx - smx) * .035; placeCamera(.022 * Math.sin(t * .07) + .018 * smx);
+    }
     composer.render(); frames++;
   }
+  /* r55: no day / night, so no switch effect; the pointer only nudges the camera */
+  let pmx = 0, smx = 0;
+  addEventListener('pointermove', e => { if (e.pointerType === 'mouse') pmx = e.clientX / innerWidth - .5; });
+  D.addEventListener('mouseleave', () => { pmx = 0; });
   function loop(now) { raf = 0; if (D.hidden) return; render(now); if (!still) raf = requestAnimationFrame(loop); }
   function kick() { if (!raf && !D.hidden) raf = requestAnimationFrame(loop); }
   function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; }
@@ -637,26 +879,47 @@ function start() {
     G = geo(); applyTheme(); placeCamera();
     renderer.setPixelRatio(DPR); renderer.setSize(W, H, false); composer.setPixelRatio(DPR); composer.setSize(W, H);
     U.uPx.value = DPR; sU.uDisc.value.set(G.cx, G.cy, G.R); sU.uRes.value.set(W, H); sU.uDpr.value = DPR;
-    sU.uCell.value = Math.max(4.6, Math.min(6.4, G.R / 115)) / G.R;          // one LED every ~5–6 px across the front
+    sU.uCell.value = Math.max(3.2, Math.min(4.5, G.R / 155)) / G.R;          // one LED every ~3–4.5 CSS px across the front (r54)
     const rects = textRects(); rects.slice(0, 4).forEach((q, i) => sU.uRects.value[i].set(q[0], q[1], q[2], q[3])); for (let i = rects.length; i < 4; i++) sU.uRects.value[i].set(-9e3, -9e3, -9e3, -9e3);
-    [ST, VIS] = stage(rects);
+    [ST, VIS] = stage(rects); sizeTex(); sU.uTR.value.set(VIS.x0, VIS.y0, VIS.x1, VIS.y1);
     nav.style.left = G.cx + 'px'; nav.style.top = (H - 44) + 'px';
+    spaceLayout();
     drawAll(); bindSlots(); navLabels();
     render(performance.now()); kick();
+  }
+  /* r55: the resting camera's basis for the sky, the card to keep clear, and the dust for this layout */
+  function spaceLayout() {
+    placeCamera(0);
+    skyU.uRt.value.setFromMatrixColumn(cam.matrixWorld, 0); skyU.uUp.value.setFromMatrixColumn(cam.matrixWorld, 1);
+    skyU.uFw.value.setFromMatrixColumn(cam.matrixWorld, 2).negate();
+    skyU.uC.value.set(G.cx, G.cy); skyU.uWH.value.set(W, H); skyU.uFp.value = G.f; skyU.uDiscS.value.set(G.cx, G.cy, G.R);
+    const ar = W / H, cr = (D.getElementById('card') || {}).getBoundingClientRect ? D.getElementById('card').getBoundingClientRect() : null;
+    if (cr && cr.width) skyU.uCard.value.set(cr.left, cr.top + (window.scrollY || 0), cr.right, cr.bottom + (window.scrollY || 0)); else skyU.uCard.value.set(-9e3, -9e3, -9e3, -9e3);
+    if (G.mob) {   /* phone: the sphere sits top-right, so space opens to its lower left */
+      skyU.uNebDir.value.set(-.62, .78); skyU.uBand.value.set(.05 * ar, .62, .55, -1); skyU.uGal.value.set(.20 * ar, .25, -.5, .032);
+    } else {
+      skyU.uNebDir.value.set(.72, -.69); skyU.uBand.value.set(.30 * ar, .12, 1, -.30); skyU.uGal.value.set(.105 * ar, .15, .45, .036);
+    }
+    dustU.uDpr.value = DPR; dustU.uDiscD.value.set(G.cx * DPR, (H - G.cy) * DPR, (G.R + 2) * DPR);
+    const cv4 = skyU.uCard.value; dustU.uCardD.value.set(cv4.x * DPR, (H - cv4.w) * DPR, cv4.z * DPR, (H - cv4.y) * DPR);
+    const n = Math.round(Math.min(1, W * H / 1.2e6) * 1);
+    fillDust(dustFar, Math.round((G.mob ? 140 : 260) * Math.max(.6, n)), G.d * 1.8, G.d * 5, 1.2, 2.6, .18, .55, 5501);
+    fillDust(dustNear, G.mob ? 14 : 26, G.d * .32, G.d * .7, 3, 7, .05, .16, 5502);
+    skyU.uStill.value = dustU.uStill.value = still ? 1 : 0;
   }
   let sigv = ''; const sig = () => [innerWidth, innerHeight, root.dataset.theme, root.lang].join('|');
   function maybe(force) { const s = sig(); if (force || s !== sigv) { sigv = s; build(); } }
   let rzT = 0; addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(() => maybe(), 60); });
-  addEventListener('td:theme', () => maybe(true));
+  // No day/night transition in the single space scene.
   addEventListener('td:lang', () => setTimeout(() => maybe(true), 40));
   D.addEventListener('visibilitychange', () => { if (D.hidden) stop(); else kick(); });
   addEventListener('pageshow', kick);
-  if (RM && RM.addEventListener) RM.addEventListener('change', () => { still = RM.matches; if (still) { frozenT = clock(); nxt = -1; sU.uMix.value = 0; bindSlots(); } render(performance.now()); kick(); });
+  if (RM && RM.addEventListener) RM.addEventListener('change', () => { still = RM.matches; skyU.uStill.value = dustU.uStill.value = still ? 1 : 0; if (still) { placeCamera(0); frozenT = clock(); nxt = -1; sU.uMix.value = 0; bindSlots(); } render(performance.now()); kick(); });
   if (D.fonts && D.fonts.ready) D.fonts.ready.then(() => maybe(true));
   maybe(true);
 
   window.__city = {
-    mode: 'webgl', grid: false,
+    mode: 'webgl', grid: false, environment: 'space', version: 'r55', space: { dustFar: () => dustFar.geometry.attributes.position ? dustFar.geometry.attributes.position.count : 0, dustNear: () => dustNear.geometry.attributes.position ? dustNear.geometry.attributes.position.count : 0, yaw: () => +Math.atan2(cam.position.x - S.x, cam.position.z - S.z).toFixed(4) }, ledSpacing: () => sU.uCell.value * G.R,
     geo: () => G && { W, H, cx: G.cx, cy: G.cy, R: G.R, hz: G.hz, top: G.cy - G.R, mob: G.mob, f: G.f, pitch: G.pitch },
     still: () => still, frames: () => frames, buildings: boxes.length, cars: cars.geometry.attributes.aRoad.count,
     schemes: SCH.map(s => s.id), scheme: () => SCH[nxt >= 0 ? nxt : cur].id,

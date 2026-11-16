@@ -7,7 +7,7 @@
 <title>3dtrading · 登录 / 注册</title>
 <script>/* r42: log-in / sign-up looks like the website it is entered from: same day / night key as the website ('3dt.theme.site', default night) and the same colours.
    The dashboard keeps its own '3dt.theme.app'. The old shared '3dt.theme' is migrated exactly as the website does. */
-try{var L=localStorage,o=L.getItem('3dt.theme');if(o!==null){if(L.getItem('3dt.theme.site')===null)L.setItem('3dt.theme.site',o==='day'?'day':'night');L.removeItem('3dt.theme')}document.documentElement.dataset.theme=L.getItem('3dt.theme.site')==='day'?'day':'night'}catch(e){document.documentElement.dataset.theme='night'}</script>
+/* r55: fixed theme, no switch */ document.documentElement.dataset.theme='night';try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}</script>
 <link rel="stylesheet" href="page.css?v=20261113-r38">
 <style>
 #orb,#gx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:block}

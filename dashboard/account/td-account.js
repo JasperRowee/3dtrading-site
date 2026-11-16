@@ -19,7 +19,10 @@
   var meTag = document.currentScript, meDs = (meTag && meTag.dataset) || {};
   var THEME_KEY = document.documentElement.getAttribute('data-theme-key') || (meDs.site && !meDs.app ? '' : '3dt.theme.app');
   var THEME_DEF = THEME_KEY === '3dt.theme.site' ? 'night' : 'day';
-  function themeKey() { try { var v = localStorage.getItem(THEME_KEY); return v === 'night' || v === 'day' ? v : THEME_DEF; } catch (e) { return THEME_DEF; } }
+  /* r55: the day / night switch is retired site-wide. Each page group keeps its fixed default (website / sign-in: night;
+     dashboard: pure-white day); old saved choices are cleared and never read, the system theme is ignored. */
+  function themeKey() { return THEME_DEF; }
+  try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}
 
   /* r42 · day / night "dye": the new palette spreads out as a circle from the point that was clicked, over the whole
      page (3D scene, background, cards, dialogs), instead of every colour fading at once. View Transitions API: the old
@@ -56,6 +59,7 @@
   }
   /* switch this page's group (account pages and connect use it; the website and the dashboard call reveal() with their own switch) */
   function setTheme(v, src) {
+    return; /* r55: no switching */
     if (!THEME_KEY) return;
     v = v === 'night' ? 'night' : 'day';
     try { localStorage.setItem(THEME_KEY, v); } catch (e) {}
@@ -66,6 +70,7 @@
   var MOON = '<svg class="m" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
   var SUN = '<svg class="s" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
   function mountThemeToggle(btn) {
+    if (btn && btn.parentNode) btn.parentNode.removeChild(btn); return null; /* r55: no day / night button */
     if (!btn || !THEME_KEY) return null;
     ensureCss(); btn.type = 'button'; btn.classList.add('tdt-tm'); btn.innerHTML = MOON + SUN;
     function lab() { var day = document.documentElement.dataset.theme === 'day'; btn.setAttribute('aria-label', t(day ? 'theme.toNight' : 'theme.toDay')); btn.title = btn.getAttribute('aria-label'); btn.setAttribute('aria-pressed', String(!day)); }
@@ -93,6 +98,7 @@
   var EV = { lang: 'td:lang', session: 'td:session', accounts: 'td:accounts', theme: 'td:theme' };
   /* another tab of the same group switched day/night: follow it (dyed in from this page's own switch when the tab is visible, instant when hidden) */
   global.addEventListener('storage', function (e) {
+    return; /* r55: other tabs can no longer change the theme */
     if (!THEME_KEY || e.key !== THEME_KEY) return;
     var root = document.documentElement, v = themeKey();
     if (root.hasAttribute('data-theme') && root.getAttribute('data-theme') !== v) {

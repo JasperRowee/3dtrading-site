@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>3dtrading · 绑定币安</title>
-<script>try{var m=/[?&]theme=(day|night)/.exec(location.search);document.documentElement.dataset.theme=(m?m[1]:localStorage.getItem('3dt49bn.theme'))==='day'?'day':'night'}catch(e){}</script>
+<script>document.documentElement.dataset.theme='night';try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}</script>
 <link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
 <link rel="stylesheet" href="bind.css?v=r50">
 </head>
@@ -22,7 +22,6 @@
     <span class="sp"></span>
     <a class="tut" href="#guide" id="tut"><span data-i18n="b.tut">查看教程</span> <span aria-hidden="true">›</span></a>
     <button type="button" class="tg" id="lang" data-i18n-attr="aria-label:b.langL">EN</button>
-    <button type="button" class="tg ic" id="theme" data-i18n-attr="aria-label:b.themeL"></button>
   </header>
   <p class="lead" data-i18n="b.lead">在币安子账户「API 管理 → 创建 API」选「自行生成」，填好下面三项，再粘贴 API Key。</p>
 

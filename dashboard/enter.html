@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>3dtrading</title>
-<style>html,body{margin:0;height:100%;background:#fff}@media (prefers-color-scheme:dark){html,body{background:#0b0d0e}}</style>
+<style>html,body{margin:0;height:100%;background:#fff}</style>
 <!-- r50 (Nova) · hand-off from 「跳过，进入后台」 on the binding preview (8994).
      #who=<base64url JSON {e,n}> is the person who signed in on the log-in preview (8992); #lang= / #theme= carry the
      language and day/night they were using. This page starts the same local demo session here (no password, nothing
@@ -24,7 +24,7 @@
   } catch (e) { who = null; }
   var A = window.TDAccount;
   var lang = h.get('lang'); if (lang === 'zh' || lang === 'en') { try { A.setLang(lang); } catch (e) { try { localStorage.setItem('3dt.lang', lang); } catch (x) {} } }
-  var th = h.get('theme'); if (th === 'day' || th === 'night') { try { localStorage.setItem('3dt.theme.app', th); } catch (e) {} }
+  /* r55: #theme= is ignored; the dashboard has one fixed look */
   var email = who && typeof who.e === 'string' && /^[^\s@]+@[^\s@]+$/.test(who.e) ? who.e.trim().toLowerCase() : '';
   var name = who && typeof who.n === 'string' ? who.n.slice(0, 40) : '';
   var cur = A.session();

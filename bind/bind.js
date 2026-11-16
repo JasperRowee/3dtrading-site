@@ -12,7 +12,7 @@
     if (mw) { sessionStorage.setItem('3dt49bn.who', mw[1]); history.replaceState(null, '', location.pathname + location.search + location.hash.replace(/(^#|&)who=[A-Za-z0-9_-]+/, '$1').replace(/^#&?$/, '')); }
     WHO = sessionStorage.getItem('3dt49bn.who') || '';
   } catch (e) { /* storage off: the dashboard opens with a demo user */ }
-  function skipUrl() { return DASH + '#' + (WHO ? 'who=' + WHO + '&' : '') + 'lang=' + A.lang() + '&theme=' + A.theme(); }
+  function skipUrl() { return DASH + '#' + (WHO ? 'who=' + WHO + '&' : '') + 'lang=' + A.lang(); }
   A.i18n({
     zh: {
       'b.h1': '绑定币安', 'b.demo': '演示', 'b.demoT': '公钥和 IP 是示例；「绑定」只检查格式，不发送、不保存。',
@@ -58,7 +58,7 @@
     $('#pms').innerHTML = '<span>' + esc(t('b.pmOn')) + '</span><span class="no">' + esc(t('b.pmOff')) + '</span>';
     var dm = $('.dm'); dm.hidden = !(K.pubExample || K.ipsExample); dm.title = t('b.demoT');
     $('#lang').textContent = L() === 'en' ? '中文' : 'EN';
-    $('#theme').innerHTML = A.theme() === 'day' ? MOON : SUN;
+    /* r55: no day / night button */
     $('#go').textContent = t(busy ? 'b.busy' : 'b.go');
     document.title = '3dtrading · ' + t('b.h1');
     $('#skip').href = skipUrl();
@@ -112,7 +112,7 @@
 
   /* ---------- language / theme ---------- */
   $('#lang').addEventListener('click', function () { A.setLang(L() === 'en' ? 'zh' : 'en'); });
-  $('#theme').addEventListener('click', function () { A.setTheme(A.theme() === 'day' ? 'night' : 'day'); });
+
   window.addEventListener(A.events.lang, function () {
     fill(); if (!$('#res').hidden) $('#res').innerHTML = '<b>' + esc(t('b.rT')) + '</b> ' + esc(t('b.rB'));
     if (errK) $('#mKey').textContent = t(errK === 'nm' ? (nm.value.trim() ? 'b.nmBad' : 'b.nmE') : (key.value.trim() ? 'b.bad' : 'b.empty'));

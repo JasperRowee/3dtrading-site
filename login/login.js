@@ -84,19 +84,13 @@
       e.getAttribute('data-i18n-attr').split(';').forEach(function (p) { var kv = p.split(':'); if (kv[1]) e.setAttribute(kv[0], t(kv[1])); });
     });
     D.querySelectorAll('#lang [data-lang]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-lang') === lang)); });
-    thmLabel(); renderMode(); renderAgree(); renderDone();
+    renderMode(); renderAgree(); renderDone();
   }
   function setLang(l) { if (l !== 'zh' && l !== 'en' || l === lang) return; lang = l; set('lang', l); apply(); emit('td:lang'); }
   $('#lang').addEventListener('click', function (e) { var b = e.target.closest('[data-lang]'); if (b) setLang(b.getAttribute('data-lang')); });
 
-  /* ---------------- theme ---------------- */
-  var thm = $('#thm');
-  function thmLabel() { var day = root.dataset.theme === 'day'; thm.setAttribute('aria-label', t(day ? 'top.toNight' : 'top.toDay')); thm.title = thm.getAttribute('aria-label'); }
-  function themeColor() { var m = $('meta[name=theme-color]'); if (m) m.content = root.dataset.theme === 'day' ? '#d4e3e0' : '#05070a'; }
-  thm.addEventListener('click', function () {
-    var v = root.dataset.theme === 'day' ? 'night' : 'day'; root.dataset.theme = v; set('theme', v); themeColor(); thmLabel(); emit('td:theme');
-  });
-  themeColor();
+  // Single default space appearance; old saved day preferences are ignored.
+  root.dataset.theme = 'night';
 
   /* ---------------- local demo accounts (no passwords, ever) ---------------- */
   function accounts() { var a = getJ('accounts', {}); return a && typeof a === 'object' ? a : {}; }
@@ -207,7 +201,7 @@
   function bindHref(s) {
     var who = '';
     try { who = btoa(unescape(encodeURIComponent(JSON.stringify({ e: s.email, n: s.name || nameOf(s.email) })))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); } catch (e) { who = ''; }
-    return BIND_URL + '?lang=' + lang + '&theme=' + (root.dataset.theme === 'day' ? 'day' : 'night') + (who ? '#who=' + who : '');
+    return BIND_URL + '?lang=' + lang + (who ? '#who=' + who : '');
   }
   addEventListener('td:theme', function () { var s = session(); if (s) $('#dGo').href = bindHref(s); });
   addEventListener('td:lang', function () { var s = session(); if (s) $('#dGo').href = bindHref(s); });

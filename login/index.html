@@ -7,10 +7,10 @@
 <title>3dtrading · 登录 / 注册</title>
 <!-- r50 背景：自有城市＋大球（构图照参考图）。r49 · 独立登录预览（端口 8992）。只含登录 / 注册本身：不加载后台代码，不导向后台。
      存储命名空间 3dt.r49login.*（主题、语言、球面、本机演示账号与会话）。外部业务未接通：登录为本机演示。 -->
-<script>(function(){var d=document.documentElement,t='night',l='zh';try{t=localStorage.getItem('3dt.r49login.theme')==='day'?'day':'night';l=localStorage.getItem('3dt.r49login.lang')==='en'?'en':'zh'}catch(e){}d.dataset.theme=t;d.lang=l==='en'?'en':'zh-CN';d.dataset.lang=l})()</script>
+<script>(function(){var d=document.documentElement,t='night',l='zh';try{l=localStorage.getItem('3dt.r49login.lang')==='en'?'en':'zh'}catch(e){}d.dataset.theme=t;try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}d.lang=l==='en'?'en':'zh-CN';d.dataset.lang=l})()</script>
 <link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/dodo-180.png">
-<link rel="stylesheet" href="login.css?v=r51b">
+<link rel="stylesheet" href="login.css?v=r55">
 </head>
 <body>
 <div class="scene" id="scene" aria-hidden="true"><canvas id="city"></canvas></div>
@@ -19,7 +19,6 @@
   <a class="logo" href="/3dtrading-site/site/" data-i18n-attr="aria-label:top.home"><img class="lg-night" src="assets/3dtrading-logo-white.svg" alt="3dtrading"><img class="lg-day" src="assets/3dtrading-logo.svg" alt="3dtrading"></a>
   <span class="sp"></span>
   <span class="pill" data-i18n="top.demo">本机演示 · 未接后端</span>
-  <button type="button" class="tbtn" id="thm"><svg class="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg></button>
   <div class="seg" id="lang" role="group" aria-label="Language"><button type="button" data-lang="zh">中文</button><button type="button" data-lang="en">EN</button></div>
 </header>
 
@@ -91,8 +90,8 @@
   </section>
 </main>
 
-<script src="login.js?v=r51"></script>
-<script type="module" src="city.js?v=r51"></script>
-<script nomodule src="city2d.js?v=r51"></script>
+<script src="login.js?v=r55"></script>
+<script type="module" src="city.js?v=r55"></script>
+<script nomodule src="city2d.js?v=r55"></script>
 </body>
 </html>
