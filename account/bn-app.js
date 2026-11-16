@@ -1,4 +1,4 @@
-/* 3dtrading r45b · coded replica of the Binance APP's phone screens (an illustration: never the live app, never an iframe,
+/* 3dtrading r45b/r46 · coded replica of the Binance APP's phone screens (an illustration: never the live app, never an iframe,
  * no network, no Binance logo; the reference screenshots live only in _evidence/, never on the page). Used by connect.html on phones (connect-r45.js).
  *
  * Layout reference (r45b): the Excepta guide's phone section — 26 real Binance App screenshots, pages 11–23 of
@@ -6,8 +6,8 @@
  * taken 2026-04-28). Every screen below maps to one of those pages; see account/BINANCE-SOURCES.md and
  * _evidence/reference/excepta-phone/ for the side-by-side table. Route in the App (all inside the App, no website):
  *   top-left ☰ → profile card ›  → 账号信息 → 子账户 → + 创建子账户 (虚拟邮箱创建) → ⋮ 允许合约 → 确认 → ⋮ 开通统一账户 → 确认
- *   → 账号管理 ▾ → API管理 → + 创建API → [Binance asks the key type: 系统生成 — this replica does not draw that choice,
- *   3dtrading only uses system-generated HMAC keys] → 子账户 + API 标签 → 下一步 → (the user's own passkey check)
+ *   → 账号管理 ▾ → API管理 → + 创建API → 选择API密钥类型: 系统生成 → 下一步 (r46: drawn again; 3dtrading only uses
+ *   system-generated HMAC keys, the self-generated route is never taken) → 子账户 + API 标签 → 下一步 → (the user's own passkey check)
  *   → API密钥 / 密钥 Copy → API权限 + 只访问受信任的IP → 保存.
  * Binance's official pages (read 2026-11-16) do not describe these App screens; they are taken from the screenshots only.
  * The real App was shown in light mode; this replica uses Binance's dark palette to match our night page — a colour choice,
@@ -32,6 +32,8 @@
       notes: ['每个子账户最多可以创建30个 API Key。', '请勿将您的API密钥、HMAC密钥、Ed25519或RSA私钥透露给任何人。', '为提高您账户的安全性，建议仅授予可信IP以访问权限。', '请在创建API密钥前完成身份认证。'],
       api: 'API', stp: '自成交预防', newApi: '创建API',
       cT: '创建API', cSub: '子账户', cLabel: 'API 标签', next: '下一步',
+      kT: '选择API密钥类型', k1: '系统生成', k1p: '使用HMAC对称加密方式运作。您将获得API密钥和HMAC密钥。请将该API密钥和HMAC密钥视为密码一样妥善保管，切勿与任何第三方分享。',
+      k2: '自行生成', k2p: '使用Ed25519或RSA非对称加密方式运作。您将获得API密钥，且必须通过软件（如币安密钥生成器）自行创建一对公钥和私钥，然后仅向币安提供公钥。',
       edit: '编辑API', save: '保存', label: '标签', pm: '统一账户', key: 'API 密钥', sec: '密钥', copy: 'Copy', perm: 'API权限：',
       ipT: 'IP访问限制', ipAny: '无限制（缺乏安全）', ipOnly: '只访问受信任的IP（推荐）', ipPh: '3dtrading 服务器 IP：未配置' },
     en: { seg: ['Exchange', 'Wallet'], search: 'USDT trending', est: 'Est. total value (USDT)', estV: '0.00', add: 'Add Funds',
@@ -49,6 +51,8 @@
       notes: ['Each sub-account can create up to 30 API keys.', 'Never share your API key, HMAC key or Ed25519/RSA private key with anyone.', 'For safety, grant access to trusted IPs only.', 'Complete identity verification before creating API keys.'],
       api: 'API', stp: 'Self-Trade Prevention', newApi: 'Create API',
       cT: 'Create API', cSub: 'Sub-account', cLabel: 'API label', next: 'Next',
+      kT: 'Choose API Key type', k1: 'System generated', k1p: 'Works using HMAC symmetric encryption. You get an API key and an HMAC key. Keep them as safe as a password and never share them with anyone.',
+      k2: 'Self-generated', k2p: 'Works using Ed25519 or RSA asymmetric encryption. You get an API key and must create a public/private key pair yourself with software (such as Binance Key Generator), then give Binance only the public key.',
       edit: 'Edit API', save: 'Save', label: 'Label', pm: 'Portfolio Margin', key: 'API Key', sec: 'Secret Key', copy: 'Copy', perm: 'API restrictions:',
       ipT: 'IP access restrictions', ipAny: 'Unrestricted (less secure)', ipOnly: 'Restrict to trusted IPs (recommended)', ipPh: '3dtrading server IPs: not configured' }
   };
@@ -68,7 +72,9 @@
     tab: ['<svg viewBox="0 0 24 24"><path d="M12 3l8 9-8 9-8-9z"/></svg>', '<svg viewBox="0 0 24 24"><path d="M4 19l5-6 4 3 7-9"/></svg>',
       '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M8 12h8M12 8l4 4-4 4"/></svg>', '<svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg>',
       '<svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="13" rx="2"/><path d="M15 12.5h5.5"/></svg>'],
-    q: '<svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 12h6"/></svg>'
+    q: '<svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="3"/><path d="M9 12h6"/></svg>',
+    keyA: '<svg viewBox="0 0 48 48" class="kic"><circle cx="18" cy="19" r="10" fill="#F0B90B" stroke="none"/><circle cx="18" cy="19" r="3.5" fill="#1e2329" stroke="none"/><path d="M25 26l13 13M32 33l3-3M35 36l3-3" stroke="#F0B90B" stroke-width="3.2"/></svg>',
+    keyB: '<svg viewBox="0 0 48 48" class="kic"><circle cx="17" cy="18" r="9" stroke="#b7bdc6" stroke-width="2.6"/><path d="M23 24l12 12M29 30l3-3M32 33l3-3" stroke="#b7bdc6" stroke-width="3"/><circle cx="30" cy="16" r="5" stroke="#F0B90B" stroke-width="2.4"/></svg>'
   };
   function sbar() { return '<div class="ba-sb"><b>9:41</b><span><i></i><i></i><i></i><u></u></span></div>'; }
   function nav(title, right, back) { return sbar() + '<div class="ba-nav"><span class="ba-ic">' + I.back + '</span><b>' + esc(title) + '</b><span class="ba-ic">' + (right || '') + '</span></div>'; }
@@ -128,12 +134,17 @@
       return '<div class="ba-app">' + body + '</div>';
     },
     /* Excepta p.18: API管理 (notes, 自成交预防, + 创建API); p.19 right / p.20 left: the 创建API sheet (子账户 + API 标签).
-     * p.19 left (选择API密钥类型) is deliberately not drawn: system-generated only. */
+     * r46: p.19 left (选择API密钥类型) is drawn again as its own sheet: the guide taps 系统生成 (sys: true marks it chosen), then 下一步.
+   * 自行生成 is drawn as the App shows it and is never chosen. */
     api: function (w, cfg, o) {
       var body = nav(w.subT, I.x) + '<div class="ba-dd"><b>' + esc(w.apiM) + '</b>' + I.tri + '</div>' +
         '<ol class="ba-notes">' + w.notes.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>' +
         '<div class="ba-cnt"><span>' + esc(w.api) + ' (0)</span>' + I.filt + '</div><div class="ba-bar y">' + esc(w.stp) + '</div>' +
         '<div class="ba-bar"' + hot(o, 'newapi') + '>+ ' + esc(w.newApi) + '</div>';
+      if (o.sheet === 'type') body += sheet(w.kT,
+        '<div class="ba-opt' + (o.sys ? ' on' : '') + '" data-t="optSys">' + I.keyA + '<div><b>' + esc(w.k1) + '</b><p>' + esc(w.k1p) + '</p></div>' + (o.sys ? '<i class="corner"></i>' : '') + '</div>' +
+        '<div class="ba-opt">' + I.keyB + '<div><b>' + esc(w.k2) + '</b><p>' + esc(w.k2p) + '</p></div></div>' +
+        '<span class="ba-btn y block" data-t="next">' + esc(w.next) + '</span>', 'tall');
       if (o.sheet === 'label') body += sheet(w.cT, '<small>' + esc(w.cSub) + '</small><div class="ba-in sel">' + esc(w.vmail) + I.tri + '</div><small>' + esc(w.cLabel) + '</small><div class="ba-in focus">' + esc(cfg.labelEx) + '<i class="caret"></i></div>' +
         '<span class="ba-btn y block" data-t="next2">' + esc(w.next) + '</span>', 'mid');
       return '<div class="ba-app">' + body + '</div>';

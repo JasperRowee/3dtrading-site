@@ -1005,6 +1005,12 @@ html.cp .bf-r .bh{padding:6px 8px}
 .chk li b{font-weight:650}.chk li span{color:var(--ink2)}.chk li.tbd span{color:var(--goldInk)}
 .chk li.sep{display:block;font-size:12.5px;color:var(--ink3);font-weight:650;margin:10px 0 0;padding:0}
 .tlx{margin-top:34px}
+.bal .wbar{height:8px;border-radius:99px;background:rgba(255,255,255,.12);margin-top:12px;overflow:hidden}.bal .wbar i{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--brand),#fcd535)}
+.bal .demo,.subc .demo,.tlx .demo{font-size:11px;padding:1px 6px;border-radius:6px;background:#fcd535;color:#3a2c00;font-weight:700;margin-left:4px;vertical-align:1px}
+@media (max-width:760px){.fx>i:nth-of-type(2){display:none}.fx>.res{grid-column:1/-1}}
+@media (min-width:761px){.bal .kv>div,.bal .kv b{text-align:left}}
+@media (min-width:761px){html[data-lang=en] .tl li{grid-template-columns:92px 104px minmax(0,1fr) 110px 130px}html[data-lang=en] .chk li{grid-template-columns:22px 130px minmax(0,1fr)}}
+.fx>div.res{margin-top:0;animation:none}.tl li.empty{display:block}.tl li.empty::before{display:none}
 .tlx .hd{display:flex;align-items:baseline;gap:12px}
 .tl{list-style:none;margin:14px 0 0;padding:0 0 0 28px;position:relative}
 .tl::before{content:"";position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:linear-gradient(var(--line2),var(--line2))}
@@ -2034,7 +2040,7 @@ html[data-theme="night"] .cmd:focus-within .cmd-go,html[data-theme="night"] .cmd
 .cmp-lg .cmp-n{font-style:normal}
 
 /* ---------- r40 · 多空持仓：同一条中轴，汇总和逐行都对齐在它上面 ---------- */
-#posMini{--pxc:96px 110px minmax(0,1fr) 110px 96px}
+#posMini{--pxc:minmax(92px,110px) minmax(0,1fr) 116px minmax(0,1fr) minmax(92px,110px) 92px}
 #posMini .hd{padding:18px 0 6px}
 #posMini .hd h2{font-size:18px;font-weight:700}
 #posMini .px{display:block}
@@ -2055,7 +2061,7 @@ html[data-theme="night"] .cmd:focus-within .cmd-go,html[data-theme="night"] .cmd
 #posMini .px-pl .t b{font-size:15px;font-weight:650}
 #posMini .bf-h,#posMini .bf-r .bh{grid-template-columns:var(--pxc);column-gap:12px}
 #posMini .bf-h{font-size:12px;color:var(--ink3);padding:0 8px 8px;border-bottom:1px solid var(--line)}
-#posMini .bf-h .r{text-align:right}#posMini .bf-h .ax{display:flex;justify-content:space-between}
+#posMini .bf-h .r{text-align:right}#posMini .bf-h .c{text-align:center}#posMini .bf-h .ax{display:block}
 #posMini .bf-r{border-top:0;position:relative}
 #posMini .bf-r+.bf-r{border-top:1px solid var(--line2)}
 #posMini .bf-r .bh{padding:0 8px;height:46px;border-radius:10px;transition:background .15s}
@@ -2065,15 +2071,18 @@ html[data-theme="night"] .cmd:focus-within .cmd-go,html[data-theme="night"] .cmd
 #posMini .bf-r .ut{font-size:14px;font-weight:700;text-align:right}
 #posMini .lt{font-style:normal;font-size:11px;font-weight:700;line-height:18px;min-width:20px;text-align:center;border-radius:5px;padding:0 4px}
 #posMini .lt.lo{background:color-mix(in srgb,var(--long) 14%,transparent);color:var(--long)}#posMini .lt.sh{background:color-mix(in srgb,var(--short) 14%,transparent);color:var(--short)}
-#posMini .bf-r .bb{display:grid;grid-template-columns:1fr 1fr;height:100%;align-items:center}
-#posMini .bf-r .bl,#posMini .bf-r .bs2{display:flex;height:12px}
+/* r46 · 恢复 r43：两条线以币种为中轴向两侧伸出，中轴各有一根细竖线 */
+#posMini .bf-r .bl,#posMini .bf-r .bs2{height:100%;display:flex;align-items:center;position:relative}
 #posMini .bf-r .bl{justify-content:flex-end}
-#posMini .bf-r .bl i,#posMini .bf-r .bs2 i{display:block;font-style:normal;height:100%;transition:filter .2s,opacity .2s}
-#posMini .bf-r .bl i{background:var(--lbar);border-radius:6px 0 0 6px}
-#posMini .bf-r .bs2 i{background:var(--sbar);border-radius:0 6px 6px 0}
-#posMini .bf-r .cn{display:flex;align-items:center;justify-content:flex-start;gap:7px;background:none;color:var(--ink);font-size:14px;font-weight:650;letter-spacing:.01em;height:30px;border-radius:15px;padding:0 8px;transition:background .2s,color .2s}
+#posMini .bf-r .bl::after,#posMini .bf-r .bs2::before{content:"";position:absolute;top:12px;bottom:12px;width:1px;background:var(--line)}
+#posMini .bf-r .bl::after{right:-6px}#posMini .bf-r .bs2::before{left:-6px}
+#posMini .bf-r .bl i,#posMini .bf-r .bs2 i{display:block;font-style:normal;height:10px;transition:filter .2s,opacity .2s}
+#posMini .bf-r .bl i{background:var(--lbar);border-radius:5px 2px 2px 5px}
+#posMini .bf-r .bs2 i{background:var(--sbar);border-radius:2px 5px 5px 2px}
+#posMini .bf-r .cn{display:flex;align-items:center;justify-content:center;gap:7px;background:none;color:var(--ink);font-size:14px;font-weight:650;letter-spacing:.01em;height:30px;border-radius:15px;padding:0 10px;transition:background .2s,color .2s}
 #posMini .bf-r .cn .lg{flex:none;width:18px;height:18px;background:currentColor;-webkit-mask:var(--lg) center/contain no-repeat;mask:var(--lg) center/contain no-repeat;opacity:.85}
 #posMini .bf-r .cn .lg.tx{-webkit-mask:none;mask:none;background:var(--soft);border-radius:50%;font-style:normal;font-size:10px;display:grid;place-items:center;opacity:1}
+#posMini .bf-r .bh:hover .cn{background:var(--sf-hi)}
 #posMini .bf-r.open .cn{background:var(--brandL);color:var(--brandD)}
 #posMini .bf-r.open .bh{background:color-mix(in srgb,var(--brandL) 40%,transparent)}
 #posMini .bf:has(.bf-r.open) .bf-r:not(.open) .bl i,#posMini .bf:has(.bf-r.open) .bf-r:not(.open) .bs2 i{opacity:.55}
@@ -2086,15 +2095,15 @@ html[data-theme="night"] .cmd:focus-within .cmd-go,html[data-theme="night"] .cmd
 html[data-theme="night"] #posMini .bf-r .bx .in{background:var(--sf);color:var(--ink)}
 html[data-theme="night"] #posMini .bf-r .bx .acts button.k{background:none;color:var(--brandD)}
 html[data-theme="night"] #posMini .bf-r .bh:hover{background:var(--hov)}
-@media(max-width:1180px) and (min-width:761px){#posMini{--pxc:78px 100px minmax(0,1fr) 100px 80px}}
+@media(max-width:1180px) and (min-width:761px){#posMini{--pxc:84px minmax(0,1fr) 100px minmax(0,1fr) 84px 78px}}
 @media(max-width:760px){
   #posMini .px-sum{padding:10px 0 14px}
   #posMini .px-ratio{gap:8px}#posMini .px-pct{font-size:22px}
   #posMini .px-pl{gap:8px}#posMini .px-pl b{font-size:17px}#posMini .px-pl .t b{font-size:13px}
-  #posMini .bf-r .bh{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto auto;row-gap:5px;column-gap:8px;height:auto;padding:10px 2px}
-  #posMini .bf-r .bh>.cn{grid-area:1/1;padding:0}#posMini .bf-r .bh>.ut{grid-area:1/2;align-self:center}
-  #posMini .bf-r .bh>.bb{grid-area:2/1/3/3;height:12px}
-  #posMini .bf-r .bh>.ul{grid-area:3/1;justify-content:flex-start}#posMini .bf-r .bh>.us{grid-area:3/2;justify-content:flex-end}
+  #posMini .bf-r .bh{grid-template-columns:minmax(0,1fr) 92px minmax(0,1fr);grid-template-rows:auto auto;row-gap:4px;column-gap:10px;height:auto;padding:10px 2px}
+  #posMini .bf-r .bh>.bl{grid-area:1/1;height:14px}#posMini .bf-r .bh>.cn{grid-area:1/2;padding:0 6px}#posMini .bf-r .bh>.bs2{grid-area:1/3;height:14px}
+  #posMini .bf-r .bh>.ul{grid-area:2/1;justify-content:flex-start}#posMini .bf-r .bh>.ut{grid-area:2/2;text-align:center}#posMini .bf-r .bh>.us{grid-area:2/3;justify-content:flex-end}
+  #posMini .bf-r .bl::after,#posMini .bf-r .bs2::before{top:-2px;bottom:-2px}
   #posMini .bf-r .bx .in{margin:4px 0 12px}
 }
 /* r41 · zero state (signed in, no account) */
@@ -2135,31 +2144,38 @@ html[data-theme="night"] .tag.tbd{background:rgba(227,199,102,.12)}
 
 
 /* ===================== r44 ===================== */
-/* Dodo 半头：固定在导航下沿，只在 Dodo 页显示 */
-.ddp{--dT:72px;--hs:64px;position:fixed;top:var(--dT);left:50%;width:0;height:0;z-index:28}
-body:not([data-page="ai"]) .ddp,body.kb-open .ddp{display:none}
-.ddp-clip{position:absolute;left:calc(var(--hs) / -2 - 12px);top:0;width:calc(var(--hs) + 24px);height:calc(var(--hs) + 14px);overflow:visible;clip-path:inset(0 -60px -60px -60px);pointer-events:none}
-.ddp-head{pointer-events:auto;position:absolute;left:12px;top:0;width:var(--hs);height:var(--hs);padding:0;border:0;background:none;cursor:pointer;border-radius:16px;
-  transform:translateY(calc(var(--hs) * -.4));transition:transform .34s cubic-bezier(.2,.9,.25,1.15)}
+/* r46 · Dodo 探头：固定在导航下沿（在页面外面），只露出半个头；进页滑出、离页缩回，两边是平铺的预设问题 */
+.ddp{--dT:72px;--hs:64px;--pk:-46%;position:fixed;top:var(--dT);left:50%;width:0;height:0;z-index:28}
+.ddp-clip{position:absolute;left:calc(var(--hs) / -2 - 12px);top:0;width:calc(var(--hs) + 24px);height:calc(var(--hs) + 14px);clip-path:inset(0 -12px -40px -12px);pointer-events:none}
+.ddp-head{pointer-events:none;position:absolute;left:12px;top:0;width:var(--hs);height:var(--hs);padding:0;border:0;background:none;cursor:pointer;border-radius:16px;
+  transform:translateY(-104%);transition:transform .28s cubic-bezier(.4,0,.6,1)}
+.ddp.in .ddp-head{pointer-events:auto;transform:translateY(var(--pk));transition:transform .55s cubic-bezier(.2,.9,.3,1.12) .05s}
 .ddp-head svg{display:block;width:100%;height:100%;filter:drop-shadow(0 4px 8px rgba(15,60,52,.18))}
-.ddp.open .ddp-head{transform:translateY(6px)}
+.ddp.in .ddp-head svg{animation:ddpk 4.6s ease-in-out .7s infinite}
+@keyframes ddpk{0%,100%{transform:translateY(0)}45%{transform:translateY(-5px)}70%{transform:translateY(2px)}}
 .ddp-head:focus-visible{outline:2px solid var(--brandD);outline-offset:2px}
-.ddp-head:focus-visible{transform:translateY(6px)}
 .ddp-pu{transition:transform .12s linear}
 .ddp-lid{transition:height .07s,y .07s}
 .ddp-head.blink .ddp-lid{height:34px}
-.ddp-menu{position:absolute;left:0;top:calc(6px + var(--hs) / 2);width:0;height:0}
-.ddp-it{--x:0px;--y:0px;--d:0ms;position:absolute;left:0;top:0;transform:translate(-50%,-50%) translate(0,0) scale(.6);opacity:0;pointer-events:none;
-  display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border:0;border-radius:18px;white-space:nowrap;
-  font:inherit;font-size:13.5px;font-weight:650;color:var(--ink);background:var(--sf);box-shadow:0 1px 2px rgba(15,23,42,.06),0 8px 22px -8px rgba(15,23,42,.22);cursor:pointer;
-  transition:transform .3s cubic-bezier(.2,.9,.25,1.1) var(--d),opacity .2s var(--d),background .15s}
-.ddp-it b{font-weight:700;color:var(--brandD)}
-.ddp-it.new{background:var(--blk);color:#fff}.ddp-it.new b{color:var(--brand)}
-.ddp-it:hover{background:var(--brandL)}.ddp-it.new:hover{background:#26302f}
-.ddp-it:focus-visible{outline:2px solid var(--brandD);outline-offset:2px}
-.ddp.open .ddp-it{transform:translate(-50%,-50%) translate(var(--x),calc(var(--y) + var(--hs) / 2)) scale(1);opacity:1;pointer-events:auto}
-html[data-theme="night"] .ddp-it.new{background:#2a3336}
-@media (max-width:760px){.sb-hero .mascot{display:none}.ddp{--dT:var(--top);--hs:54px}.ddp-it{height:34px;font-size:13px;padding:0 12px}}
+.ddq{position:absolute;left:0;top:calc(var(--hs) * .54 / 2 - 15px)}
+.ddq-l,.ddq-r{position:absolute;top:0;display:flex;gap:8px;opacity:0;transition:opacity .1s,transform .1s}
+.ddq-l{right:calc(var(--hs) / 2 + 14px);transform:translateX(12px)}.ddq-r{left:calc(var(--hs) / 2 + 14px);transform:translateX(-12px)}
+.ddp.in .ddq-l,.ddp.in .ddq-r{opacity:1;transform:none;transition:opacity .25s .22s,transform .3s cubic-bezier(.2,.8,.2,1) .22s}
+.ddq-b{pointer-events:none;height:30px;padding:0 12px;border:1px solid var(--line);border-radius:15px;background:var(--bg);font:inherit;font-size:13px;font-weight:500;color:var(--ink2);white-space:nowrap;cursor:pointer;transition:border-color .15s,color .15s}
+.ddp.in .ddq-b{pointer-events:auto}
+.ddq-b{max-width:calc(50vw - var(--hs) / 2 - 40px);overflow:hidden;text-overflow:ellipsis}
+.ddq-b:hover{border-color:var(--brand);color:var(--ink)}.ddq-b:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+/* 没有会话：去掉新话题 / 历史；顶部一行留给 Dodo 和预设问题，聊天框在下面 */
+#cvNew2,#cvTg,#cvPane,#cvSc,#cvCurT,.sugg,.hi-bot{display:none!important}
+.chat-hd{height:calc(var(--hs, 64px) * .54 + 22px)!important}
+.chat-hd>*{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.chat.fresh .stream{display:block}
+.chat.fresh .composer{flex:none!important;display:block!important;padding-top:0!important;padding-bottom:18px!important;overflow:visible!important}
+.chat.fresh .hello{grid-template-columns:minmax(0,1fr);margin-bottom:16px}
+@media (max-width:760px){.sb-hero .mascot{display:none}.ddp{--dT:var(--top);--hs:52px}.ddq-b{font-size:12.5px;padding:0 10px;max-width:calc(50vw - var(--hs) / 2 - 22px);overflow:hidden;text-overflow:ellipsis}
+  .chat-hd{height:52px!important}.chat.fresh .composer{padding-bottom:10px!important}}
+@media (prefers-reduced-motion:reduce){.ddp .ddp-head,.ddq-l,.ddq-r{transition:none!important}.ddp-head svg{animation:none!important}}
+html.rm .ddp .ddp-head,html.rm .ddq-l,html.rm .ddq-r{transition:none!important}html.rm .ddp-head svg{animation:none!important}
 /* 订阅与 Crypto 充值 */
 .sb{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr);gap:18px;padding-top:22px}
 .sb>section{border-radius:20px;padding:22px 22px 20px;background:var(--sf);box-shadow:var(--sh);position:relative;min-height:190px;display:flex;flex-direction:column;gap:8px}
@@ -2208,9 +2224,12 @@ html[data-theme="night"] .sb-hero{background:linear-gradient(135deg,#123430,#142
 #posMini .px-split i,.sb-bar i{transform-origin:left;animation:r44grow .6s cubic-bezier(.2,.8,.2,1) both}
 #posMini .px-split .s{transform-origin:right}
 #posMini .bf-r.open .bx .in{animation:r44in .3s cubic-bezier(.2,.8,.2,1) both}
+#posMini .bf-r .bl i,#posMini .bf-r .bs2 i{animation-delay:calc(var(--k,0) * 45ms + 60ms)}
+#posMini:not(.pxv) .bf-r .bl i,#posMini:not(.pxv) .bf-r .bs2 i,#posMini:not(.pxv) .px-split i{animation-play-state:paused}
+#posMini:not(.pxv) [data-cnt]{visibility:hidden}
 @keyframes r44in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.ddp-head,.ddp-it,.ddp-pu,.ddp-lid{transition:none!important}#posMini .bf-r .bl i,#posMini .bf-r .bs2 i,#posMini .px-split i,.sb-bar i,#posMini .bf-r.open .bx .in{animation:none!important}}
-html.rm .ddp-head,html.rm .ddp-it,html.rm .ddp-pu{transition:none!important}
+@media (prefers-reduced-motion:reduce){.ddp-pu,.ddp-lid{transition:none!important}#posMini .bf-r .bl i,#posMini .bf-r .bs2 i,#posMini .px-split i,.sb-bar i,#posMini .bf-r.open .bx .in{animation:none!important}}
+html.rm .ddp-pu{transition:none!important}
 html.rm #posMini .bf-r .bl i,html.rm #posMini .bf-r .bs2 i,html.rm #posMini .px-split i,html.rm .sb-bar i,html.rm #posMini .bf-r.open .bx .in{animation:none!important}
 </style>
 <link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
@@ -2242,14 +2261,15 @@ html.rm #posMini .bf-r .bl i,html.rm #posMini .bf-r .bs2 i,html.rm #posMini .px-
     <button class="av-btn" id="avBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="我的：账号与偏好"><span class="av" id="avIni" aria-hidden="true">J</span><span class="car">▼</span></button>
   </div>
 </header>
-<main id="dash">
-  <section class="page" id="pg-ai" data-page="ai" aria-labelledby="h-ai">
-    <div class="ddp" id="ddPeek"><div class="ddp-clip"><button type="button" class="ddp-head" id="ddHead" aria-haspopup="menu" aria-expanded="false" aria-controls="ddMenu" aria-label="Dodo 会话菜单">
+<!-- r46 · Dodo 头在页面之外：切页动画不会带着它跑，只会从导航下沿探出来 -->
+<div class="ddp" id="ddPeek"><div class="ddp-clip"><button type="button" class="ddp-head" id="ddHead" aria-label="Dodo：点一下开始提问">
       <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="16" fill="#1fbfa2"/><rect x="1" y="1" width="58" height="57" rx="16" fill="url(#ddpG)"/>
         <defs><linearGradient id="ddpG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62f3d9"/><stop offset="1" stop-color="#27d3b3"/></linearGradient></defs>
         <g class="ddp-eye"><circle cx="30" cy="42.6" r="16" fill="rgba(0,0,0,.08)"/><circle cx="30" cy="41" r="16" fill="#f5f0e1"/><g class="ddp-pu"><circle cx="32" cy="41" r="8" fill="#141416"/><rect x="28.4" y="39" width="2.2" height="4.4" fill="#ef4444"/><rect x="33.4" y="37.8" width="2.2" height="6" fill="#22c55e"/><circle cx="35.6" cy="37.4" r="1.9" fill="#fff"/></g>
         <rect class="ddp-lid" x="13" y="24.5" width="34" height="0" fill="#2bd7b7"/></g></svg></button></div>
-      <div class="ddp-menu" id="ddMenu" role="menu" aria-label="Dodo 会话"></div></div>
+      <div class="ddq" id="ddQ" role="group" aria-label="可以这样问"><div class="ddq-l"></div><div class="ddq-r"></div></div></div>
+<main id="dash">
+  <section class="page" id="pg-ai" data-page="ai" aria-labelledby="h-ai">
     <div class="ai">
       <div class="chat fresh" id="chat">
         <header class="chat-hd">
@@ -2984,11 +3004,12 @@ window.R44M = { count(root) {
     const end = parseFloat(m[0].replace(/[,−]/g, s => s === '−' ? '-' : '')), dec = (m[1] || '').length - (m[1] ? 1 : 0), t0 = performance.now(), D = 520;
     const fmt = v => { const a = Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: dec, maximumFractionDigits: dec }); return (m[0][0] === '−' ? '−' : m[0][0] === '+' ? '+' : v < 0 ? '-' : '') + a; };
     const step = t => { const k = Math.min(1, (t - t0) / D), e = 1 - Math.pow(1 - k, 3); tn.nodeValue = txt.replace(m[0], fmt(end * e)); if (k < 1) requestAnimationFrame(step); else tn.nodeValue = txt; };
-    requestAnimationFrame(step);
+    tn.nodeValue = txt.replace(m[0], fmt(0)); requestAnimationFrame(step); /* r46: start from 0 in the same frame, no flash of the final value */
   });
 } };
 function renderPosMini() {
-  /* r44 · 完全锁定：每个币种多空等量。左边是这一对里盈利的一腿（浮盈 +），右边是浮亏的一腿（浮亏 −），并标出是多还是空 */
+  /* r44 · 完全锁定：每个币种多空等量。左边是这一对里盈利的一腿（浮盈 +），右边是浮亏的一腿（浮亏 −），并标出是多还是空
+     r46 · 行布局恢复 r40–r43：币种在正中，两条线从币种向左右两侧伸出（左 = 盈利腿，右 = 浮亏腿） */
   const T = V.days[DAYS], pos = [...T.pos].sort((a, b) => (b.nL + b.nS) - (a.nL + a.nS)), L = T.nL, Sx = T.nS, tot = L + Sx, mx = Math.max(...pos.map(p => Math.max(p.nL, p.nS)));
   const leg = p => p.uL >= p.uS ? { w: '多', wu: p.uL, wn: p.nL, l: '空', lu: p.uS, ln: p.nS } : { w: '空', wu: p.uS, wn: p.nS, l: '多', lu: p.uL, ln: p.nL };
   const gain = pos.reduce((t, p) => t + Math.max(0, p.uL) + Math.max(0, p.uS), 0), loss = pos.reduce((t, p) => t + Math.min(0, p.uL) + Math.min(0, p.uS), 0), uT = gain + loss;
@@ -3008,16 +3029,20 @@ function renderPosMini() {
         <div class="l"><span class="px-k">浮亏</span><b class="num dn" data-cnt="${loss.toFixed(2)}">${csgn(loss)}</b></div></div>
     </div>
     <div class="bf${POSALL || pos.findIndex(p => p.s === PCO) > 3 ? ' mall' : ''}" role="list" aria-label="各币种多空：左边盈利的一腿，右边浮亏的一腿">
-      <div class="bf-h" aria-hidden="true"><span>币种</span><span class="r">浮盈</span><span class="ax"><span>盈利腿名义</span><span>浮亏腿名义</span></span><span>浮亏</span><span class="r">合计</span></div>
-      ${pos.map(p => { const u = p.uL + p.uS, o = PCO === p.s, g = leg(p); return `<div class="bf-r ${o ? 'open' : ''}" role="listitem" data-bf="${p.s}"><button type="button" class="bh" aria-expanded="${o}" aria-controls="bx-${p.s}" aria-label="${p.s}：${g.w}仓浮盈亏 ${csgn(g.wu)}，${g.l}仓浮盈亏 ${csgn(g.lu)}，多空名义各 ${nfc.format(p.nL)}，合计 ${csgn(u)}">
-        <span class="cn">${pxLogo(p.s)}<span>${p.s}</span></span><span class="ul num ${cls(g.wu)}">${tag(g.w)}${csgn(g.wu)}</span><span class="bb"><span class="bl"><i style="width:${bw(g.wn)}"></i></span><span class="bs2"><i style="width:${bw(g.ln)}"></i></span></span><span class="us num ${cls(g.lu)}">${tag(g.l)}${csgn(g.lu)}</span><span class="ut num ${cls(u)}">${csgn(u)}</span></button>
+      <div class="bf-h" aria-hidden="true"><span class="r">浮盈</span><span class="ax r">← 盈利腿名义</span><span class="c">币种</span><span class="ax">浮亏腿名义 →</span><span>浮亏</span><span class="r">合计</span></div>
+      ${pos.map((p, k) => { const u = p.uL + p.uS, o = PCO === p.s, g = leg(p); return `<div class="bf-r ${o ? 'open' : ''}" role="listitem" data-bf="${p.s}" style="--k:${k}"><button type="button" class="bh" aria-expanded="${o}" aria-controls="bx-${p.s}" aria-label="${p.s}：${g.w}仓浮盈亏 ${csgn(g.wu)}，${g.l}仓浮盈亏 ${csgn(g.lu)}，多空名义各 ${nfc.format(p.nL)}，合计 ${csgn(u)}">
+        <span class="ul num ${cls(g.wu)}">${tag(g.w)}${csgn(g.wu)}</span><span class="bl"><i style="width:${bw(g.wn)}"></i></span><span class="cn">${pxLogo(p.s)}<span>${p.s}</span></span><span class="bs2"><i style="width:${bw(g.ln)}"></i></span><span class="us num ${cls(g.lu)}">${tag(g.l)}${csgn(g.lu)}</span><span class="ut num ${cls(u)}">${csgn(u)}</span></button>
         <div class="bx" id="bx-${p.s}"><div><div class="in num"><div><span>多仓名义</span><b>${money(p.nL, 0)}</b></div><div><span>空仓名义</span><b>${money(p.nS, 0)}</b></div><div><span>现价</span><b>${priceFmt(p.px)}</b></div><div><span>多空差额</span><b>${Math.abs(p.nL - p.nS) < 1 ? '0（锁定）' : money(Math.abs(p.nL - p.nS), 0)}</b></div><div><span>近 30 天止盈</span><b>${tp30(p.s)} 次</b></div>
           <div class="acts"><button type="button" data-pcoin="${p.s}">持仓明细</button><button type="button" class="dd-l" data-askc="pos:${p.s}">问 Dodo</button><button type="button" class="k" data-bft="${p.s}">交易记录 →</button></div></div></div></div></div>`; }).join('')}
       ${pos.length > 4 ? `<button type="button" class="bf-more" data-posall aria-expanded="${!!POSALL}">${POSALL ? '收起，只看前 4 个' : `展开全部 ${pos.length} 个币种`}</button>` : ''}
     </div></div>`;
   $$('#posMini .bf-r').forEach(r => { $('.bx', r).inert = !r.classList.contains('open'); });
-  window.R44M && R44M.count($('#posMini'));
+  if (PXV.seen) window.R44M && R44M.count($('#posMini')); else PXV.watch();
 }
+/* r46 · 持仓条生长与数字计数在多空持仓真正进入屏幕时才播放（以前在页面底部看不到时就播完了） */
+const PXV = { seen: false, io: null, go() { if (this.seen) return; this.seen = true; this.io && this.io.disconnect(); const m = $('#posMini'); m.classList.add('pxv'); window.R44M && R44M.count(m); },
+  watch() { const m = $('#posMini'); if (this.seen || !m) return; if (RM || !('IntersectionObserver' in window)) return this.go();
+    if (!this.io) { this.io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting && e.intersectionRatio > 0)) this.go(); }, { threshold: [0, .15], rootMargin: '0px 0px -8% 0px' }); this.io.observe(m); } } };
 let PCO = '', POSALL = false;
 document.addEventListener('click', e => { if (!e.target.closest('[data-posall]')) return; POSALL = !POSALL; if (!POSALL) PCO = ''; renderPosMini(); $('#posMini [data-posall]')?.focus({ preventScroll: true }); });
 /* phone-only folds: a section marked data-mf shows just its toggle row until opened; desktop ignores both */
@@ -3491,6 +3516,8 @@ function tradeDetail(t, list, k) {
 /* 默认直接对话：入口只有今天一句摘要和提问框；历史话题放在「历史」面板里，可以回看和开新话题。存储键不变，旧会话都保留 */
 const CONV_KEY = '3dtrading.dash.convs', CCUR_KEY = '3dtrading.dash.convCur';
 let CONVS = [], CCUR = null, asking = false;
+/* r46 · 止盈线：账户没有这个参数时不显示数字（以前会显示 NaN%） */
+const thS = a => a && a.th != null && isFinite(a.th) ? (a.th * 100).toFixed(1) : '';
 const QS = ['今天为什么调仓？', '现在哪边浮亏最多？', '计奖收益赚了多少？', '多空配对平衡吗？'];
 const QH = ['看今天每次兑现、现价补回和计奖配置', '按浮亏从大到小列出最大的三笔', '累计、今日预估和近 30 天的计奖收益', '多空名义比例和净敞口'];
 const newConv = () => ({ id: 'c' + Date.now().toString(36) + Math.floor(Math.random() * 1e4), title: '', created: Date.now(), msgs: [] });
@@ -3636,7 +3663,7 @@ function answerCtx(ctx) {
   if (ctx.k === 'trade') {
     const t = V.trades.find(x => tid(x) === ctx.id); if (!t) return null;
     if (t.live) { const L = liveTradeSay(t); return mk(L.h, ['#trades', '看交易记录'], L.e); }
-    const a = acctById(t.acct), th = (a.th * 100).toFixed(1), TP = /止盈/.test(t.act), G = t.side === 'G', sd = t.side === 'L';
+    const a = acctById(t.acct), th = thS(a) || '—', TP = /止盈/.test(t.act), G = t.side === 'G', sd = t.side === 'L';
     if (TP) return mk(`这笔是 ${t.coin} 在 ${dLabel(t.d)} ${t.time} 的${t.act}。价格${sd ? '涨' : '跌'}了约 ${th}%，${sd ? '多仓' : '空仓'}到了止盈线，平仓结算 <b class="up">${sgn(t.pnl)}</b> USDT。\n\n释放出来的保证金转入计奖资产，随后在 ${priceFmt(t.px)} 重新开${sd ? '多' : '空'}。另一边的${sd ? '空仓' : '多仓'}没有动。`, ['#trades', '看交易记录'],
       `This was ${t.coin}'s take-profit at ${t.time} on ${enD(dLabel(t.d))}. Price ${sd ? 'rose' : 'fell'} about ${th}%, so the ${sd ? 'long' : 'short'} reached its take-profit line and settled <b class="up">${sgn(t.pnl)}</b> USDT.\n\nThe released margin moved into stablecoin yield, then a new ${sd ? 'long' : 'short'} was opened at ${priceFmt(t.px)}. The ${sd ? 'short' : 'long'} side was untouched.`);
     if (G) return mk(`这笔是止盈后释放的保证金 ${money(t.amount)} USDT，从合约账户转到了计奖资产，开始按参考年化计奖。它只是换了位置，不算新增收益。`, ['#stable', '看稳定币'], `This is ${money(t.amount)} USDT of margin released by the take-profit, moved from the futures account into reward-eligible assets at the reference APY. It only changed place and is not new profit.`);
@@ -3675,13 +3702,13 @@ function answer(q) {
       `The demo account's unified margin ratio (uniMMR) is <b>${UMRS()}</b> (${UMR_ST(true)}); raw value ${v.toFixed(4)}, shown ×100 as a percentage. Above 150% trading is unrestricted; at or below 105% liquidation starts. The demo history over the last 30 days ranges ${umrP(lo)}–${umrP(hi)}. All of this is sample data, not a real account.`);
   }
   if (/止盈线|阈值|杠杆|调到|改成|改为|设置|暂停|停掉|关掉|threshold|leverage|pause|turn off|set .* to|change .* to/i.test(q)) {
-    const cur = acctById(viewIds()[0]), th = (cur.th * 100).toFixed(1), n = (q.match(/(\d+(?:\.\d+)?)\s*%/) || [])[1];
+    const cur = acctById(viewIds()[0]), th = thS(cur) || '—', n = (q.match(/(\d+(?:\.\d+)?)\s*%/) || [])[1];
     const what = /杠杆|leverage/i.test(q) ? ['杠杆', '当前设置', n ? n + ' 倍' : '你说的值', 'Leverage', 'current setting', n ? n + 'x' : 'the value you gave'] : /暂停|停掉|关掉|pause|turn off/i.test(q) ? ['策略状态', '运行中', '暂停', 'Strategy status', 'running', 'paused'] : ['止盈线', th + '%', n ? n + '%' : '你说的值', 'Take-profit line', th + '%', n ? n + '%' : 'the value you gave'];
     return mk(`这是一项策略设置变更，需要你确认后才能生效。<span class="pend-c"><b>待确认 · 不会自动执行</b><span>${what[0]}：${what[1]} → ${what[2]}</span><span>账户：${esc(viewName())}</span><button type="button" class="btn sm" disabled>确认修改（未接入币安，暂不可用）</button></span>现在还没有连接币安交易，我不能修改任何设置，也不会下单。真实接入后，这类改动会先在这里列出，等你确认。`, null,
       `This is a strategy setting change and needs your confirmation before it takes effect.<span class="pend-c"><b>Pending · not executed</b><span>${what[3]}: ${what[4]} → ${what[5]}</span><span>Account: ${esc(enD(viewName()))}</span><button type="button" class="btn sm" disabled>Confirm change (unavailable in demo)</button></span>This demo isn't connected to real trading: I can't change settings or place orders. Once connected, changes like this will be listed here first and wait for your confirmation.`);
   }
   if (/调仓|止盈|为什么|动作|操作|rebalanc|take.?profit|why|trade/i.test(q)) {
-    if (!f.lastTP) return mk(`今天截至 ${nowLabel} 还没有调仓。每个币种的多仓和空仓都没走到止盈线（约 ${(acctById(viewIds()[0]).th * 100).toFixed(1)}% 的价格变动），所以仓位保持不动，只有计奖收益在累积。`, ['#trades', '看交易记录'], `No rebalancing yet today as of ${nowLabel}. Neither the long nor the short leg of any coin has reached its take-profit line (about ${(acctById(viewIds()[0]).th * 100).toFixed(1)}% price move), so positions are unchanged and only interest is accruing.`);
+    if (!f.lastTP) return mk(`今天截至 ${nowLabel} 还没有调仓。每个币种的多仓和空仓都没走到止盈线${thS(acctById(viewIds()[0])) ? `（约 ${thS(acctById(viewIds()[0]))}% 的价格变动）` : ''}，所以仓位保持不动，只有计奖收益在累积。`, ['#trades', '看交易记录'], `No rebalancing yet today as of ${nowLabel}. Neither the long nor the short leg of any coin has reached its take-profit line${thS(acctById(viewIds()[0])) ? ` (about ${thS(acctById(viewIds()[0]))}% price move)` : ''}, so positions are unchanged and only interest is accruing.`);
     const t = f.lastTP, gl = V.trades.find(x => x.acct === t.acct && x.ts === t.ts && x.coin === t.coin && x.side === 'G'), add = gl ? gl.amount : t.pnl;
     const sd = t.side === 'L';
     return mk(`今日 ${t.time} 在 ${t.coin} 完成 1 次兑现与补回循环（今天共 <b>${T.rebal}</b> 次，主要在 ${f.coinsToday.slice(0, 3).join('、')}）：${t.coin} ${sd ? '上涨后多仓' : '下跌后空仓'}累积浮盈达结转条件，系统平掉${sd ? '多' : '空'}仓将 <b class="up">${sgn(t.pnl)}</b> USDT 浮盈结转为账面余额，并立即在现价 ${priceFmt(t.px)} 同量补开${sd ? '多' : '空'}仓以恢复多空配对（扣除双边手续费后，经核验 uniMMR 保证金余量，新增的 ${money(add)} USDT 账面余额已纳入底层计奖配置）。\n\n请注意：另一侧原有${sd ? '空' : '多'}仓未动，其浮亏仍保留在账户中，因此结转这一刻账户净权益并未凭空增加；此次操作的意义是把合资格计奖资金池扩大了 ${money(add)} USDT，真实增强收益将随后续每日计奖资产派息与复投逐步体现。`, ['#trades', '看交易记录'], `At ${t.time} today ${t.coin} completed one crystallize-and-re-pair cycle (${T.rebal} today, mostly in ${f.coinsToday.slice(0, 3).join(', ')}): after ${t.coin} ${sd ? 'rose, the long' : 'fell, the short'} leg reached the crystallization threshold. The system closed it, moving <b class="up">${sgn(t.pnl)}</b> USDT of unrealized gain into the gross balance, and immediately re-opened the same size at the current price ${priceFmt(t.px)} to restore the long/short pair (after fees on both sides and a uniMMR margin check, the new ${money(add)} USDT of balance was allocated to the reward assets).\n\nNote: the original ${sd ? 'short' : 'long'} leg was untouched and its unrealized loss stays in the account, so net equity did not jump at that moment. What the cycle does is enlarge the qualifying reward pool by ${money(add)} USDT; the real enhanced return shows up gradually as daily rewards are paid and reinvested.`);
@@ -4004,42 +4031,71 @@ const WAL = { get tok() { return DD && anyDemo() ? DD.wallet.tok : 0; }, demo: [
 const ymd = d => fmtD(d, { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-');
 const tokF = n => Math.round(n).toLocaleString('en-US');
 const monthName = d => `${d.getMonth() + 1} 月`;
-const BASE_BILLS = (DD ? DD.wallet.bills : []).map(b => Object.assign({}, b, { t: new Date(b.t) }));
 function loadWal() { try { const a = JSON.parse(localStorage.getItem(WAL_KEY) || 'null'); if (Array.isArray(a)) WAL.demo = a.map(b => Object.assign(b, { t: new Date(b.t) })).slice(0, 30); } catch (e) {} }
 function saveWal() { if (NOSAVE) return; try { localStorage.setItem(WAL_KEY, JSON.stringify(WAL.demo)); } catch (e) {} }
 /* total balance = net assets of every running account today, whichever account is being viewed */
 const feeBase = () => { const live = ACCTS.filter(a => a.live); return { live, rows: ACCTS.map(a => ({ a, eq: a.live ? SIM[a.id].days[DAYS].equity : null })), tot: live.reduce((t, a) => t + SIM[a.id].days[DAYS].equity, 0) }; };
 
 function renderWallet() {
-  /* r44 · 订阅：每月按总资产 1%。前台只显示比例、本月剩余额度和下月优惠；内部扣减与换算不展示。
-     仅 Crypto 充值；收款地址没有配置，所以不显示可用地址，也不能确认付款 */
+  /* r46 · 费用页回到 r43 的版式（黑色主卡 + 原则卡 · 按账户拆分 + 计费规则 · 记录时间线），内容保留 r44 的订阅规则：
+     每月按总资产 1%、本月剩余额度、剩余越多下月越优惠、仅 Crypto 充值。
+     示例记录只在「示例账户」存在时由示例账户的模拟净资产算出，全部标「示例」；新账户和真实账户没有任何示例记录。
+     收款地址没有配置：不显示可用地址，不能确认付款，也不会产生真实充值记录。 */
   const box = $('#walBody'); if (!box) return;
-  const B = feeBase(), demo = anyDemo(), sub = demo || B.live.some(a => !a.demo), mo = monthName(now);
-  const used = demo && DD ? DD.wallet.used || 0 : 0, left = sub ? Math.max(0, 1 - used) : 0;
-  const bills = [...WAL.demo, ...(demo ? BASE_BILLS : [])].sort((a, b) => b.t - a.t);
+  const B = feeBase(), demo = anyDemo() && !!DD, sub = B.live.length > 0, mo = monthName(now);
+  const used = demo ? DD.wallet.used || 0 : 0, left = sub ? Math.max(0, 1 - used) : 0, L = Math.round(left * 100);
+  const fee = B.tot * 0.01, X = demo ? demoBills() : { bills: [], bal: 0 };
+  const bills = [...WAL.demo, ...X.bills].sort((a, b) => b.t - a.t);
   const tm = d => fmtD(d, { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
-  box.innerHTML = `<div class="sb">
-    <section class="sb-hero" aria-label="订阅"><span class="mascot" aria-hidden="true">${botInline()}</span>
-      <span class="k">订阅 · ${sub ? '已开通' : '未开通'}${demo ? ' <span class="demo">示例</span>' : ''}</span>
-      <div class="sb-rate"><b class="num">1<small>%</small></b><span>每月 · 按总资产</span></div>
-      <p class="d">${sub ? `${mo}，按总资产 <b class="num">${money(B.tot, 0)}</b> USDT 计` : '添加币安账户后按总资产开通订阅'}</p>
-      <div class="acts"><button class="btn brand" type="button" id="topBtn">Crypto 充值</button></div></section>
-    <section class="sb-q" aria-label="本月剩余额度"><div class="hd3"><h2>本月剩余额度</h2></div>
-      <div class="sb-big num" data-cnt="${(left * 100).toFixed(0)}">${(left * 100).toFixed(0)}<small>%</small></div>
-      <div class="sb-bar" role="progressbar" aria-label="本月剩余额度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${(left * 100).toFixed(0)}"><i style="width:${(left * 100).toFixed(1)}%"></i></div>
-      <p class="sub">${sub ? '额度随策略运行逐步使用，月初重置' : '未开通，额度为 0'}</p></section>
-    <section class="sb-n" aria-label="下月优惠"><div class="hd3"><h2>下月优惠</h2>${demo ? '<span class="demo">示例</span>' : ''}</div>
-      <p class="sb-nv">${sub && left > 0 ? `本月剩余 <b class="num">${(left * 100).toFixed(0)}%</b> 额度，下月订阅更优惠` : '本月没有剩余额度，暂无下月优惠'}</p>
-      <p class="sub">剩余额度越多，下月越优惠 · 优惠幅度以正式规则为准</p></section>
+  const tag = demo ? ' <span class="demo">示例</span>' : '';
+  box.innerHTML = `<div class="wg">
+    <section class="bal" aria-label="订阅"><span class="clip" aria-hidden="true"></span><span class="mascot" aria-hidden="true">${botInline()}</span>
+      <span class="k">订阅 · ${sub ? '已开通' : '未开通'} · 本月剩余额度${tag}</span><div class="v num">${L}<small>%</small></div>
+      <div class="wbar" role="progressbar" aria-label="本月剩余额度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${L}"><i style="width:${L}%"></i></div>
+      <span class="d">${sub ? '额度随策略运行逐步使用，月初重置 · 剩余越多，下月越优惠' : '添加币安账户后按总资产开通订阅，额度为 0'}</span>
+      <div class="kv"><div>订阅费率<b>1% / 月</b></div><div>${mo}应付<b class="num">${sub ? money(fee, 0) + ' USDT' : '0'}</b></div><div>下月优惠<b class="${sub && L > 0 ? '' : 'tbd'}">${sub && L > 0 ? `剩余 ${L}% 可享` : '暂无'}</b></div></div>
+      <div class="acts"><button class="btn brand" type="button" id="topBtn">Crypto 充值</button><button class="btn ghost" type="button" data-go="#bills">充值记录</button></div></section>
+    <section class="subc${mfCls('wfx')}" data-mf="wfx" aria-label="订阅怎么算">${mfBtn('wfx', '订阅怎么算', `总资产 × 1% = ${mo}应付 <b class="num">${money(fee, 0)}</b> USDT`)}<div class="top"><span class="eyebrow" style="color:#2f6b60">订阅怎么算</span></div>
+      <div class="fx num"><div><span>计费基数 · 总资产</span><b>${LIVE_ERR ? '读取失败' : money(B.tot, 0)}</b><small>${LIVE_ERR ? '币安只读数据暂时读不到，不按 0 计算' : `USDT · 合计 ${B.live.length} 个运行中账户`}</small></div><i>×</i>
+        <div><span>每月费率</span><b>1%</b><small>按月订阅</small></div><i>=</i>
+        <div class="res"><span>${mo}应付</span><b>${money(fee, 0)}</b><small>USDT${tag ? ' · 示例' : ''}</small></div></div>
+      <p class="exp"><b>额度与优惠</b>：订阅后获得本月额度，额度随策略运行逐步使用，月初重置。本月剩余的额度越多，下月订阅越优惠；优惠幅度以正式规则为准。只支持 Crypto（USDT / USDC）充值，不从你的币安账户划扣。</p></section>
   </div>
   <section class="tu" id="tuBox" aria-label="Crypto 充值" hidden></section>
-  <details class="sb-rec" id="bills"><summary><h2>充值记录</h2><span class="mut">${bills.length ? `${bills.length} 条` : '还没有充值'}</span></summary>
-    <ol class="tl">${bills.map(b => `<li class="${b.fresh ? 'new' : ''}"><span class="t num">${tm(b.t)}</span><span class="ty">${b.k}</span><span class="n">${esc(b.n)}</span><span class="a num">${b.a == null ? '—' : money(b.a, 0) + ' USDT'}</span><span class="s">${b.s ? `<span class="bs dm">${b.s}</span>` : ''}</span></li>`).join('') || '<li class="empty"><span class="n mut">还没有充值记录</span></li>'}</ol></details>
-  <p class="wnote">支付尚未接入：收款地址未配置，不会扣款，也不会到账。</p>`;
+  <div class="wo">
+    <section class="wsp${mfCls('wsp')}" data-mf="wsp" aria-label="按账户拆分">${mfBtn('wsp', '按账户拆分', LIVE_ERR ? '币安数据读取失败 · 总资产暂缺' : `${B.live.length} 个账户 · 总资产合计 <b class="num">${money(B.tot, 0)}</b> USDT`)}<h2>按账户拆分</h2><p class="sub">每个账户的总资产 × 1% 就是它这个月的订阅</p>
+      <table class="wt"><thead><tr><th>账户</th><th>状态</th><th class="r">总资产（USDT）</th><th class="r">本月订阅（× 1%）</th></tr></thead><tbody>
+      ${B.rows.length ? '' : `<tr><td colspan="4" class="mut">还没有添加币安账户 · <a href="${esc(bindUrl())}">去添加</a></td></tr>`}${B.rows.map(({ a, eq }) => `<tr><td><b>${esc(a.name)}</b> <small class="mut num">${a.uid}</small></td><td>${a.demo ? '<span class="bs dm">示例数据</span>' : a.live ? `<span class="bs ok">${stTx(a)}</span>` : `<span class="bs dm">${stTx(a)}</span>`}</td><td class="r num" data-l="总资产（USDT）">${eq == null ? '—' : money(eq, 0)}</td><td class="r num ${a.live ? '' : 'mut2'}" data-l="本月订阅（× 1%）">${a.live ? money(eq * 0.01, 2) : '不计费'}</td></tr>`).join('')}
+      <tr class="sum"><td colspan="2"><b>合计</b></td><td class="r num" data-l="总资产（USDT）"><b>${money(B.tot, 0)}</b></td><td class="r num" data-l="本月订阅（× 1%）"><b>${money(fee, 2)}</b></td></tr>
+      </tbody></table></section>
+    <section class="wru${mfCls('wru')}" data-mf="wru" aria-label="计费规则">${mfBtn('wru', '计费规则', '4 项已确定 · <em>1 项待正式规则</em>')}<h2>计费规则</h2><p class="sub">实心是已确定的，虚线框以正式规则为准，不做假设</p>
+      <ul class="chk"><li class="ok"><i>✓</i><b>订阅费率</b><span>每月按总资产 1%</span></li><li class="ok"><i>✓</i><b>本月额度</b><span>随策略运行逐步使用，月初重置</span></li><li class="ok"><i>✓</i><b>下月优惠</b><span>本月剩余额度越多，下月越优惠</span></li><li class="ok"><i>✓</i><b>支付方式</b><span>仅 Crypto：USDT（TRC20 / ERC20 / BEP20）、USDC（ERC20 / BEP20）</span></li>
+      <li class="sep">待正式规则</li>
+      <li class="tbd"><i>?</i><b>优惠幅度</b><span>剩余额度与优惠的换算以正式规则为准</span></li><li class="tbd"><i>?</i><b>收款地址</b><span>未配置，暂不能充值</span></li></ul></section>
+  </div>
+  <section class="tlx" id="bills" aria-label="充值记录"><div class="hd"><h2 style="margin:0;font-size:17px">充值记录</h2><span class="mut" style="font-size:12px">${demo ? `充值、订阅和优惠都记在这里 · 示例余额 <b class="num">${money(X.bal, 2)}</b> USDT · 全部为示例，不是真实到账` : '充值、订阅和优惠都记在这里'}</span></div>
+    <ol class="tl">${bills.map(b => `<li class="${b.est ? 'fee' : b.s ? 'dm' : ''} ${b.fresh ? 'new' : ''}"><span class="t num">${tm(b.t)}</span><span class="ty">${b.k}</span><span class="n">${esc(b.n)}</span><span class="a num ${b.a > 0 ? 'up' : ''}">${b.a == null ? '—' : (b.a > 0 ? '+' : '−') + money(Math.abs(b.a), 2)}</span><span class="s">${b.s ? `<span class="bs dm">${b.s}</span>` : ''}</span></li>`).join('') || '<li class="empty"><span class="n mut">还没有充值记录</span></li>'}</ol></section>
+  <p class="wnote">费用页只管订阅：每月按总资产 1%、本月额度和下月优惠，只支持 Crypto 充值。交易资金一直在你自己的币安账户里。这一版没有接入支付：收款地址未配置，不会扣款，也不会到账。${demo ? '示例账户的记录是演示数据。' : ''}</p>`;
   WAL.demo.forEach(b => delete b.fresh);
   $('#topBtn').onclick = () => topUp(1, true);
   if (TOP.step) topUp(TOP.step);
   window.R44M && R44M.count(box);
+}
+/* r46 · 示例记录：只用示例账户的模拟净资产算，月初扣订阅、上月剩余额度换本月优惠、月前充值。全部标「示例」，余额 = 充值 + 优惠 − 订阅 */
+function demoBills() {
+  const da = ACCTS.filter(a => a.demo && a.live && SIM[a.id]);
+  const eqAt = d => da.reduce((t, a) => t + SIM[a.id].days[Math.max(0, Math.min(DAYS, DAYS - Math.round((now - d) / 864e5)))].equity, 0);
+  const ms = k => new Date(now.getFullYear(), now.getMonth() + k, 1), h = (d, x) => new Date(+d + x * 36e5), mn = d => monthName(d);
+  const lastLeft = DD.wallet.lastLeft == null ? 0.18 : DD.wallet.lastLeft, rate = DD.wallet.discRate == null ? 0.5 : DD.wallet.discRate;
+  const m1 = ms(-1), m0 = ms(0), e1 = eqAt(m1), e0 = feeBase().tot /* r46: this month uses the same base as the card and the table, so every number agrees */, f1 = e1 * 0.01, f0 = e0 * 0.01, disc = f1 * lastLeft * rate;
+  const up = x => Math.ceil(x / 500) * 500, t1 = up(f1), t0 = Math.max(500, up(f0 - disc - (t1 - f1))), S = '示例';
+  const bills = [
+    { t: h(m1, -38), k: '充值', n: `USDT · ERC20 · 首次订阅`, a: t1, s: '已到账（示例）' },
+    { t: h(m1, 0.1), k: '订阅', n: `${mn(m1)} · 总资产 ${money(e1, 0)} × 1%`, a: -f1, s: S },
+    { t: h(m0, 0.05), k: '优惠', n: `${mn(m1)}剩余 ${Math.round(lastLeft * 100)}% 额度 · ${mn(m0)}订阅减免（示例幅度，以正式规则为准）`, a: disc, s: S },
+    { t: h(m0, 0.1), k: '订阅', n: `${mn(m0)} · 总资产 ${money(e0, 0)} × 1%`, a: -f0, s: S },
+    { t: h(m0, -1 * 24 - 3.9), k: '充值', n: 'USDT · TRC20', a: t0, s: '已到账（示例）' }];
+  return { bills, bal: t1 - f1 + disc - f0 + t0 };
 }
 const scrollToEl = sel => { const el = $(sel); if (!el) return; el.scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' }); el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash'); };
 
@@ -4286,8 +4342,7 @@ function showPage(p, o = {}) {
   if (changed && $('#modal.on')) hideLayer($('#modal'), true);
   if (changed && window.cvPanel && document.body.classList.contains('cv-open')) cvPanel(false);
   CUR = p; document.body.dataset.page = p;
-  /* r44 · 打开 Dodo 页默认是新会话：当前会话有内容就开一个空的（旧的留在历史里）；从历史点进来的保持原会话 */
-  if (p === 'ai' && changed && !o.keepConv && !asking && window.CONVS_READY) { const c = curConv(); if (c && c.msgs.length) { const e = CONVS.find(x => !x.msgs.length); if (e) CCUR = e.id; else { const n = newConv(); CONVS.unshift(n); CCUR = n.id; } renderCvList(); renderChat(); saveConvs(); } }
+  /* r46 · 不再有会话概念：Dodo 页只有一条对话，进来就是下面的聊天框 */
   if (p === 'actions') renderActions(); else if (p === 'notify') renderNotify();
   $$('#dash > .page').forEach(s => s.hidden = s.dataset.page !== p);
   $$('[data-nav]').forEach(a => a.dataset.nav === p ? a.setAttribute('aria-current', 'page') : a.removeAttribute('aria-current'));
@@ -4428,66 +4483,29 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
   window.addEventListener('hashchange', () => set(false));
 })();
 
-/* r44 · Dodo 半头：导航下面露出半个方形头（只有头，没有四肢），眼睛跟着指针、会眨眼。
-   电脑：指针靠近 → 探出全头，下方环形展开会话菜单；移到菜单上不收，离开整个区域再收起。
-   手机：点头展开 / 收起；点选项或空白处关闭。键盘：Enter/空格打开，方向键移动，Esc 关闭并回到头上。 */
+/* r46 · Dodo 探头：头一直藏在导航下沿后面，只露出半个头和眼睛（没有身体），轻轻上下探；
+   进 Dodo 页时从导航下沿滑出来，离开时缩回去。头在页面外面，切页动画不会让它从中间瞬移过来。
+   头两边是平铺的预设问题（电脑左右各 2 个，手机左右各 1 个），点了直接问。眼睛跟着指针、会眨眼；点头 = 眨眼并聚焦下面的输入框。 */
 (() => {
-  const wrap = $('#ddPeek'), head = $('#ddHead'), menu = $('#ddMenu'), pu = $('.ddp-pu', head); if (!wrap) return;
-  let open = false, tClose = 0, lastPT = 'mouse';
-  const short = t => { t = t || '新话题'; return t.length > 9 ? t.slice(0, 8) + '…' : t; };
-  const items = () => {
-    const rec = CONVS.filter(c => c.msgs.length && c.id !== CCUR).slice(0, 3);
-    return [{ k: 'new', t: '新会话' }, ...rec.map(c => ({ k: 'cv', id: c.id, t: short(c.title) })), { k: 'more', t: '更多历史' }];
-  };
-  const place = () => {
-    const its = $$('.ddp-it', menu), n = its.length, R = PHONE() ? 104 : 124, a0 = 160, a1 = 20;
-    its.forEach((b, i) => { const a = (a0 + (a1 - a0) * (n === 1 ? .5 : i / (n - 1))) * Math.PI / 180; b.style.setProperty('--x', (Math.cos(a) * R).toFixed(1) + 'px'); b.style.setProperty('--y', (Math.sin(a) * R * .78 + 8).toFixed(1) + 'px'); b.style.setProperty('--d', (i * 28) + 'ms'); });
-  };
-  const render = () => {
-    menu.innerHTML = items().map((x, i) => `<button type="button" role="menuitem" class="ddp-it ${x.k}" tabindex="${i ? -1 : 0}" data-ddk="${x.k}"${x.id ? ` data-ddid="${esc(x.id)}"` : ''}>${x.k === 'new' ? '<b aria-hidden="true">＋</b>' : x.k === 'more' ? '<b aria-hidden="true">⋯</b>' : ''}<span>${esc(x.t)}</span></button>`).join('');
-    place();
-  };
-  const set = (o, focus) => {
-    clearTimeout(tClose); if (o === open) { if (o && focus) $('.ddp-it', menu)?.focus(); return; }
-    open = o; wrap.classList.toggle('open', o); head.setAttribute('aria-expanded', o); menu.inert = !o;
-    if (o) { render(); if (focus) $('.ddp-it', menu)?.focus(); }
-  };
-  menu.inert = true;
-  window.__ddPeek = { set, state: () => open };
-  const inZone = (x, y) => {
-    const pad = 18, rs = [wrap.querySelector('.ddp-clip').getBoundingClientRect(), ...$$('.ddp-it', menu).map(b => b.getBoundingClientRect())];
-    const L = Math.min(...rs.map(r => r.left)) - pad, Rr = Math.max(...rs.map(r => r.right)) + pad, T = Math.min(...rs.map(r => r.top)) - pad, B = Math.max(...rs.map(r => r.bottom)) + pad;
-    return x >= L && x <= Rr && y >= T && y <= B;
-  };
-  addEventListener('pointerdown', e => { lastPT = e.pointerType || 'mouse'; }, true);
-  document.addEventListener('pointermove', e => {
-    if (CUR !== 'ai' || e.pointerType !== 'mouse') return;
-    const r = head.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height * .66, dx = e.clientX - cx, dy = e.clientY - cy, d = Math.hypot(dx, dy) || 1;
-    const m = Math.min(4, d / 40); pu.style.transform = `translate(${(dx / d * m).toFixed(2)}px,${(dy / d * m).toFixed(2)}px)`;
-    if (!open) { if (d < 84) set(true); return; }
-    if (inZone(e.clientX, e.clientY)) { clearTimeout(tClose); tClose = 0; }
-    else if (!tClose) tClose = setTimeout(() => { tClose = 0; set(false); }, 260);
-  });
-  head.addEventListener('click', e => {
-    /* 鼠标靠近已经展开，点一下不收起；触屏和键盘点一下切换 */
-    if (e.detail && lastPT === 'mouse') { set(true); return; }
-    set(!open, e.detail === 0);
-  });
-  head.addEventListener('keydown', e => { if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); set(true, true); } else if (e.key === 'Escape' && open) { e.preventDefault(); set(false); } });
-  menu.addEventListener('keydown', e => {
-    const its = $$('.ddp-it', menu), i = its.indexOf(document.activeElement); let n = -1;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = (i + 1) % its.length; else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = (i - 1 + its.length) % its.length; else if (e.key === 'Home') n = 0; else if (e.key === 'End') n = its.length - 1;
-    else if (e.key === 'Escape') { e.preventDefault(); set(false); head.focus(); return; } else if (e.key === 'Tab') { set(false); return; }
-    if (n < 0) return; e.preventDefault(); its.forEach((b, k) => b.tabIndex = k === n ? 0 : -1); its[n].focus();
-  });
-  menu.addEventListener('click', e => {
-    const b = e.target.closest('.ddp-it'); if (!b) return; const k = b.dataset.ddk; set(false);
-    if (k === 'new') startConv(null); else if (k === 'cv') switchConv(b.dataset.ddid); else if (k === 'more' && window.cvPanel) cvPanel(true);
-  });
-  document.addEventListener('click', e => { if (open && !wrap.contains(e.target)) set(false); });
-  addEventListener('hashchange', () => set(false));
+  const wrap = $('#ddPeek'), head = $('#ddHead'), q = $('#ddQ'), pu = $('.ddp-pu', head); if (!wrap) return;
+  const fill = () => { const n = innerWidth < 1100 ? 1 : 2, b = i => `<button type="button" class="ddq-b" data-ddq="${i}" title="${QH[i]}">${EN() ? enD(QS[i]) : QS[i]}</button>`;
+    $('.ddq-l', q).innerHTML = QS.slice(0, n).map((x, i) => b(i)).join(''); $('.ddq-r', q).innerHTML = QS.slice(n, n * 2).map((x, i) => b(i + n)).join(''); };
+  let on = null;
+  const sync = () => { const v = CUR === 'ai' && !document.body.classList.contains('kb-open'); if (v === on) return; on = v;
+    if (v) fill(); wrap.classList.toggle('in', v); wrap.inert = !v; };
+  window.__ddPeek = { sync, state: () => wrap.classList.contains('in') };
+  new MutationObserver(sync).observe(document.body, { attributes: true, attributeFilter: ['data-page', 'class'] });
+  addEventListener('resize', () => { if (on) fill(); }); addEventListener('td:lang', () => on && fill());
+  wrap.inert = true; requestAnimationFrame(() => requestAnimationFrame(sync));
+  q.addEventListener('click', e => { const b = e.target.closest('[data-ddq]'); if (b) ask(QS[+b.dataset.ddq]); });
+  const look = (x, y) => { const r = head.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height * .66, dx = x - cx, dy = y - cy, d = Math.hypot(dx, dy) || 1, m = Math.min(4, d / 40);
+    pu.style.transform = `translate(${(dx / d * m).toFixed(2)}px,${(dy / d * m).toFixed(2)}px)`; };
+  document.addEventListener('pointermove', e => { if (CUR === 'ai' && e.pointerType === 'mouse') look(e.clientX, e.clientY); });
+  document.addEventListener('pointerdown', e => { if (CUR === 'ai') look(e.clientX, e.clientY); });
+  const wink = () => { head.classList.add('blink'); setTimeout(() => head.classList.remove('blink'), 150); };
+  head.addEventListener('click', () => { wink(); $('#askIn')?.focus({ preventScroll: true }); });
   /* 眨眼：3–6 秒一次；减少动态效果时不眨 */
-  const blink = () => { if (!RM && CUR === 'ai' && !document.hidden) { head.classList.add('blink'); setTimeout(() => head.classList.remove('blink'), 150); } setTimeout(blink, 3000 + Math.random() * 3000); };
+  const blink = () => { if (!RM && CUR === 'ai' && !document.hidden) wink(); setTimeout(blink, 3000 + Math.random() * 3000); };
   setTimeout(blink, 2200);
 })();
 /* 软键盘：聚焦输入框 且 可见高度明显变矮 才算键盘打开。

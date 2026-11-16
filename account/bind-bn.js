@@ -336,8 +336,17 @@
   function gw(l, warn) { var o = hw(l); o.k1p = GW[l].k1p; o.k2p = GW[l].k2p; o.warn = warn === 'self' ? GW[l].warnS : GW[l].warnH; return o; }
   var guide = {
     home: scenes[0], create: scenes[1], vmail: scenes[2], futures: scenes[3], pm: scenes[4],
-    /* r45b: API Management list only. The key-type dialog is not drawn at all: 3dtrading uses system-generated (HMAC) keys only */
+    /* API Management list (the key-type dialog follows as its own page, below) */
     apis: function (l) { var w = gw(l); return frame(w, 1, apiPage(w)); },
+    /* r46: Binance's own 「选择API密钥类型」 dialog again (Excepta p.6). 'pick': nothing chosen yet, the cursor goes to 系统生成;
+     * 'next': 系统生成 chosen (yellow corner), the cursor goes to 下一步. 自行生成 is drawn as Binance shows it but never chosen. */
+    type: function (l, cfg, kind, ph) {
+      var w = gw(l), on = ph === 'next';
+      return frame(w, 1, apiPage(w), modal(w.kTitle,
+        '<div class="bn-opt' + (on ? ' on' : '') + '" data-slot="optSys">' + I.keyA + '<div><b>' + esc(w.k1) + '</b><p>' + esc(w.k1p) + '</p></div>' + (on ? '<i class="corner"></i>' : '') + '</div>' +
+        '<div class="bn-opt" data-slot="optSelf">' + I.keyB + '<div><b>' + esc(w.k2) + '</b><p>' + esc(w.k2p) + '</p></div></div>' +
+        '<span class="bn-btn y block" data-t="next">' + esc(w.next) + '</span>', 'wide'));
+    },
     label: scenes[6],
     pub: function (l, cfg) {
       var w = gw(l, 'self');
@@ -351,5 +360,5 @@
     sysKeys: function (l, cfg) { var w = gw(l, 'hmac'); return frame(w, 1, head(w, w.apiTitle, '') + hKeyPage(w, cfg, 'keys')); },
     perm: function (l, cfg, kind) { var w = gw(l, kind); return frame(w, 1, head(w, w.apiTitle, '') + (kind === 'self' ? keyPage(w, cfg, 'perm') : hKeyPage(w, cfg, 'perm'))); }
   };
-  global.TD_BN = { scenes: scenes, clips: clips, hmac: hmac, guide: guide, width: 1100, words: W };
+  global.TD_BN = { scenes: scenes, clips: clips, hmac: hmac, guide: guide, width: 1100, words: W, icons: I };
 })(window);

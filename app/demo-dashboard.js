@@ -68,10 +68,9 @@
     var umrPts = []; for (var k2 = 29; k2 >= 0; k2--) umrPts.push({ t: now - k2 * 864e5, v: k2 ? +(4.85 + .42 * Math.sin(k2 * .43) + .16 * Math.sin(k2 * 1.9) - k2 * .006).toFixed(4) : 4.85, now: !k2 });
     var day0 = new Date(now); day0.setHours(0, 0, 0, 0);
     cache = { key: key, now: now, todaySubs: todaySubs, MK: MK, KH: KH, NH: NH, rates: rates, umr: 4.85, umrPts: umrPts,
-      /* r44 · 订阅示例：本月已用额度比例 + 两笔 Crypto 充值记录（演示，不是真实到账） */
-      wallet: { tok: 12500, used: 0.62, bills: [
-        { t: +day0 - 6 * 864e5 + 20.1 * 36e5, k: '充值', n: 'USDT · TRC20', a: 2000, s: '已到账（示例）' },
-        { t: +day0 - 36 * 864e5 + 15.6 * 36e5, k: '充值', n: 'USDT · ERC20 · 首次订阅', a: 2000, s: '已到账（示例）' }] } };
+      /* r46 · 订阅示例（只给示例账户）：本月已用 62% 额度；上月剩余 18%，按示例幅度 50% 换本月优惠。
+         记录由后台用示例账户的模拟净资产按「总资产 × 1%」算出，全部标「示例」，不是真实到账 */
+      wallet: { tok: 12500, used: 0.62, lastLeft: 0.18, discRate: 0.5 } };
     sims = {};
     return cache;
   }
@@ -142,7 +141,7 @@
       var B = base(o.mk);
       var out = { now: B.now, tz: TZ, days: DAYS, sub: SUB, todaySubs: B.todaySubs, coins: COINS.map(function (c) { return c.slice(); }),
         kh: B.KH, nh: B.NH, stb: STB.map(function (c) { return Object.assign({}, c); }), rates: B.rates, umr: B.umr, umrSeries: B.umrPts,
-        wallet: { tok: B.wallet.tok, used: B.wallet.used, bills: B.wallet.bills.slice() }, accounts: {},
+        wallet: { tok: B.wallet.tok, used: B.wallet.used, lastLeft: B.wallet.lastLeft, discRate: B.wallet.discRate }, accounts: {},
         compare: { note: '演示，口径待业务确认', save: '直接存理财', noRebal: '不做平补' } };
       (o.accounts || []).forEach(function (a) { out.accounts[a.id] = sim(a, B); });
       return out;

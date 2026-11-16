@@ -5,43 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="robots" content="noindex">
 <title>3dtrading · 添加币安账户</title>
-<script>/* r41: day / night follows the dashboard (localStorage '3dt.theme.app'); day is the default. The website keeps its own '3dt.theme.site'. */
-try{var L=localStorage,o=L.getItem('3dt.theme');if(o!==null){if(L.getItem('3dt.theme.site')===null)L.setItem('3dt.theme.site',o==='day'?'day':'night');L.removeItem('3dt.theme')}document.documentElement.dataset.theme=L.getItem('3dt.theme.app')==='night'?'night':'day'}catch(e){document.documentElement.dataset.theme='day'}</script>
+<script>/* r46: the binding page is one Binance-style screen with no day / night: always the dark palette. Its own theme key is never written, so another tab's day/night switch cannot reach it. */
+document.documentElement.dataset.theme='night';document.documentElement.setAttribute('data-theme-key','3dt.theme.bnbind')</script>
 <link rel="stylesheet" href="page.css?v=r41">
 <link rel="stylesheet" href="bind-bn.css?v=r45">
-<link rel="stylesheet" href="day.css?v=20261113-r38">
 <link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/dodo-180.png?v=20261112">
 <link rel="manifest" href="../manifest.webmanifest?v=20261112">
 <meta name="application-name" content="3dtrading">
 <meta name="apple-mobile-web-app-title" content="3dtrading">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#06090b">
-<script>(function(){function tc(){var m=document.querySelector('meta[name=theme-color]');if(m)m.content=document.documentElement.dataset.theme==='day'?'#ffffff':'#06090b'}tc();addEventListener('td:theme',tc)})()</script>
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#181a20">
 <link rel="stylesheet" href="r41.css?v=r41">
-<link rel="stylesheet" href="connect-r45.css?v=r45">
+<link rel="stylesheet" href="connect-r45.css?v=r46">
 </head>
 <body>
-<!-- r45 · 添加币安账户: three big steps (开通子账户 → 创建API → 绑定API). A demo cursor walks to the control to press and moves
+<!-- r45/r46 · 添加币安账户: three big steps (开通子账户 → 创建API → 绑定API). A demo cursor walks to the control to press and moves
      on by itself, looping inside the current big step only; pressing that control yourself moves on at once. The Binance screens
      are our own coded illustration (desktop = Binance website, phone = Binance App + the official web route), never the live site.
      Only System-generated (HMAC) keys; nothing is created, stored or sent to Binance here, and the account stays 「未连接」. -->
-<header class="bar">
-  <a class="logo" href="#" data-href="site" data-i18n-attr="aria-label:acct.toSite"><img class="lg-n" src="assets/3dtrading-logo-white.svg" alt="3dtrading" width="91" height="22"><img class="lg-d" src="assets/3dtrading-logo.svg" alt="3dtrading" width="91" height="22"></a>
-  <span class="sp"></span>
-  <a class="hb-back" id="back" href="#" data-i18n="cx.back">返回后台</a>
-  <button type="button" id="thm"></button>
-  <div id="lang"></div>
-  <button type="button" class="av-btn ini" id="av"></button>
-</header>
-<h1 class="sr" data-i18n="cx.h1">添加币安账户</h1>
-<nav class="pg" id="pg" data-i18n-attr="aria-label:cx.prog" aria-label="绑定进度">
-  <ol id="big"></ol>
+<!-- r46: ONE top bar in Binance's own style. The 3dtrading logo (back to the dashboard) and the three big steps take the
+     place of Binance's nav items; on the right only Binance's icons from 「我的」 (the user icon) onwards. The globe is our real
+     language switch; the other icons are part of the illustration. No day / night switch here. -->
+<header class="bnh" id="hb">
+  <a class="logo" id="logo" href="#" data-i18n-attr="aria-label:cx.toApp"><img src="assets/3dtrading-logo-white.svg" alt="3dtrading" width="91" height="22"></a>
+  <nav class="pg" id="pg" data-i18n-attr="aria-label:cx.prog" aria-label="绑定进度">
+    <ol id="big"></ol>
+    <button type="button" class="lk" id="skip" data-i18n="cx.skip">跳过</button>
+  </nav>
   <span class="st" id="st"></span>
   <a class="lk out" id="out" href="#" target="_blank" rel="noopener noreferrer" data-i18n="cx.open">在币安打开</a>
-  <button type="button" class="lk" id="skip" data-i18n="cx.skip">跳过</button>
-</nav>
+  <span class="hic" id="hic"></span>
+  <div class="hum" id="hum" hidden></div>
+</header>
 <main class="stage" id="stage" data-i18n-attr="aria-label:cx.stageL" aria-label="币安操作演示（不是真实币安页面）">
   <div class="view" id="view"><div class="bn" id="bn"></div><div class="ba" id="ba"></div></div>
   <span class="tag" data-i18n="cx.tag">操作演示 · 不是真实币安页面</span>
@@ -71,8 +68,8 @@ try{var L=localStorage,o=L.getItem('3dt.theme');if(o!==null){if(L.getItem('3dt.t
 <script src="td-account.js?v=r45b"></script>
 <script src="api-adapter.js?v=r43"></script>
 <script src="bind-steps.js?v=r44"></script>
-<script src="bind-bn.js?v=r45b"></script>
-<script src="bn-app.js?v=r45b"></script>
-<script src="connect-r45.js?v=r45b"></script>
+<script src="bind-bn.js?v=r46"></script>
+<script src="bn-app.js?v=r46"></script>
+<script src="connect-r45.js?v=r46"></script>
 </body>
 </html>

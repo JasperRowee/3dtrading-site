@@ -5,7 +5,10 @@
  * again: it never crosses into another big step by itself. Pressing the lit control yourself moves on at once (and cancels the
  * pending timer); pressing it on the last sub-step of 开通子账户 / 创建API goes to the next big step. The big steps can be
  * opened in any order from the progress bar, and 跳过 goes to the next one.
- * Keys: System generated (HMAC) only — there is no key-type choice. Binance gives an API Key + Secret Key; the user pastes them
+ * r46: one Binance-style top bar (our logo → the dashboard, the three steps, Binance's icons from 「我的」 rightwards; the globe
+ * is our language switch), always dark (no day / night). Binance's real 「选择API密钥类型」 page is shown again: the cursor picks
+ * 「系统生成」 and then 「下一步」 (the self-generated route is not drawn or offered).
+ * Keys: System generated (HMAC) only. Binance gives an API Key + Secret Key; the user pastes them
  * into our form (step 3). The values live only in the inputs, are never stored, logged or put in the URL, are cleared after
  * submit and on pagehide, and with no verification service the account always stays 「未连接」. The demo never types, never
  * presses 连接并验证 and never shows a success.
@@ -85,14 +88,19 @@
       { p: ['sub', { rows: 1, sheet: 'cf2' }], pt: '[data-t="cf"]', zh: '点「确认」，再由你本人完成币安验证', en: 'Tap Confirm, then pass Binance’s check yourself' }
     ] },
     { id: 'api', url: 'api', subs: [
-      { d: ['apis'], t: '.bn-newapi', zh: '「API管理」里点「+ 创建API」（系统生成密钥）', en: 'In API Management click + Create API (system-generated key)' },
+      { d: ['apis'], t: '.bn-newapi', zh: '「API管理」里点「+ 创建API」', en: 'In API Management click + Create API' },
+      /* r46: Binance's own key-type page (Excepta p.6 desktop / p.19 App). The cursor picks 系统生成, then 下一步 */
+      { d: ['type', 'pick'], t: '[data-slot="optSys"]', zh: '币安先问 API 密钥类型：点「系统生成」', en: 'Binance asks for the API key type: click System generated' },
+      { d: ['type', 'next'], t: '[data-t="next"]', zh: '已选「系统生成」，点「下一步」', en: 'System generated is selected; click Next' },
       { d: ['label'], t: '[data-t="next2"]', copy: 'label', zh: '选子账户、粘贴标签，点「下一步」，再由你本人完成安全验证', en: 'Pick the sub-account, paste the label, click Next, then pass the security check yourself' },
       { d: ['sysKeys'], t: '.bn-edit', zh: '点「编辑权限」', en: 'Click Edit restrictions' },
       { d: ['perm'], t: '[data-t="ipok"]', zh: '只勾亮着的权限，提现保持关闭；选「只访问受信任的 IP」后保存（IP 未配置）', en: 'Tick only the lit permissions, keep withdrawals off, choose trusted IPs only, save (IPs not configured)' },
       /* phone · Excepta pp.17–23 */
       { p: ['sub', { rows: 1, toast: 'pm', hot: 'mgmt' }], pt: '[data-t="mgmt"]', zh: '统一账户更新完成后，点左上角「账号管理 ▾」', en: 'When Portfolio Margin is ready, tap Account Management ▾' },
       { p: ['sub', { rows: 1, sheet: 'mgmt' }], pt: '[data-t="apim"]', zh: '点「API管理」', en: 'Tap API Management' },
-      { p: ['api', { hot: 'newapi' }], pt: '[data-t="newapi"]', zh: '点「+ 创建API」（系统生成密钥）', en: 'Tap + Create API (system-generated key)' },
+      { p: ['api', { hot: 'newapi' }], pt: '[data-t="newapi"]', zh: '点「+ 创建API」', en: 'Tap + Create API' },
+      { p: ['api', { sheet: 'type' }], pt: '[data-t="optSys"]', zh: '「选择API密钥类型」里点「系统生成」', en: 'In Choose API Key type, tap System generated' },
+      { p: ['api', { sheet: 'type', sys: true }], pt: '[data-t="next"]', zh: '已选「系统生成」，点「下一步」', en: 'System generated is selected; tap Next' },
       { p: ['api', { sheet: 'label' }], pt: '[data-t="next2"]', copy: 'label', zh: '选刚建的子账户，粘贴标签，点「下一步」，再由你本人完成通行密钥验证', en: 'Pick the new sub-account, paste the label, tap Next, then pass the passkey check yourself' },
       { p: ['key', { part: 'perm' }], pt: '[data-t="iponly"]', zh: '只勾亮着的权限，提现不开；选「只访问受信任的IP」（IP 未配置）', en: 'Tick only the lit permissions, no withdrawals; choose trusted IPs only (IPs not configured)' },
       { p: ['key', { part: 'save' }], pt: '[data-t="save"]', zh: '回到上方点「保存」，再由你本人完成验证', en: 'Scroll up, tap Save, then pass the check yourself' }
@@ -118,21 +126,25 @@
   function later(fn, ms) { var tok = S.tok, id = setTimeout(function () { TM = TM.filter(function (x) { return x !== id; }); if (tok === S.tok) fn(); }, ms); TM.push(id); }
   function stopAll() { S.tok++; TM.forEach(clearTimeout); TM = []; }
 
+  var hb = $('#hb'), hum = $('#hum'), hic = $('#hic');
   var stage = $('#stage'), view = $('#view'), bn = $('#bn'), ba = $('#ba'), panel = $('#panel'), cur = $('#cur'), hintEl = $('#hint');
   var HOT = null, CUR = null; // the target element; the cursor's last screen position
 
   function progress() {
     $('#big').innerHTML = BIG.map(function (x, i) {
-      return '<li class="' + (i === S.b ? 'on' : i < S.b ? 'done' : '') + '"><button type="button" data-big="' + i + '"' + (i === S.b ? ' aria-current="step"' : '') + '><span class="n">' + (i + 1) + '</span>' + esc(t('cx.b' + (i + 1))) + '</button></li>';
+      return '<li class="' + (i === S.b ? 'on' : i < S.b ? 'done' : '') + '"><button type="button" data-big="' + i + '"' + (i === S.b ? ' aria-current="step"' : '') + '><span class="n">' + (i < S.b ? '✓' : i + 1) + '</span><span class="tx">' + esc(t('cx.b' + (i + 1))) + '</span></button></li>';
     }).join('');
     $('#st').innerHTML = t('cx.state');
     $('#skip').hidden = S.b === BIG.length - 1;
     $('#out').href = URL_[BIG[S.b].url][L()];
   }
-  function layout() { // the progress row sits under the bar; the stage fills the rest
-    var bar = document.querySelector('.bar').getBoundingClientRect().bottom, pg = $('#pg');
-    pg.style.top = Math.round(bar) + 'px';
-    stage.style.top = Math.round(bar + pg.offsetHeight) + 'px';
+  function layout() { stage.style.top = Math.round(hb.getBoundingClientRect().bottom) + 'px'; } // r46: one bar, the stage fills the rest
+  /* r46: Binance's icons from 「我的」 rightwards, in our own bar (user, wallet, messages, download, globe = our language switch) */
+  function icons() {
+    var I = BN.icons, en = L() === 'en';
+    hic.innerHTML = '<span class="bi" data-t="av" aria-hidden="true">' + I.user + '</span><span class="bi" aria-hidden="true">' + I.wallet + '</span>' +
+      '<span class="bi dot" aria-hidden="true">' + I.msg + '</span><span class="bi" aria-hidden="true">' + I.dl + '</span>' +
+      '<button type="button" class="bi lg" id="lg" aria-label="' + (en ? '切换到中文' : 'Switch to English') + '" title="' + (en ? '中文' : 'English') + '">' + I.globe + '<b>' + (en ? 'EN' : '中') + '</b></button>';
   }
 
   /* draw the current sub-step's screen, frame the target, then start the demo for it */
@@ -148,15 +160,21 @@
     var host = ph ? ba : bn;
     if (ph) ba.innerHTML = BA.html(scr.p[0], l, cfg(), scr.p[1]);
     else {
-      var gp = G[scr.d[0]], html = typeof gp === 'function' ? gp(l, cfg(), 'hmac') : gp.html(l, cfg());
+      var gp = G[scr.d[0]], html = typeof gp === 'function' ? gp(l, cfg(), 'hmac', scr.d[1]) : gp.html(l, cfg());
       bn.style.width = BN.width + 'px'; bn.innerHTML = html;
       if (scr.d[1] != null) bn.setAttribute('data-ph', String(scr.d[1])); else bn.removeAttribute('data-ph');
+      /* r46: Binance's own top bar lives in our one bar, so it is taken out of the replica; its user menu opens under our 「我的」 icon */
+      var top = bn.querySelector('.bn-top'); if (top) top.remove();
+      var um = bn.querySelector('.bn-um'); hum.innerHTML = ''; hum.hidden = true;
+      if (um) { um.remove(); if (scr.d[1] === 1) { hum.appendChild(um); hum.hidden = false; } }
     }
+    if (ph) { hum.innerHTML = ''; hum.hidden = true; }
     if (fresh) { view.classList.remove('fade'); void view.offsetWidth; view.classList.add('fade'); }
     /* the target */
     if (HOT) { HOT.classList.remove('hot'); HOT.removeAttribute('tabindex'); }
     document.querySelectorAll('.panel .cue').forEach(function (e) { e.classList.remove('cue'); });
-    HOT = st.our ? $(st.our) : host.querySelector(ph ? st.pt : st.t);
+    var sel = ph ? st.pt : st.t;
+    HOT = st.our ? $(st.our) : host.querySelector(sel) || hb.querySelector(sel);
     if (HOT && !st.our) { HOT.classList.add('hot'); HOT.setAttribute('tabindex', '0'); HOT.setAttribute('role', 'button'); HOT.setAttribute('aria-label', hintText(st)); }
     if (HOT && st.our) (HOT.closest('.fld') || HOT).classList.add('cue');
     if (HOT && st.our) { // our own form: scroll the panel (a bottom sheet on phones) so the field and its hint fit
@@ -180,7 +198,7 @@
     if (!ph && s < .62) s = .62; // never shrink the website into unreadable text; the camera pans instead
     view.style.transform = 'none';
     var nh = host.scrollHeight;
-    var tgt = st.our ? null : HOT, r = null;
+    var tgt = st.our || !HOT || !host.contains(HOT) ? null : HOT, r = null; // a target in our bar needs no panning
     if (tgt) { var a = tgt.getBoundingClientRect(), o = host.getBoundingClientRect(); r = { x: a.left - o.left, y: a.top - o.top, w: a.width, h: a.height }; }
     var tx = natW * s <= aw ? (aw - natW * s) / 2 : 0, ty = 0;
     if (r && natW * s > aw) tx = Math.max(aw - natW * s, Math.min(0, aw / 2 - (r.x + r.w / 2) * s));
@@ -256,6 +274,13 @@
   function bigGo(i) { if (i < 0 || i >= BIG.length) return; S.b = i; S.s = 0; S.hold = false; render(true); }
   function nudge() { if (!HOT || RM.matches || HOT.closest('.panel')) return; HOT.classList.remove('nudge'); void HOT.offsetWidth; HOT.classList.add('nudge'); }
 
+  hb.addEventListener('click', function (e) {
+    if (e.target.closest('#lg')) { A.setLang(L() === 'en' ? 'zh' : 'en'); return; }
+    if (HOT && hb.contains(HOT) && e.target.closest('.hot') === HOT) { manual(); if (e.detail === 0) focusHot(); }
+  });
+  hb.addEventListener('keydown', function (e) {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target === HOT) { e.preventDefault(); manual(); focusHot(); }
+  });
   view.addEventListener('click', function (e) {
     if (HOT && view.contains(HOT) && e.target.closest('.hot') === HOT) { manual(); if (e.detail === 0) focusHot(); return; }
     nudge();
@@ -343,14 +368,10 @@
   });
 
   /* ---------- boot ---------- */
-  function relang() { A.apply(document); render(false); eye(F.sec.type === 'text'); $('#go').textContent = t(busy ? 'cx.busy' : 'cx.go'); }
-  $('[data-href="site"]').href = A.routes.site;
-  $('#back').href = A.routes.app;
-  var th = function () { return document.documentElement.dataset.theme === 'day' ? 'light' : 'dark'; };
-  A.mountThemeToggle($('#thm'));
-  A.mountLangToggle($('#lang'), { theme: th });
-  var ss = A.session(); if (ss) $('#av').textContent = (ss.name || ss.email).slice(0, 1).toUpperCase();
-  A.mountMenu($('#av'), { context: 'account', theme: th, logoutTo: A.routes.site });
+  function relang() { A.apply(document); icons(); render(false); eye(F.sec.type === 'text'); $('#go').textContent = t(busy ? 'cx.busy' : 'cx.go'); }
+  $('#logo').href = A.routes.app; // r46: the logo goes back to the dashboard, not the website
+  window.addEventListener(A.events.theme || 'td:theme', function () { document.documentElement.dataset.theme = 'night'; }); // no day here
+  icons();
   window.addEventListener(A.events.lang, relang);
   window.addEventListener(A.events.session, function () { if (!A.session()) A.requireUser(location.pathname + location.search); });
   var rz, lastW = window.innerWidth;
@@ -360,6 +381,7 @@
   });
   if (typeof RM.addEventListener === 'function') RM.addEventListener('change', function () { render(false); });
   A.apply(document); eye(false); render(false);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (!S.hold) render(false); });
   API.getConnectKit().then(function (k) { KIT = k; if (!S.hold) render(false); });
 
   /* test hooks: read-only state, plus the same moves a person can make */

@@ -1,0 +1,7 @@
+<!doctype html><meta charset=utf-8><meta name=robots content=noindex><title>bind frames</title>
+<body style="margin:0;background:#333;display:flex;gap:12px;padding:12px;align-items:flex-start;font:12px system-ui;color:#ccc">
+<script>
+// ?u=/account/bind.html&w=360,390,440&h=740
+var q=new URLSearchParams(location.search),u=q.get('u')||'/account/bind.html',h=q.get('h')||'740';
+(q.get('w')||'360,390,440').split(',').forEach(function(w){var d=document.createElement('div');d.innerHTML='<div>'+w+'×'+h+'</div><iframe src="'+u+'" style="width:'+w+'px;height:'+h+'px;border:0;background:#000;display:block"></iframe>';document.body.appendChild(d);});
+</script>
