@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="robots" content="noindex">
+<title>3dtrading · 绑定币安 · 图解教程</title>
+<link rel="icon" type="image/svg+xml" href="../assets/dodo.svg">
+<meta name="theme-color" content="#181a20">
+<link rel="stylesheet" href="page.css?v=r49l">
+<link rel="stylesheet" href="bind-bn.css?v=r49l">
+<link rel="stylesheet" href="connect-r45.css?v=r49l">
+<link rel="stylesheet" href="tut.css?v=r49l">
+</head>
+<body class="tut">
+<!-- r49b · the illustrated tutorial of the 自行生成 route (from r48 connect.html), shown INSIDE the binding page (../index.html #guide)
+     in a frame; opened on its own it redirects there. Three big steps, 上一步 / 下一步 / dots / 跳过, autoplay OFF by default.
+     Always a dark Binance-style screen; our own coded illustration, never the live Binance site.
+     There is no form here: 回到上方 scrolls the page back up to the API Key field (postMessage, no navigation). -->
+<header class="bnh" id="hb">
+  <a class="logo" id="logo" href="../" data-i18n-attr="aria-label:cx.toBind"><img src="../assets/3dtrading-logo-white.svg" alt="3dtrading" width="91" height="22"></a>
+  <nav class="pg" id="pg" data-i18n-attr="aria-label:cx.prog" aria-label="绑定进度">
+    <ol id="big"></ol>
+    <button type="button" class="lk" id="skip" data-i18n="cx.skip">跳过</button>
+  </nav>
+  <span class="st" id="st"></span>
+  <a class="lk out" id="out" href="#" target="_blank" rel="noopener noreferrer" data-i18n="cx.open">在币安打开</a>
+  <span class="hic" id="hic"></span>
+  <div class="hum" id="hum" hidden></div>
+</header>
+<main class="stage" id="stage" data-i18n-attr="aria-label:cx.stageL" aria-label="币安操作演示（不是真实币安页面）">
+  <div class="view" id="view"><div class="bn" id="bn"></div><div class="ba" id="ba"></div></div>
+  <span class="tag" data-i18n="cx.tag">操作演示 · 不是真实币安页面</span>
+  <section class="panel bnp" id="panel" hidden aria-labelledby="pT">
+    <h2 id="pT" data-i18n="cx.pT">把 API Key 填回 3dtrading</h2>
+    <p class="sub" data-i18n="cx.pSub">回到绑定页，把刚复制的 API Key 粘贴进去，点「绑定」。</p>
+    <a class="back" id="backKey" href="../#key" data-i18n="cx.backKey">回到绑定页粘贴</a>
+    <p class="note" data-i18n="cx.note">自行生成的 API 只有 API Key，没有 Secret Key。演示版只检查格式，账户保持「未连接」。</p>
+  </section>
+  <nav class="tc" id="tc" data-i18n-attr="aria-label:cx.tcL" aria-label="教程控制">
+    <a class="tcb x" id="tcClose" href="../#key"><span aria-hidden="true">↑</span> <span data-i18n="cx.close">返回绑定页</span></a>
+    <div class="tcm">
+      <button type="button" class="tcb" id="tcPrev"><span aria-hidden="true">‹</span> <span data-i18n="cx.prev">上一步</span></button>
+      <ol class="dots" id="dots"></ol>
+      <button type="button" class="tcb pri" id="tcNext"><span data-i18n="cx.next">下一步</span> <span aria-hidden="true">›</span></button>
+    </div>
+    <label class="ap"><input type="checkbox" id="auto" role="switch"><i aria-hidden="true"></i><span data-i18n="cx.auto">自动播放</span></label>
+  </nav>
+</main>
+<div class="cur" id="cur" aria-hidden="true"><svg viewBox="0 0 26 26"><path d="M3 2l17 10.5-7.4 1.6 4.4 8.2-3.3 1.7-4.4-8.2L3.9 21z"/></svg><i></i><em data-i18n="cx.demo">演示</em></div>
+<div class="hint" id="hint" role="status" aria-live="polite" hidden></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="../shim.js?v=r49l"></script>
+<script src="bind-bn.js?v=r49l"></script>
+<script src="bn-app.js?v=r49l"></script>
+<script src="tutorial.js?v=r49l"></script>
+</body>
+</html>

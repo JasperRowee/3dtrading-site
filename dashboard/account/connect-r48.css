@@ -1,0 +1,191 @@
+/* 3dtrading r48 · connect.html: the 自行生成 binding window over the dimmed Binance home, and the tutorial controls.
+ * Loaded after connect-r45.css; nothing here is shared with other pages. Binance's dark palette (#181a20 / #1e2329 /
+ * #2b3139, yellow #fcd535 for the primary action) with 3dtrading's teal (#2fdcbc) for copy actions. */
+
+/* ---- the opening view: header shows only the logo, state, link and icons ---- */
+body.intro .bnh .pg{visibility:hidden}
+body.intro .hint,body.intro .cur{display:none}
+
+/* ---- dim + window ---- */
+.cxdim{position:absolute;inset:0;z-index:15;background:rgba(11,14,17,.74);-webkit-backdrop-filter:blur(2px) saturate(.8);backdrop-filter:blur(2px) saturate(.8);opacity:0;pointer-events:none;transition:opacity .45s ease}
+.cxdim.show{opacity:1}
+.cxwrap{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:12px 24px;overflow:auto;opacity:0;pointer-events:none;transition:opacity .35s ease .08s}
+.cxwrap.show{opacity:1;pointer-events:auto}
+body.tut .cxdim,body.tut .cxwrap{display:none}
+.cxm{position:relative;width:min(880px,100%);max-height:100%;overflow:auto;overscroll-behavior:contain;margin:auto;padding:16px 24px 12px;border-radius:16px;
+  background:#1e2329;border:1px solid #2b3139;box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 0 1px rgba(0,0,0,.2);color:#eaecef;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;transform:translateY(10px) scale(.985);transition:transform .4s cubic-bezier(.2,.8,.2,1) .08s}
+.cxwrap.show .cxm{transform:none}
+.cxm:focus{outline:0}
+.cxm:focus-visible{box-shadow:0 24px 70px rgba(0,0,0,.55),0 0 0 2px #fcd535}
+.cxm .eb{display:flex;align-items:center;gap:8px;margin:0 0 6px;font-size:12px;font-weight:650;color:#848e9c;letter-spacing:.02em}
+.cxm .eb .dm{padding:1px 7px;border-radius:4px;background:rgba(240,185,11,.14);color:#f0b90b;font-size:11px}
+.cxm .eb .dm[hidden]{display:none}
+.cxm h2{margin:0 0 6px;font-size:20px;font-weight:700;line-height:1.3}
+.mhd{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:8px}
+.mtl{min-width:0}
+.mtl .sub{margin:0;font-size:13px;line-height:1.6;color:#b7bdc6;max-width:60ch}
+html[lang="en"] .mtl .sub{max-width:78ch}
+.mhd .mft{flex:none;flex-direction:column;align-items:flex-end;gap:8px;margin:2px 0 0}
+
+/* three cards: the public key across the top, the IPs and the permissions side by side */
+.cxg{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);grid-template-areas:"pub ip" "pm pm";gap:10px}
+.cxi{min-width:0;padding:11px 14px 10px;border-radius:12px;background:#181a20;border:1px solid #2b3139}
+.cxi.ip1{grid-area:pub}.cxi.ip2{grid-area:ip}.cxi.ip3{grid-area:pm}
+.cxh{display:flex;align-items:center;gap:8px;min-height:28px}
+.cxh>b{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:650;min-width:0}
+.cxh>b i{flex:none;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#fcd535;color:#202630;font:700 11px var(--mono,ui-monospace,monospace);font-style:normal}
+.cxh .bdg{flex:none;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:700}
+.cxh .bdg.ex{background:rgba(240,185,11,.14);color:#f0b90b}
+.cxh .bdg.live{background:rgba(14,203,129,.16);color:#0ecb81}
+.cxh .bdg:empty{display:none}
+.cxh .cpb{margin-left:auto}
+.cpb{appearance:none;flex:none;height:30px;padding:0 12px;border-radius:8px;border:1px solid rgba(47,220,188,.4);background:rgba(47,220,188,.1);color:#2fdcbc;font-family:inherit;font-size:12.5px;font-weight:650;cursor:pointer;white-space:nowrap;transition:background .15s,color .15s}
+.cpb:hover{background:rgba(47,220,188,.2)}
+.cpb:focus-visible{outline:2px solid #2fdcbc;outline-offset:2px}
+.cpb.done{background:#2fdcbc;color:#032720}
+.cpb:disabled{opacity:.4;cursor:default}
+.cpb.sm{height:28px;padding:0 10px;font-size:12px}
+.pem{margin:7px 0 6px;padding:8px 12px;border-radius:8px;background:#0b0e11;border:1px solid #2b3139;color:#d8dce2;font:500 11px/1.6 var(--mono,ui-monospace,SFMono-Regular,Menlo,monospace);white-space:pre-wrap;word-break:break-all;-webkit-user-select:all;user-select:all}
+.cxi .fp{margin:0 0 6px;font-size:12px;color:#848e9c}
+.cxi .fp code{font:600 12px var(--mono,ui-monospace,monospace);color:#b7bdc6}
+.cxi .nt{margin:0;font-size:12px;line-height:1.6;color:#848e9c}
+.cxi .nt.top{margin:6px 0 8px;color:#b7bdc6}
+.ips{display:grid;gap:7px;margin-bottom:8px}
+.ipr{display:flex;align-items:center;gap:10px;padding:6px 6px 6px 10px;border-radius:8px;background:#0b0e11;border:1px solid #2b3139}
+.ipr .k{flex:none;font-size:11px;font-weight:650;color:#848e9c}
+.ipr code{flex:1;min-width:0;font:600 14px var(--mono,ui-monospace,monospace);color:#eaecef;-webkit-user-select:all;user-select:all}
+.pms{margin:4px 0 0;padding:0;list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:0 22px}
+.pms li{display:flex;align-items:flex-start;gap:8px;padding:2px 0;font-size:12.5px;line-height:1.45;color:#d8dce2}
+.pms li i{flex:none;display:grid;place-items:center;width:16px;height:16px;margin-top:1px;border-radius:4px;font-size:10px;font-weight:700;line-height:1;font-style:normal;background:rgba(14,203,129,.16);color:#0ecb81}
+.pms li span{flex:1;min-width:0}
+.pms li em{flex:none;font-style:normal;font-size:11px;color:#848e9c;white-space:nowrap}
+.pms li.no{color:#f6465d}
+.pms li.no i{background:rgba(246,70,93,.16);color:#f6465d}
+.pms li.no em{color:#f6465d;font-weight:650}
+
+/* the binding box (lives in the window, or in the step-3 panel during the tutorial) */
+.bbox .fld>span{display:block;margin-bottom:6px;color:#b7bdc6;font-size:13px;font-weight:600}
+.bbox .inp input{background:#2b3139;border:1px solid #2b3139;color:#eaecef;border-radius:8px}
+.bbox .inp input::placeholder{color:#5e6673}
+.bbox .inp input:focus{border-color:#fcd535;box-shadow:none;outline:0}
+.bbox .btn.pri{background:#fcd535;color:#202630;border:0;border-radius:8px;box-shadow:none}
+.bbox .btn.pri:hover{background:#f0b90b}
+.bbox .btn.pri:disabled{opacity:.6}
+.bbox .msg{color:#f6465d;font-size:12px;margin-top:4px}
+.bbox .kfoot{display:flex;justify-content:space-between;margin-top:6px;font-size:11.5px;color:#848e9c}
+.bbox .kfoot .n.ok{color:#0ecb81}
+.bbox .safe{margin:8px 0 0;font-size:11.5px;line-height:1.55;color:#848e9c}
+.mslot{margin-top:8px}
+/* in the window: the character count sits inside the field and the demo note beside the heading, so 绑定 stays on screen */
+.mslot .bbox{position:relative}
+.mslot .fld{position:relative}
+.mslot .kfoot{position:absolute;right:12px;top:40px;margin:0;pointer-events:none}
+.mslot #key{padding-right:66px}
+.mslot .inp input{height:46px}
+.mslot .safe{position:absolute;top:15px;right:16px;max-width:52%;margin:0;text-align:right;line-height:1.45}
+.mslot .bbox{padding:13px 14px 12px;border-radius:12px;background:linear-gradient(180deg,rgba(252,213,53,.05),rgba(252,213,53,0) 70%),#181a20;border:1px solid rgba(252,213,53,.3)}
+.mslot .bx-h{margin-bottom:4px}
+.mslot form{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr) auto;gap:0 12px;align-items:start}
+.mslot .fld{margin:0}
+.mslot .fld>span:first-child{display:block;height:20px;line-height:20px}
+.mslot #go{height:46px;margin-top:25px;padding:0 26px;font-size:15px;font-weight:700}
+.mslot .res{margin:0 0 10px}
+.pslot .bx-h{display:none}
+.pslot .fld{margin-bottom:14px}
+.pslot #go{width:100%}
+.mft{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;flex-wrap:wrap}
+.tutgo{appearance:none;height:40px;padding:0 16px;border-radius:8px;border:1px solid #474d57;background:#2b3139;color:#eaecef;font-family:inherit;font-size:14px;font-weight:650;cursor:pointer}
+.tutgo:hover{border-color:#fcd535;color:#fcd535}
+.tutgo:focus-visible{outline:2px solid #fcd535;outline-offset:2px}
+.mft .lk{color:#b7bdc6;font-size:13px;font-weight:600;text-decoration:none}
+.mft .lk::after{content:" ↗";font-size:10px}
+.mft .lk:hover{color:#fcd535}
+
+/* ---- the binding replica: the public key pasted into Binance's box ---- */
+.bn-in.bn-ta.filled{height:auto;min-height:76px;color:#d8dce2;font:500 12px/1.55 var(--mono,ui-monospace,monospace);white-space:pre-wrap;word-break:break-all}
+.ba-in.ba-ta{height:auto;min-height:92px;align-items:flex-start;padding:10px 12px;color:#848e9c;font-size:13px;line-height:1.5}
+.ba-in.ba-ta.filled{color:#d8dce2;font:500 11.5px/1.5 var(--mono,ui-monospace,monospace);white-space:pre-wrap;word-break:break-all}
+.ba-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.ba-chips span{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:6px;background:#2b3139;font:600 13px var(--mono,ui-monospace,monospace)}
+.ba-chips span b{color:#848e9c;font-weight:400}
+.ba-in.ba-ipin b{color:#fcd535;font-weight:650}
+
+/* ---- hint: several copy buttons (the public key, each IP) ---- */
+.hint .cps{display:flex;flex-wrap:wrap;gap:6px;flex:none;max-width:150px;justify-content:flex-end}
+.hint .cp.ip{font-family:var(--mono,ui-monospace,monospace)}
+.hint .cp.done{background:#eaecef}
+.hint em.ex{margin-left:6px;padding:0 5px;border-radius:4px;background:rgba(240,185,11,.16);color:#f0b90b;font:700 10.5px var(--sans);font-style:normal}
+
+/* ---- tutorial bar: autoplay off by default ---- */
+.tc{position:fixed;left:0;right:0;bottom:0;z-index:45;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px;min-height:64px;
+  padding:10px max(18px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left));
+  background:#181a20;border-top:1px solid #2b3139;color:#eaecef;font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif}
+.tc[hidden]{display:none}
+.tcb{appearance:none;display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:8px;border:0;background:#2b3139;color:#eaecef;font-family:inherit;font-size:14px;font-weight:650;cursor:pointer;white-space:nowrap}
+.tcb:hover:not(:disabled){background:#363c45}
+.tcb.pri{background:#fcd535;color:#202630}
+.tcb.pri:hover:not(:disabled){background:#f0b90b}
+.tcb:disabled{opacity:.38;cursor:default}
+.tcb:focus-visible,.dots button:focus-visible{outline:2px solid #fcd535;outline-offset:2px}
+.tcb.x{justify-self:start;background:transparent;color:#b7bdc6;padding:0 10px}
+.tcb.x:hover{color:#eaecef;background:#2b3139}
+.tcm{display:flex;align-items:center;gap:14px}
+.dots{display:flex;align-items:center;gap:4px;margin:0;padding:0;list-style:none}
+.dots button{appearance:none;display:block;width:22px;height:28px;padding:0;border:0;background:none;cursor:pointer;position:relative}
+.dots button::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:4px;background:#474d57;transition:width .2s,margin .2s,background .2s}
+.dots button.done::before{background:#848e9c}
+.dots button.on::before{width:20px;margin-left:-10px;background:#fcd535}
+.dots button:hover::before{background:#b7bdc6}
+.dots button.on:hover::before{background:#fcd535}
+.ap{justify-self:end;display:inline-flex;align-items:center;gap:9px;font-size:13px;font-weight:600;color:#b7bdc6;cursor:pointer;-webkit-user-select:none;user-select:none}
+.ap input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.ap i{position:relative;width:36px;height:20px;border-radius:10px;background:#474d57;transition:background .2s}
+.ap i::after{content:"";position:absolute;left:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#eaecef;transition:transform .2s}
+.ap input:checked+i{background:#2fdcbc}
+.ap input:checked+i::after{transform:translateX(16px)}
+.ap input:focus-visible+i{outline:2px solid #fcd535;outline-offset:2px}
+.ap input:disabled+i{opacity:.4}
+.ap:has(input:disabled){cursor:default;opacity:.7}
+body.tut .toast{bottom:84px}
+
+/* ---- phones ---- */
+@media (max-width:760px){
+  .cxwrap{padding:10px 10px calc(10px + env(safe-area-inset-bottom));align-items:flex-start}
+  .cxm{padding:16px 14px 14px;border-radius:14px}
+  .cxm h2{font-size:17px}
+  .mhd{display:block;margin-bottom:12px}
+  .mtl .sub{font-size:12.5px}
+  .mhd .mft{flex-direction:row;align-items:center;margin-top:12px}
+  .cxg{grid-template-columns:1fr;grid-template-areas:"pub" "ip" "pm";gap:10px}
+  .pms{grid-template-columns:1fr}
+  .pem{font-size:10.5px;padding:8px 10px}
+  .mslot form{display:block}
+  .mslot .safe{position:static;max-width:none;text-align:left;margin-top:8px}
+  .mslot .fld{margin-bottom:10px}
+  .mslot #go{width:100%;margin-top:2px}
+  .bbox .inp input{height:44px}
+  .tutgo{flex:1 1 auto}
+  .mft{justify-content:center}
+  .tc{grid-template-columns:1fr auto;grid-template-areas:"x ap" "m m";gap:8px 10px;padding-top:8px}
+  .tcb.x{grid-area:x;height:34px;font-size:13px}
+  .ap{grid-area:ap}
+  .tcm{grid-area:m;justify-content:space-between;gap:8px;min-width:0}
+  .tcm .tcb{height:42px;padding:0 13px}
+  .dots{flex:1 1 auto;justify-content:center;flex-wrap:nowrap;min-width:0;gap:0}
+  .dots button{width:13px;height:32px}
+  .dots button::before{width:6px;height:6px;margin:-3px 0 0 -3px}
+  .dots button.on{width:22px}
+  .dots button.on::before{width:16px;margin-left:-8px}
+  body.tut .toast{bottom:120px}
+}
+/* short screens: the window scrolls inside itself instead of overflowing */
+@media (max-height:620px) and (min-width:761px){
+  .cxwrap{padding:12px 24px;align-items:flex-start}
+  .cxm{padding:16px 20px 14px}
+  .tc{min-height:54px;padding-top:6px;padding-bottom:calc(6px + env(safe-area-inset-bottom))}
+}
+@media (prefers-reduced-motion:reduce){
+  .cxdim,.cxwrap,.cxm,.dots button::before,.ap i,.ap i::after,.cpb{transition:none!important}
+  .cxm{transform:none}
+}

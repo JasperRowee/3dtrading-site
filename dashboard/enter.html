@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>3dtrading</title>
+<style>html,body{margin:0;height:100%;background:#fff}@media (prefers-color-scheme:dark){html,body{background:#0b0d0e}}</style>
+<!-- r50 (Nova) · hand-off from 「跳过，进入后台」 on the binding preview (8994).
+     #who=<base64url JSON {e,n}> is the person who signed in on the log-in preview (8992); #lang= / #theme= carry the
+     language and day/night they were using. This page starts the same local demo session here (no password, nothing
+     sent), binds NO Binance account, and opens the dashboard, which therefore shows "not connected". -->
+<script>window.TD_ROUTES={site:'/3dtrading-site/site/',auth:'/3dtrading-site/login/',login:'/3dtrading-site/login/?mode=login',signup:'/3dtrading-site/login/?mode=register',entry:'/3dtrading-site/login/',connect:'/3dtrading-site/bind/?from=app',bind:'/3dtrading-site/bind/?from=app'};</script>
+<script src="account/td-account.js?v=r45b" data-app="../app/index.html#/dashboard"></script>
+</head>
+<body>
+<script>
+(function () {
+  'use strict';
+  var h = new URLSearchParams(location.hash.slice(1)), who = null;
+  try {
+    var b = (h.get('who') || '').replace(/-/g, '+').replace(/_/g, '/');
+    if (b) { while (b.length % 4) b += '='; who = JSON.parse(decodeURIComponent(escape(atob(b)))); }
+  } catch (e) { who = null; }
+  var A = window.TDAccount;
+  var lang = h.get('lang'); if (lang === 'zh' || lang === 'en') { try { A.setLang(lang); } catch (e) { try { localStorage.setItem('3dt.lang', lang); } catch (x) {} } }
+  var th = h.get('theme'); if (th === 'day' || th === 'night') { try { localStorage.setItem('3dt.theme.app', th); } catch (e) {} }
+  var email = who && typeof who.e === 'string' && /^[^\s@]+@[^\s@]+$/.test(who.e) ? who.e.trim().toLowerCase() : '';
+  var name = who && typeof who.n === 'string' ? who.n.slice(0, 40) : '';
+  var cur = A.session();
+  if (email) {
+    if (!cur || cur.email !== email) {
+      /* a different person was signed in on this browser: end that local session first, then sign in or create this one */
+      if (cur) { try { A.logout({ redirect: false }); } catch (e) {} }
+      var r = A.login({ email: email }); if (!r.ok) A.register({ email: email, name: name });
+    }
+  } else if (!cur) {
+    /* opened without a log-in behind it (e.g. the binding preview on its own): a local demo user */
+    var d = { email: 'demo@3dtrading.local', name: lang === 'en' ? 'Demo user' : '演示用户' };
+    var r2 = A.login(d); if (!r2.ok) A.register(d);
+  }
+  location.replace('app/index.html#/dashboard');
+})();
+</script>
+<noscript>Please enable JavaScript. <a href="app/index.html#/dashboard">Dashboard</a></noscript>
+</body>
+</html>

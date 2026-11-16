@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>3dtrading · 绑定币安</title>
+<script>try{var m=/[?&]theme=(day|night)/.exec(location.search);document.documentElement.dataset.theme=(m?m[1]:localStorage.getItem('3dt49bn.theme'))==='day'?'day':'night'}catch(e){}</script>
+<link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
+<link rel="stylesheet" href="bind.css?v=r50">
+</head>
+<body>
+<!-- r49k · as r48: our Binance replica fills the screen (it is the tutorial, at its first step), dimmed, and ONE simple binding
+     window floats over it. 查看教程 closes the window and the replica behind becomes the step-by-step tutorial; its
+     「回到绑定」 buttons bring the window back. No dashboard, no login, no other routes. -->
+<iframe id="guideFrame" class="gf" data-i18n-attr="title:b.gFrame" title="图解教程：在币安创建自行生成的 API（操作演示）"></iframe>
+<div class="dim" id="dim" aria-hidden="true"></div>
+
+<section class="win" id="win" tabindex="-1" role="dialog" aria-modal="true" aria-labelledby="h1">
+  <header class="wh">
+    <h1 id="h1"><span data-i18n="b.h1">绑定币安</span><em class="dm" data-i18n="b.demo">演示</em></h1>
+    <span class="sp"></span>
+    <a class="tut" href="#guide" id="tut"><span data-i18n="b.tut">查看教程</span> <span aria-hidden="true">›</span></a>
+    <button type="button" class="tg" id="lang" data-i18n-attr="aria-label:b.langL">EN</button>
+    <button type="button" class="tg ic" id="theme" data-i18n-attr="aria-label:b.themeL"></button>
+  </header>
+  <p class="lead" data-i18n="b.lead">在币安子账户「API 管理 → 创建 API」选「自行生成」，填好下面三项，再粘贴 API Key。</p>
+
+  <dl class="kv">
+    <div class="r"><dt data-i18n="b.pub">公钥</dt><dd><code id="pem">…</code></dd>
+      <dd class="a"><button type="button" class="cp" data-copy="pub" data-i18n-attr="aria-label:b.cpPub"><span data-i18n="b.copy">复制</span></button></dd></div>
+    <div class="r"><dt>IP</dt><dd><code id="ips">…</code></dd>
+      <dd class="a"><button type="button" class="cp" data-copy="ip" data-i18n-attr="aria-label:b.cpIp"><span data-i18n="b.copy">复制</span></button></dd></div>
+    <div class="r pm"><dt data-i18n="b.perm">权限</dt><dd id="pms"></dd></div>
+  </dl>
+
+  <form id="f" novalidate autocomplete="off">
+    <div class="kin" id="kin">
+      <input id="key" name="bn49-k" class="mono" maxlength="80" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="mKey" data-i18n-attr="placeholder:b.keyPh;aria-label:b.key" placeholder="API Key">
+      <span class="n" id="nKey" aria-hidden="true">0/64</span>
+    </div>
+    <input id="nm" name="bn49-n" class="nm" maxlength="24" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="mKey" data-i18n-attr="placeholder:b.nmPh;aria-label:b.nm" placeholder="账户名称，如 3dtUSDT01">
+    <button type="submit" class="go" id="go" data-i18n="b.go">绑定</button>
+  </form>
+  <p class="msg" id="mKey" role="alert"></p>
+  <div class="res" id="res" role="status" aria-live="polite" hidden></div>
+
+  <p class="safe" data-i18n="b.safe">私钥只在我们的签名服务器，从不经过网页；提现永远关闭。</p>
+  <!-- r50: skip binding and go into the dashboard as "not connected"; it can be bound later from there -->
+  <div class="skip"><span data-i18n="b.skipN">暂不绑定，之后可在后台随时绑定</span><a id="skip" href="/3dtrading-site/dashboard/enter.html"><span data-i18n="b.skip">跳过，进入后台</span> <span aria-hidden="true">→</span></a></div>
+</section>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="shim.js?v=r50"></script>
+<script src="bind.js?v=r50"></script>
+</body>
+</html>

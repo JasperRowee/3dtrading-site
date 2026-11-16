@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="robots" content="noindex">
+<title>3dtrading · 添加币安账户</title>
+<script>/* r46: the binding page is one Binance-style screen with no day / night: always the dark palette. Its own theme key is never written, so another tab's day/night switch cannot reach it. */
+document.documentElement.dataset.theme='night';document.documentElement.setAttribute('data-theme-key','3dt.theme.bnbind')</script>
+<link rel="stylesheet" href="page.css?v=r41">
+<link rel="stylesheet" href="bind-bn.css?v=r47">
+<link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
+<link rel="apple-touch-icon" sizes="180x180" href="../icons/dodo-180.png?v=20261112">
+<link rel="manifest" href="../manifest.webmanifest?v=20261112">
+<meta name="application-name" content="3dtrading">
+<meta name="apple-mobile-web-app-title" content="3dtrading">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#181a20">
+<link rel="stylesheet" href="r41.css?v=r41">
+<link rel="stylesheet" href="connect-r45.css?v=r47">
+<link rel="stylesheet" href="connect-r48.css?v=r48d">
+</head>
+<body class="intro">
+<!-- r48 · Jasper: the 自行生成 (Ed25519) route replaces 系统生成 here. The page opens on our Binance home replica, then dims it; a
+     window in the middle lists what to copy (3dtrading's public key, the two trusted IPs, the permissions), the API Key input
+     with 绑定 at the bottom, and 查看完整教程. The tutorial is the r45 three-big-step guide on the 自行生成 route, autoplay OFF by
+     default, with 上一步 / 下一步 / sub-step dots / an optional autoplay switch. Until a real backend supplies them, the key and
+     the IPs are labelled examples; the private key never reaches the page, and no Secret exists on this route. -->
+<!-- r45/r46 · 添加币安账户: three big steps (开通子账户 → 创建API → 绑定API). A demo cursor walks to the control to press and moves
+     on by itself, looping inside the current big step only; pressing that control yourself moves on at once. The Binance screens
+     are our own coded illustration (desktop = Binance website, phone = Binance App + the official web route), never the live site.
+     Only System-generated (HMAC) keys; nothing is created, stored or sent to Binance here, and the account stays 「未连接」. -->
+<!-- r46: ONE top bar in Binance's own style. The 3dtrading logo (back to the dashboard) and the three big steps take the
+     place of Binance's nav items; on the right only Binance's icons from 「我的」 (the user icon) onwards. The globe is our real
+     language switch; the other icons are part of the illustration. No day / night switch here. -->
+<header class="bnh" id="hb">
+  <a class="logo" id="logo" href="#" data-i18n-attr="aria-label:cx.toApp"><img src="assets/3dtrading-logo-white.svg" alt="3dtrading" width="91" height="22"></a>
+  <nav class="pg" id="pg" data-i18n-attr="aria-label:cx.prog" aria-label="绑定进度">
+    <ol id="big"></ol>
+    <button type="button" class="lk" id="skip" data-i18n="cx.skip">跳过</button>
+  </nav>
+  <span class="st" id="st"></span>
+  <a class="lk out" id="out" href="#" target="_blank" rel="noopener noreferrer" data-i18n="cx.open">在币安打开</a>
+  <span class="hic" id="hic"></span>
+  <div class="hum" id="hum" hidden></div>
+</header>
+<main class="stage" id="stage" data-i18n-attr="aria-label:cx.stageL" aria-label="币安操作演示（不是真实币安页面）">
+  <div class="view" id="view"><div class="bn" id="bn"></div><div class="ba" id="ba"></div></div>
+  <span class="tag" data-i18n="cx.tag">操作演示 · 不是真实币安页面</span>
+  <section class="panel bnp" id="panel" hidden aria-labelledby="pT">
+    <h2 id="pT" data-i18n="cx.pT">把 API Key 填到 3dtrading</h2>
+    <p class="sub" data-i18n="cx.pSub">在币安点「复制」后粘贴到这里。只检查格式，不发送、不保存。</p>
+    <div class="pslot" id="pslot"></div>
+  </section>
+  <!-- r48 · the binding window over the dimmed Binance home -->
+  <div class="cxdim" id="dim" aria-hidden="true"></div>
+  <div class="cxwrap" id="cxw">
+  <section class="cxm" id="cxm" role="dialog" aria-labelledby="mT" tabindex="-1">
+    <div class="mhd"><div class="mtl">
+    <p class="eb"><span data-i18n="cx.mEb">币安 · 自行生成 API</span><span class="dm" id="mDemo" data-i18n="cx.mDemo">演示 · 示例数据</span></p>
+    <h2 id="mT" data-i18n="cx.mT">用「自行生成」API 绑定币安</h2>
+    <p class="sub" data-i18n="cx.mSub">在币安子账户「API管理 → + 创建API」选「自行生成」，照下面三项填写。币安只会给你一个 API Key，没有 Secret Key。</p></div>
+    <div class="mft"><button type="button" class="tutgo" id="tutGo"><span data-i18n="cx.tutGo">查看完整教程</span> ›</button>
+      <a class="lk" id="mOut" href="#" target="_blank" rel="noopener noreferrer" data-i18n="cx.openApi">在币安打开 API 管理</a></div></div>
+    <div class="cxg">
+      <div class="cxi ip1"><div class="cxh"><b><i>1</i><span data-i18n="cx.m1">粘贴公钥（Ed25519）</span></b><span class="bdg" id="pubBdg"></span>
+        <button type="button" class="cpb" data-copy="pub" data-i18n="cx.cpPub">复制公钥</button></div>
+        <pre class="pem" id="pem" aria-describedby="pubNote">…</pre>
+        <p class="fp"><span data-i18n="cx.fp">指纹</span> <code id="fpv">…</code></p>
+        <p class="nt" id="pubNote" data-i18n="cx.pubNote">私钥只在 3dtrading 服务器里，页面不显示；不要把任何私钥交给币安或任何人。</p></div>
+      <div class="cxi ip2"><div class="cxh"><b><i>2</i><span data-i18n="cx.m2">受信任 IP</span></b><span class="bdg" id="ipBdg"></span></div>
+        <p class="nt top" data-i18n="cx.ipHow">选「只访问受信任的 IP」，逐个填入：</p>
+        <div class="ips" id="ips"></div>
+        <p class="nt" id="ipNote"></p></div>
+      <div class="cxi ip3"><div class="cxh"><b><i>3</i><span data-i18n="cx.m3">API 权限</span></b></div>
+        <ul class="pms" id="pms"></ul></div>
+    </div>
+    <div class="mslot" id="mslot">
+      <div class="bbox" id="bbox">
+        <div class="cxh bx-h"><b><i>4</i><span data-i18n="cx.m4">把币安给你的 API Key 填回来</span></b></div>
+        <div class="res" id="res" hidden role="status" aria-live="polite"></div>
+        <form id="f" novalidate autocomplete="off">
+          <label class="fld" id="fKey" data-step="1"><span data-i18n="cx.key">API Key</span>
+            <div class="inp"><input id="key" class="mono" name="cx-k" maxlength="80" spellcheck="false" autocapitalize="off" autocomplete="off" data-i18n-attr="placeholder:cx.keyPh" placeholder="粘贴 64 位 API Key"></div>
+            <div class="kfoot"><span></span><span class="n" id="nKey">0 / 64</span></div><div class="msg" id="mKey"></div></label>
+          <label class="fld" id="fName" data-step="2"><span data-i18n="cx.name">账户名称</span>
+            <div class="inp"><input id="name" name="cx-name" maxlength="40" data-i18n-attr="placeholder:cx.namePh" placeholder="例如 3dtUSDT01" autocomplete="off"></div><div class="msg" id="mName"></div></label>
+          <button class="btn pri" type="submit" id="go" data-step="3" data-i18n="cx.go">绑定</button>
+        </form>
+        <p class="safe" data-i18n="cx.safe">演示版：只检查格式，不发送、不保存，账户保持「未连接」。</p>
+      </div>
+    </div>
+  </section>
+  </div>
+  <!-- r48 · tutorial controls: autoplay off by default -->
+  <nav class="tc" id="tc" hidden data-i18n-attr="aria-label:cx.tcL" aria-label="教程控制">
+    <button type="button" class="tcb x" id="tcClose"><span aria-hidden="true">✕</span> <span data-i18n="cx.close">返回绑定窗口</span></button>
+    <div class="tcm">
+      <button type="button" class="tcb" id="tcPrev"><span aria-hidden="true">‹</span> <span data-i18n="cx.prev">上一步</span></button>
+      <ol class="dots" id="dots"></ol>
+      <button type="button" class="tcb pri" id="tcNext"><span data-i18n="cx.next">下一步</span> <span aria-hidden="true">›</span></button>
+    </div>
+    <label class="ap"><input type="checkbox" id="auto" role="switch"><i aria-hidden="true"></i><span data-i18n="cx.auto">自动播放</span></label>
+  </nav>
+</main>
+<div class="cur" id="cur" aria-hidden="true"><svg viewBox="0 0 26 26"><path d="M3 2l17 10.5-7.4 1.6 4.4 8.2-3.3 1.7-4.4-8.2L3.9 21z"/></svg><i></i><em data-i18n="cx.demo">演示</em></div>
+<div class="hint" id="hint" role="status" aria-live="polite" hidden></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="td-account.js?v=r45b"></script>
+<script src="api-adapter.js?v=r48"></script>
+<script src="bind-steps.js?v=r44"></script>
+<script src="bind-bn.js?v=r48"></script>
+<script src="bn-app.js?v=r48b"></script>
+<script src="connect-r45.js?v=r48d"></script>
+</body>
+</html>

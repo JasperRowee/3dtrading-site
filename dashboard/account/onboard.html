@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>3dtrading · 风险披露与协议确认</title>
+<script>try{var L=localStorage,o=L.getItem('3dt.theme');if(o!==null){if(L.getItem('3dt.theme.site')===null)L.setItem('3dt.theme.site',o==='day'?'day':'night');L.removeItem('3dt.theme')}document.documentElement.dataset.theme=L.getItem('3dt.theme.app')==='night'?'night':'day'}catch(e){document.documentElement.dataset.theme='day'}</script>
+<link rel="stylesheet" href="page.css?v=r41">
+<style>
+body::before{display:none}
+.bar{background:var(--bg);border-bottom:0;box-shadow:none}
+.ob{max-width:560px;margin:0 auto;padding:48px 32px 64px}
+.ob h1{margin:0 0 10px;font-size:32px;line-height:1.15;letter-spacing:-.04em;font-weight:650}
+.ob .lede{margin:0 0 22px;color:var(--ink2);font-size:14.5px;line-height:1.6}
+.steps{display:flex;gap:8px;margin:0 0 22px;padding:0;list-style:none;font-size:12.5px;color:var(--ink3)}
+.steps li{display:flex;align-items:center;gap:6px}.steps li+li::before{content:'→';margin-right:2px}
+.steps li.on{color:var(--ink);font-weight:650}
+.pend{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:7px;font-size:12.5px;font-weight:750;background:rgba(240,177,0,.16);color:#f5c84b;margin:0 0 12px}
+.doc{padding:16px 18px;border-radius:14px;box-shadow:inset 0 0 0 1px var(--line);background:rgba(0,0,0,.18);margin:0 0 16px}
+.doc h2{margin:0 0 10px;font-size:16px}
+.doc ol{margin:0;padding-left:20px;display:grid;gap:8px;font-size:13.5px;line-height:1.6;color:var(--ink2)}
+.opts{display:grid;gap:8px;margin:0 0 18px}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;font-size:13.5px;line-height:1.5}
+.opt input{margin-top:3px;accent-color:var(--brand)}.opt small{display:block;color:var(--ink3);font-size:12px}
+.opt:has(input:checked){box-shadow:inset 0 0 0 1.5px var(--brand)}
+.sec{font-size:11.5px;font-weight:700;color:var(--ink3);letter-spacing:.05em;text-transform:uppercase;margin:6px 0 9px}
+.err{display:none;margin:-6px 0 12px;font-size:12.5px;color:var(--bad)}.err.on{display:block}
+.muted{font-size:12.5px;color:var(--ink3);margin:0 0 10px}
+.safe{margin:14px 0 0;font-size:12px;color:var(--ink3);line-height:1.6}
+[hidden]{display:none!important}
+@media(max-width:600px){.ob{padding:32px 20px 48px}.ob h1{font-size:27px}}
+</style>
+<link rel="stylesheet" href="day.css?v=r41">
+<style>html[data-theme="day"] .doc{background:rgba(255,255,255,.6)}</style>
+<link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
+<meta name="theme-color" content="#06090b">
+<script>(function(){function tc(){var m=document.querySelector('meta[name=theme-color]');if(m)m.content=document.documentElement.dataset.theme==='day'?'#ffffff':'#06090b'}tc();addEventListener('td:theme',tc)})()</script>
+<link rel="stylesheet" href="r41.css?v=r41">
+</head>
+<body>
+<header class="bar">
+  <a class="logo" href="#" data-href="site" data-i18n-attr="aria-label:acct.toSite"><img class="lg-n" src="assets/3dtrading-logo-white.svg" alt="3dtrading" width="91" height="22"><img class="lg-d" src="assets/3dtrading-logo.svg" alt="3dtrading" width="91" height="22"></a>
+  <span class="sp"></span>
+  <div id="lang"></div>
+  <button type="button" class="av-btn ini" id="av"></button>
+</header>
+<main class="ob">
+
+  <section id="vA" aria-labelledby="hA">
+    <h1 id="hA" data-i18n="ob.hA">风险披露与协议确认</h1>
+    <p class="lede" data-i18n="ob.ledeA">开始之前，请读完下面几条。</p>
+    <span class="pend" id="pendA" data-i18n="ob.pend">待法务定稿</span>
+    <div class="doc"><h2 id="agT"></h2><p class="muted" id="agN"></p><ol id="agL"></ol></div>
+    <label class="chk"><input type="checkbox" id="agree"><span data-i18n="ob.agree">我已阅读并理解上面的风险披露与协议（演示，待法务定稿）</span></label>
+    <p class="err" id="agErr" data-i18n="ob.agErr">请先勾选确认。</p>
+    <div style="margin-top:16px"><button type="button" class="btn pri block" id="goA" data-i18n="ob.goA">同意并进入后台</button></div>
+  </section>
+
+  <p class="safe" data-i18n="ob.safe">演示：协议确认只记在本机浏览器，不发送到服务器，也不保存任何密码。</p>
+</main>
+<script src="td-account.js?v=r45b"></script>
+<script src="api-adapter.js?v=r47"></script>
+<script>
+(function () {
+  'use strict';
+  var A = TDAccount, API = TDApi, $ = function (s) { return document.querySelector(s); };
+  if (!A.requireUser()) return;
+  A.i18n({
+    zh: { 'ob.title': '3dtrading · 风险披露与协议确认', 'ob.sA': '风险披露与协议', 'ob.sB': '选方案', 'ob.sC': '连接币安', 'ob.hA': '风险披露与协议确认', 'ob.ledeA': '开始之前，请读完下面几条。',
+      'ob.pend': '待法务定稿', 'ob.agree': '我已阅读并理解上面的风险披露与协议（演示，待法务定稿）', 'ob.agErr': '请先勾选确认。', 'ob.goA': '同意并进入后台',
+      'ob.hB': '选方案', 'ob.ledeB': '选资金规模和风格。之后可以在后台修改。', 'ob.demoVals': '演示数值', 'ob.size': '资金规模', 'ob.risk': '风格', 'ob.plErr': '请选资金规模和风格。', 'ob.goB': '下一步：连接币安',
+      'ob.safe': '演示：协议确认只记在本机浏览器，不发送到服务器，也不保存任何密码。' },
+    en: { 'ob.title': '3dtrading · Risk disclosure & agreement', 'ob.sA': 'Risk & agreement', 'ob.sB': 'Choose a plan', 'ob.sC': 'Connect Binance', 'ob.hA': 'Risk disclosure & agreement', 'ob.ledeA': 'Before you start, please read the points below.',
+      'ob.pend': 'Pending legal review', 'ob.agree': 'I have read and understood the risk disclosure and agreement above (demo, pending legal review)', 'ob.agErr': 'Please tick the box first.', 'ob.goA': 'Agree and open the dashboard',
+      'ob.hB': 'Choose a plan', 'ob.ledeB': 'Choose a capital range and a style. You can change it later in the dashboard.', 'ob.demoVals': 'Demo values', 'ob.size': 'Capital range', 'ob.risk': 'Style', 'ob.plErr': 'Choose a capital range and a style.', 'ob.goB': 'Next: connect Binance',
+      'ob.safe': 'Demo: the agreement is kept in this browser only. Nothing is sent to a server and no password is stored.' }
+  });
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  /* r41: agreement only. Asset size and style are no longer collected; the 20万 USDT / VIP2 eligibility is still checked before an account connects. */
+  var qs = new URLSearchParams(location.search);
+  function dest() { var n = qs.get('next'); return n && /^[\w./?#=&%-]+$/.test(n) && !/^\/\//.test(n) && !/:/.test(n) ? n : A.routes.app; }
+  var V = { ag: null };
+  function render() {
+    document.title = A.t('ob.title'); A.apply(document);
+    var s = A.session(); if (s) $('#av').textContent = (s.name || s.email).slice(0, 1).toUpperCase();
+    if (V.ag) { $('#agT').textContent = V.ag.title; $('#agN').textContent = V.ag.note; $('#agL').innerHTML = V.ag.sections.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join(''); }
+  }
+  function load() { return API.getAgreement().then(function (r) { V.ag = r; render(); }); }
+  $('#goA').addEventListener('click', function () {
+    if (!$('#agree').checked) { $('#agErr').classList.add('on'); $('#agree').focus(); return; }
+    $('#agErr').classList.remove('on');
+    API.acceptAgreement({ version: V.ag && V.ag.version }).then(function () { location.href = dest(); });
+  });
+  $('[data-href="site"]').href = A.routes.site;
+  A.mountLangToggle($('#lang'), { theme: function () { return document.documentElement.dataset.theme === 'day' ? 'light' : 'dark'; } });
+  A.mountMenu($('#av'), { context: 'account', theme: function () { return document.documentElement.dataset.theme === 'day' ? 'light' : 'dark'; }, logoutTo: A.routes.site });
+  window.addEventListener(A.events.lang, load);
+  load();
+  render();
+})();
+</script>
+</body>
+</html>

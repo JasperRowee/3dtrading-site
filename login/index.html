@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="night">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05070a">
+<title>3dtrading · 登录 / 注册</title>
+<!-- r50 背景：自有城市＋大球（构图照参考图）。r49 · 独立登录预览（端口 8992）。只含登录 / 注册本身：不加载后台代码，不导向后台。
+     存储命名空间 3dt.r49login.*（主题、语言、球面、本机演示账号与会话）。外部业务未接通：登录为本机演示。 -->
+<script>(function(){var d=document.documentElement,t='night',l='zh';try{t=localStorage.getItem('3dt.r49login.theme')==='day'?'day':'night';l=localStorage.getItem('3dt.r49login.lang')==='en'?'en':'zh'}catch(e){}d.dataset.theme=t;d.lang=l==='en'?'en':'zh-CN';d.dataset.lang=l})()</script>
+<link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/dodo-180.png">
+<link rel="stylesheet" href="login.css?v=r51b">
+</head>
+<body>
+<div class="scene" id="scene" aria-hidden="true"><canvas id="city"></canvas></div>
+
+<header class="top">
+  <a class="logo" href="/3dtrading-site/site/" data-i18n-attr="aria-label:top.home"><img class="lg-night" src="assets/3dtrading-logo-white.svg" alt="3dtrading"><img class="lg-day" src="assets/3dtrading-logo.svg" alt="3dtrading"></a>
+  <span class="sp"></span>
+  <span class="pill" data-i18n="top.demo">本机演示 · 未接后端</span>
+  <button type="button" class="tbtn" id="thm"><svg class="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg><svg class="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></svg></button>
+  <div class="seg" id="lang" role="group" aria-label="Language"><button type="button" data-lang="zh">中文</button><button type="button" data-lang="en">EN</button></div>
+</header>
+
+<main class="wrap">
+  <section class="hero" aria-labelledby="hh">
+    <h1 id="hh" data-i18n-html="auth.h1">你的账户，<br><em>我们的策略</em></h1>
+    <p class="lede" data-i18n="auth.lede">连接你本人的币安子账户，策略在你自己的账户里运行。</p>
+    <ul class="pts">
+      <li><span class="k"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7.5a4 4 0 0 1 8 0V10"/></svg></span><span data-i18n="auth.p1t">资金留在你本人的子账户</span></li>
+      <li><span class="k"><svg viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m11 12 8-8M16 7l2 2M14 9l2 2"/></svg></span><span data-i18n="auth.p2t">只用你授权的 API 权限</span></li>
+      <li><span class="k"><svg viewBox="0 0 24 24"><path d="M12 3.5 5 6.5v5c0 4.3 3 7.8 7 9 4-1.2 7-4.7 7-9v-5z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span><span data-i18n="auth.p3t">随时可在币安删除 API</span></li>
+    </ul>
+  </section>
+
+  <section class="side">
+    <div class="card" id="card" data-mode="login">
+      <div id="formBox">
+        <div class="tabs" role="tablist" id="tabs" data-i18n-attr="aria-label:auth.tabs">
+          <button type="button" role="tab" id="t-login" aria-controls="f" aria-selected="true" data-mode="login" data-i18n="auth.tLogin">登录</button>
+          <button type="button" role="tab" id="t-register" aria-controls="f" aria-selected="false" data-mode="register" data-i18n="auth.tReg">注册</button>
+          <span class="ink" aria-hidden="true"></span>
+        </div>
+
+        <form id="f" novalidate role="tabpanel" aria-labelledby="t-login">
+          <h2 id="ft"></h2>
+          <p class="sub" id="fs"></p>
+          <div class="note bad" id="alert" role="alert"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg><span id="alertT"></span></div>
+
+          <div class="fld" id="fEmail"><label class="lab" for="email"><span data-i18n="auth.email">邮箱</span></label>
+            <div class="inp"><input id="email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" required data-i18n-attr="placeholder:auth.emailPh" aria-describedby="mEmail"></div>
+            <div class="msg" id="mEmail"></div></div>
+
+          <div class="fld" id="fPw"><label class="lab" for="pw"><span data-i18n="auth.pw">密码</span><em data-only="register" data-i18n="auth.pwRule">至少 8 位，含字母和数字</em></label>
+            <div class="inp has-eye"><input id="pw" name="password" type="password" autocomplete="current-password" required aria-describedby="mPw">
+              <button type="button" class="eye" data-eye="pw" aria-pressed="false" data-i18n-attr="aria-label:auth.show"><svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/><path class="slash" d="M4 4l16 16"/></svg></button></div>
+            <div class="meter" data-only="register" id="meter" data-s="0" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <div class="msg" id="mPw"></div></div>
+
+          <div class="fld" data-only="register" id="fPw2"><label class="lab" for="pw2"><span data-i18n="auth.pw2">再输入一次密码</span></label>
+            <div class="inp has-eye"><input id="pw2" name="password2" type="password" autocomplete="new-password" aria-describedby="mPw2">
+              <button type="button" class="eye" data-eye="pw2" aria-pressed="false" data-i18n-attr="aria-label:auth.show"><svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/><path class="slash" d="M4 4l16 16"/></svg></button></div>
+            <div class="msg" id="mPw2"></div></div>
+
+          <div class="row2" data-only="login"><button type="button" class="link" id="forgot" aria-expanded="false" aria-controls="fp" data-i18n="auth.forgot">忘记密码？</button></div>
+          <div class="note info" id="fp"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg><span data-i18n="auth.forgotNote">演示环境还不能找回密码。正式上线后会通过邮箱验证码重置。</span></div>
+
+          <div class="fld agree" data-only="register" id="fAgree">
+            <div class="agl"><label class="chk"><input type="checkbox" id="agree" aria-describedby="mAgree"><span data-i18n="auth.agree">我已阅读并同意《合作服务协议与风险披露》</span></label>
+              <button type="button" class="link agx" id="agOpen" aria-expanded="false" aria-controls="agDoc" data-i18n="auth.agOpen">查看全文</button></div>
+            <div class="agdoc" id="agDoc" hidden tabindex="0" role="region" data-i18n-attr="aria-label:auth.agTitle"><b id="agT"></b><small id="agN"></small><ol id="agL"></ol></div>
+            <div class="msg" id="mAgree"></div>
+          </div>
+
+          <button class="btn pri" type="submit" id="go"><span class="spin" aria-hidden="true"></span><span id="goT"></span></button>
+          <p class="fine"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg><span data-i18n="auth.fine">本机演示：账号只保存在这台浏览器，不校验密码，也不连接真实服务器。</span></p>
+        </form>
+      </div>
+
+      <div class="done" id="done" hidden aria-live="polite">
+        <span class="badge" data-i18n="auth.signedBadge">本机演示</span>
+        <h2 data-i18n="auth.signedT">已登录</h2>
+        <p class="sub" data-i18n="auth.signedS">这是这台浏览器上的演示登录，未连接真实后端。</p>
+        <div class="who"><span class="ini" id="dIni"></span><div><b id="dName"></b><small id="dEmail"></small></div></div>
+        <a class="btn pri" id="dGo" href="/3dtrading-site/bind/"><span data-i18n="auth.toBind">下一步：连接币安</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
+        <p class="fine" data-i18n="auth.bindNote">下一步在币安子账户里创建 API，并粘贴到绑定窗口。</p>
+        <button type="button" class="btn ghost" id="dOut" data-i18n="auth.switchUser">退出，换一个账号</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="login.js?v=r51"></script>
+<script type="module" src="city.js?v=r51"></script>
+<script nomodule src="city2d.js?v=r51"></script>
+</body>
+</html>
