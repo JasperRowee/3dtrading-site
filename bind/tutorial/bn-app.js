@@ -144,12 +144,13 @@
     /* 子账户 page (r59 screenshot): 账号管理 ▾ with 充值 / 划转 on the right, 子账户 (n) + filter, + 创建子账户, cards with ⋮ and 更多;
      * the ⋮ popover lists 转入 允许合约 启用期权 充值 划转 冻结 删除 (after 允许合约: 开通统一账户 is added, 允许合约 greyed). */
     sub: function (w, cfg, o) {
-      var n = o.rows ? 3 : 2, body = nav(w.subT) +
+      var n = o.rows ? 1 : 0, body = nav(w.subT) +
         '<div class="ba-subh"><div class="ba-dd"' + hot(o, 'mgmt') + '><b>' + esc(w.mgmt) + '</b>' + I.tri + '</div><span class="ba-btn y sm">' + esc(w.dep) + '</span><span class="ba-btn sm">' + esc(w.xfer) + '</span></div>' +
         (o.toast ? '<div class="ba-toast">' + (o.toast === 'pm' ? I.sun + esc(w.pmWait) : I.ok + esc(w.ok1)) + '</div>' : '') +
         '<div class="ba-cnt"><u>' + esc(w.cnt) + ' (' + n + ')</u>' + I.filt + '</div>' +
         '<div class="ba-bar"' + hot(o, 'create') + '>+ ' + esc(w.create) + '</div>';
-      for (var i = o.rows ? 0 : 1; i < 3; i++) body += subCard(w, o, i);
+      /* r60 (Jasper): no extra sub-accounts from his own screenshots — only the one this guide creates */
+      if (o.rows) body += subCard(w, o, 0);
       if (o.sheet === 'create') body += sheet(w.mT, '<small>' + esc(w.mType) + '</small><div class="ba-in sel">' + esc(w.mTypeV) + I.tri + '</div>' +
         '<small>' + esc(w.mName) + '</small><div class="ba-in focus">' + esc(cfg.nameEx) + '<i class="caret"></i></div><p class="ba-hint">' + esc(w.mHint) + '</p><p class="ba-hint">' + esc(w.mNote) + '</p>' +
         '<span class="ba-btn y block" data-t="ok">' + esc(w.ok) + '</span>');

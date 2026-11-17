@@ -2877,35 +2877,107 @@ html[data-theme="night"] .ddm-scrim{background:rgba(0,0,0,.6)}
 html[data-theme="night"] .ddm{box-shadow:0 40px 100px -30px rgba(0,0,0,.8),0 0 0 1px var(--line)}
 
 
-/* ---------- r59 · 手机后台主导航移到顶部（≤760px，Jasper「手机版导航也放到顶上试试」） ----------
-   顶栏变两行：上行 Logo／账户／头像不变，下行是原来的四个入口（图标、文字、黑底选中态照旧）。
-   --top 把导航行算进去，所以正文起点、滚动定位、Dodo 页高度、探头 Dodo 的位置都跟着往下让，不会被盖住。
-   电脑与平板（≥761px）不受影响。 */
+/* ---------- r60 · 手机后台（≤760px）：Jasper「导航回到下面变成固定悬浮的，顶部还是按照电脑版那样纯白+阴影，中间logo左边子账户右边我的」
+   覆盖 r59 的两行顶栏。顶栏＝和电脑版一样的悬浮白条（圆角＋阴影），左：币安子账户，中：Logo，右：我的。
+   主导航＝底部固定悬浮条（离边 12px，圆角，阴影，避开底部安全区）；正文、Dodo 页高度、提示条都给它让位。
+   MWG form-factor-adaptation：安全区 env(safe-area-inset-*)、触控区 ≥44px；responsive-design：dvh。电脑与平板（≥761px）不受影响。 */
 @media (max-width:760px){
-  :root{--hrow:56px;--tn:50px;--top:calc(var(--hrow) + var(--tn) + env(safe-area-inset-top))}
-  header.top{padding-bottom:var(--tn)}
-  .tnav{position:absolute;top:auto;left:0;right:0;bottom:0;height:var(--tn);margin:0;z-index:1;border-radius:0;
-    background:transparent;box-shadow:inset 0 1px 0 var(--line2);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
-    padding:5px max(10px,env(safe-area-inset-right)) 5px max(10px,env(safe-area-inset-left))}
-  .tnav a{flex-direction:row;justify-content:center;gap:6px;height:40px;padding:0 4px;font-size:12.5px;border-radius:12px;white-space:nowrap}
-  .tnav a svg{width:18px;height:18px}
-  body{padding-bottom:env(safe-area-inset-bottom)}
-  .toast{bottom:calc(24px + env(safe-area-inset-bottom))}
-  .ai{height:calc(100dvh - var(--top) - env(safe-area-inset-bottom))}
-  /* 软键盘弹出：导航行收起，顶栏回到一行高 */
-  body.kb-open{--top:calc(var(--hrow) + env(safe-area-inset-top))}
-  body.kb-open header.top{height:var(--top);padding-bottom:0}
-  body.kb-open .ai{height:calc(var(--vvh,100dvh) - var(--top))}
-  html[data-theme="night"] .tnav{background:transparent;box-shadow:inset 0 1px 0 var(--line)}
-  /* 夜间顶栏改实底（白天手机顶栏本来就是实底）：两行高的顶栏下滚动内容不再透出来 */
-  html[data-theme="night"] header.top{background:var(--bg)}
+  :root{--top:calc(62px + env(safe-area-inset-top));--navh:62px;--navb:calc(10px + env(safe-area-inset-bottom))}
+  header.top{position:sticky;top:calc(6px + env(safe-area-inset-top));margin:calc(6px + env(safe-area-inset-top)) 10px 0;height:56px;
+    padding:0 8px;gap:6px;border-radius:16px;background:#fff;border:0;
+    box-shadow:0 1px 2px rgba(15,23,42,.05),0 10px 28px -14px rgba(15,23,42,.22)}
+  body.scrolled header.top{box-shadow:0 1px 2px rgba(15,23,42,.06),0 14px 34px -14px rgba(15,23,42,.3)}
+  body::before{content:"";position:fixed;left:0;right:0;top:0;height:calc(10px + env(safe-area-inset-top));z-index:29;pointer-events:none;background:var(--bg)}
+  header.top>.sp{display:none}
+  header.top>.acct{order:1;flex:1 1 0;min-width:0;display:flex;justify-content:flex-start}
+  header.top>.brandmark{order:2;flex:none;display:flex;align-items:center}
+  header.top>.me-m{order:3;flex:1 1 0;min-width:0;display:flex;justify-content:flex-end}
+  .acct-btn{max-width:100%;height:40px;padding:0 8px 0 4px;gap:6px}
+  .acct-btn b{max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .av-btn{min-width:44px;min-height:44px;display:grid;place-items:center}
+  .menu{top:calc(var(--top) + 6px)}
+  /* 底部固定悬浮导航 */
+  .tnav{position:fixed;top:auto;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:var(--navb);height:var(--navh);margin:0;z-index:35;
+    border-radius:20px;background:rgba(255,255,255,.97);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+    box-shadow:0 1px 2px rgba(15,23,42,.06),0 16px 38px -12px rgba(15,23,42,.3);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px}
+  .tnav a{flex-direction:column;justify-content:center;gap:2px;height:50px;padding:0 2px;font-size:11.5px;border-radius:14px;white-space:nowrap}
+  .tnav a svg{width:20px;height:20px}
+  body{padding-bottom:calc(var(--navh) + 26px + env(safe-area-inset-bottom))}
+  #dash{padding-bottom:12px}
+  .toast{bottom:calc(var(--navh) + 22px + env(safe-area-inset-bottom))}
+  .ai{height:calc(100dvh - var(--top) - var(--navh) - 22px - env(safe-area-inset-bottom))}
+  html[data-theme="night"] header.top{background:var(--sf);box-shadow:0 0 0 1px var(--line),0 12px 30px -14px rgba(0,0,0,.7)}
+  html[data-theme="night"] .tnav{background:color-mix(in srgb,var(--sf) 96%,transparent);box-shadow:0 0 0 1px var(--line),0 18px 40px -12px rgba(0,0,0,.75)}
+  /* r60 · 软键盘（Dodo 输入）：顶栏和聊天区钉在可见区域（visualViewport）里，iOS 推动页面时也不跟着上移；底部导航收起 */
+  body.kb-open .tnav{display:none}
+  body.kb-open[data-page="ai"]{padding-bottom:0}
+  body.kb-open[data-page="ai"] header.top{position:fixed;left:0;right:0;top:calc(var(--vvt,0px) + 6px + env(safe-area-inset-top));margin:0 10px;z-index:30}
+  body.kb-open[data-page="ai"]::before{top:var(--vvt,0px)}
+  body.kb-open[data-page="ai"] .ai{position:fixed;left:0;right:0;top:calc(var(--vvt,0px) + var(--top));height:calc(var(--vvh,100dvh) - var(--top));z-index:5;padding:0 12px}
+  body.kb-open[data-page="ai"] .ddp{display:none}
 }
-@media (max-width:360px){.tnav a{gap:4px;font-size:12px;padding:0 2px}.tnav a svg{width:16px;height:16px}}
+/* r60 · 绑定币安弹窗（手机）：Jasper「绑定币安卡片太大」。改为贴底的紧凑面板：标题栏固定不再被滚走（r59 截图里标题贴顶被裁），
+   内容区单独滚动；四行压缩间距与字号，权限两列，IP 一行两个，账户名称和「绑定」同一行。所有弹窗标题栏在手机上都固定。 */
+@media (max-width:760px){
+  .mdl{display:flex;flex-direction:column;overflow:hidden}
+  .mdl-hd{flex:none;position:relative;z-index:2;background:var(--sf);padding:14px 16px 8px}
+  .mdl-bd{flex:1 1 auto;min-height:0;overflow:auto;overscroll-behavior:contain}
+  .mdl.qbm{top:auto!important;bottom:0;left:0!important;right:0!important;max-height:min(84dvh,720px);border-radius:20px 20px 0 0;transform:translateY(16px)}
+  .mdl.qbm.on{transform:none}
+  .mdl.qbm .mdl-hd{padding:16px 14px 6px}
+  .mdl.qbm .mdl-hd h2{font-size:17px}
+  .mdl.qbm .mdl-bd{padding:0 12px calc(12px + env(safe-area-inset-bottom))}
+  .qb{gap:8px}
+  .qb-lead{font-size:12.5px;line-height:1.5}
+  .qb-row{padding:10px 11px;gap:6px;border-radius:12px}
+  .qb-k{font-size:13px}
+  .qb-h{font-size:11.5px;line-height:1.45}
+  .qb-key,.qb-ip{min-height:40px;padding:6px 10px}
+  .qb-key code,.qb-ip code{font-size:12.5px}
+  .qb-pms{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  .qb-pm{padding:5px 7px;font-size:11.5px;gap:4px;min-width:0}
+  .qb-pm span{flex:1 1 auto;min-width:0;line-height:1.25}
+  .qb-pm small{font-size:10px;padding:0 3px;flex:none}
+  .qb-ips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .qb-ips .stt{display:none}
+  .qb-ip{justify-content:space-between;gap:6px;min-width:0}
+  .qb-in{gap:6px}
+  .qb-in input{height:44px;font-size:16px}
+  .qb-in #bnNm{flex:1 1 0}
+  .qb-in .btn{flex:0 0 auto;height:44px;padding:0 20px}
+  .qb-ft{padding-top:0}
+  .qb-ft .btn{height:40px}
+}
+
+/* ---------- r60 · 手机总览单独适配：结论卡 + 保证金一行，下面分「收益 / 持仓 / 资产池」三组切换，不再把电脑版模块从上到下堆成 3000px ---------- */
+.ovseg{display:none}
+@media (max-width:760px){
+  .ovseg{order:2;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:var(--soft,#eef1f3);position:sticky;top:calc(var(--top) + 6px);z-index:6;box-shadow:0 6px 16px -10px rgba(15,23,42,.25)}
+  .ovseg button{appearance:none;border:0;background:none;height:40px;border-radius:10px;font:inherit;font-size:14.5px;font-weight:650;color:var(--ink2);cursor:pointer}
+  .ovseg button[aria-selected="true"]{background:var(--sf);color:var(--ink);box-shadow:0 1px 3px rgba(15,23,42,.12)}
+  .ovseg button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+  .ov{gap:14px}
+  #curveSec{order:3}.ov-sh{order:4}.ldg{order:5}.ovx{order:6}#posMini{order:3}#yld{order:3}.ov-note{order:9}
+  .ldg{margin-top:-6px}
+  .ov[data-ovt="rv"] #posMini,.ov[data-ovt="rv"] #yld,
+  .ov[data-ovt="ps"] #curveSec,.ov[data-ovt="ps"] .ov-sh,.ov[data-ovt="ps"] .ldg,.ov[data-ovt="ps"] .ovx,.ov[data-ovt="ps"] #yld,
+  .ov[data-ovt="yd"] #curveSec,.ov[data-ovt="yd"] .ov-sh,.ov[data-ovt="yd"] .ldg,.ov[data-ovt="yd"] .ovx,.ov[data-ovt="yd"] #posMini{display:none!important}
+  /* 保证金率压成一张窄卡，跟在结论卡下面 */
+  .umrc{padding:10px 14px 8px}
+  .umrc .uc-v{font-size:22px}
+  .umrc .uc-bar{margin-top:6px}
+  .hero .nsp{height:96px}
+  html[data-theme="night"] .ovseg{background:color-mix(in srgb,var(--sf) 70%,#000)}
+}
+@media (max-width:360px){.tnav a{font-size:11px}.acct-btn b{max-width:60px}}
 @media (max-width:760px) and (max-height:500px){
-  :root{--hrow:46px;--tn:42px}
-  .tnav{padding-top:3px;padding-bottom:3px}
-  .tnav a{height:36px}
-  body{padding-bottom:env(safe-area-inset-bottom)}
+  :root{--top:calc(52px + env(safe-area-inset-top));--navh:48px;--navb:calc(6px + env(safe-area-inset-bottom))}
+  header.top{height:46px}
+  .tnav{padding:4px}
+  .tnav a{height:40px;flex-direction:row;gap:6px}
+  .tnav a svg{width:18px;height:18px}
+  body{padding-bottom:calc(var(--navh) + 16px + env(safe-area-inset-bottom))}
+  .ai{height:calc(100dvh - var(--top) - var(--navh) - 14px - env(safe-area-inset-bottom))}
 }
 </style>
 </head>
@@ -3455,8 +3527,10 @@ document.addEventListener('click', e => { if (e.target.closest('[data-wlskip]'))
 
 const HAS_CMP = () => !LIVE && !!V && V.days[DAYS].cmpSave != null;
 const CMP_LG = () => HAS_CMP() ? `<div class="cmp-lg" id="cmpLg" role="list" aria-label="对比线图例"><span role="listitem"><i class="ln main"></i>策略累计净收益</span><span role="listitem"><i class="ln save"></i>直接存理财</span><span role="listitem"><i class="ln nr"></i>不做平补</span><span class="cmp-n" role="listitem">对比线为演示，口径待业务确认</span></div>` : '';
-const TPL = () => `<div class="ov">
+let OVT = 'rv';
+const TPL = () => `<div class="ov" data-ovt="${OVT}">
 <section class="ov-top" id="kpis" aria-label="核心财务摘要"></section>
+<div class="ovseg" role="tablist" aria-label="总览分组">${[['rv','收益'],['ps','持仓'],['yd','资产池']].map(([k,t])=>`<button type="button" role="tab" data-ovt="${k}" aria-selected="${OVT===k}">${t}</button>`).join('')}</div>
 <div class="ov-mid">
   <section class="panel cvp" id="curveSec" aria-label="收益与账本">
     <div class="hd2"><div><h2>累计净收益</h2><p id="cvNote"></p>${CMP_LG()}</div><span class="sp"></span>
@@ -3471,6 +3545,7 @@ const TPL = () => `<div class="ov">
 <p class="ov-note">${LIVE ? LIVE_NOTE() : `示例数据，未连接币安，不代表真实收益。`}</p>
 </div>`;
 
+document.addEventListener('click', e => { const t = e.target.closest('.ovseg [data-ovt]'); if (!t) return; OVT = t.dataset.ovt; const ov = t.closest('.ov'); ov.dataset.ovt = OVT; ov.querySelectorAll('.ovseg [data-ovt]').forEach(b => b.setAttribute('aria-selected', b === t)); const sg = ov.querySelector('.ovseg'); const y = sg.getBoundingClientRect().top; const top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 70; if (y < top) window.scrollBy({ top: y - top - 4, behavior: 'instant' }); });
 document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) { e.preventDefault(); goTo(g.dataset.go); } });
 /* a link names a section; go to its page, and open the drawer when the detail lives there */
 function goTo(sel) {
@@ -3811,7 +3886,7 @@ function openDlg(title, html) {
   if (!was) showLayer(d);
   setTimeout(() => ($('#mdB [data-first]') || $('#mdT')).focus({ preventScroll: true }), RM ? 0 : 50);
 }
-function closeDlg() { hideLayer($('#modal')); DLG_BACK?.focus?.({ preventScroll: true }); }
+function closeDlg() { hideLayer($('#modal')); const b = DLG_BACK; if (b && b.id === 'askIn' && NOKB()) return; /* r60：关弹窗不把焦点还给 Dodo 输入框（会弹键盘） */ b?.focus?.({ preventScroll: true }); }
 /* r57 · 对话框（含绑定弹窗）打开时：Tab 只在弹窗里循环，背后页面不滚动 */
 document.addEventListener('keydown', e => {
   if (e.key !== 'Tab') return; const root = $('#modal.on'); if (!root) return;
@@ -3845,6 +3920,9 @@ function renderTotal() {
   if (S.flip != null) setFlip(S.flip, { instant: true }); else $('#cvHint').textContent = HINT;
 }
 const MOB = matchMedia('(max-width:760px)');
+/* r60 · Dodo 输入框只在用户自己点它时才聚焦：触屏或手机宽度下，程序不再替用户聚焦（否则 iOS 会自动弹出键盘） */
+const NOKB = () => MOB.matches || matchMedia('(pointer:coarse)').matches;
+function focusAsk(o) { if (NOKB()) return false; $('#askIn')?.focus(o || { preventScroll: true }); return true; }
 const HINT_D = '每个点是一天结算时的累计净收益。点一个点，只在它旁边翻出当天摘要，曲线不动；键盘 ← → 选择，回车打开，Esc 收起。';
 const HINT_M = '每个点是一天结算时的累计净收益。点一下曲线，就在那天的点旁翻出摘要；用 ‹ › 换一天，点 × 收起。';
 let HINT = MOB.matches ? HINT_M : HINT_D;
@@ -4325,7 +4403,7 @@ function switchConv(id) {
   if (asking || !CONVS.some(c => c.id === id)) return;
   CCUR = id; renderCvList(); renderChat(); saveConvs();
   if (!DODO) nav('ai', { keepConv: true });
-  $('#askIn').focus({ preventScroll: true });
+  focusAsk();
 }
 /* 新话题 never piles up empty ones: an empty conversation is reused; the old one stays in 历史 */
 function startConv(ctx) {
@@ -4334,7 +4412,7 @@ function startConv(ctx) {
   if (empty) CCUR = empty.id; else { const c = newConv(); CONVS.unshift(c); CCUR = c.id; }
   const c = curConv(); if (ctx !== undefined) c.ctx = ctx || undefined;
   renderCvList(); renderChat(); saveConvs(); if (!DODO) nav('ai');
-  $('#askIn').value = ''; syncSend(); $('#askIn').focus({ preventScroll: true });
+  $('#askIn').value = ''; syncSend(); focusAsk();
 }
 function delConv(id) {
   if (asking) return;
@@ -4455,7 +4533,7 @@ $('#cvNew2').onclick = () => { startConv(null); toast('已开始新话题，刚�
 window.addEventListener('langchange', () => { if (!asking) { renderChat(); renderCvList(); } renderHello(); });
 document.addEventListener('click', e => {
   const s = e.target.closest('#sugg [data-q]'); if (s) { ask(QS[+s.dataset.q]); return; }
-  if (e.target.closest('[data-ctxx]')) { const c = curConv(); if (c) { delete c.ctx; renderCtx(); saveConvs(); $('#askIn').focus(); } return; }
+  if (e.target.closest('[data-ctxx]')) { const c = curConv(); if (c) { delete c.ctx; renderCtx(); saveConvs(); focusAsk(); } return; }
   const o = e.target.closest('[data-cv]'); if (o) { switchConv(o.dataset.cv); return; }
   const x = e.target.closest('[data-cvx]'); if (x) delConv(x.dataset.cvx);
 });
@@ -5593,7 +5671,7 @@ function showPage(p, o = {}) {
   window.scrollTo(0, o.restore ? SCR[p] || 0 : 0);
   const pg = $(`#pg-${p}`);
   if (!RM && prev) pg.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 240, easing: 'cubic-bezier(.2,.8,.2,1)' });
-  if (prev && o.focus !== false) (p === 'ai' ? $('#askIn') : $('h1', pg))?.focus({ preventScroll: true });
+  if (prev && o.focus !== false) { if (p !== 'ai') $('h1', pg)?.focus({ preventScroll: true }); else if (!focusAsk()) { const h = $('h1,h2', pg) || pg; if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
 }
 function nav(p, o) { if (p === 'settings') { openSettings(); return; } if (location.hash !== '#/' + p) history.pushState(null, '', '#/' + p); showPage(p, o); }
 document.addEventListener('click', e => {
@@ -5609,7 +5687,7 @@ function route() {
   showPage(pageOf(), { restore: true });
 }
 document.addEventListener('click', e => {
-  if (e.target.closest('#ddsNew')) { __dodo.open(false, false); $('#cvNew')?.click(); $('#askIn').focus({ preventScroll: true }); return; }
+  if (e.target.closest('#ddsNew')) { __dodo.open(false, false); $('#cvNew')?.click(); focusAsk(); return; }
   if (e.target.closest('#ddsHist')) { __dodo.open(false, false); cvPanel(true); return; }
 });
 
@@ -5844,8 +5922,8 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
   window.__dsbSync = sync;
   window.__dsbData = () => { PEND.refs = PEND.refs.filter(r => ctxOf(r.k + ':' + r.id)); attRender(); if (isOpen()) render(); syncSend(); };
   row.addEventListener('click', e => {
-    const a = e.target.closest('[data-attx]'); if (a) { const [x] = PEND.files.splice(+a.dataset.attx, 1); if (x && x.u) URL.revokeObjectURL(x.u); sync(); $('#askIn').focus({ preventScroll: true }); return; }
-    const r = e.target.closest('[data-refx]'); if (r) { PEND.refs.splice(+r.dataset.refx, 1); sync(); $('#askIn').focus({ preventScroll: true }); }
+    const a = e.target.closest('[data-attx]'); if (a) { const [x] = PEND.files.splice(+a.dataset.attx, 1); if (x && x.u) URL.revokeObjectURL(x.u); sync(); focusAsk(); return; }
+    const r = e.target.closest('[data-refx]'); if (r) { PEND.refs.splice(+r.dataset.refx, 1); sync(); focusAsk(); }
   });
   function addFile(f, extra) {
     if (PEND.files.length >= MAXF) { note(L(`一条消息最多 ${MAXF} 个附件`, `Up to ${MAXF} attachments per message`)); return false; }
@@ -5890,12 +5968,12 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
     mr.onstop = () => {
       st.getTracks().forEach(t => t.stop()); try { me.ac && me.ac.close(); } catch (e) {}
       if (R === me) R = null; ui(false); nt.hidden = true;
-      if (me.cancel) { note(L('已取消录音，没有保存。', 'Recording cancelled; nothing was kept.')); $('#askIn').focus({ preventScroll: true }); return; }
+      if (me.cancel) { note(L('已取消录音，没有保存。', 'Recording cancelled; nothing was kept.')); focusAsk(); return; }
       const dur = (me.t1 || Date.now()) - me.t0;
       if (dur < 600 || !me.ch.length) { note(L('录音太短，没有添加。', 'The recording was too short and was not added.')); return; }
       const type = mr.mimeType || me.ch[0].type || 'audio/webm', blob = new Blob(me.ch, { type }), sec = Math.max(1, Math.round(dur / 1000));
       if (addFile(blob, { k: 'audio', n: L('语音', 'Voice') + ' ' + fmtDur(sec), d: sec })) { sync(); note(L('录音已附上。还没有接入语音识别，不会转成文字，Dodo 也听不到内容。', 'Recording attached. No speech recognition is connected, so it is not transcribed and Dodo cannot hear it.')); }
-      $('#askIn').focus({ preventScroll: true });
+      focusAsk();
     };
     mr.start(250); ui(true); tm.textContent = '0:00';
     note(L('正在录音，最长 2 分钟。录音只留在本机。', 'Recording, up to 2 minutes. The audio stays on this device.'), true);
@@ -5990,7 +6068,7 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
     const f = base(), h = visH();
     const shrunk = vv ? f - h > Math.max(80, f * .15) : MOB.matches; /* 没有 visualViewport 的旧浏览器：手机宽度沿用只看聚焦 */
     const o = isField(document.activeElement) && shrunk;
-    if (o) root.style.setProperty('--vvh', Math.round(h) + 'px'); else root.style.removeProperty('--vvh');
+    if (o) { root.style.setProperty('--vvh', Math.round(h) + 'px'); root.style.setProperty('--vvt', Math.round(vv ? Math.max(0, vv.offsetTop) : 0) + 'px'); } else { root.style.removeProperty('--vvh'); root.style.removeProperty('--vvt'); }
     if (o !== open) { open = o; body.classList.toggle('kb-open', o); }
     if (o && CUR === 'ai') window.scrollTo(0, 0);
   };
@@ -5998,7 +6076,7 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
   base();
   document.addEventListener('focusin', update);
   document.addEventListener('focusout', () => setTimeout(update, 60));
-  if (vv) vv.addEventListener('resize', update);
+  if (vv) { vv.addEventListener('resize', update); vv.addEventListener('scroll', update); }
   addEventListener('resize', update);
   addEventListener('hashchange', () => setTimeout(update, 0));
   addEventListener('orientationchange', () => setTimeout(update, 300));

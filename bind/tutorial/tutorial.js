@@ -146,6 +146,9 @@
 
   var hb = $('#hb'), hum = $('#hum'), hic = $('#hic');
   var stage = $('#stage'), view = $('#view'), bn = $('#bn'), ba = $('#ba'), panel = $('#panel'), cur = $('#cur'), hintEl = $('#hint');
+  /* r60: a sizer gives the phone stage a real scroll height; the hint and cursor follow the page while it scrolls */
+  var sizer = document.createElement('div'); sizer.className = 'stz'; sizer.setAttribute('aria-hidden', 'true'); stage.appendChild(sizer);
+  stage.addEventListener('scroll', function () { if (!phone()) return; placeHint(); var p = aim(); if (p && cur.classList.contains('on')) putCursor(p, false); }, { passive: true });
   if (panel && panel.parentNode !== document.body) document.body.appendChild(panel); /* r58: the result card covers the whole page, not the moving stage */
   var tc = $('#tc'), autoEl = $('#auto');
   var HOT = null, CUR = null;
@@ -169,6 +172,7 @@
   function layout() {
     stage.style.top = Math.round(hb.getBoundingClientRect().bottom) + 'px';
     stage.style.bottom = tc.offsetHeight + 'px';
+    document.documentElement.style.setProperty('--tcH', tc.offsetHeight + 'px');
   }
   function icons() {
     var I = BN.icons, en = L() === 'en';
@@ -224,13 +228,16 @@
     var ph = phone(), W = stage.clientWidth, H = stage.clientHeight;
     var pw = 0, phH = 0; // r58: no side panel — the API Key field sits in the Binance screen itself
     var aw = W - pw, ah = H - phH, natW, s;
-    if (ph) { natW = BA.width; s = aw / natW; }
+    if (ph) { natW = BA.width; s = Math.min(aw / natW, 1.2); } // r60: landscape phones keep the app phone-sized and centred
     else { var pref = aw >= 1500 ? Math.min(1.25, aw / 1400) : 1; natW = Math.max(aw < 900 ? 900 : 1000, Math.round(aw / pref)); s = Math.max(.62, aw / natW); }
-    view.style.transform = 'none';
+    view.style.transform = 'none'; sizer.style.height = '0px'; if (!ph) stage.scrollTop = 0;
     view.style.width = natW + 'px';
     host.style.width = natW + 'px';
-    host.style.minHeight = Math.ceil(ph ? Math.max(760, ah / s) : ah / s) + 'px';
+    /* r60 (Jasper: 手机教程被顶栏/底栏裁切): on a phone the drawn app is exactly as tall as the visible stage, so its
+     * bottom sheets (确认 / 下一步) sit right above our controls instead of under them; longer pages scroll natively. */
+    host.style.minHeight = Math.ceil(ah / s) + 'px';
     var nh = host.scrollHeight;
+    if (ph) return phoneCam(host, st, s, ah, nh);
     /* r59: a step may name a fixed anchor (cam / pcam): the camera frames that, not the menu item, so the page holds still */
     var anc = st && (ph ? st.pcam : st.cam), aEl = anc ? host.querySelector(anc) : null;
     var tgt = aEl || (!HOT || !host.contains(HOT) ? null : HOT), r = null;
@@ -242,6 +249,20 @@
       if (ph && S.b === 2 && !r) ty = Math.max(ah - nh * s, -150 * s);
     }
     view.style.transform = 'translate(' + Math.round(tx) + 'px,' + Math.round(ty) + 'px) scale(' + s.toFixed(4) + ')';
+  }
+  function phoneCam(host, st, s, ah, nh) {
+    var aw = stage.clientWidth, lx = Math.max(0, Math.round((aw - BA.width * s) / 2));
+    view.style.transform = 'translate(' + lx + 'px,0) scale(' + s.toFixed(4) + ')';
+    sizer.style.height = Math.ceil(nh * s) + 'px';
+    var mine = HOT && host.contains(HOT), sh = mine && HOT.closest('.ba-sheet'), pop = mine && HOT.closest('.ba-pop');
+    var anc = !sh && !pop && st && st.pcam ? host.querySelector(st.pcam) : null, tgt = sh ? HOT : anc || (mine ? HOT : null);
+    var max = Math.max(0, Math.ceil(nh * s - ah)), y = 0;
+    if (tgt) {
+      var a = tgt.getBoundingClientRect(), o = host.getBoundingClientRect(), top = (a.top - o.top), bot = top + a.height;
+      y = sh ? max : Math.round((top + bot) / 2 - ah / 2);
+      if (mine && !sh) { var h = HOT.getBoundingClientRect(), ht = h.top - o.top, hb2 = ht + h.height; y = Math.max(y, Math.round(hb2 - ah + Math.min(70, ah * .3))); y = Math.min(y, Math.round(ht - 12)); }
+    }
+    stage.scrollTop = Math.max(0, Math.min(max, y));
   }
   function showHint(st) {
     if (st.last) { hintEl.hidden = true; return; } // r49h: the bind panel already says this (desktop right, phone bottom); the bubble only covered content

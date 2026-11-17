@@ -221,3 +221,15 @@ html.intro .bnh .logo,html.intro #lg{visibility:hidden}
 /* r59 · until the last step the API Key box is the only part of the form (name + 绑定 + demo hint come with the bind step) */
 #tkF.pre .tk-row,#tkF.pre .demoH{display:none}
 #tkKey.cue{border-color:#2fdcbc;box-shadow:0 0 0 3px rgba(47,220,188,.22)}
+
+/* ---------- r60 · 手机教程不再被顶栏 / 底栏裁切：舞台在两条栏之间，可以上下滑动；弹层在可见区底部 ---------- */
+.stz{width:1px;pointer-events:none}
+@media (max-width:760px){
+  .stage{overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  body.tut .toast{bottom:calc(var(--tcH,104px) + 12px)}
+}
+@media (max-width:760px) and (max-height:500px){
+  .tc{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"x m ap";padding-top:6px;padding-bottom:calc(6px + env(safe-area-inset-bottom));min-height:0}
+  .tcm .tcb{height:38px}
+  .stage{background:#0b0e11}
+}
