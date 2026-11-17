@@ -224,7 +224,7 @@
       'acct.menu': '账户菜单', 'acct.demoUser': '本机账号', 'acct.defaultUser': '3dtrading 用户',
       'acct.binance': '币安子账户', 'acct.all': '全部账户', 'acct.allSub': '合并查看 {n} 个子账户',
       'acct.none': '还没有绑定币安子账户', 'acct.bindNew': '绑定新的币安子账户', 'acct.bindFirst': '去绑定第一个子账户',
-      'acct.toApp': '进入控制台', 'acct.toSite': '回到官网', 'acct.me': '我的',
+      'acct.toApp': '进入控制台', 'acct.toSite': '回到官网', 'acct.me': '我的', 'acct.profile': '个人资料', 'acct.settings': '设置', 'acct.settingsSub': '个性化、单位、隐私、通知等',
       'acct.st.awaiting_key': '等待贴回 API Key', 'acct.st.checking': '接入测试中', 'acct.st.verified': '测试通过 · 演示', 'acct.st.failed': '测试未通过',
       'acct.st.observing': '试运行（只观察）· 演示', 'acct.st.running': '运行中 · 演示', 'acct.st.halted': '已停机', 'acct.st.unbound': '已解绑', 'acct.st.unknown': '处理中',
       'acct.demo.name': '示例账户', 'acct.demo.sub': '示例数据 · 未连接币安', 'acct.demo.st': '示例数据 · 未连接币安',
@@ -238,7 +238,7 @@
       'acct.menu': 'Account menu', 'acct.demoUser': 'Local account', 'acct.defaultUser': '3dtrading user',
       'acct.binance': 'Binance sub-accounts', 'acct.all': 'All sub-accounts', 'acct.allSub': 'Combined · {n} total',
       'acct.none': 'No Binance sub-account linked yet', 'acct.bindNew': 'Link a Binance sub-account', 'acct.bindFirst': 'Link your first sub-account',
-      'acct.toApp': 'Open dashboard', 'acct.toSite': 'Back to website', 'acct.me': 'Me',
+      'acct.toApp': 'Open dashboard', 'acct.toSite': 'Back to website', 'acct.me': 'Me', 'acct.profile': 'Profile', 'acct.settings': 'Settings', 'acct.settingsSub': 'Appearance, units, privacy, notifications…',
       'acct.st.awaiting_key': 'Waiting for your API Key', 'acct.st.checking': 'Connection test running', 'acct.st.verified': 'Test passed · demo', 'acct.st.failed': 'Test failed',
       'acct.st.observing': 'Trial run (observe only) · demo', 'acct.st.running': 'Running · demo', 'acct.st.halted': 'Halted', 'acct.st.unbound': 'Unbound', 'acct.st.unknown': 'Processing',
       'acct.demo.name': 'Sample account', 'acct.demo.sub': 'Sample data · not connected to Binance', 'acct.demo.st': 'Sample data · not connected to Binance',
@@ -340,7 +340,7 @@
   /* ---------- UI: styles ---------- */
   function ensureCss() {
     if (document.getElementById('tda-css')) return;
-    var l = document.createElement('link'); l.id = 'tda-css'; l.rel = 'stylesheet'; l.href = base + 'td-account.css?v=r42';
+    var l = document.createElement('link'); l.id = 'tda-css'; l.rel = 'stylesheet'; l.href = base + 'td-account.css?v=r56b';
     document.head.appendChild(l);
   }
 
@@ -351,7 +351,10 @@
     site: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5V19a1.5 1.5 0 0 1-1.5 1.5H5.5A1.5 1.5 0 0 1 4 19z"/><path d="M10 20.5v-5h4v5"/></svg>',
     user: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.2 7.5-5.2s6.3 1.6 7.5 5.2"/></svg>',
     out: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4.5H7A2.5 2.5 0 0 0 4.5 7v10A2.5 2.5 0 0 0 7 19.5h7"/><path d="M16 8l4 4-4 4M20 12H10"/></svg>',
-    check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>'
+    check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.2 4.2L19 7"/></svg>',
+    gear: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+    globe: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.3 2.4 3.4 5.2 3.4 8.5s-1.1 6.1-3.4 8.5c-2.3-2.4-3.4-5.2-3.4-8.5s1.1-6.1 3.4-8.5z"/></svg>',
+    chev: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 6l6 6-6 6"/></svg>'
   };
 
   /* ---------- UI: language toggle (segmented 中文 / EN) ---------- */
@@ -402,6 +405,10 @@
           '<a class="tda-btn" role="menuitem" href="' + esc(authUrl('login', opt.next)) + '">' + esc(t('acct.login')) + '</a></div>';
       } else {
         var A = accounts();
+        if (opt.layout === 'r56') {
+          /* r56 · 顶部是可点的「个人资料」；下面币安子账户；再下面 设置 / 语言 / 退出登录 同一行格式 */
+          h += '<a class="tda-hd tda-prof" role="menuitem" href="' + esc(opt.profile || ROUTES.me) + '"><span class="tda-av ini">' + esc((displayName(s) || '?').slice(0, 1).toUpperCase()) + '</span><div><em>' + esc(t('acct.profile')) + '</em><b>' + esc(displayName(s)) + '</b><small>' + esc(s.email) + '</small></div><span class="tda-chev">' + ICON.chev + '</span></a>';
+        } else
         h += '<div class="tda-hd"><span class="tda-av ini">' + esc((displayName(s) || '?').slice(0, 1).toUpperCase()) + '</span><div><b>' + esc(displayName(s)) + '</b><small>' + esc(s.email) + '</small></div></div>';
         h += '<div class="tda-sec">' + esc(t('acct.binance')) + '</div>';
         if (!A.list.length) {
@@ -412,6 +419,13 @@
           h += '<a class="tda-mi add" role="menuitem" href="' + esc(ROUTES.connect) + '"><span class="tda-ic">' + ICON.plus + '</span><span class="tda-tx"><b>' + esc(t('acct.bindNew')) + '</b></span></a>';
         }
         h += '<hr>';
+        if (opt.layout === 'r56') {
+          h += '<a class="tda-mi row" role="menuitem" href="' + esc(opt.settings || '#/settings') + '"><span class="tda-ic">' + ICON.gear + '</span><span class="tda-tx"><b>' + esc(t('acct.settings')) + '</b></span><span class="tda-chev">' + ICON.chev + '</span></a>';
+          h += '<div class="tda-mi row lang"><span class="tda-ic">' + ICON.globe + '</span><span class="tda-tx"><b>' + esc(t('lang.label')) + '</b></span>' + langToggleHtml() + '</div>';
+          h += '<button type="button" class="tda-mi row out" role="menuitem" data-tda-out><span class="tda-ic">' + ICON.out + '</span><span class="tda-tx"><b>' + esc(t('acct.logout')) + '</b></span><span class="tda-chev"></span></button>';
+          h += '<p class="tda-foot"><span class="tda-demo">' + esc(t('demo.badge')) + '</span> ' + esc(t('demo.note')) + '</p>';
+          menu.innerHTML = h; return;
+        }
         if (ctx !== 'app') h += itemHtml({ label: t('acct.toApp'), href: ROUTES.app, icon: ICON.app });
         if (ctx !== 'site') h += itemHtml({ label: t('acct.toSite'), href: ROUTES.site, icon: ICON.site });
         (opt.items || []).forEach(function (it) { h += itemHtml(it); });

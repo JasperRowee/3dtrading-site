@@ -7,13 +7,13 @@
 <title>3dtrading · 登录 / 注册</title>
 <!-- r50 背景：自有城市＋大球（构图照参考图）。r49 · 独立登录预览（端口 8992）。只含登录 / 注册本身：不加载后台代码，不导向后台。
      存储命名空间 3dt.r49login.*（主题、语言、球面、本机演示账号与会话）。外部业务未接通：登录为本机演示。 -->
-<script>(function(){var d=document.documentElement,t='night',l='zh';try{l=localStorage.getItem('3dt.r49login.lang')==='en'?'en':'zh'}catch(e){}d.dataset.theme=t;try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}d.lang=l==='en'?'en':'zh-CN';d.dataset.lang=l})()</script>
+<script>(function(){var d=document.documentElement,t='night',l='zh';try{l=localStorage.getItem('3dt.r49login.lang')==='en'?'en':'zh'}catch(e){}try{var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='zh'){l=q;localStorage.setItem('3dt.r49login.lang',q)}}catch(e){}d.dataset.theme=t;try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}d.lang=l==='en'?'en':'zh-CN';d.dataset.lang=l})()</script>
 <link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/dodo-180.png">
-<link rel="stylesheet" href="login.css?v=r55">
+<link rel="stylesheet" href="login.css?v=r58&o=r57">
 </head>
 <body>
-<div class="scene" id="scene" aria-hidden="true"><canvas id="city"></canvas></div>
+<div class="scene" id="scene" aria-hidden="true"><canvas id="space"></canvas><canvas id="gx"></canvas><canvas id="orb"></canvas></div>
 
 <header class="top">
   <a class="logo" href="/3dtrading-site/site/" data-i18n-attr="aria-label:top.home"><img class="lg-night" src="assets/3dtrading-logo-white.svg" alt="3dtrading"><img class="lg-day" src="assets/3dtrading-logo.svg" alt="3dtrading"></a>
@@ -51,6 +51,12 @@
             <div class="inp"><input id="email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" required data-i18n-attr="placeholder:auth.emailPh" aria-describedby="mEmail"></div>
             <div class="msg" id="mEmail"></div></div>
 
+          <!-- r58 · sign-up email code (DEMO: no mail service; the code is shown in the 演示收件箱 box below, kept in page memory only) -->
+          <div class="fld" data-only="register" id="fCode"><label class="lab" for="code"><span data-i18n="auth.code">邮箱验证码</span><em data-i18n="auth.codeRule">6 位数字 · 10 分钟内有效</em></label>
+            <div class="inp has-btn"><input id="code" name="one-time-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" spellcheck="false" aria-describedby="mCode inbox" data-i18n-attr="placeholder:auth.codePh"><button type="button" class="sendc" id="sendc" data-i18n="auth.send">发送验证码</button></div>
+            <div class="msg" id="mCode"></div>
+            <div class="inbox" id="inbox" role="status" aria-live="polite" hidden></div></div>
+
           <div class="fld" id="fPw"><label class="lab" for="pw"><span data-i18n="auth.pw">密码</span><em data-only="register" data-i18n="auth.pwRule">至少 8 位，含字母和数字</em></label>
             <div class="inp has-eye"><input id="pw" name="password" type="password" autocomplete="current-password" required aria-describedby="mPw">
               <button type="button" class="eye" data-eye="pw" aria-pressed="false" data-i18n-attr="aria-label:auth.show"><svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/><path class="slash" d="M4 4l16 16"/></svg></button></div>
@@ -75,23 +81,30 @@
           <button class="btn pri" type="submit" id="go"><span class="spin" aria-hidden="true"></span><span id="goT"></span></button>
           <p class="fine"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg><span data-i18n="auth.fine">本机演示：账号只保存在这台浏览器，不校验密码，也不连接真实服务器。</span></p>
         </form>
+        <!-- r58 · second step when Google Authenticator 2FA is on for this account -->
+        <form id="tf" class="tf" novalidate hidden aria-labelledby="tfT">
+          <button type="button" class="link tfb" id="tfBack"><span aria-hidden="true">‹</span> <span data-i18n="auth.tfBack">换个账号</span></button>
+          <div class="tfi" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3.5 5 6.5v5c0 4.3 3 7.8 7 9 4-1.2 7-4.7 7-9v-5z"/><path d="M9.5 12.5h5M12 10v5"/></svg></div>
+          <h2 id="tfT" data-i18n="auth.tfT">两步验证</h2>
+          <p class="sub" id="tfS"></p>
+          <div class="note bad" id="tfAlert" role="alert"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg><span id="tfAlertT"></span></div>
+          <div class="fld" id="fTf"><label class="lab" for="tfc"><span id="tfL"></span></label>
+            <div class="inp"><input id="tfc" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="9" spellcheck="false" autocapitalize="off" aria-describedby="mTf"></div>
+            <div class="msg" id="mTf"></div></div>
+          <button class="btn pri" type="submit" id="tfGo"><span class="spin" aria-hidden="true"></span><span id="tfGoT"></span></button>
+          <button type="button" class="link tfr" id="tfRec"></button>
+          <p class="fine"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5.5M12 7.5v.01"/></svg><span data-i18n="auth.tfFine">验证码由 Google Authenticator 按时间生成，与币安或绑定页的二维码无关。</span></p>
+        </form>
       </div>
 
-      <div class="done" id="done" hidden aria-live="polite">
-        <span class="badge" data-i18n="auth.signedBadge">本机演示</span>
-        <h2 data-i18n="auth.signedT">已登录</h2>
-        <p class="sub" data-i18n="auth.signedS">这是这台浏览器上的演示登录，未连接真实后端。</p>
-        <div class="who"><span class="ini" id="dIni"></span><div><b id="dName"></b><small id="dEmail"></small></div></div>
-        <a class="btn pri" id="dGo" href="/3dtrading-site/bind/"><span data-i18n="auth.toBind">下一步：连接币安</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a>
-        <p class="fine" data-i18n="auth.bindNote">下一步在币安子账户里创建 API，并粘贴到绑定窗口。</p>
-        <button type="button" class="btn ghost" id="dOut" data-i18n="auth.switchUser">退出，换一个账号</button>
-      </div>
     </div>
   </section>
 </main>
 
-<script src="login.js?v=r55"></script>
-<script type="module" src="city.js?v=r55"></script>
-<script nomodule src="city2d.js?v=r55"></script>
+<script src="/3dtrading-site/dashboard/account/td-auth.js?v=r58"></script>
+<script src="login.js?v=r58"></script>
+<script src="planet.js?v=r58"></script>
+<script type="module" src="space.js?v=r58"></script>
+<script nomodule>window.__space={mode:"2d",why:"nomodule"};document.getElementById("space").hidden=true;dispatchEvent(new CustomEvent("td:space",{detail:window.__space}))</script>
 </body>
 </html>

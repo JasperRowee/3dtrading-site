@@ -69,8 +69,10 @@
     { key: 'spot_margin', required: true, zh: '启用现货、杠杆和股票交易', en: 'Enable Spot & Margin Trading' },
     { key: 'margin_loan', required: true, zh: '允许杠杆质押借币、还款和划转', en: 'Enable Margin Loan, Repay & Transfer' },
     { key: 'pm_trade', required: true, zh: '开启统一账户交易', en: 'Enable Portfolio Margin Trading' },
-    { key: 'universal_transfer', required: true, zh: '允许万向划转（只在本子账户内调度保证金）', en: 'Permits Universal Transfer (moves margin within this sub-account only)' },
-    { key: 'withdraw', required: false, forbidden: true, zh: '允许提现 —— 必须关闭', en: 'Enable Withdrawals — must stay OFF' }
+    { key: 'universal_transfer', required: true, zh: '允许万向划转', en: 'Permits Universal Transfer' },
+    /* r57: per Binance's own list (Jasper's image 2): prediction trading stays unticked; the pair whitelist is optional */
+    { key: 'prediction', required: false, zh: '允许预测交易权限', en: 'Enable Prediction Trading' },
+    { key: 'symbol_whitelist', required: false, optional: true, zh: '允许交易币对白名单', en: 'Enable Symbol Whitelist' }
   ];
   var PEM = examplePub('connect-self');
   /* real = null until a 3dtrading backend hands over its public key / outbound IPs; then the page drops the 「示例」 badges */

@@ -68,10 +68,125 @@ body.tut .toast{bottom:84px}
 a.tcb{text-decoration:none}
 
 /* r49b · embedded in the binding page: no own logo or language button (the page above has them) */
-html.embed .bnh .logo,html.embed #lg{display:none!important}
+/* r58: our own logo and the language switch are back in the tutorial bar (they were hidden in r49b) */
 @media (min-width:760px){html.embed .bnh{padding-right:44px}} /* room for the cursor's 演示 tag on the right-most avatar */
 /* r49h: opaque demo tag so sidebar text beneath it never shows through */
 .tag{background:#2f2910;box-shadow:0 0 0 1px rgba(240,185,11,.28)}
 /* r49k · behind the binding window: just the Binance home, no tutorial bar, hint, cursor, demo tag or step progress */
 html.intro .tc,html.intro #hint,html.intro .cur,html.intro .tag,html.intro .pg,html.intro .st{display:none!important}
 html.intro .hot{box-shadow:none!important;animation:none!important;outline:none!important}
+/* r57 · step 3 panel: API Key + 账户名称 + 绑定, right here (shared with the dashboard modal) */
+.panel .tk{display:flex;flex-direction:column;gap:6px}
+.panel .tk[hidden],.panel .tk-ok[hidden],.panel .res[hidden]{display:none}
+.panel .tk label{display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:#b7bdc6}
+.panel .tk label small{font-weight:500;color:#848e9c}
+.panel .tk input{height:44px;box-sizing:border-box;width:100%;border-radius:8px;border:1px solid #2b3139;background:#2b3139;color:#eaecef;padding:0 12px;font:inherit;font-size:14px;margin-bottom:8px}
+.panel .tk input::placeholder{color:#5e6673}
+.panel .tk input:focus{outline:0;border-color:#fcd535}
+.panel .tk .back{border:0;width:100%;cursor:pointer;font:inherit;font-size:15px;font-weight:700}
+.panel .err{margin:0;font-size:12.5px;font-weight:600;color:#f6465d}.panel .err:empty{display:none}
+.panel .res{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:8px;background:#2b3139;font-size:12.5px;line-height:1.5;color:#b7bdc6}
+.panel .res b{color:#eaecef;font-size:14px}
+.panel .demoH{margin:8px 0 0;font-size:12px;line-height:1.55;color:#848e9c}
+.panel .demoH b{font-size:11px;padding:1px 6px;margin-right:6px;border-radius:4px;background:rgba(47,220,188,.16);color:#2fdcbc}
+.panel .demoH code{font-family:ui-monospace,Menlo,monospace;background:#2b3139;color:#eaecef;padding:1px 6px;border-radius:4px;font-weight:700}
+.panel .tk-ok{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:6px 0}
+.panel .tk-ok h3{margin:2px 0 0;font-size:19px;outline:0}
+.tk-okn{margin:0;display:flex;gap:8px;align-items:center;font-size:15px}
+.tk-okn em{font-style:normal;font-size:11px;padding:2px 7px;border-radius:5px;background:rgba(47,220,188,.16);color:#2fdcbc}
+.tk-okp{margin:0;font-size:12.5px;line-height:1.6;color:#b7bdc6}
+.tk-okl{list-style:none;margin:2px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;width:100%}
+.tk-okl li{display:flex;gap:8px;align-items:center;padding:7px 10px;border-radius:8px;background:#2b3139;font-size:13px;font-weight:600;text-align:left}
+.tk-okl li i{font-style:normal;color:#0ecb81}.tk-okl small{margin-left:auto;font-weight:500;color:#848e9c;font-size:11.5px}
+.tk-okf{display:flex;flex-direction:column;gap:8px;width:100%;margin-top:6px}
+.tk-okf .tcb{height:44px;justify-content:center}
+.tk-okf .back{border:0;cursor:pointer;font:inherit;font-size:15px;font-weight:700;margin-top:0}
+.tk-burst{position:relative;width:80px;height:80px}
+.tk-burst svg{width:80px;height:80px;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.tk-burst circle{stroke:#0ecb81;stroke-width:4;stroke-dasharray:176;stroke-dashoffset:176;animation:tkRing .55s cubic-bezier(.2,.8,.2,1) forwards;transform:rotate(-90deg);transform-origin:center}
+.tk-burst path{stroke:#0ecb81;stroke-width:5;stroke-dasharray:44;stroke-dashoffset:44;animation:tkTick .35s .45s cubic-bezier(.2,.8,.2,1) forwards}
+.tk-burst i{position:absolute;left:50%;top:50%;width:6px;height:6px;margin:-3px;border-radius:50%;background:#fcd535;opacity:0;animation:tkDot .8s .5s cubic-bezier(.2,.8,.2,1) forwards}
+.tk-burst i:nth-of-type(even){background:#2fdcbc}
+.tk-burst i:nth-of-type(1){--a:0deg}.tk-burst i:nth-of-type(2){--a:36deg}.tk-burst i:nth-of-type(3){--a:72deg}.tk-burst i:nth-of-type(4){--a:108deg}.tk-burst i:nth-of-type(5){--a:144deg}
+.tk-burst i:nth-of-type(6){--a:180deg}.tk-burst i:nth-of-type(7){--a:216deg}.tk-burst i:nth-of-type(8){--a:252deg}.tk-burst i:nth-of-type(9){--a:288deg}.tk-burst i:nth-of-type(10){--a:324deg}
+@keyframes tkRing{to{stroke-dashoffset:0}}@keyframes tkTick{to{stroke-dashoffset:0}}
+@keyframes tkDot{0%{opacity:1;transform:rotate(var(--a)) translateX(26px)}100%{opacity:0;transform:rotate(var(--a)) translateX(54px) scale(.4)}}
+@media (prefers-reduced-motion:reduce){.tk-burst circle,.tk-burst path{animation:none;stroke-dashoffset:0}.tk-burst i{display:none}}
+
+/* ===================== r58 · 图解：真实 Logo、公钥点击复制、真实二维码、权限先锁、API Key 原位填写、成功反馈 ===================== */
+.bnh .logo img{height:24px}
+@media (max-width:759px){.bnh .logo img{height:19px}}
+html.intro .bnh .logo,html.intro #lg{visibility:hidden}
+/* public key: the field itself copies (abbreviated, never the whole key on screen; never a private key) */
+.bn-pk,.ba-pk{width:100%;box-sizing:border-box;cursor:pointer;font:inherit;color:inherit;text-align:left;gap:10px;transition:border-color .15s,background .15s}
+.bn-pk{border:1px solid #474d57}.ba-pk{border:1px solid transparent}
+.bn-pk code,.ba-pk code{font:13px ui-monospace,"SF Mono",Menlo,monospace;color:#eaecef;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bn-pk .cpi,.ba-pk .cpi{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:6px;background:rgba(252,213,53,.12)}
+.bn-pk svg,.ba-pk svg{width:15px;height:15px;fill:none;stroke:#fcd535;stroke-width:1.5;stroke-linecap:round}
+.bn-pk:hover,.ba-pk:hover{border-color:#fcd535}
+.bn-pk:focus-visible,.ba-pk:focus-visible{outline:2px solid #2fdcbc;outline-offset:2px}
+/* the QR box: this page's own address, no caption */
+.bn-qr{height:auto;padding:22px 0}
+.bn-qr .q.real{width:150px;height:150px;background:#fff;opacity:1;outline:0;border-radius:10px;padding:8px;box-sizing:border-box}
+.bn-qr .q.real svg{display:block;width:100%;height:100%}
+/* permissions locked until the trusted IPs are in */
+.bn-ck.lock,.ba-ck.lock{opacity:.55}
+.bn-ck.lock i{background:#2b3139;border-color:#474d57}.bn-ck.lock u{text-decoration:none}
+.ba-ck.lock i{background:#2b3139;box-shadow:inset 0 0 0 1.5px #474d57}
+.bn-ck .lk,.ba-ck .lk{flex:none;width:13px;height:13px;margin:2px 0 0 4px;fill:none;stroke:#848e9c;stroke-width:1.5}
+.bn-ck.no u{color:#b7bdc6}
+.bn-lockn,.ba-lockn{display:flex;align-items:center;gap:7px;margin:12px 0 2px;font-size:12.5px;color:#fcd535}
+.bn-lockn .lk,.ba-lockn .lk{width:14px;height:14px;fill:none;stroke:#fcd535;stroke-width:1.5;flex:none}
+.bn-ipin code{font:13px ui-monospace,Menlo,monospace;color:#eaecef}
+.bn-sv{display:flex;gap:10px;margin-top:18px}.bn-sv .bn-btn{min-width:96px;height:38px;font-size:14px}.bn-sv .bn-btn:not(.y){background:#2b3139;color:#eaecef}
+.bn-kv.mute,.ba-kv code.mute{color:#5e6673}
+.bn-kr.slot{display:block;margin-bottom:22px}
+.ba-kv.slot{display:block;padding:0;background:none;min-height:0}
+/* the API Key field in the Binance screen's own row */
+.tk-hold[hidden]{display:none}
+#tkF{display:flex;flex-direction:column;gap:8px;max-width:600px}
+#tkF .tk-in{position:relative}
+#tkF input{box-sizing:border-box;width:100%;height:44px;border-radius:8px;border:1px solid #474d57;background:#0b0e11;color:#eaecef;padding:0 12px;font:14px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;transition:border-color .15s,box-shadow .15s}
+#tkF #tkKey{padding-right:70px;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:13.5px}
+#tkF input::placeholder{color:#5e6673}
+#tkF input:focus{outline:0;border-color:#fcd535;box-shadow:0 0 0 3px rgba(252,213,53,.16)}
+#tkF input.bad{border-color:#f6465d;box-shadow:0 0 0 3px rgba(246,70,93,.14)}
+#tkF .tk-in small{position:absolute;right:12px;top:50%;transform:translateY(-50%);font:11.5px ui-monospace,Menlo,monospace;color:#848e9c;pointer-events:none}
+#tkF .tk-row{display:flex;gap:8px}#tkF .tk-row input{flex:1;min-width:0;height:42px}
+.tk-go{flex:none;height:42px;padding:0 26px;border:0;border-radius:8px;background:#fcd535;color:#202630;font:700 15px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;cursor:pointer;transition:background .15s,transform .1s}
+.tk-go:hover{background:#f0b90b}.tk-go:active{transform:scale(.98)}
+.tk-go:focus-visible{outline:2px solid #2fdcbc;outline-offset:2px}
+.tk-go.cue{box-shadow:0 0 0 3px rgba(47,220,188,.35)}
+#tkF .err{margin:0;font-size:12.5px;font-weight:600;color:#f6465d}#tkF .err:empty{display:none}
+#tkF .res{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:8px;background:#2b3139;font-size:12.5px;line-height:1.5;color:#b7bdc6}#tkF .res[hidden]{display:none}
+#tkF .res b{color:#eaecef;font-size:14px}
+#tkF .demoH{margin:2px 0 0;font-size:12px;line-height:1.55;color:#848e9c}
+#tkF .demoH b{font-size:11px;padding:1px 6px;margin-right:6px;border-radius:4px;background:rgba(47,220,188,.16);color:#2fdcbc}
+#tkF .demoH code{font-family:ui-monospace,Menlo,monospace;background:#2b3139;color:#eaecef;padding:1px 6px;border-radius:4px;font-weight:700}
+/* the result: one card over the screen */
+.panel.okp{position:absolute;inset:0;width:auto;border:0;padding:20px;display:grid;place-items:center;background:rgba(11,14,17,.7);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:30;overflow:auto}
+.panel.okp[hidden]{display:none}
+.panel.okp .tk-ok{width:min(430px,100%);box-sizing:border-box;display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:28px 24px 22px;border-radius:18px;background:#1e2329;border:1px solid #2b3139;box-shadow:0 30px 80px -20px rgba(0,0,0,.7);animation:tkIn .36s cubic-bezier(.2,.8,.2,1)}
+.panel.okp .tk-ok h3{margin:4px 0 0;font-size:20px;font-weight:700;color:#eaecef;outline:0}
+.tk-oks{margin:0;font-size:13.5px;color:#b7bdc6}
+.tk-burst{width:72px;height:72px}.tk-burst svg{width:72px;height:72px;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.tk-burst .rg{stroke:#0ecb81;stroke-width:4;stroke-dasharray:176;stroke-dashoffset:176;transform:rotate(-90deg);transform-origin:center;animation:tkRing .6s cubic-bezier(.2,.8,.2,1) forwards}
+.tk-burst .tk{stroke:#0ecb81;stroke-width:5;stroke-dasharray:44;stroke-dashoffset:44;animation:tkTick .36s .45s cubic-bezier(.2,.8,.2,1) forwards}
+.tk-acc{width:100%;box-sizing:border-box;display:flex;align-items:center;gap:12px;margin-top:6px;padding:12px 14px;border-radius:12px;background:rgba(14,203,129,.08);border:1px solid rgba(14,203,129,.35);text-align:left;animation:tkIn .4s .25s cubic-bezier(.2,.8,.2,1) both}
+.tk-acc i{flex:none;display:grid;place-items:center;width:38px;height:38px;border-radius:10px;background:#0b0e11;color:#0ecb81;font-style:normal;font-weight:700}
+.tk-acc span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tk-acc b{font-size:15px;color:#eaecef;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tk-acc small{font-size:12px;color:#848e9c}
+.tk-acc em{flex:none;font-style:normal;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:#0ecb81;color:#0b0e11}
+.tk-okl{list-style:none;margin:0;padding:0;width:100%;display:flex;flex-wrap:wrap;gap:6px}
+.tk-okl li{display:flex;gap:6px;align-items:center;padding:4px 10px;border-radius:999px;background:#2b3139;font-size:12px;color:#b7bdc6}.tk-okl li i{font-style:normal;color:#0ecb81}
+.panel.okp .tk-okp{margin:2px 0 0;font-size:12.5px;line-height:1.6;color:#848e9c;text-align:left}
+.tk-okp .dm{display:inline-block;font-size:11px;padding:1px 6px;margin-right:6px;border-radius:4px;background:rgba(252,213,53,.14);color:#fcd535}
+.tk-okf{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin-top:8px}
+.tk-okf .tcb,.tk-okf .tk-go{height:44px;justify-content:center;width:100%;padding:0 10px}
+@keyframes tkIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+@media (max-width:420px){.tk-okf{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.panel.okp .tk-ok,.tk-acc{animation:none}.tk-burst .rg,.tk-burst .tk{animation:none;stroke-dashoffset:0}}
+/* r58 · the result card covers the whole tutorial (fixed, scrolls on short phones) */
+.panel.okp{position:fixed;inset:0;z-index:200;display:flex;align-items:safe center;justify-content:center;padding:16px;background:rgba(11,14,17,.78)}
+@media (max-width:759px){.panel.okp .tk-ok{padding:22px 18px 18px;gap:8px}.tk-burst,.tk-burst svg{width:56px;height:56px}.panel.okp .tk-ok h3{font-size:18px}}
+.panel.okp{top:0;right:0;bottom:0;left:0;width:auto;max-height:none;border:0;border-radius:0}

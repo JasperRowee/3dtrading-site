@@ -8,9 +8,9 @@
 <link rel="icon" type="image/svg+xml" href="../assets/dodo.svg">
 <meta name="theme-color" content="#181a20">
 <link rel="stylesheet" href="page.css?v=r49l">
-<link rel="stylesheet" href="bind-bn.css?v=r49l">
-<link rel="stylesheet" href="connect-r45.css?v=r49l">
-<link rel="stylesheet" href="tut.css?v=r49l">
+<link rel="stylesheet" href="bind-bn.css?v=r58">
+<link rel="stylesheet" href="connect-r45.css?v=r58">
+<link rel="stylesheet" href="tut.css?v=r58">
 </head>
 <body class="tut">
 <!-- r49b · the illustrated tutorial of the 自行生成 route (from r48 connect.html), shown INSIDE the binding page (../index.html #guide)
@@ -31,12 +31,18 @@
 <main class="stage" id="stage" data-i18n-attr="aria-label:cx.stageL" aria-label="币安操作演示（不是真实币安页面）">
   <div class="view" id="view"><div class="bn" id="bn"></div><div class="ba" id="ba"></div></div>
   <span class="tag" data-i18n="cx.tag">操作演示 · 不是真实币安页面</span>
-  <section class="panel bnp" id="panel" hidden aria-labelledby="pT">
-    <h2 id="pT" data-i18n="cx.pT">把 API Key 填回 3dtrading</h2>
-    <p class="sub" data-i18n="cx.pSub">回到绑定页，把刚复制的 API Key 粘贴进去，点「绑定」。</p>
-    <a class="back" id="backKey" href="../#key" data-i18n="cx.backKey">回到绑定页粘贴</a>
-    <p class="note" data-i18n="cx.note">自行生成的 API 只有 API Key，没有 Secret Key。演示版只检查格式，账户保持「未连接」。</p>
-  </section>
+  <!-- r58: no side panel. The API Key field below is moved INTO the Binance screen's own 「API Key」 row on the last step
+       (empty, nothing pre-filled). The panel is only the bind result, shown over the screen. The key is never stored or sent. -->
+  <div class="tk-hold" id="tkHold" hidden>
+    <form class="tk" id="tkF" novalidate autocomplete="off">
+      <div class="tk-in"><input id="tkKey" name="bn58-k" autocomplete="off" spellcheck="false" autocapitalize="off" maxlength="80" placeholder="粘贴币安显示的 API Key" data-i18n-attr="placeholder:cx.kPh;aria-label:cx.kL" aria-label="API Key" aria-describedby="tkErr tkDemo"><small id="tkN" aria-hidden="true">0 / 64</small></div>
+      <div class="tk-row"><input id="tkNm" name="bn58-n" maxlength="24" autocomplete="off" spellcheck="false" placeholder="账户名称（可选）" data-i18n-attr="placeholder:cx.nL;aria-label:cx.nL" aria-label="账户名称（可选）" aria-describedby="tkErr"><button type="submit" class="tk-go" id="backKey" data-i18n="cx.bind">绑定</button></div>
+      <p class="err" id="tkErr" role="alert"></p>
+      <div class="res" id="tkRes" role="status" hidden></div>
+      <p class="demoH" id="tkDemo" data-i18n-html="cx.demoH"><b>演示</b>没有真实币安时，输入 <code>1234</code> 可模拟绑定成功（演示账户，不连接币安）。</p>
+    </form>
+  </div>
+  <section class="panel okp" id="panel" hidden role="dialog" aria-modal="true" aria-labelledby="tkOkT"><div class="tk-ok" id="tkOk"></div></section>
   <nav class="tc" id="tc" data-i18n-attr="aria-label:cx.tcL" aria-label="教程控制">
     <a class="tcb x" id="tcClose" href="../#key"><span aria-hidden="true">↑</span> <span data-i18n="cx.close">返回绑定页</span></a>
     <div class="tcm">
@@ -51,9 +57,12 @@
 <div class="hint" id="hint" role="status" aria-live="polite" hidden></div>
 <div class="toast" id="toast" role="status"></div>
 
-<script src="../shim.js?v=r49l"></script>
-<script src="bind-bn.js?v=r49l"></script>
-<script src="bn-app.js?v=r49l"></script>
-<script src="tutorial.js?v=r49l"></script>
+<script src="../shim.js?v=r58"></script>
+<script src="../../dashboard/account/td-bind.js?v=r58"></script>
+<script src="../../dashboard/account/td-auth.js?v=r58"></script>
+<script src="../../dashboard/account/vendor/qrcode.js?v=r58"></script>
+<script src="bind-bn.js?v=r58"></script>
+<script src="bn-app.js?v=r58"></script>
+<script src="tutorial.js?v=r58"></script>
 </body>
 </html>

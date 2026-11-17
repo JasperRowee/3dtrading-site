@@ -154,26 +154,33 @@
       /* r48: the 自行生成 创建API sheet — sub-account, label and the public-key box (示意: drawn from Binance's FAQ wording, the
        * App's own screen for this route is not in the Excepta screenshots) */
       if (o.sheet === 'pub') body += sheet(w.cT, '<small>' + esc(w.cSub) + '</small><div class="ba-in sel">' + esc(w.vmail) + I.tri + '</div><small>' + esc(w.cLabel) + '</small><div class="ba-in">' + esc(cfg.labelEx) + '</div>' +
-        '<small>' + esc(w.pubL) + '</small><div class="ba-in ba-ta' + (cfg.pubPem ? ' filled' : '') + '">' + esc(cfg.pubPem || w.pubPh) + '</div>' +
+        '<small>' + esc(w.pubL) + '</small><button type="button" class="ba-in ba-pk" data-copy="pub" aria-label="' + esc(w === W.en ? 'Copy the full public key' : '复制完整公钥') + '"><code>' + esc(cfg.pubShort || '') + '</code><span class="cpi" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8.5" height="8.5" rx="1.8"/><path d="M3 10.5V3.8C3 3.3 3.3 3 3.8 3h6.7"/></svg></span></button>' +
         '<span class="ba-btn y block" data-t="next2">' + esc(w.next) + '</span>', 'tall');
       if (o.sheet === 'label') body += sheet(w.cT, '<small>' + esc(w.cSub) + '</small><div class="ba-in sel">' + esc(w.vmail) + I.tri + '</div><small>' + esc(w.cLabel) + '</small><div class="ba-in focus">' + esc(cfg.labelEx) + '<i class="caret"></i></div>' +
         '<span class="ba-btn y block" data-t="next2">' + esc(w.next) + '</span>', 'mid');
       return '<div class="ba-app">' + body + '</div>';
     },
     /* Excepta pp.21–23: 编辑API (保存 / 取消 at the top), 子账户, 标签 HMAC·统一账户, API 密钥 + 密钥 with Copy, API权限, IP访问限制 */
+    /* r58 · parts: 'keys' (just created: Reading only, the rest locked), 'iponly' (pick trusted IPs), 'ips' (add the two IPs),
+     * 'save' (IPs in: permissions unlocked + ticked, then 保存), 'bind' (saved: the API Key row is EMPTY — the tutorial's own
+     * API Key field goes there). */
     key: function (w, cfg, o, en) {
-      var part = o.part;
-      var perms = permsOf(cfg).map(function (p) { return '<span class="ba-ck' + (p.required && (part !== 'keys' || o.saved) ? ' on' : '') + (p.forbidden ? ' off' : '') + '"><i></i>' + esc(en ? p.en : p.zh) + '</span>'; }).join('');
+      var part = o.part, open = part === 'save' || part === 'bind', ipsIn = part === 'ips' || open, tr = part !== 'keys';
+      var LK = '<svg class="lk" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.6"/><path d="M5.3 7V5.2a2.7 2.7 0 0 1 5.4 0V7"/></svg>';
+      var perms = permsOf(cfg).map(function (p) {
+        var lock = !open && p.key !== 'read', on = p.key === 'read' || (open && p.required);
+        return '<span class="ba-ck' + (on ? ' on' : '') + (lock ? ' lock' : '') + (open && p.key === 'prediction' ? ' no' : '') + '"><i></i>' + esc(en ? p.en : p.zh) + (lock ? LK : '') + '</span>';
+      }).join('');
       return '<div class="ba-app">' + nav(w.subT, I.x) + '<div class="ba-key">' +
         '<div class="ba-eh"><b>' + esc(w.edit) + '</b><span class="ba-btn y sm"' + (part === 'save' ? ' data-t="save"' : '') + '>' + esc(w.save) + '</span><span class="ba-btn sm">' + esc(w.cancel) + '</span></div>' +
         '<small>' + esc(w.cSub) + '</small><p class="ba-v">' + esc(w.vmail) + '</p>' +
         '<small>' + esc(w.label) + '</small><div class="ba-kt"><span class="t1">' + (o.self ? 'Ed25519' : 'HMAC') + '</span><span class="t2">' + esc(w.pm) + '</span><b>' + esc(cfg.labelEx) + '</b></div>' +
-        '<small>' + esc(w.key) + '</small><div class="ba-kv"><code>' + esc(cfg.keyEx) + '</code><span' + (part === 'keys' ? ' data-t="copyk"' : '') + '>' + esc(w.copy) + '</span></div>' +
-        (o.self ? '' : '<small>' + esc(w.sec) + '</small><div class="ba-kv"><code>' + esc(cfg.secretEx) + '</code><span' + (part === 'keys' ? ' data-t="copys"' : '') + '>' + esc(w.copy) + '</span></div>') +
+        '<small>' + esc(w.key) + '</small><div class="ba-kv' + (part === 'bind' ? ' slot' : '') + '" data-slot="key">' + (part === 'bind' ? '' : '<code class="mute">' + esc(en ? 'Shown after saving' : '保存后显示') + '</code>') + '</div>' +
         '<small>' + esc(w.perm) + '</small><div class="ba-grid one">' + perms + '</div>' +
-        '<b class="ba-ipt">' + esc(w.ipT) + '</b><div class="ba-rad"><i></i>' + esc(w.ipAny) + '</div><div class="ba-rad' + (part === 'perm' || part === 'ips' || part === 'save' ? ' on' : '') + '"' + (part === 'perm' ? ' data-t="iponly"' : '') + '><i></i>' + esc(w.ipOnly) + '</div>' +
-        (o.self ? '<div class="ba-chips">' + (part === 'ips' || part === 'save' ? ((cfg.kit && cfg.kit.ips) || []).map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') : '') + '</div>' +
-          '<div class="ba-in mute ba-ipin">' + esc(w.ipIn) + '<b' + (part === 'ips' ? ' data-t="ipadd"' : '') + '>' + esc(w.ipOk) + '</b></div>' : '<div class="ba-in mute">' + esc(w.ipPh) + '</div>') + '</div></div>';
+        (open ? '' : '<p class="ba-lockn">' + LK + esc(en ? 'Trading permissions unlock once trusted IPs are added.' : '添加受信任的 IP 后，才能勾选交易权限。') + '</p>') +
+        '<b class="ba-ipt">' + esc(w.ipT) + '</b><div class="ba-rad' + (tr ? '' : ' on') + '"><i></i>' + esc(w.ipAny) + '</div><div class="ba-rad' + (tr ? ' on' : '') + '"' + (part === 'iponly' ? ' data-t="iponly"' : '') + '><i></i>' + esc(w.ipOnly) + '</div>' +
+        (o.self ? '<div class="ba-chips">' + (ipsIn ? ((cfg.kit && cfg.kit.ips) || []).map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') : '') + '</div>' +
+          (tr ? '<div class="ba-in mute ba-ipin">' + esc(w.ipIn) + '<b' + (part === 'ips' ? ' data-t="ipadd"' : '') + '>' + esc(w.ipOk) + '</b></div>' : '') : '<div class="ba-in mute">' + esc(w.ipPh) + '</div>') + '</div></div>';
     }
   };
   global.TD_BNAPP = {

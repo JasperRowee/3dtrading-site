@@ -65,3 +65,24 @@
 html[data-theme=day] .tdt-tm{color:#1a2025;box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}html[data-theme=day] .tdt-tm:hover{background:rgba(0,0,0,.04)}
 html[data-theme=day] .tdt-tm .s{display:block}html[data-theme=day] .tdt-tm .m{display:none}
 @media (max-width:760px){.tdt-tm{width:32px;height:32px;margin-right:8px}.tdt-tm svg{width:16px;height:16px}}
+
+/* r56 · 个人资料入口 + 统一行（设置 / 语言 / 退出登录） */
+a.tda-prof{text-decoration:none;cursor:pointer;outline:0;transition:filter .2s}
+a.tda-prof:hover{filter:brightness(1.12)}
+a.tda-prof:focus-visible{box-shadow:0 0 0 2px var(--tda-bg),0 0 0 4px var(--tda-brand)}
+.tda-prof>div{flex:1;min-width:0}
+.tda-prof em{display:block;font-style:normal;font-size:11px;font-weight:650;color:var(--tda-brand);letter-spacing:.02em;margin-bottom:1px}
+.tda-prof b,.tda-prof small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tda-prof small{word-break:normal!important}
+.tda-chev{width:18px;height:18px;flex:none;display:grid;place-items:center;color:var(--tda-ink3)}
+.tda-prof .tda-chev{color:#9aa3b0;position:relative;z-index:1}
+.tda-chev svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tda-mi.row{min-height:46px}
+.tda-mi.row .tda-tx b{font-size:13.5px}
+.tda-mi.row.lang{cursor:default}
+.tda-mi.row.lang:hover{background:none}
+.tda-mi.row.lang .tda-lang button{height:28px;min-width:42px}
+/* r56 · 三行同一高度（手机上的语言按钮也不撑高这一行） */
+.tda-scope .tda-mi.row{height:46px;min-height:46px;box-sizing:border-box;padding-top:0;padding-bottom:0}
+.tda-scope .tda-mi.row.lang .tda-lang{padding:2px}
+.tda-scope .tda-mi.row.lang .tda-lang button{height:30px!important;min-height:0!important;min-width:44px}

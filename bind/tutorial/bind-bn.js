@@ -142,26 +142,35 @@
   function shortPub(cfg, w) { if (cfg && cfg.pubText) return cfg.pubText; var k = kitOf(cfg); return k ? k.fingerprint : (w === W.en ? 'shown after you apply' : '申请绑定后显示'); }
   function ipsOf(cfg) { var k = kitOf(cfg); return k && k.ips && k.ips.length ? k.ips : null; }
   function permsOf(cfg) { var k = kitOf(cfg); return k && k.perms ? k.perms : []; }
+  /* r58 · keyPage parts: 'keys' (just created: only Reading on, the rest locked), 'ips' (editing: add the two IPs first — the
+   * trading permissions stay locked), 'perm' (IPs in: permissions unlocked and ticked, then 保存), 'bind' (saved: the API Key
+   * row is left EMPTY — the tutorial puts its own API Key field right there). The QR box is filled by tutorial.js with a code
+   * for this page's own address (no caption). */
+  var LOCK = '<svg class="lk" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.6"/><path d="M5.3 7V5.2a2.7 2.7 0 0 1 5.4 0V7"/></svg>';
   function keyPage(w, cfg, part) {
     var en = w.brand === 'Binance'; // r44: w is often a merged copy (gw / hw), so compare by value — the English permission grid was showing Chinese
+    var open = part === 'perm' || part === 'bind', ipsIn = part === 'perm' || part === 'bind';
     var perms = permsOf(cfg).map(function (p) {
-      return '<span class="bn-ck' + (p.required ? ' on' : '') + (p.forbidden ? ' off' : '') + '"><i></i><u>' + esc(en ? p.en : p.zh) + '</u></span>';
+      var lock = !open && p.key !== 'read', on = p.key === 'read' || (open && p.required);
+      return '<span class="bn-ck' + (on ? ' on' : '') + (lock ? ' lock' : '') + (open && p.key === 'prediction' ? ' no' : '') + '"' + (lock ? ' aria-disabled="true"' : '') + '><i></i><u>' + esc(en ? p.en : p.zh) + '</u>' + (lock ? LOCK : '') + '</span>';
     }).join('') || '<span class="bn-ck"><u>' + esc(en ? 'Permission list appears after you apply' : '申请绑定后显示权限清单') + '</u></span>';
-    var ips = ipsOf(cfg);
+    var ips = ipsOf(cfg) || [];
     return '<div class="bn-key">' +
-      '<div class="bn-qr"><div class="q"></div><span>' + esc(w.qr) + '</span></div>' +
+      '<div class="bn-qr" data-slot="qr"><div class="q"></div></div>' +
       '<div class="bn-kd"><div class="bn-kl">' + esc(w.lbl) + '</div><div class="bn-tags"><span class="t1">Ed25519</span><span class="t2">' + esc(w.pm) + '</span><b>' + esc(cfg.labelEx) + '</b></div>' +
       '<div class="bn-warn">' + I.info + '<span>' + esc(w.warn) + '</span></div>' +
-      '<div' + (part === 'keys' ? ' data-focus' : '') + '>' +
+      '<div' + (part === 'bind' ? ' data-focus' : '') + '>' +
       '<div class="bn-kl">' + esc(w.pub) + '</div><div class="bn-kr"><span class="bn-kv">' + esc(shortPub(cfg, w)) + '</span></div>' +
-      '<div class="bn-kl">' + esc(w.key) + '</div><div class="bn-kr" data-slot="key"><span class="bn-kv">' + esc(cfg.keyEx) + '</span><span class="bn-copy"' + (part === 'keys' ? ' data-t="copy"' : '') + '>' + esc(w.copy) + '</span></div></div>' +
-      '<div class="bn-perm"' + (part === 'perm' ? ' data-focus' : '') + '><div class="bn-kl bn-plh"><span>' + esc(w.perm) + '</span><span class="bn-edit">' + esc(w.edit) + '</span></div><div class="bn-grid">' + perms + '</div>' +
+      '<div class="bn-kl">' + esc(w.key) + '</div><div class="bn-kr' + (part === 'bind' ? ' slot' : '') + '" data-slot="key">' + (part === 'bind' ? '' : '<span class="bn-kv mute">' + esc(en ? 'Shown after saving' : '保存后显示') + '</span>') + '</div></div>' +
+      '<div class="bn-perm"' + (part === 'perm' || part === 'ips' ? ' data-focus' : '') + '><div class="bn-kl bn-plh"><span>' + esc(w.perm) + '</span>' + (part === 'keys' ? '<span class="bn-edit">' + esc(w.edit) + '</span>' : '') + '</div><div class="bn-grid">' + perms + '</div>' +
+      (open ? '' : '<p class="bn-lockn">' + LOCK + esc(en ? 'Trading permissions unlock once trusted IPs are added.' : '添加受信任的 IP 后，才能勾选交易权限。') + '</p>') +
       '<div class="bn-ipt">' + esc(w.ipT) + '</div>' +
-      '<div class="bn-rad"><i></i>' + esc(w.ipAny) + ' <em>' + esc(w.ipAnyW) + '</em></div>' +
-      '<div class="bn-rad on"><i></i>' + esc(w.ipOnly) + '</div>' +
-      '<div class="bn-chips" data-slot="ips">' + (ips || []).map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') + '</div>' +
-      '<div class="bn-ipin"><span>' + esc(w.ipPh) + '</span><b' + (part === 'perm' ? ' data-t="ipok"' : '') + '>' + esc(w.ok) + '</b></div></div>' +
-      '</div></div>';
+      '<div class="bn-rad' + (part === 'keys' ? ' on' : '') + '"><i></i>' + esc(w.ipAny) + ' <em>' + esc(w.ipAnyW) + '</em></div>' +
+      '<div class="bn-rad' + (part === 'keys' ? '' : ' on') + '"><i></i>' + esc(w.ipOnly) + '</div>' +
+      (part === 'keys' ? '' : '<div class="bn-chips" data-slot="ips">' + (ipsIn ? ips.map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') : '') + '</div>' +
+      '<div class="bn-ipin"><span>' + (part === 'ips' ? '<code>' + esc(ips.join(' ')) + '</code>' : esc(w.ipPh)) + '</span><b' + (part === 'ips' ? ' data-t="ipok"' : '') + '>' + esc(w.ok) + '</b></div>') +
+      (part === 'perm' ? '<div class="bn-sv"><span class="bn-btn y" data-t="save">' + esc(en ? 'Save' : '保存') + '</span><span class="bn-btn">' + esc(en ? 'Cancel' : '取消') + '</span></div>' : '') +
+      '</div></div></div>';
   }
 
   /* r47: the home page's right column, as on Binance's own home: a market card (illustrative static figures, never live data) */
@@ -367,12 +376,12 @@
       return frame(w, 1, apiPage(w), modal(w.cTitle,
         '<div class="bn-f"><small>' + esc(w.cSub) + '</small><div class="bn-in sel">3dtusdt01_virtual@example.com' + I.tri + '</div></div>' +
         '<div class="bn-f"><small>' + esc(w.cLabel) + '</small><div class="bn-in">' + esc(cfg.labelEx) + '</div></div>' +
-        '<div class="bn-f"><small>' + esc(GW[l].pubL) + '</small><div class="bn-in bn-ta' + (cfg.pubPem ? ' filled' : '') + '" data-slot="pub">' + esc(cfg.pubPem || GW[l].pubPh) + '</div></div>' +
+        '<div class="bn-f"><small>' + esc(GW[l].pubL) + '</small><button type="button" class="bn-in bn-pk" data-slot="pub" data-copy="pub" aria-label="' + esc(l === 'en' ? 'Copy the full public key' : '复制完整公钥') + '"><code>' + esc(cfg.pubShort || '') + '</code><span class="cpi" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8.5" height="8.5" rx="1.8"/><path d="M3 10.5V3.8C3 3.3 3.3 3 3.8 3h6.7"/></svg></span></button></div>' +
         '<span class="bn-btn y block" data-t="next3">' + esc(w.next) + '</span>', 'tall'));
     },
     selfKeys: function (l, cfg) { var w = gw(l, 'self'); return frame(w, 1, head(w, w.apiTitle, '') + keyPage(w, cfg, 'keys')); },
     sysKeys: function (l, cfg) { var w = gw(l, 'hmac'); return frame(w, 1, head(w, w.apiTitle, '') + hKeyPage(w, cfg, 'keys')); },
-    perm: function (l, cfg, kind) { var w = gw(l, kind); return frame(w, 1, head(w, w.apiTitle, '') + (kind === 'self' ? keyPage(w, cfg, 'perm') : hKeyPage(w, cfg, 'perm'))); }
+    perm: function (l, cfg, kind, part) { var w = gw(l, kind); return frame(w, 1, head(w, w.apiTitle, '') + (kind === 'self' ? keyPage(w, cfg, part || 'perm') : hKeyPage(w, cfg, 'perm'))); }
   };
   global.TD_BN = { scenes: scenes, clips: clips, hmac: hmac, guide: guide, width: 1100, words: W, icons: I };
 })(window);

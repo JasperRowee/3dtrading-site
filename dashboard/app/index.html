@@ -9,13 +9,27 @@ try{localStorage.removeItem('3dtrading.dash.layout')}catch(e){}</script>
 <title>3dtrading · 后台</title>
 <script>window.TD_ROUTES={app:location.pathname+'#/dashboard',me:location.pathname+'#/me'};</script>
 <!-- r50 (Nova): standalone dashboard copy on 8996. Website, log-in and Binance binding are the r49 previews on their own ports. -->
-<script>window.TD_ROUTES=Object.assign(window.TD_ROUTES||{},{site:'/3dtrading-site/site/',auth:'/3dtrading-site/login/',connect:'/3dtrading-site/bind/?from=app',bind:'/3dtrading-site/bind/?from=app',login:'/3dtrading-site/login/?mode=login',signup:'/3dtrading-site/login/?mode=register',entry:'/3dtrading-site/login/'});</script>
+<script>window.TD_ROUTES=Object.assign(window.TD_ROUTES||{},{site:'/3dtrading-site/site/',auth:'/3dtrading-site/login/',connect:'#/bind',bind:'#/bind',login:'/3dtrading-site/login/?mode=login',signup:'/3dtrading-site/login/?mode=register',entry:'/3dtrading-site/login/'});</script>
 <script src="../account/td-account.js?v=r45b" data-app="index.html#/dashboard"></script>
 <script src="../account/api-adapter.js?v=r47"></script>
+<script src="../account/td-bind.js?v=r58"></script>
+<script src="../account/td-auth.js?v=r58"></script>
+<script src="../account/vendor/qrcode.js"></script>
+<script>/* r58: an account with Google Authenticator 2FA on is only shown after the code was checked in this tab
+   (log-in page → one-time ticket → enter.html marks this tab). Otherwise back to log in. */
+(function(){try{var s=window.TDAccount&&TDAccount.getSession&&TDAccount.getSession();if(s&&s.email&&window.TDAuth&&TDAuth.tfaOn(s.email)&&!TDAuth.isOk(s.email)){document.documentElement.classList.add('td-gate');location.replace('/3dtrading-site/login/?mode=login&tfa=1')}}catch(e){}})();</script>
 <script src="demo-dashboard.js?v=r48c"></script>
 <script>/* r38：不再自动建立演示登录，也不再跳去登录页。未登录时后台自己显示「未登录」，由用户选择登录或用演示账号进入。
    r41：日/夜是后台自己的选择（'3dt.theme.app'，默认日间），和官网（'3dt.theme.site'）互不影响；旧的共用键 '3dt.theme' 只迁移给官网后删除；模块缺失时不展示后台 */
-/* r55: fixed theme, no switch */ document.documentElement.dataset.theme='day';try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}
+/* r56: 后台自己的个性化（昼 / 夜 / 跟随系统），只作用于后台；官网和登录页不切换。默认日间纯白。 */
+(function(){var K='3dt.theme.dash',de=document.documentElement,v='day';try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)});v=localStorage.getItem(K)||'day'}catch(e){}
+if(!/^(day|night|system)$/.test(v))v='day';var mq=window.matchMedia?matchMedia('(prefers-color-scheme: dark)'):{matches:false};
+function eff(){return v==='night'||(v==='system'&&mq.matches)?'night':'day'}
+function apply(){var n=eff();if(de.dataset.theme!==n){de.dataset.theme=n;try{dispatchEvent(new CustomEvent('td:theme',{detail:n}))}catch(e){}}de.dataset.themePref=v}
+apply();if(mq.addEventListener)mq.addEventListener('change',function(){if(v==='system')apply()});
+window.__dashTheme={key:K,get:function(){return v},effective:eff,set:function(n){v=/^(day|night|system)$/.test(n)?n:'day';try{localStorage.setItem(K,v)}catch(e){}de.classList.add('thx');clearTimeout(window.__thxT);window.__thxT=setTimeout(function(){de.classList.remove('thx')},700);apply()}};
+addEventListener('storage',function(e){if(e.key===K){v=e.newValue||'day';apply()}});
+try{var P=JSON.parse(localStorage.getItem('3dt.dash.prefs')||'{}');if(P&&P.hide)de.classList.add('pv-hide')}catch(e){}})();
 if(!window.TDAccount||!window.TDApi){document.documentElement.classList.add('td-gate');document.addEventListener('DOMContentLoaded',function(){document.body.innerHTML='<p style="font:15px system-ui;padding:40px">账户模块没有加载，后台暂不可用。</p>'})}</script>
 <style>html.td-gate body{visibility:hidden}</style>
 <script>try{var d=new URLSearchParams(location.search).get('density')||localStorage.getItem('3dtrading.dash.density');if(d==='compact')document.documentElement.classList.add('cp')}catch(e){}</script>
@@ -2494,6 +2508,370 @@ html.rm .ddp.in.think .ddp-pu,html.rm .ddp.in.think .ddp-head svg,html.rm .ddp.i
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#06090b">
+<style id="r56">
+/* ===== r56 · Dodo 居中弹窗 ===== */
+.ddm-scrim{position:fixed;inset:0;z-index:79;background:rgba(11,14,16,.42);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+.ddm-scrim[hidden],.ddm[hidden]{display:none!important}
+.ddm{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:80;width:min(860px,calc(100vw - 48px));height:min(820px,calc(100vh - 80px));background:var(--bg);border-radius:22px;box-shadow:0 40px 100px -30px rgba(10,14,16,.5),0 0 0 1px var(--line2);overflow:hidden;display:flex;flex-direction:column}
+body.ddm-open{overflow:hidden}
+.ddm .ai{height:100%!important;flex:1;min-height:0;display:flex}
+.ddm .chat{height:100%!important}
+.ddm .chat-hd{height:58px!important;max-width:none!important;padding:0 12px 0 20px!important;border-bottom:1px solid var(--line2)!important}
+.ddm .chat-hd>*{position:static!important;width:auto!important;height:auto!important;overflow:visible!important;clip:auto!important}
+.ddm .chat-hd .who{display:flex;align-items:center;gap:8px;min-width:0}
+.ddm .chat-hd h1{font-size:17px;margin:0}
+.ddm .chat-hd .sp{flex:1}
+.ddm #cvTg,.ddm #cvCurT{display:inline-flex!important}
+.ddm #cvNew2{display:inline-flex!important}
+.ddm .chat.fresh #cvNew2{display:none!important}
+.ddm #cvPane{display:flex!important}
+.ddm #cvSc{display:none!important}
+body.cv-open .ddm #cvSc{display:block!important;position:absolute;inset:0;z-index:20}
+.ddm .cv-list{position:absolute;z-index:21;top:8px;right:8px;bottom:8px;width:min(340px,calc(100% - 16px))}
+.ddm .stream,.ddm .composer{width:100%;max-width:760px;margin:0 auto;box-sizing:border-box}
+.ddm .composer{padding:0 20px 18px!important}
+.ddm .stream{padding:0 20px}
+.ddm .chat.fresh .stream{flex:1}
+.ddm-x{width:38px;justify-content:center;padding:0!important;font-size:15px}
+.ddm .dsb-tg{position:static!important;border:0;background:none;border-radius:11px;height:38px;padding:0 12px;font-size:14px}
+.ddm .dsb-tg:hover{background:var(--hov)}
+/* 综合设置：弹窗里的右侧面板 */
+.ddm .dsb{display:flex!important;position:absolute!important;z-index:31;top:0;right:0;bottom:0;width:min(340px,92%);border-radius:0!important;border:0!important;border-left:1px solid var(--line2)!important;height:auto!important;box-shadow:-18px 0 50px -24px rgba(0,0,0,.35)!important;transform:translateX(104%);visibility:hidden;transition:transform .28s var(--ease,ease),visibility 0s .28s}
+body.dsb-open .ddm .dsb{transform:none;visibility:visible;transition:transform .28s var(--ease,ease),visibility 0s}
+.ddm .dsb-scrim:not([hidden]){display:block!important;position:absolute!important;inset:0;z-index:30;background:rgba(10,14,15,.22)}
+.dds-r{display:flex;align-items:center;gap:12px;padding:9px 4px}
+.dds-r>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.dds-r b{font-size:13.5px;font-weight:600}.dds-r small{font-size:12px;color:var(--ink3);line-height:1.45}
+.dds-go{margin:2px 4px 0;display:inline-flex;align-items:center;text-decoration:none}
+@media (max-width:760px){
+  .ddm{left:0;top:0;transform:none;width:100vw;height:100dvh;border-radius:0;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+  .ddm .chat-hd{height:52px!important;padding:0 6px 0 14px!important}
+  .ddm .composer{padding:0 12px 10px!important}.ddm .stream{padding:0 12px}
+  .ddm .dsb{width:min(340px,90%)}
+  .ddm .ai-st{display:none!important}
+}
+@media (prefers-reduced-motion:reduce){.ddm .dsb{transition:none!important}}
+html.rm .ddm .dsb{transition:none!important}
+/* 开关 */
+.sw{appearance:none;flex:none;position:relative;width:44px;height:26px;border-radius:999px;border:0;background:var(--line);cursor:pointer;padding:0;transition:background .18s}
+.sw i{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .18s}
+.sw[aria-checked="true"]{background:var(--brand)}
+.sw[aria-checked="true"] i{transform:translateX(18px)}
+.sw:focus-visible,.r56seg button:focus-visible{outline:2px solid var(--brandD);outline-offset:2px}
+/* 设置页 */
+.r56seg button{appearance:none;border:0;background:none;height:32px;padding:0 12px;border-radius:8px;font:inherit;font-size:13.5px;font-weight:600;color:var(--ink2);cursor:pointer;white-space:nowrap}
+.r56seg button[aria-pressed="true"]{background:var(--sf-hi);color:var(--ink);box-shadow:0 1px 3px rgba(15,23,42,.12)}
+html[data-theme="night"] .r56seg button[aria-pressed="true"]{background:var(--hov);box-shadow:none}
+.set-pg .me-row>div:first-child{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.set-pg .me-row small{color:var(--ink3)}
+.set-pg .me-row>a.btn{text-decoration:none;display:inline-flex;align-items:center}
+@media (max-width:760px){.set-pg .me-row{flex-wrap:nowrap}.set-pg .r56seg button{padding:0 9px}}
+@media (max-width:400px){.set-pg .me-row{flex-wrap:wrap}}
+/* 隐私：隐藏金额 */
+html.pv-hide .num,html.pv-hide #kpis b,html.pv-hide .kpi b,html.pv-hide .bal b,html.pv-hide .tx-hero b{filter:blur(7px);transition:filter .2s}
+html.pv-hide .num:hover{filter:blur(7px)}
+/* 绑定币安弹窗 */
+#modal .bnm{display:flex;flex-direction:column;gap:12px}
+.bnm-lead{margin:0;font-size:14px;line-height:1.55;color:var(--ink2)}
+.bnm-lead .stt{margin-left:6px}
+.bnm-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:10px 0;border-top:1px solid var(--line2)}
+.bnm-k{grid-column:1/-1;font-size:12.5px;font-weight:700;color:var(--ink3);display:flex;align-items:center;gap:6px}
+.bnm-pem{margin:0;font-size:11px;line-height:1.45;white-space:pre-wrap;word-break:break-all;background:var(--soft);border-radius:8px;padding:8px 10px;color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.bnm-ip{font-size:13px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink)}
+.bnm-pm{grid-column:1/-1;list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;font-size:13px}
+.bnm-pm li{display:flex;gap:8px;align-items:flex-start;color:var(--ink2)}
+.bnm-pm i{font-style:normal;font-weight:700;width:14px;flex:none}
+.bnm-pm li.on i{color:var(--long)}.bnm-pm li.off{color:var(--short)}.bnm-pm li.off i{color:var(--short)}
+.bnm-f{display:flex;flex-direction:column;gap:6px;padding-top:10px;border-top:1px solid var(--line2)}
+.bnm-f label{font-size:12.5px;font-weight:700;color:var(--ink2);display:flex;justify-content:space-between}
+.bnm-f label small{font-weight:500;color:var(--ink3)}
+.bnm-f input{height:42px;border:1px solid var(--line);border-radius:10px;padding:0 12px;font:inherit;font-size:14px;background:var(--bg);color:var(--ink);min-width:0;margin-bottom:6px}
+.bnm-f input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px rgba(47,220,188,.18)}
+.bnm-err{margin:0;min-height:0;font-size:12.5px;font-weight:600;color:var(--short)}
+.bnm-err:empty{display:none}
+.bnm-res{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:10px;background:var(--soft);font-size:13px;line-height:1.5;color:var(--ink2)}
+.bnm-res[hidden]{display:none}
+.bnm-res b{color:var(--ink);font-size:14px}
+.bnm-f .mdl-ft{margin-top:6px}
+.bnm-f .mdl-ft a.btn{text-decoration:none;display:inline-flex;align-items:center}
+.bnm-safe{margin:0;font-size:12px;line-height:1.5;color:var(--ink3)}
+/* r57 · 宽版绑定弹窗：左 3dtrading 指引 / 右 币安页面示意 */
+.mdl.wide{width:min(1080px,94vw);max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px)}
+.mdl.wide .mdl-bd{padding:4px 24px 18px}
+.bnx{display:flex;flex-direction:column;gap:14px}
+.bx-st{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;counter-reset:s}
+.bx-st button{all:unset;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;border:1px solid var(--line2);background:var(--soft);color:var(--ink3);font-size:13.5px;font-weight:600;cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.bx-st button:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.bx-st i{font-style:normal;flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:12.5px;font-weight:800;background:var(--sf);border:1px solid var(--line);color:var(--ink3)}
+.bx-st li.now button{background:var(--brandL);border-color:var(--brand);color:var(--ink)}
+.bx-st li.now i{background:var(--brand);border-color:var(--brand);color:var(--onb)}
+.bx-st li.ok i{background:var(--long);border-color:var(--long);color:#fff}
+.bx-st li.ok button{color:var(--ink2)}
+.bx-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:20px;min-height:452px;align-items:stretch}
+.bx-l{display:flex;flex-direction:column;gap:10px;min-width:0}
+.bx-l h3{margin:0;font-size:17px;display:flex;align-items:center;gap:10px}
+.bx-l h3 em{font-style:normal;width:26px;height:26px;border-radius:8px;background:var(--brand);color:var(--onb);display:grid;place-items:center;font-size:14px;font-weight:800}
+.bx-sub{margin:0;font-size:13px;line-height:1.55;color:var(--ink2)}
+.bx-do{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13.5px;line-height:1.55;color:var(--ink2)}
+.bx-do b{color:var(--ink)}
+.bx-box{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:end;padding:12px;border:1px solid var(--line2);border-radius:12px}
+.bx-k{grid-column:1/-1;font-size:12.5px;font-weight:700;color:var(--ink3);display:flex;gap:6px;align-items:center}
+.bx-tip{margin:auto 0 0;font-size:12px;line-height:1.5;color:var(--ink3)}
+.bx-cp{position:relative;white-space:nowrap}
+.bx-cp .cp-d{display:none;color:var(--long);font-weight:700}
+.bx-cp.done{border-color:var(--long)}.bx-cp.done .cp-t{display:none}.bx-cp.done .cp-d{display:inline}
+.bx-ck{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.45;color:var(--ink2)}
+.bx-ck li{display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}.bx-ck li>span:first-of-type{flex:1;min-width:0}
+.bx-ck li>i{flex:none;width:18px;height:18px;margin-top:1px;border-radius:50%;border:1.5px solid var(--line);box-sizing:border-box;display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:800;transition:background .2s,border-color .2s}
+.bx-ck li.ok>i{background:var(--long);border-color:var(--long);color:#fff}.bx-ck li.ok>i::before{content:'✓'}
+.bx-ck li.bad>i{background:var(--short);border-color:var(--short);color:#fff}.bx-ck li.bad>i::before{content:'!'}
+.bx-ck li.ok{color:var(--ink)}
+.bx-ips{display:flex;align-items:center;gap:8px;flex-basis:100%;padding-left:26px}
+.bx-ips code{font-size:12.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink);background:var(--soft);padding:3px 8px;border-radius:6px}
+#bxAuto{align-self:flex-start;font-size:12.5px}
+.bx-warn{display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:10px;background:rgba(217,155,22,.12);border:1px solid rgba(217,155,22,.35);font-size:12.5px;line-height:1.5;color:var(--ink2)}
+.bx-warn b{color:var(--goldInk)}.bx-warn .lnk{align-self:flex-start;font-size:12.5px}
+.bx-l .bnm-f{padding-top:0;border-top:0}
+.bx-go{height:44px;margin-top:2px}
+.bx-demo{margin:4px 0 0;font-size:12.5px;line-height:1.5;color:var(--ink3);display:flex;gap:6px;align-items:baseline;flex-wrap:wrap}
+.bx-demo code{font-family:ui-monospace,Menlo,monospace;background:var(--soft);padding:1px 6px;border-radius:5px;color:var(--ink);font-weight:700}
+.bx-ft{display:flex;align-items:center;gap:10px;padding-top:12px;border-top:1px solid var(--line2)}
+.bx-ft .bx-n{font-size:12.5px;color:var(--ink3)}
+.bx-ft a.lnk{font-size:13px}
+/* 币安页面示意：固定深色，和真实币安的配色一致，但永远标「示意」 */
+.bnr{--bz:#181a20;--bz2:#1e2329;--bz3:#2b3139;--bzt:#eaecef;--bzt2:#848e9c;--bzy:#fcd535;border-radius:14px;background:var(--bz);color:var(--bzt);overflow:hidden;display:flex;flex-direction:column;box-shadow:inset 0 0 0 1px var(--bz3);position:relative;min-width:0}
+.bnr-bar{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bz2);border-bottom:1px solid var(--bz3);font-size:12px;color:var(--bzt2)}
+.bnr-bar b{color:var(--bzy);letter-spacing:.08em;font-size:12.5px}
+.bnr-bar em{font-style:normal;font-size:11px;padding:2px 7px;border-radius:5px;background:rgba(252,213,53,.14);color:var(--bzy)}
+.bnr-c{padding:14px 16px;display:flex;flex-direction:column;gap:9px;font-size:13px}
+.bnr-c[hidden]{display:none}
+.bnr-t{font-size:14px;font-weight:700;color:var(--bzt)}
+.bnr-opt{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;border:1px solid var(--bz3);position:relative}
+.bnr-opt small{display:block;color:var(--bzt2);font-size:11.5px}
+.bnr-rd{flex:none;width:14px;height:14px;border-radius:50%;border:2px solid var(--bzt2);box-sizing:border-box}
+.bnr-opt.on{border-color:var(--bzy)}.bnr-opt.on .bnr-rd{border:4px solid var(--bzy)}
+.bnr-f{display:flex;flex-direction:column;gap:4px;position:relative}
+.bnr-f label{font-size:11.5px;color:var(--bzt2)}
+.bnr-in{background:var(--bz2);border:1px solid var(--bz3);border-radius:8px;padding:8px 10px;font-size:12.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bnr-in.mono{font-family:ui-monospace,Menlo,monospace}
+.hl .bnr-in,.bnr-opt.hl{box-shadow:0 0 0 2px var(--brand)}
+.bnr-pt{font-style:normal;align-self:flex-end;font-size:11.5px;font-weight:700;color:#04261f;background:var(--brand);padding:2px 8px;border-radius:999px}
+.bnr-opt .bnr-pt{margin-left:auto;align-self:center}
+.bnr-btn{align-self:flex-start;margin-top:4px;padding:8px 22px;border-radius:8px;background:var(--bzy);color:#181a20;font-weight:700;font-size:13px}
+.bnr-pm{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:5px}
+.bnr-pm li{display:flex;align-items:center;gap:8px}
+.bnr-cb{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--bzt)}
+.bnr-cb input{width:16px;height:16px;margin:0;accent-color:var(--bzy);cursor:pointer}
+.bnr-cb.dis{color:#5e6673;cursor:not-allowed}.bnr-cb.dis input{cursor:not-allowed}
+.bnr-cb.fx{cursor:default}
+.bnr-ed{all:unset;cursor:pointer;margin-left:auto;font-size:12px;color:var(--bzy)}
+.bnr-ed:disabled{color:#5e6673;cursor:not-allowed}
+.bnr-ed:focus-visible,.bnr-ip input:focus-visible,.bnr-cb input:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.bnr-lock{margin:0;font-size:11.5px;color:var(--bzy);opacity:.85}
+.bnr-lock[hidden],.bnr-red[hidden],.bnr-ipf[hidden],.bnr-wl[hidden]{display:none}
+.bnr-ip{display:flex;flex-direction:column;gap:6px}
+.bnr-ro{display:flex;gap:8px;align-items:center;cursor:pointer}
+.bnr-ro input{margin:0;width:15px;height:15px;accent-color:var(--bzy)}
+.bnr-red{margin:0;font-size:12px;line-height:1.45;color:#f6465d}
+.bnr-ipf{display:flex;flex-direction:column;gap:6px}
+.bnr-ipr{display:flex;gap:6px}
+.bnr-ipr input{flex:1;min-width:0;height:32px;border-radius:7px;border:1px solid var(--bz3);background:var(--bz2);color:var(--bzt);padding:0 10px;font:inherit;font-size:12.5px}
+.bnr-y,.bnr-g{all:unset;box-sizing:border-box;cursor:pointer;height:32px;padding:0 12px;border-radius:7px;font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;white-space:nowrap}
+.bnr-y{background:var(--bzy);color:#181a20}.bnr-g{background:var(--bz3);color:var(--bzt)}
+.bnr-y:focus-visible,.bnr-g:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.bnr-chips{display:flex;flex-wrap:wrap;gap:6px}
+.bnr-chips:empty{display:none}
+.bnr-chip{display:inline-flex;align-items:center;gap:6px;padding:3px 4px 3px 9px;border-radius:6px;background:var(--bz3);font-family:ui-monospace,Menlo,monospace;font-size:12px}
+.bnr-chip button{all:unset;cursor:pointer;width:18px;height:18px;display:grid;place-items:center;border-radius:4px;color:var(--bzt2)}
+.bnr-chip button:hover,.bnr-chip button:focus-visible{background:#3c444f;color:var(--bzt)}
+.bnr-e{margin:0;font-size:12px;color:#f6465d}.bnr-e:empty{display:none}
+.bnr-wl{padding:14px 16px;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.bnr-wn{margin:0;padding:8px 10px;border-radius:8px;background:rgba(246,70,93,.12);color:#ff8d9b;font-size:12.5px;line-height:1.45}
+.bnr-src{margin:0;font-size:11.5px;color:var(--bzt2)}
+.bnr-pairs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 10px;padding:4px 0}
+.bnr-wf{display:flex;gap:8px;justify-content:flex-end;margin-top:4px}
+.bnr-ok{color:#0ecb81;font-weight:700;font-size:14px}
+.bnr-cpy{position:absolute;right:8px;bottom:6px;font-size:11.5px;color:var(--bzy)}
+.hl .bnr-cpy{bottom:30px}
+.bnr-note{margin:4px 0 0;font-size:12px;color:var(--bzt2)}
+/* 演示绑定成功 */
+.bx-ok{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:8px;padding:10px}
+.bx-ok h3{margin:4px 0 0;font-size:22px}
+.bx-okn{margin:0;display:flex;gap:8px;align-items:center;font-size:16px}
+.bx-okp{margin:0;max-width:520px;font-size:13.5px;line-height:1.6;color:var(--ink2)}
+.bx-okl{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:8px;max-width:640px}
+.bx-okl li{display:flex;gap:6px;align-items:center;padding:6px 12px;border-radius:999px;background:var(--soft);font-size:13px;font-weight:600}
+.bx-okl li i{font-style:normal;color:var(--long)}.bx-okl small{font-weight:500;color:var(--ink3)}
+.bx-okf{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;justify-content:center}
+.bx-burst{position:relative;width:92px;height:92px}
+.bx-burst svg{width:92px;height:92px;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.bx-burst circle{stroke:var(--long);stroke-width:4;stroke-dasharray:176;stroke-dashoffset:176;animation:bxRing .55s var(--ease) forwards;transform:rotate(-90deg);transform-origin:center}
+.bx-burst path{stroke:var(--long);stroke-width:5;stroke-dasharray:44;stroke-dashoffset:44;animation:bxTick .35s .45s var(--ease) forwards}
+.bx-burst i{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px;border-radius:50%;background:var(--brand);opacity:0;animation:bxDot .8s .5s var(--ease) forwards}
+.bx-burst i:nth-of-type(even){background:var(--gold);width:5px;height:5px;margin:-2.5px}
+.bx-burst i:nth-of-type(1){--a:0deg}.bx-burst i:nth-of-type(2){--a:36deg}.bx-burst i:nth-of-type(3){--a:72deg}.bx-burst i:nth-of-type(4){--a:108deg}.bx-burst i:nth-of-type(5){--a:144deg}
+.bx-burst i:nth-of-type(6){--a:180deg}.bx-burst i:nth-of-type(7){--a:216deg}.bx-burst i:nth-of-type(8){--a:252deg}.bx-burst i:nth-of-type(9){--a:288deg}.bx-burst i:nth-of-type(10){--a:324deg}
+@keyframes bxRing{to{stroke-dashoffset:0}}
+@keyframes bxTick{to{stroke-dashoffset:0}}
+@keyframes bxDot{0%{opacity:1;transform:rotate(var(--a)) translateX(30px) scale(1)}100%{opacity:0;transform:rotate(var(--a)) translateX(62px) scale(.4)}}
+.bx-ok .bx-okn,.bx-ok .bx-okp,.bx-ok .bx-okl,.bx-ok .bx-okf,.bx-ok h3{animation:bxUp .45s .55s var(--ease) both}
+@keyframes bxUp{from{opacity:0;transform:translateY(8px)}}
+html.rm .bx-burst circle,html.rm .bx-burst path{animation:none;stroke-dashoffset:0}
+html.rm .bx-burst i{display:none}
+html.rm .bx-ok *{animation:none!important}
+@media (prefers-reduced-motion:reduce){.bx-burst circle,.bx-burst path{animation:none;stroke-dashoffset:0}.bx-burst i{display:none}.bx-ok *{animation:none!important}}
+/* 手机：上下排列（先我们的指引，再币安示意），弹窗整体可滚动，内容不裁切 */
+@media (max-width:760px){
+  .mdl.wide{max-height:calc(100dvh - 24px)}
+  .mdl.wide .mdl-bd{padding:2px 14px 14px}
+  .bx-st{gap:5px}
+  .bx-st button{flex-direction:column;gap:4px;padding:7px 4px;font-size:11.5px;text-align:center;justify-content:center}
+  .bx-g{grid-template-columns:1fr;min-height:0;gap:14px}
+  .bx-tip{margin-top:0}
+  .bnr-pairs{grid-template-columns:repeat(2,1fr)}
+  .bnr-ipr{flex-wrap:wrap}.bnr-ipr input{flex-basis:100%}
+  .bx-ft{flex-wrap:wrap;position:sticky;bottom:-14px;background:var(--sf);padding:10px 0 12px;margin-bottom:-14px;z-index:2}
+  .bx-ft .bx-n{display:none}
+}
+/* r58 · 综合设置：居中弹窗（所有宽度），点 Dodo 页里探头的 Dodo 打开 */
+.dsb[hidden],.dsb-scrim[hidden]{display:none!important}
+body .dsb{display:flex!important;position:fixed!important;z-index:81;left:50%;top:50%;right:auto;bottom:auto;transform:translate(-50%,-50%)!important;visibility:visible!important;
+  width:min(560px,calc(100vw - 32px));height:auto!important;max-height:min(760px,calc(100dvh - 48px));border:0!important;border-radius:20px!important;
+  box-shadow:0 40px 100px -30px rgba(10,14,16,.5),0 0 0 1px var(--line2)!important;overflow:hidden;padding:0!important;transition:none!important}
+body .dsb-scrim:not([hidden]){display:block!important;position:fixed!important;inset:0;z-index:80;background:rgba(11,14,16,.42);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+html[data-theme="night"] body .dsb{box-shadow:0 40px 100px -30px rgba(0,0,0,.8),0 0 0 1px var(--line)!important}
+html[data-theme="night"] body .dsb-scrim:not([hidden]){background:rgba(0,0,0,.6)}
+body.dsb-on .ddp{left:50%}
+.dsb .dsb-h{height:60px;padding:0 12px 0 22px}.dsb .dsb-h b{font-size:17px}
+.dsb .dsb-b{padding:4px 22px 22px}
+@media (max-width:760px){body .dsb{width:calc(100vw - 20px);max-height:calc(100dvh - 24px - env(safe-area-inset-top))}.dsb .dsb-b{padding:4px 16px 18px}}
+/* r58 · 设置弹窗：左侧分类 + 右侧内容；手机分类在顶部横排 */
+.mdl.setm{width:min(820px,94vw)}
+.mdl.setm .mdl-bd{padding:0 0 0 0}
+.stg{display:grid;grid-template-columns:184px 1fr;min-height:min(460px,70vh)}
+.stg-nav{display:flex;flex-direction:column;gap:2px;padding:6px 10px 18px 16px;border-right:1px solid var(--line2)}
+.stg-nav button{appearance:none;border:0;background:none;text-align:left;height:38px;padding:0 12px;border-radius:10px;font:inherit;font-size:14px;font-weight:600;color:var(--ink2);cursor:pointer}
+.stg-nav button:hover{background:var(--hov);color:var(--ink)}
+.stg-nav button[aria-selected="true"]{background:var(--brandL);color:var(--ink)}
+.stg-nav button:focus-visible{outline:2px solid var(--brandD);outline-offset:1px}
+.stg-p{padding:2px 24px 22px;min-width:0}
+.stg-p h3{margin:4px 0 6px;font-size:13px;font-weight:700;letter-spacing:.04em;color:var(--ink3)}
+.stg-r{display:flex;align-items:center;gap:16px;padding:13px 0;border-top:1px solid var(--line2)}
+.stg-r:first-of-type{border-top:0}
+.stg-r>div:first-child{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.stg-r b{font-size:14px}.stg-r small{font-size:12.5px;color:var(--ink3);line-height:1.5}
+.tfa-hd{display:flex;align-items:center;gap:12px;padding:6px 0 12px}
+.tfa-hd>div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}.tfa-hd b{font-size:15px}.tfa-hd small{font-size:12.5px;color:var(--ink3);line-height:1.5}
+.tfa-ic{width:38px;height:38px;flex:none;border-radius:12px;display:grid;place-items:center;background:var(--brandL);color:var(--brandD)}
+.tfa-ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.stt.ok{background:var(--brandL);color:var(--brandD)}
+.tfa-p{margin:0 0 10px;font-size:13px;line-height:1.6;color:var(--ink2)}
+.tfa-box{display:flex;flex-direction:column;gap:8px;padding:14px;border:1px solid var(--line2);border-radius:14px;background:var(--sf)}
+.tfa-box>b{font-size:14px}
+.tfa-box label{font-size:13px;font-weight:600;color:var(--ink2)}
+.tfa-box input{height:40px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--sf);color:var(--ink);font:inherit;font-size:14px;min-width:0}
+.tfa-box input:focus{outline:2px solid var(--brandD);outline-offset:1px;border-color:transparent}
+#tfaCode,#tfaOffC{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.18em}
+.tfa-in{display:flex;gap:8px;flex-wrap:wrap}.tfa-in input{flex:1 1 180px}.tfa-in .btn{height:40px}
+.tfa-ft{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.tfa-danger{background:var(--short);color:#fff;border-color:transparent}
+.tfa-set{flex-direction:row;gap:18px;align-items:flex-start}
+.tfa-qrw{display:flex;flex-direction:column;align-items:center;gap:6px;flex:none}
+.tfa-qr{width:156px;height:156px;padding:6px;border-radius:12px;background:#fff;box-shadow:0 0 0 1px var(--line2)}
+.tfa-qr svg{display:block;width:100%;height:100%}
+.tfa-qrw small{font-size:11.5px;color:var(--ink3);max-width:160px;text-align:center}
+.tfa-st{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px}
+.tfa-steps{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13px;line-height:1.55;color:var(--ink2)}
+.tfa-key{display:block;margin-top:4px;padding:6px 10px;border:1px dashed var(--line);border-radius:8px;background:var(--soft);color:var(--ink);cursor:pointer;font:inherit;text-align:left}
+.tfa-key code{font:600 13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere}
+.tfa-kn{display:block;font-size:11.5px;color:var(--ink3)}
+.tfa-rc{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+.tfa-rc code{display:block;padding:6px 10px;border-radius:8px;background:var(--soft);font:600 13px ui-monospace,SFMono-Regular,Menlo,monospace;text-align:center}
+.tfa-warn{margin:0 0 10px;padding:10px 12px;border-radius:10px;background:#fbefd9;color:var(--goldInk);font-size:13px;line-height:1.6}
+html[data-theme="night"] .tfa-warn{background:#3a3020}
+.tfa-demo{margin:12px 0 0;font-size:12px;line-height:1.6;color:var(--ink3)}
+.stg .bnm-err{margin:0}
+@media (max-width:760px){
+  .stg{grid-template-columns:1fr;min-height:0}
+  .stg-nav{flex-direction:row;flex-wrap:wrap;gap:4px;overflow:visible;border-right:0;border-bottom:1px solid var(--line2);padding:0 12px 8px}
+  .stg-nav button{flex:none;height:32px;padding:0 11px;font-size:13.5px}
+  .stg-p{padding:4px 16px 18px}
+  .stg-r{flex-wrap:wrap;gap:10px}
+  .tfa-set{flex-direction:column;align-items:stretch}.tfa-qrw{align-self:center}
+}
+/* r58 · 快捷绑定单页 + 成功反馈 */
+.mdl.qbm{width:min(680px,94vw)}
+.mdl.qbm .mdl-bd{padding:2px 24px 20px}
+.qb{display:flex;flex-direction:column;gap:12px}
+.qb-lead{margin:0;font-size:13.5px;color:var(--ink2);line-height:1.55}
+.qb-row{display:grid;grid-template-columns:118px 1fr;gap:6px 14px;align-items:center;padding:12px 14px;border:1px solid var(--line2);border-radius:14px;background:var(--sf)}
+.qb-k{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--ink);white-space:nowrap}
+.qb-k em{font-style:normal;display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--brandL);color:var(--brandD);font-size:11.5px}
+.qb-k .stt{font-size:10.5px}
+.qb-h{grid-column:2;margin:0;font-size:12px;line-height:1.55;color:var(--ink3)}
+.qb-h code{font-size:12px;padding:0 4px;border-radius:5px;background:var(--soft);color:var(--ink)}
+.qb-key,.qb-ip{position:relative;display:inline-flex;align-items:center;gap:10px;min-height:40px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--soft);color:var(--ink);cursor:pointer;font:inherit;text-align:left;transition:border-color .15s,background .15s}
+.qb-key{width:100%;justify-content:space-between}
+.qb-key code,.qb-ip code{font:600 13px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.01em;overflow-wrap:anywhere}
+.qb-key:hover,.qb-ip:hover{border-color:var(--brandD)}
+.qb-key:focus-visible,.qb-ip:focus-visible{outline:2px solid var(--brandD);outline-offset:2px}
+.qb-ci svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;color:var(--ink3);display:block}
+.qb-ok{position:absolute;right:10px;top:50%;transform:translateY(-50%) scale(.9);padding:2px 8px;border-radius:999px;background:var(--brandD);color:#fff;font-size:11.5px;font-weight:700;opacity:0;transition:opacity .15s,transform .2s var(--ease);pointer-events:none}
+html[data-theme="night"] .qb-ok{color:#04261f}
+.done>.qb-ok{opacity:1;transform:translateY(-50%) scale(1)}
+.done>.qb-ci{visibility:hidden}
+.qb-ips{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.qb-pms{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.qb-pm{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:8px;font-size:12.5px;line-height:1.3;background:var(--soft);color:var(--ink2)}
+.qb-pm i{font-style:normal;font-weight:800;font-size:11px}
+.qb-pm small{font-size:10.5px;font-weight:700;padding:0 5px;border-radius:4px}
+.qb-pm.on{background:var(--brandL);color:var(--ink)}.qb-pm.on i,.qb-pm.on small{color:var(--brandD)}
+.qb-pm.off i,.qb-pm.off small{color:var(--short)}
+.qb-pm.opt{background:transparent;border:1px dashed var(--line)}.qb-pm.opt small{color:var(--goldInk)}
+.qb-f{align-items:start}.qb-f .qb-k{padding-top:10px}
+.qb-in{display:flex;gap:8px;flex-wrap:wrap}
+.qb-in input{flex:1 1 220px;min-width:0;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--sf);color:var(--ink);font:inherit;font-size:14px}
+.qb-in #bnKey{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;flex-basis:100%}
+.qb-in #bnNm{flex:1 1 160px}
+.qb-in .btn{height:40px;padding:0 22px}
+.qb-in input:focus{outline:2px solid var(--brandD);outline-offset:1px;border-color:transparent}
+.qb-f .bnm-err,.qb-f .bnm-res{grid-column:2}
+.qb-ft{display:flex;align-items:center;gap:10px;padding-top:2px}
+/* 成功反馈 */
+.qbo{display:flex;flex-direction:column;align-items:stretch;gap:14px;padding:4px 0 2px}
+.qbo-hero{display:flex;align-items:center;gap:16px}
+.qbo-hero h3{margin:0;font-size:21px}.qbo-hero p{margin:4px 0 0;font-size:13.5px;color:var(--ink2)}
+.qbo-mk{flex:none;width:64px;height:64px}
+.qbo-mk svg{width:64px;height:64px;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.qbo-mk .r0{stroke:var(--brandL);stroke-width:5}
+.qbo-mk .r1{stroke:var(--brandD);stroke-width:5;stroke-dasharray:176;stroke-dashoffset:176;transform:rotate(-90deg);transform-origin:center;animation:qbRing .6s var(--ease) forwards}
+.qbo-mk path{stroke:var(--brandD);stroke-width:5;stroke-dasharray:40;stroke-dashoffset:40;animation:qbTick .32s .5s var(--ease) forwards}
+.qbo-card{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:14px;border:1px solid var(--brandD);background:var(--brandL);animation:qbIn .45s .6s var(--ease) both}
+.qbo-av{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--sf);color:var(--brandD);font-weight:800;font-size:16px}
+.qbo-nm{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0}.qbo-nm b{font-size:16px;overflow-wrap:anywhere}.qbo-nm small{font-size:12px;color:var(--ink3)}
+.qbo-new{padding:3px 9px;border-radius:999px;background:var(--brandD);color:#fff;font-size:11.5px;font-weight:800}
+html[data-theme="night"] .qbo-new{color:#04261f}
+.qbo-note{margin:0;font-size:12.5px;line-height:1.6;color:var(--ink2);animation:qbIn .45s .7s var(--ease) both}
+.qbo-l{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px;animation:qbIn .45s .75s var(--ease) both}
+.qbo-l li{padding:4px 10px;border-radius:999px;background:var(--soft);font-size:12.5px;color:var(--ink2)}.qbo-l li.on{color:var(--brandD);font-weight:700}
+.qbo-ft{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;animation:qbIn .45s .8s var(--ease) both}
+@keyframes qbRing{to{stroke-dashoffset:0}}@keyframes qbTick{to{stroke-dashoffset:0}}@keyframes qbIn{from{opacity:0;transform:translateY(6px)}}
+html.rm .qbo *{animation:none!important;stroke-dashoffset:0!important}
+@media (prefers-reduced-motion:reduce){.qbo *{animation:none!important;stroke-dashoffset:0!important}.qb-ok{transition:none}}
+@media (max-width:760px){
+  .mdl.qbm .mdl-bd{padding:2px 14px 14px}
+  .qb-row{grid-template-columns:1fr;padding:12px}
+  .qb-h,.qb-f .bnm-err,.qb-f .bnm-res{grid-column:1}
+  .qb-f .qb-k{padding-top:0}
+  .qb-in .btn{flex:1 1 100%}
+  .qbo-ft .btn{flex:1 1 100%}
+  .qbo-hero h3{font-size:19px}
+}
+html.dlg-lock,html.dlg-lock body{overflow:hidden}
+html[data-theme="night"] .ddm-scrim{background:rgba(0,0,0,.6)}
+html[data-theme="night"] .ddm{box-shadow:0 40px 100px -30px rgba(0,0,0,.8),0 0 0 1px var(--line)}
+
+</style>
 </head>
 <body>
 
@@ -2516,64 +2894,13 @@ html.rm .ddp.in.think .ddp-pu,html.rm .ddp.in.think .ddp-head svg,html.rm .ddp.i
   </div>
 </header>
 <!-- r46 · Dodo 头在页面之外：切页动画不会带着它跑，只会从导航下沿探出来 -->
-<div class="ddp" id="ddPeek"><div class="ddp-clip"><button type="button" class="ddp-head" id="ddHead" aria-label="Dodo：点一下开始提问">
+<div class="ddp" id="ddPeek"><div class="ddp-clip"><button type="button" class="ddp-head" id="ddHead" aria-label="Dodo：打开综合设置" aria-controls="dsb" aria-haspopup="dialog" aria-expanded="false">
       <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="16" fill="#1fbfa2"/><rect x="1" y="1" width="58" height="57" rx="16" fill="url(#ddpG)"/>
         <defs><linearGradient id="ddpG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62f3d9"/><stop offset="1" stop-color="#27d3b3"/></linearGradient></defs>
         <g class="ddp-eye"><circle cx="30" cy="42.6" r="16" fill="rgba(0,0,0,.08)"/><circle cx="30" cy="41" r="16" fill="#f5f0e1"/><g class="ddp-pu"><circle cx="32" cy="41" r="8" fill="#141416"/><rect x="28.4" y="39" width="2.2" height="4.4" fill="#ef4444"/><rect x="33.4" y="37.8" width="2.2" height="6" fill="#22c55e"/><circle cx="35.6" cy="37.4" r="1.9" fill="#fff"/></g>
         <rect class="ddp-lid" x="13" y="24.5" width="34" height="0" fill="#2bd7b7"/></g></svg></button></div>
 </div>
 <main id="dash">
-  <section class="page" id="pg-ai" data-page="ai" aria-labelledby="h-ai">
-    <div class="ai">
-      <div class="chat fresh" id="chat">
-        <header class="chat-hd">
-          <span class="who"><span class="dd" id="ddMini" aria-hidden="true"></span><h1 id="h-ai" tabindex="-1">Dodo</h1><span class="cvcur" id="cvCurT"></span></span>
-          <span class="ai-st" title="回答按本页数据的固定规则生成"><i></i>未接入 AI 模型</span>
-          <span class="sp"></span>
-          <button type="button" class="hd-b" id="cvNew2" title="开始一个新话题，当前对话保存在历史里"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>新话题</span></button>
-          <button type="button" class="hd-b cv-tg" id="cvTg" aria-controls="cvPane" aria-expanded="false" aria-haspopup="dialog"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4.5v3.5H7"/><path d="M12 7.5V12l3 2"/></svg><span>历史</span></button>
-        </header>
-        <div class="stream" id="stream"><div class="thread" id="log" aria-live="polite"></div></div>
-        <div class="composer">
-          <div class="hello"><span class="hi-bot" id="hiBot" aria-hidden="true"></span><h2 id="greet">你好</h2><p class="sum" id="helloSum"></p></div>
-          <form class="box" id="askForm">
-            <div class="ctxc" id="ctxChip" hidden></div>
-            <div class="att" id="attRow" hidden aria-label="这条消息带上的内容"></div>
-            <textarea id="askIn" rows="1" placeholder="问 Dodo…" aria-label="向 Dodo 提问"></textarea>
-            <div class="rec" id="recBar" hidden role="status" aria-live="polite"><i class="dot" aria-hidden="true"></i><span class="rt">正在录音</span><span class="tm num" id="recTm">0:00</span><span class="lv" id="recLv" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="sp"></span>
-              <button type="button" class="rb" id="recX">取消</button><button type="button" class="rb ok" id="recOk">完成</button></div>
-            <div class="bar"><button type="button" class="ib" id="attBtn" aria-label="添加图片或文件" title="添加图片或文件"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 11.5 12.4 19.6a5.2 5.2 0 0 1-7.4-7.4l8.3-8.3a3.5 3.5 0 0 1 5 5l-8.3 8.2a1.8 1.8 0 0 1-2.5-2.5l7.6-7.6"/></svg></button>
-              <button type="button" class="ib" id="micBtn" aria-label="语音输入" title="语音输入"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button>
-              <input type="file" id="attIn" multiple accept="image/*,.pdf,.txt,.csv,.json,.md,.xls,.xlsx,.doc,.docx" hidden>
-              <small id="askCtx"></small><span class="sp"></span>
-              <button class="send" type="submit" id="sendBtn" aria-label="发送" disabled><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
-          </form>
-          <p class="cmp-n" id="cmpNote" role="status" aria-live="polite" hidden></p>
-          <div class="sugg" id="sugg" role="group" aria-label="可以这样问"></div>
-          <p class="disc">规则回答，未接入 AI 模型 · 只读，不下单</p>
-        </div>
-      </div>
-      <button type="button" class="dsb-tg" id="dsbTg" aria-controls="dsb" aria-expanded="false" title="引用、可以问的问题和 Bot API"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="M14.5 4.5v15"/></svg><span>侧栏</span></button>
-      <div class="dsb-scrim" id="dsbScrim" hidden></div>
-      <aside class="dsb" id="dsb" aria-label="Dodo 侧栏">
-        <div class="dsb-h"><b>侧栏</b><span class="sp"></span><button type="button" class="xbtn" id="dsbX" aria-label="收起侧栏">✕</button></div>
-        <div class="dsb-b">
-          <section class="dsb-s" aria-labelledby="dsbRefT"><h3 id="dsbRefT">引用</h3><p class="dsb-n">选中后随下一条消息发给 Dodo</p>
-            <div class="dsb-tabs" role="tablist" aria-label="引用类型"><button type="button" role="tab" data-rt="acct" aria-selected="true">账户</button><button type="button" role="tab" data-rt="pos" aria-selected="false">持仓</button><button type="button" role="tab" data-rt="trade" aria-selected="false">交易</button></div>
-            <div class="dsb-list" id="dsbRefs" role="tabpanel"></div></section>
-          <section class="dsb-s" aria-labelledby="dsbQT"><h3 id="dsbQT">可以问</h3><div class="dsb-qs" id="dsbQs"></div></section>
-          <section class="dsb-s" aria-labelledby="dsbBotT"><h3 id="dsbBotT">Bot API</h3><div id="dsbBot"></div></section>
-        </div>
-      </aside>
-      <aside class="cv-list" id="cvPane" role="dialog" aria-modal="true" aria-labelledby="cvPaneT">
-        <div class="cv-top"><h2 id="cvPaneT">历史话题</h2><span class="sp"></span><button type="button" class="xbtn" id="cvX" aria-label="关闭历史">✕</button></div>
-        <div class="cv-act"><button type="button" class="btn sm cv-new" id="cvNew"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>新话题</button></div>
-        <div class="cv-scroll" id="cvList"></div>
-        <div class="cv-foot">话题只保存在这台电脑的浏览器里。回答按本页数据的规则生成，没有接入 AI 模型。Dodo 只读：不会下单或改仓位。</div>
-      </aside>
-    </div>
-  </section>
-
   <section class="page" id="pg-dashboard" data-page="dashboard" aria-labelledby="h-dashboard" hidden>
     <header class="ph"><div><h1 id="h-dashboard" tabindex="-1">总览</h1><p class="vsub"></p></div><button type="button" class="btn ghost sm ph-dd" data-askq="帮我看看现在整体情况怎么样？">问 Dodo</button></header>
     <div id="planBar"></div>
@@ -2591,7 +2918,7 @@ html.rm .ddp.in.think .ddp-pu,html.rm .ddp.in.think .ddp-head svg,html.rm .ddp.i
   </section>
 
   <section class="page" id="pg-me" data-page="me" aria-labelledby="h-me" hidden>
-    <header class="ph"><div><h1 id="h-me" tabindex="-1">我的</h1><p>账号、币安账户、订阅和安全</p></div><button type="button" class="btn ghost sm ph-dd" data-askq="我的账户现在是什么状态？">问 Dodo</button></header>
+    <header class="ph"><div><h1 id="h-me" tabindex="-1">个人资料</h1><p>账号、币安子账户、订阅和安全</p></div><button type="button" class="btn ghost sm ph-dd" data-askq="我的账户现在是什么状态？">问 Dodo</button></header>
     <div id="meBody"></div>
   </section>
 
@@ -2604,9 +2931,62 @@ html.rm .ddp.in.think .ddp-pu,html.rm .ddp.in.think .ddp-head svg,html.rm .ddp.i
     <header class="ph"><div><h1 id="h-notify" tabindex="-1">通知设置</h1><p>提醒、停机和待确认的方案卡发到哪里</p></div><button type="button" class="btn ghost sm ph-dd" data-askq="会通知我哪些事情？">问 Dodo</button></header>
     <div id="ntBody"></div>
   </section>
-</main>
 
-<div class="cvsc" id="cvSc"></div>
+  <section class="page" id="pg-ai" data-page="ai" aria-labelledby="h-ai" hidden>
+    <div class="ai">
+      <div class="chat fresh" id="chat">
+        <header class="chat-hd">
+          <span class="who"><span class="dd" id="ddMini" aria-hidden="true"></span><h1 id="h-ai" tabindex="-1">Dodo</h1><span class="cvcur" id="cvCurT"></span></span>
+          <span class="ai-st" title="回答按本页数据的固定规则生成"><i></i>未接入 AI 模型</span>
+          <span class="sp"></span>
+          <button type="button" class="hd-b" id="cvNew2" title="开始一个新话题，当前对话保存在历史里"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>新话题</span></button>
+          <button type="button" class="hd-b cv-tg" id="cvTg" aria-controls="cvPane" aria-expanded="false" aria-haspopup="dialog"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 4.5v3.5H7"/><path d="M12 7.5V12l3 2"/></svg><span>历史</span></button>
+        </header>
+        <div class="stream" id="stream"><div class="thread" id="log" aria-live="polite"></div></div>
+        <div class="composer">
+          <form class="box" id="askForm">
+            <div class="ctxc" id="ctxChip" hidden></div>
+            <div class="att" id="attRow" hidden aria-label="这条消息带上的内容"></div>
+            <textarea id="askIn" rows="1" placeholder="问 Dodo…" aria-label="向 Dodo 提问"></textarea>
+            <div class="rec" id="recBar" hidden role="status" aria-live="polite"><i class="dot" aria-hidden="true"></i><span class="rt">正在录音</span><span class="tm num" id="recTm">0:00</span><span class="lv" id="recLv" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span><span class="sp"></span>
+              <button type="button" class="rb" id="recX">取消</button><button type="button" class="rb ok" id="recOk">完成</button></div>
+            <div class="bar"><button type="button" class="ib" id="attBtn" aria-label="添加图片或文件" title="添加图片或文件"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.5 11.5 12.4 19.6a5.2 5.2 0 0 1-7.4-7.4l8.3-8.3a3.5 3.5 0 0 1 5 5l-8.3 8.2a1.8 1.8 0 0 1-2.5-2.5l7.6-7.6"/></svg></button>
+              <button type="button" class="ib" id="micBtn" aria-label="语音输入" title="语音输入"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></button>
+              <input type="file" id="attIn" multiple accept="image/*,.pdf,.txt,.csv,.json,.md,.xls,.xlsx,.doc,.docx" hidden>
+              <small id="askCtx"></small><span class="sp"></span>
+              <button class="send" type="submit" id="sendBtn" aria-label="发送" disabled><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button></div>
+          </form>
+          <p class="cmp-n" id="cmpNote" role="status" aria-live="polite" hidden></p>
+          <p class="disc">规则回答，未接入 AI 模型 · 只读，不下单</p>
+        </div>
+      </div>
+      <div class="cvsc" id="cvSc"></div>
+      <aside class="cv-list" id="cvPane" role="dialog" aria-modal="true" aria-labelledby="cvPaneT">
+        <div class="cv-top"><h2 id="cvPaneT">历史话题</h2><span class="sp"></span><button type="button" class="xbtn" id="cvX" aria-label="关闭历史">✕</button></div>
+        <div class="cv-act"><button type="button" class="btn sm cv-new" id="cvNew"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>新话题</button></div>
+        <div class="cv-scroll" id="cvList"></div>
+        <div class="cv-foot">话题只保存在这台电脑的浏览器里。回答按本页数据的规则生成，没有接入 AI 模型。Dodo 只读：不会下单或改仓位。</div>
+      </aside>
+    </div>
+  </section>
+</main>
+<!-- r58 · 综合设置：点 Dodo 页里探头的 Dodo 才打开的居中弹窗 -->
+      <div class="dsb-scrim" id="dsbScrim" hidden></div>
+      <aside class="dsb" id="dsb" role="dialog" aria-modal="true" aria-labelledby="dsbT" hidden>
+        <div class="dsb-h"><b id="dsbT">综合设置</b><span class="sp"></span><button type="button" class="xbtn" id="dsbX" aria-label="关闭综合设置">✕</button></div>
+        <div class="dsb-b">
+          <section class="dsb-s" aria-labelledby="dsbRefT"><h3 id="dsbRefT">引用</h3><p class="dsb-n">选中后随下一条消息发给 Dodo</p>
+            <div class="dsb-tabs" role="tablist" aria-label="引用类型"><button type="button" role="tab" data-rt="acct" aria-selected="true">账户</button><button type="button" role="tab" data-rt="pos" aria-selected="false">持仓</button><button type="button" role="tab" data-rt="trade" aria-selected="false">交易</button></div>
+            <div class="dsb-list" id="dsbRefs" role="tabpanel"></div></section>
+          <section class="dsb-s" aria-labelledby="dsbCvT"><h3 id="dsbCvT">对话</h3>
+            <div class="dds-r"><span><b>按 Enter 发送</b><small id="ddsEnN">关闭后 Enter 换行，⌘/Ctrl + Enter 发送</small></span><button type="button" class="sw" role="switch" id="ddsEnter" aria-checked="true" aria-labelledby="ddsEnL"><span class="sr-only" id="ddsEnL">按 Enter 发送</span><i aria-hidden="true"></i></button></div>
+            <div class="dds-r"><span><b>新话题</b><small>当前对话保存在历史里</small></span><button type="button" class="btn ghost sm" id="ddsNew">开始</button></div>
+            <div class="dds-r"><span><b>历史话题</b><small>只保存在这个浏览器</small></span><button type="button" class="btn ghost sm" id="ddsHist">查看</button></div></section>
+          <section class="dsb-s" aria-labelledby="dsbBotT"><h3 id="dsbBotT">Bot API</h3><div id="dsbBot"></div></section>
+          <section class="dsb-s" aria-labelledby="dsbAppT"><h3 id="dsbAppT">后台设置</h3><p class="dsb-n">个性化（昼 / 夜 / 跟随系统）、单位、隐私、语言和通知</p><a class="btn ghost sm dds-go" href="#/settings" id="ddsApp">打开后台设置 →</a></section>
+        </div>
+      </aside>
+
 <div class="scrim" id="scrim" hidden></div>
 <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dwT" hidden>
   <div class="dw-hd"><h2 id="dwT" tabindex="-1"></h2><span class="sp"></span><button type="button" class="xbtn" data-close aria-label="关闭">✕</button></div>
@@ -2620,7 +3000,7 @@ html.rm .ddp.in.think .ddp-pu,html.rm .ddp.in.think .ddp-head svg,html.rm .ddp.i
 
 <div class="tip" id="tip"></div>
 <div class="toast" id="toast" role="status"></div>
-<script src="i18n-en.js?v=r48"></script>
+<script src="i18n-en.js?v=r57"></script>
 <script id="i18n-engine">
 /* i18n · zh ⇄ en。源码文案保持中文；英文来自 i18n-en.js（window.I18N_EN）。
    键规则：去掉首尾空白、合并空白；日期与数字替换成 {0}{1}…，按出现顺序。查不到整句时按 · ，；。： 分段再查。 */
@@ -2756,8 +3136,12 @@ const LIVE = window.TD_LIVE && window.TD_LIVE.ok ? window.TD_LIVE : null, LIVE_E
 const FIRST = () => LIVE ? LIVE.first : 0, HIST_OK = () => !LIVE || LIVE.snapCount >= 7, OUTR = d => !!LIVE && d < LIVE.tradeFromI;
 const dv = (a, b) => a == null || b == null ? null : a - b;
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const nf0 = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 0 });
-const nf2 = new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+/* r56 · 设置 → 单位：金额小数位、千分位分隔（本机偏好） */
+const PREF_KEY = '3dt.dash.prefs', PREF = Object.assign({ dec: 2, group: true, hide: false, enter: true }, (() => { try { return JSON.parse(localStorage.getItem(PREF_KEY) || '{}') || {}; } catch (e) { return {}; } })());
+const savePref = () => { try { localStorage.setItem(PREF_KEY, JSON.stringify(PREF)); } catch (e) {} };
+let nf0, nf2;
+const mkNf = () => { nf0 = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 0, useGrouping: PREF.group }); nf2 = PREF.dec ? new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: PREF.group }) : nf0; };
+mkNf();
 const nfc = new Intl.NumberFormat('zh-CN', { notation: 'compact', maximumFractionDigits: 1 });
 const bad = n => n == null || !Number.isFinite(+n);
 const money = (n, d = 2) => bad(n) ? '—' : (d ? nf2 : nf0).format(n);
@@ -2830,6 +3214,7 @@ function loadAccts() {
   A.list.forEach((m, k) => {
     const si = stOf(m), st = si.status, data = showsData(m) && !!DD;
     const a = isDemo(m) ? { id: m.id, name: DEMO_NAME, uid: '未连接币安', st, si, live: data && !!SIM[m.id], demo: true }
+      : window.TDBind && TDBind.isDemoBind(m) ? { id: m.id, name: m.name || `演示账户 ${k + 1}`, uid: '演示绑定', st, si, live: data && !!SIM[m.id], demoBind: true }
       : { id: m.id, name: m.name || `子账户 ${k + 1}`, uid: m.uid ? 'UID ' + m.uid : 'UID 未填写', st, si, live: data && !!SIM[m.id] };
     if (data && !SIM[m.id]) { a.loading = true; need.push({ id: m.id, index: k }); }
     ACCTS.push(a);
@@ -2842,11 +3227,11 @@ function loadAccts() {
   }
   return true;
 }
-const stTx = a => a.real ? (a.live ? '币安只读 · 实时' : '币安只读 · 读取失败') : a.demo && a.live ? '示例数据 · 演示' : a.loading ? '处理中' : a.live ? `${a.si.label} · 演示数据` : a.si ? a.si.label : '处理中';
+const stTx = a => a.demoBind ? (a.loading ? '处理中' : '未连接币安 · 演示数据') : a.real ? (a.live ? '币安只读 · 实时' : '币安只读 · 读取失败') : a.demo && a.live ? '示例数据 · 演示' : a.loading ? '处理中' : a.live ? `${a.si.label} · 演示数据` : a.si ? a.si.label : '处理中';
 const subTx = a => a.demo ? '未连接币安 · 示例数据 · 演示' : `${a.uid} · ${stTx(a)}`;
 /* r41: adding a new account opens the full Binance connect page (API Key + Secret Key); an existing account's progress stays on bind.html */
 /* r45b: every binding entry (new or re-bind) opens connect.html: system-generated (HMAC) keys only. bind.html (self-generated) is no longer linked. */
-const bindUrl = () => TDAccount.routes.connect || TDAccount.routes.bind + '?add=1';
+const bindUrl = () => '#/bind'; /* r56：绑定币安是后台里的居中弹窗，随时可开 */
 if (DD) Object.assign(SIM, DD.accounts || {});
 loadAccts();
 
@@ -2938,7 +3323,7 @@ const pendingAcct = () => { const a = S.view === 'all' ? null : acctById(S.view)
 
 /* ---------- greeting ---------- */
 function renderGreet() {
-  $('#greet').textContent = (sgH < 5 ? '夜深了' : sgH < 11 ? '早上好' : sgH < 13 ? '中午好' : sgH < 18 ? '下午好' : '晚上好') + '，今天想了解什么？';
+  if ($('#greet')) $('#greet').textContent = (sgH < 5 ? '夜深了' : sgH < 11 ? '早上好' : sgH < 13 ? '中午好' : sgH < 18 ? '下午好' : '晚上好') + '，今天想了解什么？';
   $$('.vsub').forEach(p => p.textContent = `${viewName()} · 数据截至今天 ${nowLabel}（新加坡时间）`);
   $('#askCtx').textContent = `正在查看：${viewName()}`;
   renderHello();
@@ -3386,11 +3771,21 @@ let DLG_BACK = null;
 function openDlg(title, html) {
   const d = $('#modal'), was = !d.hidden && d.classList.contains('on');
   if (!was) DLG_BACK = document.activeElement;
+  d.classList.remove('wide', 'qbm', 'setm');
   $('#mdT').textContent = title; $('#mdB').innerHTML = html;
   if (!was) showLayer(d);
   setTimeout(() => ($('#mdB [data-first]') || $('#mdT')).focus({ preventScroll: true }), RM ? 0 : 50);
 }
 function closeDlg() { hideLayer($('#modal')); DLG_BACK?.focus?.({ preventScroll: true }); }
+/* r57 · 对话框（含绑定弹窗）打开时：Tab 只在弹窗里循环，背后页面不滚动 */
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Tab') return; const root = $('#modal.on'); if (!root) return;
+  const f = $$('button:not([disabled]),a[href],textarea,input:not([type=hidden]):not([disabled]),select,[tabindex]:not([tabindex="-1"])', root).filter(x => x.offsetParent !== null && !x.closest('[inert],[hidden]'));
+  if (!f.length) return; const first = f[0], last = f[f.length - 1], a = document.activeElement;
+  if (e.shiftKey && (a === first || !root.contains(a))) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && (a === last || !root.contains(a))) { e.preventDefault(); first.focus(); }
+});
+new MutationObserver(() => document.documentElement.classList.toggle('dlg-lock', !!$('#modal.on'))).observe($('#modal'), { attributes: true, attributeFilter: ['class'] });
 
 /* ---------- facts ---------- */
 function facts() {
@@ -3873,14 +4268,15 @@ function renderChat() {
   renderCtx(); scrollMsgs();
 }
 function renderSugg() {
+  if (!$('#sugg')) return; /* r56：Dodo 不再显示建议问题 */
   $('#sugg').innerHTML = QS.map((q, i) => `<button type="button" data-q="${i}" title="${QH[i]}">${q}</button>`).join('');
 }
 /* 今天的一句摘要：只用本页演示数据 */
 function renderHello() {
   if (window.__dsbData) __dsbData(); /* r47：数据变了，侧栏引用跟着刷新 */
-  const el = $('#helloSum'); if (!el) return;
-  if (!$('#hiBot').firstChild) $('#hiBot').innerHTML = botInline('hi');
   if (!$('#ddMini').firstChild) $('#ddMini').innerHTML = ddMini();
+  const el = $('#helloSum'); if (!el) return; /* r56：对话框上方不再有问候和摘要 */
+  if (!$('#hiBot').firstChild) $('#hiBot').innerHTML = botInline('hi');
   const a = pendingAcct();
   if (a || noLive() || !V) { el.innerHTML = EN() ? 'No strategy data yet. I can explain how the strategy works, and analyse returns once an account passes the connection test.' : '还没有可分析的策略数据。我可以先讲讲策略系统怎么运作，账户通过接入测试后再帮你看收益。'; return; }
   const f = facts(), T = f.T;
@@ -3893,7 +4289,7 @@ const scrollMsgs = () => { const m = $('#stream'); m.scrollTop = m.scrollHeight;
 function switchConv(id) {
   if (asking || !CONVS.some(c => c.id === id)) return;
   CCUR = id; renderCvList(); renderChat(); saveConvs();
-  if (CUR !== 'ai') nav('ai', { keepConv: true });
+  if (!DODO) nav('ai', { keepConv: true });
   $('#askIn').focus({ preventScroll: true });
 }
 /* 新话题 never piles up empty ones: an empty conversation is reused; the old one stays in 历史 */
@@ -3902,7 +4298,7 @@ function startConv(ctx) {
   const empty = CONVS.find(c => !c.msgs.length);
   if (empty) CCUR = empty.id; else { const c = newConv(); CONVS.unshift(c); CCUR = c.id; }
   const c = curConv(); if (ctx !== undefined) c.ctx = ctx || undefined;
-  renderCvList(); renderChat(); saveConvs(); if (CUR !== 'ai') nav('ai');
+  renderCvList(); renderChat(); saveConvs(); if (!DODO) nav('ai');
   $('#askIn').value = ''; syncSend(); $('#askIn').focus({ preventScroll: true });
 }
 function delConv(id) {
@@ -4014,7 +4410,7 @@ const syncSend = () => { $('#sendBtn').disabled = asking || !!window.__recOn || 
 $('#askIn').addEventListener('input', syncSend);
 /* 点发送时不让输入框失焦：手机上键盘保持打开，布局不跳，按钮不会在手指抬起前移走 */
 ['pointerdown', 'mousedown'].forEach(t => $('#sendBtn').addEventListener(t, e => { if (document.activeElement === $('#askIn')) e.preventDefault(); }));
-$('#askIn').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) { e.preventDefault(); $('#askForm').requestSubmit(); } });
+$('#askIn').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing && (PREF.enter ? !e.shiftKey : (e.metaKey || e.ctrlKey))) { e.preventDefault(); $('#askForm').requestSubmit(); } });
 $('#askForm').onsubmit = e => { e.preventDefault(); if (asking || window.__recOn) return; const q = $('#askIn').value.trim(); if (!q && !PEND.files.length && !PEND.refs.length) return;
   const ex = { refs: PEND.refs, files: PEND.files }; PEND = { refs: [], files: [] }; $('#askIn').value = ''; const cn = $('#cmpNote'); if (cn) { clearTimeout(cn._t); cn.hidden = true; } window.__dsbSync && __dsbSync(); syncSend(); ask(q, null, ex); };
 /* 侧栏里的英文问题按中文原句回答（规则只认中文原句） */
@@ -4674,7 +5070,7 @@ function topUp(step, focus) {
 function meLeft() { return anyDemo() && DD ? Math.round(Math.max(0, 1 - (DD.wallet.used || 0)) * 100) : 0; }
 document.addEventListener('click', e => {
   if (e.target.closest('[data-merec]')) { nav('wallet'); const d = $('#bills'); if (d) { d.open = true; scrollToEl('#bills'); } return; }
-  if (e.target.closest('[data-meout]')) TDAccount.logout();
+  if (e.target.closest('[data-meout]')) TDAccount.logout({ to: OUT_URL });
 });
 function renderMe() {
   const box = $('#meBody'), live = ACCTS.filter(a => a.live);
@@ -4693,23 +5089,274 @@ function renderMe() {
       <div class="me-row"><div><b>订阅 · 每月按总资产 1%</b><small>本月剩余额度 ${meLeft()}%${anyDemo() ? '（示例）' : ''}</small></div><a class="btn ghost sm" href="#/wallet">费用 →</a></div>
       <div class="me-row"><div><b>充值记录</b><small>仅 Crypto 充值</small></div><button class="btn ghost sm" type="button" data-merec>查看 →</button></div></section>
     <section class="set"><h2>安全</h2>
-      <div class="me-row"><div><b>本机数据</b><small>会话、偏好和 Dodo 历史只保存在这个浏览器</small></div><button class="btn ghost sm" type="button" id="wipeBtn">清除</button></div>
+      <div class="me-row"><div><b>本机数据</b><small>会话、偏好和 Dodo 历史只保存在这个浏览器</small></div><button class="btn ghost sm" type="button" id="wipeBtn" data-wipe>清除</button></div>
       <div class="me-row"><div><b>退出登录</b><small>${esc(SESS().email || '')}</small></div><button class="btn ghost sm" type="button" data-meout>退出</button></div></section>
-    <details class="set set-d me-more"><summary><h2>更多</h2><span class="sd-s">显示偏好 · 操作记录与通知 · 连接状态</span></summary>
-
-      <div class="me-row"><div><b>页面密度</b></div><div class="dens" role="group" aria-label="页面密度">${DENS_BTNS}</div></div>
-      <div class="me-row"><div><b>语言</b></div><div class="dens" role="group" aria-label="语言 Language" data-i18n-skip>${['zh', 'en'].map(l => `<button type="button" data-lang="${l}" lang="${l === 'en' ? 'en' : 'zh-CN'}" aria-pressed="${(window.I18N ? I18N.lang : 'zh') === l}">${l === 'en' ? 'EN' : '中文'}</button>`).join('')}</div></div>
-      <div class="me-row"><div><b>我们替你做了什么</b></div><a class="btn ghost sm" href="#/actions">查看 →</a></div>
-      <div class="me-row"><div><b>通知设置</b><small>演示</small></div><a class="btn ghost sm" href="#/notify">设置 →</a></div>
-      <div class="me-row"><div><b>连接状态</b><small>${LIVE_ERR ? '币安只读读取失败' : LIVE ? '币安只读已连接 · 不会下单' : (anyDemo() ? '未连接币安 · 数字为示例' : '未连接币安 · 金额为 0')} · 支付未接入</small></div></div>
-    </details>
+    <section class="set"><h2>设置</h2>
+      <div class="me-row"><div><b>个性化、单位、隐私、语言</b><small>页面密度、操作记录和通知也在设置里</small></div><a class="btn ghost sm" href="#/settings">设置 →</a></div>
+      <div class="me-row"><div><b>连接状态</b><small>${LIVE_ERR ? '币安只读读取失败' : LIVE ? '币安只读已连接 · 不会下单' : (anyDemo() ? '未连接币安 · 数字为示例' : '未连接币安 · 金额为 0')} · 支付未接入</small></div></div></section>
   </div></div>`;
   syncDens();
-  $('#wipeBtn').onclick = () => {
-    NOSAVE = true;
-    try { [DENS_KEY, VIEW_KEY, CONV_KEY, CCUR_KEY, WAL_KEY, '3dtrading.dash.wallet'].forEach(k => localStorage.removeItem(k)); [SS_KEY].forEach(k => sessionStorage.removeItem(k)); sessionStorage.setItem(WIPED_KEY, '1'); } catch (e) {}
-    location.replace(location.pathname + location.search + '#/me'); location.reload();
-  };
+}
+/* r56 · 清除本机数据：「个人资料」和「设置 → 隐私」共用 */
+document.addEventListener('click', e => {
+  const w = e.target.closest('[data-wipe]'); if (!w) return;
+  NOSAVE = true;
+  try { [DENS_KEY, VIEW_KEY, CONV_KEY, CCUR_KEY, WAL_KEY, '3dtrading.dash.wallet', PREF_KEY, '3dt.theme.dash', BIND_DRAFT].forEach(k => localStorage.removeItem(k)); [SS_KEY, BIND_DRAFT].forEach(k => sessionStorage.removeItem(k)); sessionStorage.setItem(WIPED_KEY, '1'); } catch (e) {}
+  location.replace(location.pathname + location.search + '#/' + ($('#stg') ? 'settings' : 'me')); location.reload();
+});
+
+/* ===================== r56: 设置页 + 绑定币安弹窗 ===================== */
+const OUT_URL = '/3dtrading-site/login/?mode=login&out=1';
+const BIND_DRAFT = '3dt.bindDraft';
+/* r58 · 「我的 → 设置」是居中弹窗（不是整页）：左侧分类、右侧内容；手机上分类在顶部横排。
+   安全 → 两步验证（Google Authenticator 兼容 TOTP）：演示实现，在这个浏览器里生成与校验；未接入服务器。
+   - TOTP 秘密只在开启过程中留在内存；开启后用登录密码派生的密钥（PBKDF2 → AES-GCM）加密存放，不以明文保存。
+   - 恢复码只显示一次，本机只存 SHA-256 摘要。
+   - 这里的二维码只给验证器 App 扫描（otpauth://），和绑定教程里的「手机版页面」二维码完全分开。 */
+const SET = { tab: 'look', tfa: null, rec: null, off: false, err: '' };
+const SET_TABS = [['look', '个性化'], ['unit', '单位'], ['priv', '隐私'], ['sec', '安全'], ['lang', '语言'], ['more', '通知与记录']];
+const tfaEmail = () => String(SESS().email || '').trim().toLowerCase();
+function openSettings(tab) {
+  if (tab && SET_TABS.some(t => t[0] === tab)) SET.tab = tab;
+  const was = $('#modal.on.setm');
+  if (!was) { SET.err = ''; SET.off = false; }
+  openDlg('设置', '<div class="stg" id="stg"></div>');
+  $('#modal').classList.add('setm');
+  renderSettings();
+  setTimeout(() => $(`#stg [data-stab="${SET.tab}"]`)?.focus({ preventScroll: true }), RM ? 0 : 60);
+}
+function setPanel(t) {
+  const tp = window.__dashTheme ? __dashTheme.get() : 'day', lang = EN() ? 'en' : 'zh';
+  const seg = (attr, cur, opts, label) => `<div class="seg r56seg" role="group" aria-label="${label}">${opts.map(([v, x]) => `<button type="button" ${attr}="${v}" aria-pressed="${String(String(cur) === String(v))}">${x}</button>`).join('')}</div>`;
+  const sw = (id, on, label) => `<button type="button" class="sw" role="switch" id="${id}" aria-checked="${String(!!on)}" aria-label="${label}"><i aria-hidden="true"></i></button>`;
+  const row = (b, s, r) => `<div class="stg-r"><div><b>${b}</b>${s ? `<small>${s}</small>` : ''}</div>${r || ''}</div>`;
+  if (t === 'look') return `<h3>个性化</h3>
+    ${row('外观', '只作用于后台；官网和登录页不变', seg('data-thm', tp, [['day', '昼'], ['night', '夜'], ['system', '跟随系统']], '外观'))}
+    ${row('页面密度', '总览和交易记录的信息密度', `<div class="dens" role="group" aria-label="页面密度">${DENS_BTNS}</div>`)}`;
+  if (t === 'unit') return `<h3>单位</h3>
+    ${row('计价单位', '所有金额按 USDT 计价', '<span class="stt">USDT</span>')}
+    ${row('金额小数位', `例：${esc(nf2.format(12345.678))} USDT`, seg('data-unit-dec', PREF.dec ? 2 : 0, [[2, '2 位'], [0, '取整']], '金额小数位'))}
+    ${row('千分位分隔', '1,234,567 或 1234567', sw('setGroup', PREF.group, '千分位分隔'))}`;
+  if (t === 'priv') return `<h3>隐私</h3>
+    ${row('隐藏金额', '在别人面前打开后台时，金额和收益会模糊显示', sw('setHide', PREF.hide, '隐藏金额'))}
+    ${row('API 密钥', '网页不保存、不发送币安 API 密钥')}
+    ${row('清除本机数据', '会话、偏好和 Dodo 历史只保存在这个浏览器', '<button class="btn ghost sm" type="button" data-wipe>清除</button>')}`;
+  if (t === 'sec') return `<h3>安全</h3>${tfaPanel()}`;
+  if (t === 'lang') return `<h3>语言</h3>
+    ${row('界面语言', '中文 / English', `<div class="seg r56seg" role="group" aria-label="语言"><button type="button" data-lang="zh" aria-pressed="${String(lang === 'zh')}">中文</button><button type="button" data-lang="en" aria-pressed="${String(lang === 'en')}">English</button></div>`)}`;
+  return `<h3>通知与记录</h3>
+    ${row('通知设置', '强平风险、日报和到期提醒', '<a class="btn ghost sm" href="#/notify" data-stgo>打开 →</a>')}
+    ${row('操作记录', '我们替你做了什么', '<a class="btn ghost sm" href="#/actions" data-stgo>打开 →</a>')}
+    ${row('费用与订阅', '每月按总资产 1% · 充值记录', '<a class="btn ghost sm" href="#/wallet" data-stgo>打开 →</a>')}
+    ${row('币安子账户', LIVE ? '币安只读已连接 · 不会下单' : '未连接币安', '<button class="btn ghost sm" type="button" data-bind-open>绑定币安</button>')}`;
+}
+function tfaPanel() {
+  const e = tfaEmail(), A = window.TDAuth, acc = A && A.account(e), on = !!(acc && acc.tfa && acc.tfa.on), err = SET.err ? `<p class="bnm-err" role="alert">${esc(SET.err)}</p>` : '<p class="bnm-err" role="alert"></p>';
+  const demo = '<p class="tfa-demo"><span class="stt demo2">演示</span>验证在这个浏览器里完成，未接入服务器；真实上线需要服务端保存与校验。</p>';
+  const head = `<div class="tfa-hd"><span class="tfa-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.6-3 8.4-7 10-4-1.6-7-5.4-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></span><div><b>两步验证 · 谷歌验证器</b><small>开启后，每次登录除密码外还要输入验证器 App 里的 6 位动态码</small></div><span class="stt ${on ? 'ok' : 'off'}">${on ? '已开启' : '未开启'}</span></div>`;
+  if (!A) return head + '<p class="tfa-p">两步验证模块没有加载。</p>';
+  if (SET.rec) return `${head}<div class="tfa-box" id="tfaRec"><b>已开启。请保存恢复码</b><p class="tfa-p">手机丢失时，可用一个恢复码代替动态码登录；每个只能用一次。恢复码只显示这一次。</p>
+    <ol class="tfa-rc">${SET.rec.map(c => `<li><code>${esc(c)}</code></li>`).join('')}</ol>
+    <div class="tfa-ft"><button type="button" class="btn ghost sm" data-tfa="copyrec">复制恢复码</button><button type="button" class="btn brand sm" data-tfa="recdone" data-first>我已保存</button></div></div>${demo}`;
+  if (on) return `${head}<p class="tfa-p">开启于 ${esc(fmtD(new Date(acc.tfa.at), { year: 'numeric', month: '2-digit', day: '2-digit' }))} · 剩余恢复码 ${(acc.tfa.rec || []).length} 个</p>
+    ${SET.off ? `<form class="tfa-box" id="tfaOffF" novalidate><b>关闭两步验证</b><label for="tfaOffPw">登录密码</label><input id="tfaOffPw" type="password" autocomplete="current-password">
+      <label for="tfaOffC">验证器动态码或恢复码</label><input id="tfaOffC" inputmode="numeric" autocomplete="one-time-code" maxlength="9" spellcheck="false">${err}
+      <div class="tfa-ft"><button type="button" class="btn ghost sm" data-tfa="offx">取消</button><button type="submit" class="btn sm tfa-danger">关闭两步验证</button></div></form>`
+      : '<div class="tfa-ft"><button type="button" class="btn ghost sm" data-tfa="off">关闭两步验证</button></div>'}${demo}`;
+  if (!A.secure()) return `${head}<p class="tfa-warn" role="note">当前地址不是安全连接（https 或本机 localhost），浏览器不提供加密功能，无法在这里开启两步验证。请用 https 地址或在本机打开。</p>${demo}`;
+  if (SET.tfa) return `${head}<div class="tfa-box tfa-set" id="tfaSet">
+      <div class="tfa-qrw"><div class="tfa-qr" id="tfaQr" role="img" aria-label="谷歌验证器二维码（仅用于验证器 App）"></div><small>用 Google Authenticator 等验证器 App 扫描</small></div>
+      <div class="tfa-st"><ol class="tfa-steps"><li>在验证器 App 里点「+」，扫描左侧二维码</li><li>无法扫码时，手动输入密钥：<button type="button" class="tfa-key" data-tfa="copykey" aria-label="复制密钥"><code>${esc(SET.tfa.secret.replace(/(.{4})/g, '$1 ').trim())}</code></button><small class="tfa-kn">账户：${esc(e)} · 基于时间</small></li><li>输入 App 显示的 6 位动态码</li></ol>
+      <form id="tfaOnF" novalidate><label class="sr-only" for="tfaCode">6 位动态码</label><div class="tfa-in"><input id="tfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="6 位动态码" spellcheck="false" data-first><button type="submit" class="btn brand sm">验证并开启</button></div>${err}</form>
+      <button type="button" class="lnk" data-tfa="cancel">取消</button></div></div>${demo}`;
+  const has = !!(acc && acc.pw);
+  return `${head}<form class="tfa-box" id="tfaPwF" novalidate><label for="tfaPw">${has ? '先输入登录密码确认是你本人' : '这个演示账户还没有密码记录：设置一个登录密码（至少 8 位）'}</label>
+    <div class="tfa-in"><input id="tfaPw" type="password" autocomplete="${has ? 'current-password' : 'new-password'}"><button type="submit" class="btn brand sm">开启两步验证</button></div>${err}</form>${demo}`;
+}
+function renderSettings() {
+  const box = $('#stg'); if (!box) return;
+  const t = SET.tab;
+  box.innerHTML = `<div class="stg-nav" role="tablist" aria-label="设置分类" aria-orientation="vertical">${SET_TABS.map(([k, x]) => `<button type="button" role="tab" id="stab-${k}" data-stab="${k}" aria-selected="${String(k === t)}" aria-controls="stgP" tabindex="${k === t ? 0 : -1}">${x}</button>`).join('')}</div>
+    <div class="stg-p" id="stgP" role="tabpanel" aria-labelledby="stab-${t}">${setPanel(t)}</div>`;
+  if (t === 'sec' && SET.tfa) tfaQr();
+  syncDens();
+}
+function tfaQr() {
+  const el = $('#tfaQr'); if (!el || !SET.tfa || typeof qrcode !== 'function') return;
+  const q = qrcode(0, 'M'); q.addData(SET.tfa.uri); q.make();
+  el.innerHTML = q.createSvgTag({ cellSize: 4, margin: 2, scalable: true });
+}
+const tfaMsg = c => ({ badPw: '密码不对', shortPw: '密码至少 8 位', insecure: '当前地址不是安全连接，无法开启', badCode: '动态码不对或已过期，请输入 App 里最新的 6 位数字', badRec: '恢复码不对或已用过', state: '状态已过期，请重新开始' }[c] || '没有完成，请重试');
+function setFocusTab(k) { SET.tab = k; SET.err = ''; renderSettings(); $(`#stg [data-stab="${k}"]`)?.focus({ preventScroll: true }); }
+document.addEventListener('click', e => {
+  if (!e.target.closest('#stg')) return;
+  const tb = e.target.closest('[data-stab]'); if (tb) { setFocusTab(tb.dataset.stab); return; }
+  if (e.target.closest('[data-stgo]')) { closeDlg(); return; }
+  const a = e.target.closest('[data-tfa]'); if (!a) return;
+  const k = a.dataset.tfa;
+  if (k === 'cancel') { TDAuth.tfaCancel(); SET.tfa = null; SET.err = ''; renderSettings(); $('#tfaPw')?.focus(); return; }
+  if (k === 'copykey' || k === 'copyrec') {
+    const v = k === 'copykey' ? SET.tfa.secret : SET.rec.join('\n');
+    (navigator.clipboard?.writeText(v) || Promise.reject()).then(() => toast(k === 'copykey' ? '已复制密钥' : '已复制恢复码'), () => toast('复制失败，请手动抄写'));
+    return;
+  }
+  if (k === 'recdone') { SET.rec = null; renderSettings(); $('#stg [data-tfa="off"]')?.focus(); toast('两步验证已开启：下次登录需要动态码'); return; }
+  if (k === 'off') { SET.off = true; SET.err = ''; renderSettings(); $('#tfaOffPw')?.focus(); return; }
+  if (k === 'offx') { SET.off = false; SET.err = ''; renderSettings(); $('#stg [data-tfa="off"]')?.focus(); return; }
+});
+document.addEventListener('keydown', e => {
+  const tb = e.target.closest?.('#stg [data-stab]'); if (!tb) return;
+  const ks = SET_TABS.map(x => x[0]), i = ks.indexOf(tb.dataset.stab);
+  const n = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+  if (n) { e.preventDefault(); setFocusTab(ks[(i + n + ks.length) % ks.length]); }
+  else if (e.key === 'Home' || e.key === 'End') { e.preventDefault(); setFocusTab(ks[e.key === 'Home' ? 0 : ks.length - 1]); }
+});
+document.addEventListener('submit', async e => {
+  const id = e.target.id; if (!['tfaPwF', 'tfaOnF', 'tfaOffF'].includes(id)) return; e.preventDefault();
+  const btn = $('button[type=submit]', e.target); if (btn) btn.disabled = true;
+  const fail = (c, f) => { SET.err = tfaMsg(c); renderSettings(); const el = $(f); if (el) { el.focus(); el.select?.(); } };
+  try {
+    if (id === 'tfaPwF') {
+      const pw = $('#tfaPw').value; if (!pw) return fail('badPw', '#tfaPw');
+      const r = await TDAuth.tfaBegin(tfaEmail(), pw); $('#tfaPw') && ($('#tfaPw').value = '');
+      if (!r.ok) return fail(r.code, '#tfaPw');
+      SET.tfa = { secret: r.secret, uri: r.uri }; SET.err = ''; renderSettings(); $('#tfaCode')?.focus(); return;
+    }
+    if (id === 'tfaOnF') {
+      const c = $('#tfaCode').value.replace(/\s/g, ''); if (!/^\d{6}$/.test(c)) return fail('badCode', '#tfaCode');
+      const r = await TDAuth.tfaConfirm(c); if (!r.ok) return fail(r.code, '#tfaCode');
+      SET.tfa = null; SET.rec = r.recovery; SET.err = ''; renderSettings(); $('#stg [data-tfa="recdone"]')?.focus(); return;
+    }
+    const pw = $('#tfaOffPw').value, c = $('#tfaOffC').value.trim();
+    const r = await TDAuth.tfaOff(tfaEmail(), pw, c);
+    if (!r.ok) { /* r58b: 只有动态码/恢复码不对时，保留已输入的密码，不要求重输 */
+      fail(r.code, r.code === 'badPw' ? '#tfaOffPw' : '#tfaOffC');
+      if (r.code !== 'badPw' && $('#tfaOffPw')) $('#tfaOffPw').value = pw;
+      return;
+    }
+    SET.off = false; SET.err = ''; renderSettings(); $('#stg [data-stab="sec"]')?.focus(); toast('两步验证已关闭');
+  } finally { if (btn && btn.isConnected) btn.disabled = false; }
+});
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-thm]');
+  if (t) { __dashTheme.set(t.dataset.thm); $$('[data-thm]').forEach(b => b.setAttribute('aria-pressed', String(b === t))); toast('已保存外观'); return; }
+  const d = e.target.closest('[data-unit-dec]');
+  if (d) { PREF.dec = +d.dataset.unitDec; mkNf(); savePref(); renderAll(); showPage(CUR); renderSettings(); $('#stg [data-unit-dec="' + PREF.dec + '"]')?.focus(); toast('已保存金额小数位'); return; }
+  if (e.target.closest('#setGroup')) { PREF.group = !PREF.group; mkNf(); savePref(); renderAll(); showPage(CUR); renderSettings(); $('#setGroup')?.focus(); toast('已保存千分位设置'); return; }
+  if (e.target.closest('#setHide')) { PREF.hide = !PREF.hide; savePref(); document.documentElement.classList.toggle('pv-hide', PREF.hide); $('#setHide').setAttribute('aria-checked', String(PREF.hide)); toast(PREF.hide ? '金额已隐藏' : '金额已显示'); return; }
+  if (e.target.closest('[data-bind-open]')) { e.preventDefault(); openBind(); return; }
+});
+window.addEventListener('td:theme', () => { if ($('#stg')) { const v = __dashTheme.get(); $$('[data-thm]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.thm === v))); } });
+window.addEventListener('langchange', () => { if ($('#stg')) { const f = document.activeElement?.dataset?.lang; renderSettings(); if (f) $(`#stg [data-lang="${f}"]`)?.focus({ preventScroll: true }); } });
+
+/* r58 · 快捷绑定：一个页面，跟随后台昼夜底色。不重建币安后台，不分步。
+   公钥一行（缩略显示，点击即复制完整公钥；是公钥，不是私钥）→ 权限一行（勾哪些）→ 两个 IP 白名单（各自可复制）→ API Key 空输入 + 绑定。
+   演示：API Key 填 1234 → 本机添加一个「演示绑定」账户（未连接币安）；64 位字母数字只做格式检查，账户保持未连接。
+   API Key 永远不保存、不发送、不写日志；账户名称草稿与教程共用（TDBind，sessionStorage 只存名称）。 */
+const BN_PERMS = [
+  ['read', '允许读取', 'on'], ['spot', '启用现货、杠杆和股票交易', 'on'], ['margin', '允许杠杆质押借币、还款和划转', 'on'],
+  ['uni', '开启统一账户交易', 'on'], ['uxfer', '允许万向划转', 'on'], ['pred', '允许预测交易权限', 'off'], ['pairs', '允许交易币对白名单', 'opt']];
+const BN_IPS = ['192.0.2.10', '198.51.100.20'];
+const QB = { done: null, carried: false };
+function bnPem() {
+  let h = 2166136261 >>> 0; const s = 'td-demo-pub:connect-self', bytes = [0x30, 0x2a, 0x30, 0x05, 0x06, 0x03, 0x2b, 0x65, 0x70, 0x03, 0x21, 0x00];
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  for (let j = 0; j < 32; j++) { h ^= h << 13; h >>>= 0; h ^= h >>> 17; h ^= h << 5; h >>>= 0; bytes.push(h & 255); }
+  return '-----BEGIN PUBLIC KEY-----\n' + btoa(String.fromCharCode.apply(null, bytes)) + '\n-----END PUBLIC KEY-----';
+}
+const bnShort = () => { const b = bnPem().split('\n')[1]; return b.slice(0, 10) + '…' + b.slice(-8); };
+const bnSave = () => { try { TDBind.saveDraft($('#bnNm')?.value || ''); } catch (e) {} };
+const CP_I = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>';
+function qbForm() {
+  const pm = BN_PERMS.map(([id, t, k]) => `<li class="qb-pm ${k}" data-pm="${id}"><i aria-hidden="true">${k === 'on' ? '✓' : k === 'off' ? '✕' : '○'}</i><span>${t}</span><small>${k === 'on' ? '勾选' : k === 'off' ? '不勾' : '可选'}</small></li>`).join('');
+  return `<div class="qb" id="qb">
+    <p class="qb-lead">在币安子账户「API 管理」里选<b>自行生成</b>，按下面四行填好即可。</p>
+    <div class="qb-row"><div class="qb-k"><em>1</em>公钥<span class="stt demo2">示例</span></div>
+      <button type="button" class="qb-key" id="qbKey" data-qbcp="pem" data-first aria-label="复制完整公钥（Ed25519 公钥，不是私钥）"><code>${esc(bnShort())}</code><span class="qb-ci">${CP_I}</span><span class="qb-ok" aria-hidden="true">已复制</span></button>
+      <p class="qb-h">点击复制完整公钥，粘贴到币安「公钥」处。这是公钥，不含私钥。</p></div>
+    <div class="qb-row"><div class="qb-k"><em>2</em>权限</div><ul class="qb-pms" aria-label="币安 API 权限：勾选哪些">${pm}</ul>
+      <p class="qb-h">先填好下面两个 IP，币安才允许勾选交易权限。交易币对白名单会限制可交易币对，收益可能下降（不一定），不确定就不勾；提现权限永远不要开。</p></div>
+    <div class="qb-row"><div class="qb-k"><em>3</em>IP 白名单</div><div class="qb-ips">${BN_IPS.map((ip, i) => `<button type="button" class="qb-ip" data-qbcp="ip${i}" aria-label="复制 IP ${ip}"><code>${ip}</code><span class="qb-ci">${CP_I}</span><span class="qb-ok" aria-hidden="true">已复制</span></button>`).join('')}<span class="stt demo2">示例</span></div>
+      <p class="qb-h">IP 访问限制选「只访问受信任的IP」，两个都要添加。</p></div>
+    <form class="qb-row qb-f" id="bnF" novalidate><div class="qb-k"><em>4</em>API Key</div>
+      <div class="qb-in"><input id="bnKey" autocomplete="off" spellcheck="false" maxlength="64" aria-label="API Key" aria-describedby="bnErr bnDemoH">
+        <input id="bnNm" maxlength="24" placeholder="账户名称（可选）" aria-label="账户名称（可选）" value="${esc(TDBind.draft())}">
+        <button type="submit" class="btn brand">绑定</button></div>
+      <p class="bnm-err" id="bnErr" role="alert"></p>
+      <div class="bnm-res" id="bnRes" role="status" hidden></div>
+      <p class="qb-h" id="bnDemoH"><span class="stt demo2">演示</span>还没接入币安：输入 <code>1234</code> 可模拟绑定成功（演示账户，不连接币安）。网页不保存、不发送你的 API Key。</p></form>
+    <div class="qb-ft"><button type="button" class="btn ghost" data-qbskip>跳过</button><span class="sp"></span><a class="lnk" id="bnGuide" href="/3dtrading-site/bind/?from=app&lang=${EN() ? 'en' : 'zh'}#guide">查看完整教程</a></div></div>`;
+}
+function qbDone() {
+  const d = QB.done, all = (() => { try { return TDBind.demoList(); } catch (e) { return []; } })();
+  return `<div class="qbo" id="qb" role="status" aria-live="polite">
+    <div class="qbo-hero"><div class="qbo-mk" aria-hidden="true"><svg viewBox="0 0 64 64"><circle class="r0" cx="32" cy="32" r="28"/><circle class="r1" cx="32" cy="32" r="28"/><path d="M20 33l8 8 16-18"/></svg></div>
+      <div><h3 id="qbOkT">${QB.carried ? '已带入演示账户' : '演示绑定成功'}</h3><p>${QB.carried ? '你在教程里完成的演示绑定，登录后已加入后台（只加入一次）。' : '账户已加入右上角的账户列表。'}</p></div></div>
+    <div class="qbo-card"><span class="qbo-av" aria-hidden="true">${esc((d.name || '?').slice(0, 1))}</span><div class="qbo-nm"><b>${esc(d.name)}</b><small>演示绑定 · 未连接币安</small></div><span class="qbo-new">新</span></div>
+    <p class="qbo-note"><span class="stt demo2">演示</span>没有连接真实币安，也没有发送或保存 API Key；后台数字均为演示数据。</p>
+    ${all.length > 1 ? `<ul class="qbo-l" aria-label="已演示绑定的账户">${all.map(a => `<li${a.name === d.name ? ' class="on"' : ''}>${esc(a.name)}</li>`).join('')}</ul>` : ''}
+    <div class="qbo-ft"><button type="button" class="btn ghost" data-bxnext data-first>继续绑定下一个账户</button><button type="button" class="btn brand" data-bxfin>完成，查看后台</button></div></div>`;
+}
+function qbRender(focus) {
+  const b = $('#mdB'); if (!b) return;
+  b.innerHTML = QB.done ? qbDone() : qbForm();
+  $('#mdT').textContent = QB.done ? '绑定结果' : '绑定币安账户';
+  if (focus) (QB.done ? $('[data-bxnext]') : focus === 'key' ? $('#bnKey') : $('#qbKey'))?.focus({ preventScroll: true });
+}
+function openBind(done, carried) {
+  if (DODO) setDodo(false);
+  QB.done = done || null; QB.carried = !!carried;
+  openDlg(done ? '绑定结果' : '绑定币安账户', '<div id="qbw"></div>');
+  $('#modal').classList.add('wide', 'qbm');
+  qbRender(); setTimeout(() => (done ? $('[data-bxnext]') : $('#qbKey'))?.focus({ preventScroll: true }), RM ? 0 : 60);
+}
+function qbCopied(btn) { btn.classList.add('done'); clearTimeout(btn._t); btn._t = setTimeout(() => btn.classList.remove('done'), 1600); }
+document.addEventListener('click', e => {
+  if (!e.target.closest('#qb')) return;
+  const c = e.target.closest('[data-qbcp]');
+  if (c) {
+    const k = c.dataset.qbcp, v = k === 'pem' ? bnPem() : BN_IPS[+k.slice(2)];
+    (navigator.clipboard?.writeText(v) || Promise.reject()).then(() => { qbCopied(c); toast(k === 'pem' ? '已复制完整公钥' : '已复制 IP ' + v); },
+      () => { try { getSelection().selectAllChildren(c.querySelector('code')); } catch (x) {} toast(k === 'pem' ? '复制失败：请改用完整教程里的公钥' : '复制失败：已选中文本，请按 ⌘C / Ctrl+C'); });
+    return;
+  }
+  if (e.target.closest('#bnGuide')) { bnSave(); return; }
+  if (e.target.closest('[data-qbskip]')) { bnSave(); closeDlg(); toast('已跳过：可随时在右上角或「我的」里添加币安账户'); return; }
+  if (e.target.closest('[data-bxnext]')) { QB.done = null; QB.carried = false; qbRender('key'); toast('换一个子账户，按同样四行再绑定一次'); return; }
+  if (e.target.closest('[data-bxfin]')) { QB.done = null; closeDlg(); return; }
+});
+document.addEventListener('input', e => {
+  if (e.target.id === 'bnKey') { $('#bnErr').textContent = ''; $('#bnRes').hidden = true; }
+  if (e.target.id === 'bnNm') { bnSave(); $('#bnErr').textContent = ''; }
+});
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'bnF') return; e.preventDefault();
+  const k = $('#bnKey'), nm = $('#bnNm'), r = $('#bnRes'), err = $('#bnErr'), c = TDBind.check(k.value);
+  r.hidden = true; err.textContent = '';
+  if (c === 'empty' || c === 'bad') { err.textContent = c === 'empty' ? '请填写 API Key' : 'API Key 应为 64 位字母和数字（演示可填 1234）'; k.focus(); return; }
+  if (c === 'format') {
+    k.value = '';
+    r.hidden = false; r.innerHTML = '<b>账户未连接</b><span>格式正确，但后台还没接入币安：这次没有发送、没有保存你的 API Key。</span>'; return;
+  }
+  const res = TDBind.bind({ key: k.value, name: nm.value, en: EN() });
+  if (!res.ok) {
+    if (res.code === 'dup') { err.textContent = `已有同名账户「${res.name}」，换一个名称`; nm.focus(); nm.select(); }
+    else { err.textContent = '请先登录，再绑定'; }
+    return;
+  }
+  k.value = ''; QB.done = { name: res.name, id: res.account.id }; QB.carried = false;
+  qbRender(true); toast('演示绑定成功：' + res.name);
+});
+/* r58 · 未登录时在教程里完成的演示绑定：登录/注册后带进后台，只加入一次 */
+function takePendingBind() {
+  if (!window.TDAuth || !window.TDBind || !signedIn() || LIVE || LIVE_ERR) return false;
+  const p = TDAuth.takePending(); if (!p) return false;
+  let name = String(p.name || '').trim().slice(0, 24);
+  try { if (name && TDBind.taken(name)) name = TDBind.nextName(EN()); } catch (e) {}
+  const res = TDBind.bind({ key: '1234', name, en: EN() });
+  if (!res.ok) return false;
+  setTimeout(() => openBind({ name: res.name, id: res.account.id }, true), RM ? 0 : 300);
+  return true;
 }
 
 /* ===================== r38: empty states, plan card, alerts, actions, notifications ===================== */
@@ -4867,12 +5514,12 @@ function markDemo() {
 }
 
 /* ===================== pages ===================== */
-const PAGES = ['dashboard', 'trades', 'wallet', 'ai', 'me', 'actions', 'notify'];
+const PAGES = ['dashboard', 'trades', 'wallet', 'ai', 'me', 'actions', 'notify', 'settings'];
 /* 导航只有一份：电脑版顶栏（总览 · 交易记录 · Logo · 钱包 · Dodo）的顺序就是手机底栏的顺序；「我的」留在头像菜单 */
 (() => { const t = $('#tnav'), ink = $('#tnavInk');
   $$('#fnav a.fn-a[data-nav]').forEach(a => { const c = document.createElement('a'); c.href = a.getAttribute('href'); c.dataset.nav = a.dataset.nav;
     const ic = a.querySelector('svg'); if (ic) c.appendChild(ic.cloneNode(true)); c.appendChild(document.createTextNode(a.textContent.trim())); t.insertBefore(c, ink); }); })();
-const TITLES = { ai: 'Dodo', dashboard: '总览', trades: '交易记录', wallet: '费用 · 订阅', me: '我的', actions: '我们替你做了什么', notify: '通知设置' };
+const TITLES = { ai: 'Dodo', dashboard: '总览', trades: '交易记录', wallet: '费用 · 订阅', me: '个人资料', actions: '我们替你做了什么', notify: '通知设置', settings: '设置' };
 let CUR = null, rendered = false; const SCR = {};
 const pageOf = () => { const h = location.hash.replace(/^#\/?/, ''); return PAGES.includes(h) ? h : 'dashboard'; };
 function drawVisible() {
@@ -4881,7 +5528,12 @@ function drawVisible() {
   if (CUR === 'trades') { drawK(); pinK(); }
   if (DW.kind === 'stable') drawApy();
 }
+/* r58 · Dodo 恢复为独立页面（导航进入页面）；只有点 Dodo 页里探头的 Dodo，才打开居中的「综合设置」弹窗 */
+const DODO = false;
+function setDodo(on) { if (on) nav('ai'); }
+window.__ddm = { open: () => nav('ai'), close: () => {}, isOpen: () => CUR === 'ai' };
 function showPage(p, o = {}) {
+  if (window.__dodo && __dodo.isOpen() && p !== 'ai') __dodo.open(false);
   const prev = CUR, changed = p !== prev;
   if (changed && prev) SCR[prev] = scrollY;
   if (changed && DW.kind && !o.keepDrawer) closeDrawer(true);
@@ -4902,17 +5554,23 @@ function showPage(p, o = {}) {
   if (!RM && prev) pg.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 240, easing: 'cubic-bezier(.2,.8,.2,1)' });
   if (prev && o.focus !== false) (p === 'ai' ? $('#askIn') : $('h1', pg))?.focus({ preventScroll: true });
 }
-function nav(p, o) { if (location.hash !== '#/' + p) history.pushState(null, '', '#/' + p); showPage(p, o); }
+function nav(p, o) { if (p === 'settings') { openSettings(); return; } if (location.hash !== '#/' + p) history.pushState(null, '', '#/' + p); showPage(p, o); }
 document.addEventListener('click', e => {
   const a = e.target.closest('a[href^="#/"]'); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || document.body.classList.contains('binding')) return;
   const p = a.getAttribute('href').slice(2); if (!PAGES.includes(p)) return;
   e.preventDefault(); nav(p);
 });
 function route() {
-  if (location.hash === '#/bind') { location.replace(bindUrl()); return; }
+  const bind = location.hash === '#/bind', sett = location.hash === '#/settings';
   if (!rendered) { renderAll(); renderCvList(); renderChat(); rendered = true; window.CONVS_READY = true; }
+  /* #/bind（菜单、空态、教程回来）是弹窗：盖在当前页上，地址回到当前页 */
+  if (bind || sett) { const back = CUR || 'dashboard'; history.replaceState(null, '', '#/' + back); if (!CUR) showPage(back, { restore: true }); if (bind) openBind(); else openSettings(); return; }
   showPage(pageOf(), { restore: true });
 }
+document.addEventListener('click', e => {
+  if (e.target.closest('#ddsNew')) { __dodo.open(false, false); $('#cvNew')?.click(); $('#askIn').focus({ preventScroll: true }); return; }
+  if (e.target.closest('#ddsHist')) { __dodo.open(false, false); cvPanel(true); return; }
+});
 
 /* ===================== shared account module (TDAccount) ===================== */
 const SESS = () => TDAccount.getSession() || {};
@@ -4924,7 +5582,7 @@ function mountAccount() {
   /* 顶部 3dtrading Logo 回同源官网（语言和登录状态由账户模块共享） */
   document.querySelectorAll('[data-site-link]').forEach(a => { a.href = TDAccount.routes.site; });
   const IC = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
-  TDAccount.mountMenu($('#avBtn'), { context: 'app', theme: () => document.documentElement.dataset.theme === 'day' ? 'light' : 'dark', items: [
+  TDAccount.mountMenu($('#avBtn'), { context: 'app', layout: 'r56', profile: '#/me', settings: '#/settings', logoutTo: OUT_URL, theme: () => document.documentElement.dataset.theme === 'day' ? 'light' : 'dark', items: [
     { label: { zh: '我的', en: 'Me' }, sub: { zh: '账号、币安账户、偏好和连接状态', en: 'Account, Binance accounts, preferences and connections' }, href: '#/me', icon: IC('<circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.2 7.5-5.2s6.3 1.6 7.5 5.2"/>') },
     { label: { zh: '我们替你做了什么', en: 'What we did for you' }, sub: { zh: '每次操作的时间、动作、结果和方案版本', en: 'Time, action, result and plan version of every action' }, href: '#/actions', icon: IC('<path d="M5 6h14M5 12h14M5 18h9"/>') },
     { label: { zh: '通知设置', en: 'Notifications' }, sub: { zh: 'Telegram · Discord · 邮箱（演示）', en: 'Telegram · Discord · Email (demo)' }, href: '#/notify', icon: IC('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5h4"/>') },
@@ -4985,7 +5643,7 @@ paintBots();
 loadState(); loadWal(); if (!noLive() && !pendingAcct()) computeView(); loadConvs();
 mountAccount();
 route();
-welcome();
+if (!takePendingBind()) welcome();
 /* r38：绑定页失败时链到 ?ask=dodo&topic=<失败码>#/dashboard。登录后直接打开 Dodo，用 TDApi.getFailureText 回答这个失败码。
    未登录时先停在「未登录」空态，码暂存在本标签页，登录后再打开。参数读一次就从地址栏去掉，刷新不会重复提问。 */
 (() => {
@@ -5053,7 +5711,7 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
     look(r.left + 12 + Math.max(0, w), r.top + r.height / 2); clearTimeout(it); it = setTimeout(() => { pu.style.transform = ''; }, 2500); };
   if (inp) { inp.addEventListener('focus', watch); inp.addEventListener('input', watch); }
   const wink = () => { head.classList.add('blink'); setTimeout(() => head.classList.remove('blink'), 150); };
-  head.addEventListener('click', () => { wink(); $('#askIn')?.focus({ preventScroll: true }); });
+  head.addEventListener('click', wink);
   /* 眨眼：3–6 秒一次；减少动态效果时不眨 */
   const blink = () => { if (!RM && CUR === 'ai' && !document.hidden) wink(); setTimeout(blink, 3000 + Math.random() * 3000); };
   setTimeout(blink, 2200);
@@ -5064,26 +5722,42 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
    - 语音：MediaRecorder 录音，录完作为音频附件；没有识别服务，不转文字；不用 Web Speech（会把声音发给第三方）。
    - Bot API：只认本站后台（经 TDApi.botStatus）的真实回应；没有服务就是「未连接」，密钥不发送、不保存（不进 localStorage）。 */
 (() => {
-  const dsb = $('#dsb'), tg = $('#dsbTg'), scrim = $('#dsbScrim'), body = document.body; if (!dsb) return;
+  const dsb = $('#dsb'), tg = $('#ddHead'), scrim = $('#dsbScrim'), body = document.body; if (!dsb) return;
   const L = (z, e) => EN() ? e : z, MAXF = 6, MAXB = 20 * 1048576, MAXR = 3;
-  const WIDE = matchMedia('(min-width:1100px)');
-  let pref = true; try { pref = localStorage.getItem('3dt.dsb') !== '0'; } catch (e) {}
-  let tab = 'acct';
-  /* ---------- 侧栏开合：电脑 ≥1100 并排（偏好记在本机，只是界面偏好）；更窄是右侧抽屉 ---------- */
-  const isOpen = () => WIDE.matches ? body.classList.contains('dsb-on') : body.classList.contains('dsb-open');
-  function set(open, save) {
-    if (WIDE.matches) { body.classList.toggle('dsb-on', open); body.classList.remove('dsb-open'); scrim.hidden = true; pref = open;
-      if (save) try { localStorage.setItem('3dt.dsb', open ? '1' : '0'); } catch (e) {} }
-    else { body.classList.toggle('dsb-open', open); body.classList.remove('dsb-on'); scrim.hidden = !open; }
-    tg.setAttribute('aria-expanded', String(open)); dsb.inert = !open;
-    if (open) { render(); if (BOT.st === 'idle' && CUR === 'ai') botCheck(); }
+  let tab = 'acct', back = null;
+  /* ---------- r58 · 综合设置是居中弹窗：点 Dodo 页里探头的 Dodo 打开；✕ / Esc / 点遮罩关闭，焦点留在弹窗里 ---------- */
+  const isOpen = () => body.classList.contains('dsb-open');
+  function set(open, focusBack) {
+    if (open === isOpen()) return;
+    if (open) back = document.activeElement;
+    body.classList.toggle('dsb-open', open); dsb.hidden = !open; scrim.hidden = !open;
+    tg.setAttribute('aria-expanded', String(open));
+    ['#dash', 'header.top'].forEach(k => { const el = $(k); if (el) el.inert = open; });
+    $('#ddPeek').inert = open || !(window.__ddPeek && __ddPeek.state());
+    document.documentElement.classList.toggle('dlg-lock', open);
+    if (open) {
+      render(); ddsSync(); if (BOT.st === 'idle' && CUR === 'ai') botCheck();
+      if (!RM) dsb.animate([{ opacity: 0, transform: 'translate(-50%,-47%) scale(.98)' }, { opacity: 1, transform: 'translate(-50%,-50%)' }], { duration: 220, easing: 'cubic-bezier(.2,.8,.2,1)' });
+      setTimeout(() => ($('#dsbX') || dsb).focus({ preventScroll: true }), RM ? 0 : 30);
+    } else if (focusBack !== false) (back && back.isConnected && !back.closest('[inert]') ? back : tg).focus({ preventScroll: true });
   }
-  tg.onclick = () => { const o = !isOpen(); set(o, true); if (o && !WIDE.matches) setTimeout(() => ($('[role="tab"][aria-selected="true"]', dsb) || dsb).focus({ preventScroll: true }), 30); };
-  $('#dsbX').onclick = () => { set(false, true); tg.focus({ preventScroll: true }); };
+  tg.addEventListener('click', () => set(!isOpen()));
+  const ddsSync = () => { const b = $('#ddsEnter'); if (b) b.setAttribute('aria-checked', String(!!PREF.enter)); };
+  $('#ddsEnter').onclick = () => { PREF.enter = !PREF.enter; savePref(); ddsSync(); };
+  ddsSync();
+  $('#dsbX').onclick = () => set(false);
   scrim.onclick = () => set(false);
-  WIDE.addEventListener('change', () => set(WIDE.matches ? pref : false));
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && body.classList.contains('dsb-open')) { set(false); tg.focus({ preventScroll: true }); } });
-  window.addEventListener('hashchange', () => { if (!WIDE.matches) set(false); setTimeout(() => { if (CUR === 'ai' && isOpen() && BOT.st === 'idle') botCheck(); }, 80); });
+  document.addEventListener('keydown', e => {
+    if (!isOpen()) return;
+    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); set(false); return; }
+    if (e.key !== 'Tab') return;
+    const f = $$('button:not([disabled]),a[href],textarea,input:not([type=hidden]):not([disabled]),select,[tabindex]:not([tabindex="-1"])', dsb).filter(x => x.offsetParent !== null);
+    if (!f.length) return; const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && (document.activeElement === first || !dsb.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (document.activeElement === last || !dsb.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
+  }, true);
+  window.addEventListener('hashchange', () => { if (isOpen()) set(false, false); });
+  $('#ddsApp')?.addEventListener('click', () => set(false, false));
   /* ---------- 引用 ---------- */
   const key = r => r.k + ':' + r.id, picked = r => PEND.refs.some(x => key(x) === key(r));
   function items() {
@@ -5097,7 +5771,7 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
     $$('[role="tab"]', dsb).forEach(b => { const on = b.dataset.rt === tab; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
     const it = items(), empty = { acct: L('还没有添加币安账户', 'No Binance account added yet'), pos: L('还没有可引用的持仓', 'No positions to reference yet'), trade: L('还没有可引用的交易', 'No trades to reference yet') }[tab];
     $('#dsbRefs').innerHTML = it.length ? it.map(x => `<button type="button" class="dsb-it" data-ref="${esc(key(x))}" aria-pressed="${picked(x)}"><span class="dsb-ck" aria-hidden="true"></span><span class="dsb-tx"><b>${esc(x.t)}</b><small>${esc(x.s)}</small>${x.sp != null ? `<span class="dsb-sp" aria-hidden="true"><i class="l" style="flex-grow:${x.sp.toFixed(1)}"></i><i class="s" style="flex-grow:${(100 - x.sp).toFixed(1)}"></i></span>` : ''}</span>${x.c != null ? `<span class="dsb-v num ${cls(x.c)}">${sgn(x.c, 0)}</span>` : ''}</button>`).join('') : `<p class="dsb-e">${empty}</p>`;
-    $('#dsbQs').innerHTML = DQ.map((q, i) => `<button type="button" class="dsb-q" data-dq="${i}">${esc(EN() ? enD(q) : q)}</button>`).join('');
+    if ($('#dsbQs')) $('#dsbQs').innerHTML = DQ.map((q, i) => `<button type="button" class="dsb-q" data-dq="${i}">${esc(EN() ? enD(q) : q)}</button>`).join('');
     botRender();
   }
   dsb.addEventListener('click', e => {
@@ -5108,7 +5782,7 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
       if (i >= 0) PEND.refs.splice(i, 1); else if (PEND.refs.length >= MAXR) { note(L(`一次最多引用 ${MAXR} 项`, `Up to ${MAXR} references per message`)); return; } else PEND.refs.push({ k, id: c.id, label: c.label });
       sync(); return; }
     const q = e.target.closest('[data-dq]');
-    if (q) { const v = EN() ? enD(DQ[+q.dataset.dq]) : DQ[+q.dataset.dq], inp = $('#askIn'); inp.value = v; syncSend(); if (!WIDE.matches) set(false);
+    if (q) { const v = EN() ? enD(DQ[+q.dataset.dq]) : DQ[+q.dataset.dq], inp = $('#askIn'); inp.value = v; syncSend(); set(false, false);
       inp.focus({ preventScroll: true }); inp.setSelectionRange(v.length, v.length); return; }
   });
   dsb.addEventListener('keydown', e => { const t = e.target.closest('[role="tab"]'); if (!t || !/^Arrow(Left|Right)$/.test(e.key)) return; const ks = ['acct', 'pos', 'trade'], i = ks.indexOf(tab);
@@ -5248,7 +5922,7 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
   });
   window.__dodo = { pending: () => ({ refs: PEND.refs.map(r => ({ k: r.k, id: r.id, label: ctxLabel(r) })), files: PEND.files.map(f => ({ name: f.n, type: f.t, size: f.s, kind: f.k })) }), last: () => lastPayload, bot: () => ({ st: BOT.st, why: BOT.why, avail: BOT.avail, msg: BOT.msg }), check: botCheck, open: set, isOpen, rec: () => !!R };
   window.addEventListener('langchange', () => { attRender(); render(); });
-  set(WIDE.matches ? pref : false);
+  set(false);
   attRender();
 })();
 /* 软键盘：聚焦输入框 且 可见高度明显变矮 才算键盘打开。
@@ -5275,7 +5949,7 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
     const o = isField(document.activeElement) && shrunk;
     if (o) root.style.setProperty('--vvh', Math.round(h) + 'px'); else root.style.removeProperty('--vvh');
     if (o !== open) { open = o; body.classList.toggle('kb-open', o); }
-    if (o && body.dataset.page === 'ai') window.scrollTo(0, 0);
+    if (o && CUR === 'ai') window.scrollTo(0, 0);
   };
   window.__kb = { update, state: () => ({ open, full: base(), vis: Math.round(visH()) }) }; /* 供浏览器验证读取，不改行为 */
   base();

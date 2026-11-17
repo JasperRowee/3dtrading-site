@@ -12,6 +12,7 @@
      sent), binds NO Binance account, and opens the dashboard, which therefore shows "not connected". -->
 <script>window.TD_ROUTES={site:'/3dtrading-site/site/',auth:'/3dtrading-site/login/',login:'/3dtrading-site/login/?mode=login',signup:'/3dtrading-site/login/?mode=register',entry:'/3dtrading-site/login/',connect:'/3dtrading-site/bind/?from=app',bind:'/3dtrading-site/bind/?from=app'};</script>
 <script src="account/td-account.js?v=r45b" data-app="../app/index.html#/dashboard"></script>
+<script src="account/td-auth.js?v=r58"></script>
 </head>
 <body>
 <script>
@@ -28,6 +29,13 @@
   var email = who && typeof who.e === 'string' && /^[^\s@]+@[^\s@]+$/.test(who.e) ? who.e.trim().toLowerCase() : '';
   var name = who && typeof who.n === 'string' ? who.n.slice(0, 40) : '';
   var cur = A.session();
+  /* r58: an account with Google Authenticator 2FA on gets in only with the one-time ticket the log-in page issues after
+     the code was checked (same tab, 2 minutes). A bare #who= link cannot skip the second step. */
+  var AU = window.TDAuth;
+  if (email && AU && AU.tfaOn(email)) {
+    if (!AU.takeTicket(email)) { location.replace('/3dtrading-site/login/?mode=login&tfa=1'); return; }
+    AU.markOk(email);
+  }
   if (email) {
     if (!cur || cur.email !== email) {
       /* a different person was signed in on this browser: end that local session first, then sign in or create this one */
@@ -39,7 +47,8 @@
     var d = { email: 'demo@3dtrading.local', name: lang === 'en' ? 'Demo user' : '演示用户' };
     var r2 = A.login(d); if (!r2.ok) A.register(d);
   }
-  location.replace('app/index.html#/dashboard');
+  /* r57: right after sign-up (#new=1) → ?welcome=1, the one-time bind prompt (once per account, see welcome()) */
+  location.replace('app/index.html' + (h.get('new') === '1' ? '?welcome=1' : '') + '#/dashboard');
 })();
 </script>
 <noscript>Please enable JavaScript. <a href="app/index.html#/dashboard">Dashboard</a></noscript>

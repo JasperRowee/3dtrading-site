@@ -3,7 +3,7 @@
   "name": "3dtrading",
   "short_name": "3dtrading",
   "start_url": "../site/",
-  "scope": "./",
+  "scope": "../",
   "display": "standalone",
   "background_color": "#06090b",
   "theme_color": "#06090b",
