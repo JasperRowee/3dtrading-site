@@ -3046,9 +3046,106 @@ html,body{overscroll-behavior-y:none}
 @media (max-width:760px) and (prefers-reduced-motion:reduce){.mdl.qbm,body[data-page="ai"] .box .bar{transition:none}body[data-page="ai"].cmp-open .composer{animation:none!important}}
 html.rm .mdl.qbm,html.rm body[data-page="ai"] .box .bar{transition:none}html.rm body[data-page="ai"].cmp-open .composer{animation:none!important}
 </style>
+<style id="r62">
+/* ---------- r62（Jasper 2026-11-18） ----------
+   3 手机顶栏：从屏幕最顶端（含状态栏 / 安全区）到导航下沿是一整块实底。用真实元素 .topcov（不是伪元素），
+     iOS Safari 取顶部固定元素的底色给状态栏区上色；theme-color 跟随昼夜，旧版 iOS 的状态栏也是同一颜色。
+   4 手机总览：结论卡只留「数字 → 走势 → 7/30 天 → 账户状况」，走势线不再压在数字上；保证金率压成一行；曲线标题和区间同一行。
+   5 手机 Dodo 输入框：浅色卡片，下沿藏在底部导航后面，进页面时从导航后面升起；图片、语音、发送都在框里。
+     切页动画只做淡入（不再位移），输入框不再先出现在屏幕中间再跳到底部。 */
+.topcov{display:none}
+@media (max-width:760px){
+  .topcov{display:block;position:fixed;left:0;right:0;top:0;height:var(--top);z-index:29;pointer-events:none;background:var(--bg)}
+  .topcov::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:400px;background:inherit}
+  body.kb-open[data-page="ai"] .topcov{top:var(--vvt,0px)}
+  /* 提示条：顶栏下方居中一行，不再挤成两行压在内容上 */
+  .toast{top:calc(var(--top) + 10px);bottom:auto!important;width:max-content;max-width:calc(100vw - 40px);box-sizing:border-box;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    font-size:14px;padding:10px 16px;border-radius:999px;transform:translate(-50%,-8px);box-shadow:0 10px 30px -12px rgba(15,23,42,.45)}
+  .toast.on{transform:translate(-50%,0)}
+
+  /* ===== 4 总览 ===== */
+  #pg-dashboard .ph{margin-bottom:8px}
+  .demo-acct{margin:0 0 12px!important;row-gap:2px!important}
+  .demo-acct p{flex:1 1 100%!important}
+  .ov{gap:12px}
+  .ovseg{top:calc(var(--top) + 4px)}
+  /* 结论卡：一列，从上到下 = 标题 / 数字 / 今天 / 走势 / 7 天 30 天 收益率 / 公式小字 / 账户状况 */
+  .hero{display:flex!important;flex-direction:column;gap:0;padding:16px 16px 4px}
+  .hero .l{display:contents}
+  .hero .l>*{order:7}
+  .hero .k{order:1;display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:12px}
+  .hero .k .run{margin-left:auto;font-size:11px;gap:5px;padding:3px 8px 3px 7px}
+  .hero .v{order:2;margin-top:6px;font-size:34px}
+  .hero .l>.d:nth-child(3){order:3;margin-top:4px;font-size:12.5px}
+  .hero .nsp{order:4;position:relative!important;inset:auto!important;display:block;width:calc(100% + 32px);height:58px!important;margin:10px -16px 0;opacity:.9!important}
+  .hero .chips{order:5;margin-top:10px!important}
+  .hero .d.gnn{order:6;margin-top:10px;font-size:11px;line-height:1.45;opacity:.6}
+  .hero .brief{order:8;margin-top:10px}
+  #kpis .hero .brief .acts{display:none!important}
+  /* 保证金率：一行（数值 + 刻度），来源小字在下 */
+  .umrc{display:grid!important;grid-template-columns:auto minmax(0,1fr);column-gap:16px;align-items:center;padding:12px 14px 10px}
+  .umrc .uc-h{grid-column:1/-1;grid-row:1}
+  .umrc .uc-v{grid-column:1;grid-row:2/4;align-self:center;font-size:24px;margin-top:4px}
+  .umrc .uc-bar{grid-column:2;grid-row:2;margin:12px 0 0}
+  .umrc .uc-ax{grid-column:2;grid-row:3;font-size:10.5px}
+  .umrc .uc-ax span{transform:none}
+  .umrc .uc-src{grid-column:1/-1;grid-row:4;font-size:11px;margin-top:4px}
+  .umrc .umh{grid-column:1/-1;grid-row:5}
+  /* 曲线卡：标题和区间同一行，图例一行小字；拆分公式和下面「收益构成」重复，手机上不再单列 */
+  .cvp .hd2{display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 10px;margin-bottom:4px}
+  .cvp .hd2>div:not(.seg){display:contents}
+  .cvp .hd2 h2{grid-column:1;grid-row:1;display:flex;align-items:center;gap:6px;font-size:16px}
+  .cvp .hd2>.sp{display:none}
+  .cvp .hd2 .seg{grid-column:2;grid-row:1;margin:0}
+  .cvp .hd2 .seg button{height:30px;padding:0 10px;font-size:12.5px}
+  .cvp .hd2 #cvNote{grid-column:1/-1;grid-row:2;font-size:12px;line-height:1.5;margin:2px 0 0}
+  .cvp .hd2 .cmp-lg{grid-column:1/-1;grid-row:3;font-size:11.5px;gap:2px 10px;margin-top:4px}
+  .cvp .hd2 .cmp-lg .ln{width:14px}
+  .cvp .hd2 .cmp-lg .cmp-n{flex:1 1 100%;justify-content:flex-start;text-align:left;margin:0;font-size:11px}
+  .hero .k .dm{display:none}
+  /* 交易记录币种条：横向滚动会裁掉按钮的大阴影，留下一条灰底硬边；手机上改成细描边 + 小阴影 */
+  .tx-coins .ci{box-shadow:0 1px 2px rgba(11,13,16,.06)!important}
+  .tx-coins .ci.on{box-shadow:0 4px 10px -6px rgba(12,143,120,.55)!important}
+  .hero .k .run{order:2}
+  .cvp .foot .hint{font-size:11.5px;line-height:1.5}
+  .cvp .foot+.foot{display:none}
+
+  /* ===== 5 Dodo 输入框 ===== */
+  :root{--tuck:22px}
+  body[data-page="ai"]{padding-bottom:calc(var(--navh) + var(--navb) + 4px)}
+  body[data-page="ai"]:not(.kb-open) .ai{height:calc(100dvh - var(--top) - var(--navh) - var(--navb) - 4px)}
+  body[data-page="ai"]:not(.kb-open) .stream,body[data-page="ai"].cmp-open:not(.kb-open) .stream{padding-bottom:calc(var(--cmph,84px) - var(--tuck) + 10px)}
+  body[data-page="ai"].kb-open .stream{padding-bottom:6px}
+  body[data-page="ai"] .composer{background:var(--sf);padding:8px;border-radius:22px 22px 0 0;box-shadow:0 0 0 1px var(--line2),0 -16px 34px -22px rgba(15,23,42,.38)}
+  /* 底部导航在顶栏（z 30）里面，所以输入框要排在 30 以下才会被导航盖住下沿 */
+  body[data-page="ai"]:not(.kb-open) .composer{bottom:calc(var(--navb) + var(--navh) - var(--tuck));z-index:27}
+  body[data-page="ai"]:not(.kb-open) .chat .composer{padding:8px 8px calc(8px + var(--tuck))!important}
+  body[data-page="ai"].kb-open .chat .composer{padding:8px!important}
+  body[data-page="ai"]:not(.kb-open) .tnav{border-radius:20px}
+  body[data-page="ai"].kb-open .composer{border-radius:18px;margin:0 0 8px;box-shadow:0 0 0 1px var(--line),0 10px 30px -16px rgba(15,23,42,.35)}
+  body[data-page="ai"] .composer .cmp-n{color:var(--ink3)}
+  body[data-page="ai"] .box,body[data-page="ai"] .chat:not(.fresh) .box{align-items:center;background:var(--soft);border:1px solid var(--line);color:var(--ink);padding:3px 4px 3px 14px;border-radius:17px}
+  body[data-page="ai"] .box:focus-within{border-color:#9fdccf;box-shadow:0 0 0 3px rgba(47,220,188,.14)}
+  body[data-page="ai"] .box textarea{color:var(--ink)}
+  body[data-page="ai"] .box textarea::placeholder{color:var(--ink3)}
+  body[data-page="ai"] .box .ib{color:var(--ink2);width:36px;height:36px;margin-left:0}
+  body[data-page="ai"] .box .ib+.ib{margin-left:-2px}
+  body[data-page="ai"] .box .ib:hover{background:var(--hov);color:var(--ink)}
+  /* 收起时也能直接点图片、语音：工具在同一行；点开后输入一整行，工具一行在下 */
+  body[data-page="ai"] .box .bar{max-width:none;opacity:1;display:flex;gap:0;transition:none}
+  body[data-page="ai"] .send{width:36px;height:36px;margin-left:4px}
+  body[data-page="ai"] .send:disabled{opacity:1;background:var(--line);color:var(--ink3)}
+  body[data-page="ai"] .send:disabled svg{color:var(--ink3)}
+  body[data-page="ai"].cmp-open .box,body[data-page="ai"].kb-open .box{padding:6px 4px 4px 14px}
+  body[data-page="ai"].cmp-open .box .bar .ib:first-child,body[data-page="ai"].kb-open .box .bar .ib:first-child{margin-left:-8px}
+  @keyframes cmpGrow{from{clip-path:inset(calc(100% - 84px) 0 0 0 round 22px 22px 0 0)}to{clip-path:inset(0 0 0 0 round 22px 22px 0 0)}}
+  html[data-theme="night"] body[data-page="ai"] .composer{box-shadow:0 0 0 1px var(--line),0 -16px 34px -22px rgba(0,0,0,.7)}
+  html[data-theme="night"] body[data-page="ai"] .send:disabled{background:var(--hov)}
+}
+</style>
 </head>
 <body>
-
+<div class="topcov" aria-hidden="true"></div>
 <header class="top" role="banner">
   <a class="brandmark" href="../../site/index.html" data-site-link aria-label="3dtrading，返回官网"><img src="assets/3dtrading-logo.svg" width="100" height="24" alt="3dtrading"></a>
   <nav class="tnav" id="tnav" aria-label="页面"><span class="tnav-ink" id="tnavInk" aria-hidden="true"></span></nav>
@@ -4005,6 +4102,8 @@ function drawCurve() {
   const all = pts.concat([today, 0], cs, cn); let lo = Math.min(...all), hi = Math.max(...all); const pad = (hi - lo) * .12 || 1; lo -= pad; hi += pad;
   const n = idx.length + 1, x = k => m.l + k / (n - 1) * (W - m.l - m.r), y = v => m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);
   const ticks = niceTicks(lo, hi, 4);
+  /* r62 · 纵轴文字按实际长度留边，手机上 “+100万” 的加号不再被裁掉 */
+  m.l = Math.max(m.l, 14 + Math.max(...ticks.map(t => [...(t === 0 ? '0' : csgn(t))].reduce((w, c) => w + (c.charCodeAt(0) > 255 ? 11 : 6.6), 0))));
   const dotR = S.range > 60 ? 2.4 : S.range > 30 ? 3 : 3.6;
   const line = pts.map((v, k) => `${k ? 'L' : 'M'}${x(k).toFixed(1)},${y(v).toFixed(1)}`).join('');
   const area = line + `L${x(pts.length - 1).toFixed(1)},${y(lo)}L${x(0)},${y(lo)}Z`;
@@ -5508,6 +5607,26 @@ document.addEventListener('click', e => {
   f.addEventListener('focusout', e => { if (f.contains(e.relatedTarget)) return; setTimeout(() => { if (!f.contains(document.activeElement) && !busy()) B.classList.remove('cmp-open'); }, 160); });
   addEventListener('hashchange', () => { if (CUR !== 'ai') B.classList.remove('cmp-open'); });
   addEventListener('resize', () => { if (!mob()) B.classList.remove('cmp-open'); });
+  /* r62 · 输入框高度写进 --cmph：对话区底部留出同样的空间；原本停在最底的对话，输入框长高后仍停在最底 */
+  const cmp = f.closest('.composer'), st = $('#stream'), R = document.documentElement;
+  if (cmp && window.ResizeObserver) new ResizeObserver(() => {
+    const h = Math.round(cmp.getBoundingClientRect().height); if (!h) return;
+    const atB = st && st.scrollHeight - st.scrollTop - st.clientHeight < 48;
+    R.style.setProperty('--cmph', h + 'px');
+    if (atB) requestAnimationFrame(() => { st.scrollTop = st.scrollHeight; });
+  }).observe(cmp);
+  /* r62 · 进 Dodo 页：输入框从底部导航后面升起（下沿一直藏在导航后面，不会从别处飞进来） */
+  window.__cmpRise = () => {
+    if (!mob() || B.classList.contains('kb-open') || !cmp || !cmp.animate) return;
+    const cs = getComputedStyle(R), h = cmp.offsetHeight, nh = parseFloat(cs.getPropertyValue('--navh')) || 62, tk = parseFloat(cs.getPropertyValue('--tuck')) || 22;
+    cmp.animate([{ transform: `translateY(${h - tk}px)`, clipPath: `inset(0 0 ${Math.max(0, h - nh)}px 0)` }, { transform: 'none', clipPath: 'inset(0 0 0 0)' }], { duration: 420, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  };
+})();
+/* r62 · 状态栏颜色跟后台底色走（昼 / 夜），手机上顶栏以上不会出现另一种颜色 */
+(() => { const m = document.querySelector('meta[name="theme-color"]'); if (!m) return;
+  const sync = () => { const c = getComputedStyle(document.body).backgroundColor; if (c && m.content !== c) m.content = c; };
+  sync(); new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class'] });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', () => setTimeout(sync, 0));
 })();
 /* r61 · 手机底部面板：从标题栏往下拉超过 90px 就关闭 */
 (() => { let y0 = null, dy = 0; const m = () => $('#modal');
@@ -5756,7 +5875,10 @@ function showPage(p, o = {}) {
   if (!changed) return;
   window.scrollTo(0, o.restore ? SCR[p] || 0 : 0);
   const pg = $(`#pg-${p}`);
-  if (!RM && prev) pg.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 240, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  /* r62 · 手机 Dodo 页只淡入：页面带 transform 时，里面 position:fixed 的输入框会以页面为参照，先出现在屏幕中间再跳到底部 */
+  const phAi = p === 'ai' && innerWidth <= 760;
+  if (!RM && prev) pg.animate(phAi ? [{ opacity: 0 }, { opacity: 1 }] : [{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 240, easing: 'cubic-bezier(.2,.8,.2,1)' });
+  if (!RM && prev && phAi && window.__cmpRise) __cmpRise();
   if (prev && o.focus !== false) { if (p !== 'ai') $('h1', pg)?.focus({ preventScroll: true }); else if (!focusAsk()) { const h = $('h1,h2', pg) || pg; if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
 }
 function nav(p, o) { if (p === 'settings') { openSettings(); return; } if (p === 'me') { openSettings('acct'); return; } if (p === 'actions') p = 'dashboard'; if (location.hash !== '#/' + p) history.pushState(null, '', '#/' + p); showPage(p, o); }

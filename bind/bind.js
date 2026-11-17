@@ -175,7 +175,7 @@
 
   /* ---------- language / theme ---------- */
   $('#lang').addEventListener('click', function () { A.setLang(L() === 'en' ? 'zh' : 'en'); });
-
+  
   window.addEventListener(A.events.lang, function () {
     fill(); if (!$('#res').hidden) $('#res').innerHTML = '<b>' + esc(t('b.rT')) + '</b> ' + esc(t('b.rB'));
     if (errK === 'dup') err(''); else if (errK) $('#mKey').textContent = t(errK === 'nm' ? 'b.nmBad' : (key.value.trim() ? 'b.bad' : 'b.empty'));

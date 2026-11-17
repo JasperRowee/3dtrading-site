@@ -7,10 +7,13 @@
 <title>3dtrading · 登录 / 注册</title>
 <!-- r50 背景：自有城市＋大球（构图照参考图）。r49 · 独立登录预览（端口 8992）。只含登录 / 注册本身：不加载后台代码，不导向后台。
      存储命名空间 3dt.r49login.*（主题、语言、球面、本机演示账号与会话）。外部业务未接通：登录为本机演示。 -->
+<script>/* r62 · the arriving side of the website <-> log-in fade: when the browser gives it up (it is only a fade), that is no error */
+addEventListener('pagereveal',function(e){var v=e.viewTransition;if(v)[v.ready,v.finished,v.updateCallbackDone].forEach(function(q){q&&q.catch(function(){})})});</script>
 <script>(function(){var d=document.documentElement,t='night',l='zh';try{l=localStorage.getItem('3dt.r49login.lang')==='en'?'en':'zh'}catch(e){}try{var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='zh'){l=q;localStorage.setItem('3dt.r49login.lang',q)}}catch(e){}d.dataset.theme=t;try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}d.lang=l==='en'?'en':'zh-CN';d.dataset.lang=l})()</script>
 <link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/dodo-180.png">
-<link rel="stylesheet" href="login.css?v=r61">
+<style>/* r62 · the website <-> log-in fade opts in here, inline, so it is known before login.css arrives (the copy in login.css stays) */@view-transition{navigation:auto}</style>
+<link rel="stylesheet" href="login.css?v=r62">
 </head>
 <body>
 <div class="scene" id="scene" aria-hidden="true"><canvas id="space"></canvas><canvas id="gx"></canvas><canvas id="orb"></canvas></div>
@@ -102,20 +105,23 @@
 </main>
 
 <script>/* r61 · the cross-page fade (@view-transition) is only for the website <-> log-in pair; leaving for any other page (dashboard,
-   bind, tutorial) it is skipped here, before the switch: those pages don't opt in, and Chrome would abort it there with an error */
-addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) return; var u = '';
+   bind, tutorial) it is skipped here, before the switch: those pages don't opt in, and Chrome would abort it there with an error.
+   r62: matched on the path's end, so it also holds under the published prefix (/3dtrading-site/login/) */
+addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) return; var u = ''; [v.ready, v.finished, v.updateCallbackDone].forEach(function (q) { q && q.catch(function () {}); });   // r62: the browser may still give it up (it is only a fade); that is no error
   try { u = new URL(e.activation && e.activation.entry && e.activation.entry.url || '', location.href).pathname; } catch (x) {}
-  if (!/^\/(site|login)\//.test(u)) { v.ready.catch(function () {}); v.finished.catch(function () {}); v.skipTransition(); } });</script>
+  if (!/\/(site|login)\/(index\.html)?$/.test(u)) v.skipTransition(); });</script>
 <script src="/3dtrading-site/dashboard/account/td-auth.js?v=r58"></script>
-<script src="login.js?v=r61"></script>
-<script src="planet.js?v=r61"></script>
-<script type="module" src="space.js?v=r61"></script>
-<script>/* r61 · 返回官网 (logo): the form fades, the camera flies into the planet, the website opens from inside it on the step
-   you left (kept by the website in sessionStorage, else 01). Arrival (?via=…) is dropped from the address so a reload is plain. */
+<script src="login.js?v=r62"></script>
+<script src="planet.js?v=r62"></script>
+<script type="module" src="space.js?v=r62"></script>
+<script>/* r62 · 返回官网 (logo): the form fades, the camera flies straight at the planet (the website's line, its motion law) until the
+   shell covers the screen; the website carries on from there, in through the shell, to the step you left (r62.site.at, else 01).
+   Arrival (?via=…) is dropped from the address so a reload is plain. */
 (function(){var a=document.getElementById('home');try{var u=new URL(location.href);if(u.searchParams.has('via')){u.searchParams.delete('via');history.replaceState(history.state,'',u.pathname+u.search+u.hash)}}catch(e){}
 if(!a)return;a.addEventListener('click',function(e){if(e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;var P=window.__planet;if(!P||!P.fly||P.still)return;e.preventDefault();
-var n=1;try{n=Math.max(1,parseInt(sessionStorage.getItem('r61.site.at'))||1)}catch(x){}var to=a.getAttribute('href')+'?at='+n+'&via=planet',d=document.documentElement;
-d.classList.remove('arrive');d.classList.add('leave');setTimeout(function(){P.fly(1100,function(){location.href=to})},180)})})()</script>
+var n=1;try{n=Math.max(1,parseInt(sessionStorage.getItem('r62.site.at'))||1)}catch(x){}var to=a.getAttribute('href')+'?at='+n+'&via=planet',d=document.documentElement;
+d.classList.remove('arrive');d.classList.add('leave');setTimeout(function(){P.fly(0,function(){location.href=to})},60)});
+(window.requestIdleCallback||setTimeout)(function(){var l=document.createElement('link');l.rel='prefetch';l.href=a.getAttribute('href');document.head.appendChild(l)},{timeout:3000})})()</script>
 <script nomodule>window.__space={mode:"2d",why:"nomodule"};document.getElementById("space").hidden=true;dispatchEvent(new CustomEvent("td:space",{detail:window.__space}))</script>
 </body>
 </html>

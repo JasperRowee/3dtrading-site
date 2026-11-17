@@ -229,6 +229,19 @@
     gr.addColorStop(0, 'rgba(47,220,188,0)'); gr.addColorStop(.5, 'rgba(47,220,188,.08)'); gr.addColorStop(1, 'rgba(110,240,214,.38)');
     g.fillStyle = gr; g.fillRect(X - R, Y - R, R * 2, R * 2); g.restore();
   }
+  /* r62 · the straight line between the website and this page, in the website's own units (its planet: radius 112). Looking at the
+     planet's centre with this page's lens Fe, at distance d its outline has radius Fe·SR/√(d²−SR²): this page's R at dEnd. The way
+     is u 0→1, the first half inside the planet (the website draws that), the second half out here: o = 0 at the shell, 1 here.
+     ox: where the outline still just covers the screen; oh = 2.4·ox: nearer than that the website shows through the shell, so the
+     two pages hand over there. The website (site/src.html, PFX) uses the same numbers */
+  var SR3 = 112, UC3 = .5, LEN3 = 1.5, CA3 = 4, K3 = -60 * Math.log(1 - 1 / 13);
+  function path3() { var Fe = (H / 2) / Math.tan(.42) * (mob ? .62 : 1), dEnd = SR3 * Math.sqrt(1 + (Fe / R) * (Fe / R));
+    var rc = Math.max(Math.hypot(cx, cy), Math.hypot(W - cx, cy), Math.hypot(cx, H - cy), Math.hypot(W - cx, H - cy)) * 1.02;
+    var ox = (Math.sqrt(SR3 * SR3 + (Fe * SR3 / rc) * (Fe * SR3 / rc)) - SR3) / (dEnd - SR3);
+    return { ox: ox, oh: Math.min(.9, 2.4 * ox), r: function (o) { var d = SR3 + (dEnd - SR3) * o; return Math.min(1e5, Fe * SR3 / Math.sqrt(Math.max(1e-6, d * d - SR3 * SR3))); } }; }
+  function chase3(m, tgt, dt) { var a = CA3 / LEN3, k = K3, d = tgt - m.x, ad = Math.abs(d); if (!ad && !m.v) return;   // the website's chase(): accelerate, then glide 1/13 per 60 fps frame
+    var dir = (d > 0) - (d < 0) || (m.v > 0) - (m.v < 0) || 1, vr = m.v * dir, vAcc = vr + a * dt, vDec = ad * k;
+    if (vAcc >= vDec) { var nd = ad * Math.exp(-dt * k); m.x = tgt - dir * nd; m.v = dir * nd * k; } else { var nx = m.x + dir * (vr + vAcc) / 2 * dt; if ((tgt - nx) * dir < 0) nx = tgt; m.x = nx; m.v = dir * vAcc; } }
   var t0 = 0, frames = 0, MK = ARRIVE || ART ? 0 : 1, mkT = 0, FLY = null; // MK: the dimming under the copy / form and the far moon come in with the form
   function spin() { return (Date.now() % 157080) * .00004; } // r61: wall-clock spin, so the website's last frame and this page's first agree
   function draw(now) {
@@ -243,10 +256,12 @@
     var wt = Date.now() % 1e9; // the sky's drift and twinkle run on the wall clock too (same picture across the two pages)
     if (MODE === '2d') sky(wt);
     var keep = null;
-    if (FLY) { // r61 · 返回官网: the camera flies into the planet; it ends centred and covering the screen (the website's first frame)
-      var fq = Math.min(1, (now - FLY.t0) / FLY.ms), fp = fq < .5 ? 4 * fq * fq * fq : 1 - Math.pow(-2 * fq + 2, 3) / 2, rc = Math.hypot(W, H) / 2 * 1.04;
-      keep = { cx: cx, cy: cy, R: R }; cx = cx + (W / 2 - cx) * fp; cy = cy + (H / 2 - cy) * fp; R = Math.exp(Math.log(R) + (Math.log(rc) - Math.log(R)) * fp);
-      mx *= 1 - fp; my *= 1 - fp; if (fq >= 1 && FLY.done) { var d = FLY.done; FLY.done = null; setTimeout(d, 0); }
+    if (FLY) { // r62 · 返回官网: the camera flies straight at the planet along the line the website pulls back on (path3), by the
+      // website's camera law; the moment the shell covers the screen the website takes over with this position and speed
+      var dtf = Math.min(.05, (now - FLY.last) / 1000), pth = path3(), m = FLY.m; FLY.last = now; chase3(m, 0, dtf);
+      var o = (m.x - UC3) / (1 - UC3); if (o <= pth.oh) { o = pth.oh; m.x = UC3 + (1 - UC3) * o; }
+      keep = { cx: cx, cy: cy, R: R }; R = pth.r(o); mx *= .82; my *= .82;
+      if (o <= pth.oh && FLY.done) { var d = FLY.done; FLY.done = null; try { sessionStorage.setItem('r62.site.back', JSON.stringify({ u: m.x, v: m.v, at: Date.now() })); } catch (e) {} setTimeout(d, 0); }
     }
     g.save(); g.globalAlpha = ein; if (MODE === '2d') { field(wt); moon(); } planet(a, -mx * 8, -my * 6, wt); g.restore();
     if (keep) { cx = keep.cx; cy = keep.cy; R = keep.R; }
@@ -282,8 +297,9 @@
   if (window.ResizeObserver) { var ro = new ResizeObserver(function () { measure(); }); ['.card', '.hero'].forEach(function (q) { var e = document.querySelector(q); if (e) ro.observe(e); }); }
   document.addEventListener('visibilitychange', function () { if (still) return; cancelAnimationFrame(raf); if (!document.hidden) raf = requestAnimationFrame(loop); });
   window.__planet = {
-    fly: function (ms, done) { if (still) { if (done) done(); return; } if (MODE === 'gl') { MODE = '2d'; GL.hidden = false; GL.style.opacity = 1; } FLY = { t0: performance.now(), ms: ms || 1100, done: done }; },
-    version: 'r61', arrive: function () { return { via: VIA, k2d: K2D, mk: MK, mode: MODE }; }, mode: function () { return MODE; }, source: 'r42–r47 night planet (28d0e36)', webgl: false, still: still, frames: function () { return frames; },
+    fly: function (ms, done) { if (still) { if (done) done(); return; } if (FLY) return; if (MODE === 'gl') { MODE = '2d'; GL.hidden = false; GL.style.opacity = 1; } FLY = { m: { x: 1, v: 0 }, last: performance.now(), done: done }; },
+    fl: function () { return FLY && { u: +FLY.m.x.toFixed(4), v: +FLY.m.v.toFixed(3) }; }, path: function () { place(); var p = path3(); return { ox: p.ox, r0: p.r(1), rx: p.r(p.ox) }; },
+    version: 'r62', arrive: function () { return { via: VIA, k2d: K2D, mk: MK, mode: MODE }; }, mode: function () { return MODE; }, source: 'r42–r47 night planet (28d0e36)', webgl: false, still: still, frames: function () { return frames; },
     planet: function () { return { R: Math.round(R), cx: Math.round(cx), cy: Math.round(cy), mob: mob, W: W, H: H, dots: N, pillars: GOLD.length }; },
     stars: function () { return FIELD.length; }, moon: function () { return MOON ? { x: Math.round(MOON.x), y: Math.round(MOON.y) } : null; }
   };
