@@ -149,29 +149,37 @@
    * 'perm' (unlocked + ticked, then 保存), 'bind' (saved). The QR box is filled by tutorial.js with this page's own address. */
   var LOCK = '<svg class="lk" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.6"/><path d="M5.3 7V5.2a2.7 2.7 0 0 1 5.4 0V7"/></svg>';
   var CPI = '<span class="cpi" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8.5" height="8.5" rx="1.8"/><path d="M3 10.5V3.8C3 3.3 3.3 3 3.8 3h6.7"/></svg></span>';
+  /* r61 (Jasper): page order follows Binance's own edit page — 子账户 → 标签 → 提示 → 公钥 / API 密钥 → API权限 → IP访问限制;
+   * the QR is a dark card with a white code at its top left and 「扫码获取地址」 under it. The guide walks
+   * 'ip' (只访问受信任的IP already chosen, the whitelist already filled — click it to copy) → 'perm' (the permissions we need
+   * already ticked, the rest left unticked) → 'bind' (paste the API Key into its row). Old parts (keys / iponly / ips) still draw. */
   function keyPage(w, cfg, part) {
     var en = w.brand === 'Binance'; // r44: w is often a merged copy (gw / hw), so compare by value
-    var open = part === 'perm' || part === 'bind', ipsIn = open, trusted = part !== 'keys' && part !== 'iponly';
+    var open = part === 'perm' || part === 'bind', trusted = part !== 'keys' && part !== 'iponly', ipsIn = open || part === 'ip';
     var perms = permsOf(cfg).map(function (p) {
       var lock = !open && p.key !== 'read', on = p.key === 'read' || (open && p.required);
-      return '<span class="bn-ck' + (on ? ' on' : '') + (lock ? ' lock' : '') + (open && p.key === 'prediction' ? ' no' : '') + '"' + (lock ? ' aria-disabled="true"' : '') + '><i></i><u>' + esc(en ? p.en : p.zh) + '</u>' + (lock ? LOCK : '') + '</span>';
+      return '<span class="bn-ck' + (on ? ' on' : '') + (lock ? ' lock' : '') + (open && !p.required ? ' skip' : '') + '"' + (lock ? ' aria-disabled="true"' : '') + '><i></i><u>' + esc(en ? p.en : p.zh) + '</u>' + (lock ? LOCK : '') + '</span>';
     }).join('') || '<span class="bn-ck"><u>' + esc(en ? 'Permission list appears after you apply' : '申请绑定后显示权限清单') + '</u></span>';
     var ips = ipsOf(cfg) || [];
+    var ipCopy = part === 'ip' ? ' data-t="ipw" data-copy="ips" title="' + esc(en ? 'Click to copy the whitelist' : '点击复制白名单') + '"' : ' data-copy="ips"';
     return '<div class="bn-key">' +
-      '<div class="bn-qr" data-slot="qr"><div class="q"></div></div>' +
-      '<div class="bn-kd"><div class="bn-kl">' + esc(w.lbl) + '</div><div class="bn-tags"><span class="t1">Ed25519</span><span class="t2">' + esc(w.pm) + '</span><b>' + esc(cfg.labelEx) + '</b></div>' +
+      '<div class="bn-qr" data-slot="qr"><div class="q"></div><span>' + esc(w.qr) + '</span></div>' +
+      '<div class="bn-kd">' +
+      '<div class="bn-kl">' + esc(w.cSub) + '</div><p class="bn-sacc">3dtusdt01_virtual@example.com</p>' +
+      '<div class="bn-kl">' + esc(w.lbl) + '</div><div class="bn-tags"><span class="t1">Ed25519</span><span class="t2">' + esc(w.pm) + '</span><b>' + esc(cfg.labelEx) + '</b></div>' +
       '<div class="bn-warn">' + I.info + '<span>' + esc(w.warn) + '</span></div>' +
-      '<div' + (part === 'keys' || part === 'bind' ? ' data-focus' : '') + '>' +
+      '<div>' +
       '<div class="bn-kl">' + esc(w.pub) + '</div><div class="bn-kr"><button type="button" class="bn-in bn-pk" data-copy="pub" aria-label="' + esc(en ? 'Copy the full public key' : '复制完整公钥') + '"><code>' + esc(cfg.pubShort || shortPub(cfg, w)) + '</code>' + CPI + '</button></div>' +
       '<div class="bn-kl">' + esc(w.key) + '</div><div class="bn-kr slot" data-slot="key"' + (part === 'keys' ? ' data-t="key"' : '') + '></div></div>' +
-      '<div class="bn-perm"' + (part !== 'keys' && part !== 'bind' ? ' data-focus' : '') + '>' +
+      '<div class="bn-perm">' +
+      '<div class="bn-kl bn-plh"><span>' + esc(w.perm) + '</span></div><div class="bn-grid"' + (part === 'perm' ? ' data-t="pg"' : '') + '>' + perms + '</div>' +
+      (open ? '' : '<p class="bn-lockn">' + LOCK + esc(en ? 'Trading permissions unlock once trusted IPs are added.' : '添加受信任的 IP 后，才能勾选交易权限。') + '</p>') +
       '<div class="bn-ipt">' + esc(w.ipT) + '</div>' +
       '<div class="bn-rad' + (trusted ? '' : ' on') + '"><i></i>' + esc(w.ipAny) + ' <em>' + esc(w.ipAnyW) + '</em></div>' +
       '<div class="bn-rad' + (trusted ? ' on' : '') + '"' + (part === 'iponly' ? ' data-t="iponly"' : '') + '><i></i>' + esc(w.ipOnly) + '</div>' +
-      (trusted ? '<div class="bn-chips" data-slot="ips">' + (ipsIn ? ips.map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') : '') + '</div>' +
-        '<div class="bn-ipin"><span>' + (part === 'ips' ? '<code>' + esc(ips.join(' ')) + '</code>' : esc(w.ipPh)) + '</span><b' + (part === 'ips' ? ' data-t="ipok"' : '') + '>' + esc(w.ok) + '</b></div>' : '') +
-      '<div class="bn-kl bn-plh"><span>' + esc(w.perm) + '</span></div><div class="bn-grid">' + perms + '</div>' +
-      (open ? '' : '<p class="bn-lockn">' + LOCK + esc(en ? 'Trading permissions unlock once trusted IPs are added.' : '添加受信任的 IP 后，才能勾选交易权限。') + '</p>') +
+      (trusted ? (ipsIn ? '<div class="bn-ipw"' + ipCopy + '><div class="bn-chips" data-slot="ips">' + ips.map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') + '</div>' +
+          '<div class="bn-ipin"><span><code>' + esc(ips.join(' ')) + '</code></span><b>' + esc(part === 'ip' ? (en ? 'Copy' : '复制') : w.ok) + '</b></div></div>'
+        : '<div class="bn-chips" data-slot="ips"></div><div class="bn-ipin"><span>' + (part === 'ips' ? '<code>' + esc(ips.join(' ')) + '</code>' : esc(w.ipPh)) + '</span><b' + (part === 'ips' ? ' data-t="ipok"' : '') + '>' + esc(w.ok) + '</b></div>') : '') +
       (part === 'perm' ? '<div class="bn-sv"><span class="bn-btn y" data-t="save">' + esc(en ? 'Save' : '保存') + '</span><span class="bn-btn">' + esc(en ? 'Cancel' : '取消') + '</span></div>' : '') +
       '</div></div></div>';
   }

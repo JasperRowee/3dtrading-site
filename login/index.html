@@ -10,13 +10,13 @@
 <script>(function(){var d=document.documentElement,t='night',l='zh';try{l=localStorage.getItem('3dt.r49login.lang')==='en'?'en':'zh'}catch(e){}try{var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='zh'){l=q;localStorage.setItem('3dt.r49login.lang',q)}}catch(e){}d.dataset.theme=t;try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}d.lang=l==='en'?'en':'zh-CN';d.dataset.lang=l})()</script>
 <link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/dodo-180.png">
-<link rel="stylesheet" href="login.css?v=r60">
+<link rel="stylesheet" href="login.css?v=r61">
 </head>
 <body>
 <div class="scene" id="scene" aria-hidden="true"><canvas id="space"></canvas><canvas id="gx"></canvas><canvas id="orb"></canvas></div>
 
 <header class="top">
-  <a class="logo" href="/3dtrading-site/site/" data-i18n-attr="aria-label:top.home"><img class="lg-night" src="assets/3dtrading-logo-white.svg" alt="3dtrading"><img class="lg-day" src="assets/3dtrading-logo.svg" alt="3dtrading"></a>
+  <a class="logo" id="home" href="/3dtrading-site/site/" data-i18n-attr="aria-label:top.home"><img class="lg-night" src="assets/3dtrading-logo-white.svg" alt="3dtrading"><img class="lg-day" src="assets/3dtrading-logo.svg" alt="3dtrading"></a>
   <span class="sp"></span>
   <span class="pill" data-i18n="top.demo">本机演示 · 未接后端</span>
   <div class="seg" id="lang" role="group" aria-label="Language"><button type="button" data-lang="zh">中文</button><button type="button" data-lang="en">EN</button></div>
@@ -101,10 +101,21 @@
   </section>
 </main>
 
+<script>/* r61 · the cross-page fade (@view-transition) is only for the website <-> log-in pair; leaving for any other page (dashboard,
+   bind, tutorial) it is skipped here, before the switch: those pages don't opt in, and Chrome would abort it there with an error */
+addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) return; var u = '';
+  try { u = new URL(e.activation && e.activation.entry && e.activation.entry.url || '', location.href).pathname; } catch (x) {}
+  if (!/^\/(site|login)\//.test(u)) { v.ready.catch(function () {}); v.finished.catch(function () {}); v.skipTransition(); } });</script>
 <script src="/3dtrading-site/dashboard/account/td-auth.js?v=r58"></script>
-<script src="login.js?v=r59"></script>
-<script src="planet.js?v=r58"></script>
-<script type="module" src="space.js?v=r58"></script>
+<script src="login.js?v=r61"></script>
+<script src="planet.js?v=r61"></script>
+<script type="module" src="space.js?v=r61"></script>
+<script>/* r61 · 返回官网 (logo): the form fades, the camera flies into the planet, the website opens from inside it on the step
+   you left (kept by the website in sessionStorage, else 01). Arrival (?via=…) is dropped from the address so a reload is plain. */
+(function(){var a=document.getElementById('home');try{var u=new URL(location.href);if(u.searchParams.has('via')){u.searchParams.delete('via');history.replaceState(history.state,'',u.pathname+u.search+u.hash)}}catch(e){}
+if(!a)return;a.addEventListener('click',function(e){if(e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;var P=window.__planet;if(!P||!P.fly||P.still)return;e.preventDefault();
+var n=1;try{n=Math.max(1,parseInt(sessionStorage.getItem('r61.site.at'))||1)}catch(x){}var to=a.getAttribute('href')+'?at='+n+'&via=planet',d=document.documentElement;
+d.classList.remove('arrive');d.classList.add('leave');setTimeout(function(){P.fly(1100,function(){location.href=to})},180)})})()</script>
 <script nomodule>window.__space={mode:"2d",why:"nomodule"};document.getElementById("space").hidden=true;dispatchEvent(new CustomEvent("td:space",{detail:window.__space}))</script>
 </body>
 </html>

@@ -40,7 +40,7 @@
       'cx.okLogin': '登录并带入后台', 'cx.okReg': '注册新账号',
       'cx.pT': '在这里填入 API Key，直接绑定', 'cx.pSub': '把刚在币安复制的 API Key 粘贴到下面，点「绑定」。不用回后台再填一次。', 'cx.backKey': '绑定',
       'cx.note': '自行生成的 API 只有 API Key，没有 Secret Key。网页不保存、不发送你的 API Key。',
-      'cx.kPh': '粘贴 API Key', 'cx.nL': '账户名称（可选）', 'cx.nPh': '例如：主账户', 'cx.bind': '绑定',
+      'cx.kPh': '点这里直接粘贴 API Key', 'cx.nL': '账户名称（可选）', 'cx.nPh': '例如：主账户', 'cx.bind': '绑定',
       'cx.demoH': '<b>演示</b>没有真实币安时，输入 <code>1234</code> 可模拟绑定成功（演示账户，不连接币安）。',
       'cx.eEmpty': '请填写 API Key', 'cx.eBad': 'API Key 应为 64 位字母和数字（演示可填 1234）', 'cx.eDup': '已有同名账户「{n}」，换一个名称', 'cx.eSess': '请先登录 3dtrading，再绑定',
       'cx.fmtT': '账户未连接', 'cx.fmtP': '格式正确，但后台还没接入币安：这次没有发送、没有保存你的 API Key。',
@@ -48,7 +48,8 @@
       'cx.okL': '已演示绑定的账户', 'cx.okSub': '演示绑定 · 未连接币安', 'cx.okNext': '继续绑定下一个账户', 'cx.okDash': '完成，回到后台', 'cx.okToast': '演示绑定成功：{n}', 'cx.nextToast': '换一个子账户，从第 1 步再走一遍',
       'cx.cpPub': '复制公钥', 'cx.ex': '示例', 'cx.toBind': '回到绑定',
       'cx.close': '回到绑定', 'cx.prev': '上一步', 'cx.next': '下一步', 'cx.auto': '自动播放', 'cx.tcL': '教程控制', 'cx.dot': '第 {n} 步，共 {m} 步',
-      'cx.autoRm': '已开启“减少动态效果”，不会自动播放', 'cx.cpdPub': '已复制公钥', 'cx.cpdEx': '（示例）', 'cx.cpdIp': '已复制 IP：{v}'
+      'cx.autoRm': '已开启“减少动态效果”，不会自动播放', 'cx.cpdPub': '已复制公钥', 'cx.cpdEx': '（示例）', 'cx.cpdIp': '已复制 IP：{v}',
+      'cx.cpdIps': '已复制白名单：{v}', 'cx.pasted': '已粘贴 API Key', 'cx.pasteNone': '剪贴板是空的，先在币安复制 API Key', 'cx.pasteFail': '浏览器没让读取剪贴板，请长按输入框或按 ⌘/Ctrl+V 粘贴', 'cx.spotL': '点暗处进入下一步'
     },
     en: {
       'cx.prog': 'Binding progress', 'cx.tag': 'Demo · not the real Binance site', 'cx.stageL': 'Binance walkthrough demo (not the real Binance site)',
@@ -60,7 +61,7 @@
       'cx.okLogin': 'Log in and carry it over', 'cx.okReg': 'Create an account',
       'cx.pT': 'Enter the API Key here and bind', 'cx.pSub': 'Paste the API Key you just copied on Binance below and click Bind. No need to type it again in the dashboard.', 'cx.backKey': 'Bind',
       'cx.note': 'A self-generated API has an API Key only — no Secret Key. This page never stores or sends your API Key.',
-      'cx.kPh': 'Paste the API Key', 'cx.nL': 'Account name (optional)', 'cx.nPh': 'e.g. Main account', 'cx.bind': 'Bind',
+      'cx.kPh': 'Click here to paste the API Key', 'cx.nL': 'Account name (optional)', 'cx.nPh': 'e.g. Main account', 'cx.bind': 'Bind',
       'cx.demoH': '<b>Demo</b>Without a real Binance account, enter <code>1234</code> to simulate a successful binding (demo account, not connected to Binance).',
       'cx.eEmpty': 'Enter the API Key', 'cx.eBad': 'The API Key should be 64 letters and digits (demo: 1234)', 'cx.eDup': 'An account named “{n}” already exists — choose another name', 'cx.eSess': 'Log in to 3dtrading first, then bind',
       'cx.fmtT': 'Account not connected', 'cx.fmtP': 'The format is right, but the dashboard isn’t connected to Binance yet: your API Key was not sent or stored.',
@@ -68,7 +69,8 @@
       'cx.okL': 'Demo-bound accounts', 'cx.okSub': 'Demo binding · Not connected to Binance', 'cx.okNext': 'Bind another account', 'cx.okDash': 'Done, back to the dashboard', 'cx.okToast': 'Demo binding complete: {n}', 'cx.nextToast': 'Use another sub-account and go through step 1 again',
       'cx.cpPub': 'Copy public key', 'cx.ex': 'Example', 'cx.toBind': 'Back to binding',
       'cx.close': 'Back to binding', 'cx.prev': 'Back', 'cx.next': 'Next', 'cx.auto': 'Autoplay', 'cx.tcL': 'Tutorial controls', 'cx.dot': 'Step {n} of {m}',
-      'cx.autoRm': 'Reduce motion is on, so autoplay is unavailable', 'cx.cpdPub': 'Public key copied', 'cx.cpdEx': ' (example)', 'cx.cpdIp': 'IP copied: {v}'
+      'cx.autoRm': 'Reduce motion is on, so autoplay is unavailable', 'cx.cpdPub': 'Public key copied', 'cx.cpdEx': ' (example)', 'cx.cpdIp': 'IP copied: {v}',
+      'cx.cpdIps': 'Whitelist copied: {v}', 'cx.pasted': 'API Key pasted', 'cx.pasteNone': 'The clipboard is empty — copy the API Key on Binance first', 'cx.pasteFail': 'The browser blocked reading the clipboard; long-press the field or press ⌘/Ctrl+V to paste', 'cx.spotL': 'Click the dark area to go on'
     }
   });
   var t = function (k, v) { return A.t(k, v); };
@@ -116,24 +118,21 @@
       { d: ['apis'], t: '.bn-newapi', zh: '「API管理」里点「+ 创建API」', en: 'In API Management click + Create API' },
       { d: ['type', 'next'], t: '[data-t="next"]', kind: 'self', zh: '选「自行生成」，点「下一步」', en: 'Choose Self-generated, click Next' },
       { d: ['pub'], t: '[data-t="next3"]', copy: 'pub', zh: '选子账户、填标签；点「公钥」框复制 3dtrading 的公钥并粘贴，点「下一步」，再由你本人完成安全验证', en: 'Pick the sub-account and enter the label; click the Public key box to copy 3dtrading’s key and paste it, click Next, then pass the security check yourself' },
-      /* r59 (Jasper): no 编辑权限 on Binance desktop — paste the API Key into its own row right away, then 只访问受信任的IP →
-       * IP whitelist → tick permissions → 保存. The key typed here stays in the field for the bind step. */
-      { d: ['perm', 'keys'], t: '#tkKey', kind: 'self', zh: '币安生成 API Key 后，直接粘贴到这一行的「API Key」框里，再点「下一步」', en: 'Once Binance shows the API Key, paste it right into this API Key row, then press Next' },
-      { d: ['perm', 'iponly'], t: '[data-t="iponly"]', kind: 'self', zh: '先点「只访问受信任的IP」', en: 'First choose Restrict access to trusted IPs only' },
-      { d: ['perm', 'ips'], t: '[data-t="ipok"]', kind: 'self', copy: 'ips', zh: '填入下面两个 IP 加入白名单，点「确认」——加好后交易权限才会解锁', en: 'Add the two IPs below to the whitelist and click Confirm — trading permissions unlock after that' },
-      { d: ['perm', 'perm'], t: '[data-t="save"]', kind: 'self', zh: '权限已解锁：勾选亮着的 5 项；「允许预测交易权限」不勾；交易币对白名单可选（会限制可交易币对，收益可能下降）。点「保存」，再由你本人完成验证', en: 'Permissions are unlocked: tick the 5 lit ones; leave Prediction Trading unticked; the symbol whitelist is optional (it limits tradable pairs, so returns may be lower). Click Save, then pass the check yourself' },
+      /* r61 (Jasper): after the public key, the edit page is shown ready-made, in Binance's order of what to do there:
+       * IP whitelist (already filled — click it to copy) → permissions (what we need already ticked) → last, the API Key (click to paste).
+       * Click anywhere in the dark to go on. */
+      { d: ['perm', 'ip'], t: '[data-t="ipw"]', ha: '.bn-rad.on', kind: 'self', zh: '「只访问受信任的IP」已选好，白名单也已填好。点白名单复制，到币安粘贴后点「确认」。点暗处继续', en: 'Restrict to trusted IPs is chosen and the whitelist is filled in. Click the whitelist to copy it, paste it on Binance and click Confirm. Click the dark area to go on' },
+      { d: ['perm', 'perm'], t: '[data-t="pg"]', kind: 'self', zh: 'IP 加好后权限会解锁。在币安照着勾选亮着的 5 项，其余不勾，点「保存」并由你本人完成验证。点暗处继续', en: 'Once the IPs are added, permissions unlock. On Binance tick the 5 lit ones, leave the rest, click Save and pass the check yourself. Click the dark area to go on' },
       { p: ['sub', { rows: 1, toast: 'pm', hot: 'mgmt' }], pt: '[data-t="mgmt"]', zh: '统一账户更新完成后，点左上角「账号管理 ▾」', en: 'When Portfolio Margin is ready, tap Account Management ▾' },
       { p: ['sub', { rows: 1, sheet: 'mgmt' }], pt: '[data-t="apim"]', zh: '点「API管理」', en: 'Tap API Management' },
       { p: ['api', { hot: 'newapi' }], pt: '[data-t="newapi"]', zh: '点「+ 创建API」', en: 'Tap + Create API' },
       { p: ['api', { sheet: 'type', self: true }], pt: '[data-t="next"]', zh: '选「自行生成」，点「下一步」', en: 'Choose Self-generated, tap Next' },
       { p: ['api', { sheet: 'pub' }], pt: '[data-t="next2"]', copy: 'pub', zh: '在「上传公钥」里点下面的公钥框复制 3dtrading 的公钥，粘贴进「您的公钥」，点「下一步」，再由你本人完成验证', en: 'In Upload public key, tap the key box below to copy 3dtrading’s public key, paste it into Your public key, tap Next, then pass the check yourself' },
-      { p: ['key', { self: true, part: 'keys' }], pt: '#tkKey', zh: '币安显示 API 密钥后点「Copy」，直接粘贴到这一行，再点「下一步」', en: 'When Binance shows the API Key, tap Copy and paste it right into this row, then tap Next' },
-      { p: ['key', { self: true, part: 'iponly' }], pt: '[data-t="iponly"]', zh: '现在只有「允许读取」可用，其他权限锁着。先选「只访问受信任的IP」', en: 'Only Reading is available now; the rest are locked. First choose Restrict access to trusted IPs only' },
-      { p: ['key', { self: true, part: 'ips' }], pt: '[data-t="ipadd"]', copy: 'ips', zh: '逐个填入两个 IP，点「确认」——之后交易权限才会解锁', en: 'Add the two IPs one by one and tap Confirm — trading permissions unlock after that' },
-      { p: ['key', { self: true, part: 'save' }], pt: '[data-t="save"]', zh: '权限已解锁：勾选亮着的 5 项；「允许预测交易权限」不勾；交易币对白名单可选（收益可能下降）。回到上方点「保存」，再由你本人完成验证', en: 'Unlocked: tick the 5 lit ones; leave Prediction Trading unticked; the symbol whitelist is optional (returns may be lower). Tap Save at the top, then pass the check yourself' }
+      { p: ['key', { self: true, part: 'ip' }], pt: '[data-t="ipw"]', ha: '.ba-rad.on', zh: '「只访问受信任的IP」已选好，白名单也已填好。点白名单复制，到币安粘贴后点「确认」。点暗处继续', en: 'Restrict to trusted IPs is chosen and the whitelist is filled in. Tap it to copy, paste it on Binance and tap Confirm. Tap the dark area to go on' },
+      { p: ['key', { self: true, part: 'perm' }], pt: '[data-t="pg"]', zh: 'IP 加好后权限会解锁。在币安照着勾选亮着的 5 项，其余不勾，点「保存」并由你本人完成验证。点暗处继续', en: 'Once the IPs are added, permissions unlock. On Binance tick the 5 lit ones, leave the rest, tap Save and pass the check yourself. Tap the dark area to go on' }
     ] },
     { id: 'bind', url: 'api', subs: [
-      { d: ['perm', 'bind'], kind: 'self', p: ['key', { self: true, part: 'bind' }], our: '#backKey', last: true, zh: '保存后币安会给出 API Key：把它粘贴到「API Key」处，点「绑定」', en: 'After saving, Binance shows the API Key: paste it into the API Key field and click Bind' }
+      { d: ['perm', 'bind'], kind: 'self', p: ['key', { self: true, part: 'bind' }], our: '#tkKey', last: true, zh: '最后，复制币安给出的 API Key，点这一行直接粘贴，再点「绑定」', en: 'Last, copy the API Key Binance shows, click this row to paste it, then click Bind' }
     ] }
   ];
   function subs(b) { var ph = phone(); return BIG[b].subs.filter(function (s) { return s.our || (ph ? s.p : s.d); }); }
@@ -145,10 +144,15 @@
   function stopAll() { S.tok++; TM.forEach(clearTimeout); TM = []; }
 
   var hb = $('#hb'), hum = $('#hum'), hic = $('#hic');
-  var stage = $('#stage'), view = $('#view'), bn = $('#bn'), ba = $('#ba'), panel = $('#panel'), cur = $('#cur'), hintEl = $('#hint');
+  var stage = $('#stage'), view = $('#view'), bn = $('#bn'), ba = $('#ba'), panel = $('#panel'), cur = document.createElement('div'), hintEl = $('#hint');
+  /* r61 (Jasper): no demo cursor. A spotlight dims everything but the control of this step; the hole lets clicks through to it,
+   * and a click on the dark part goes to the next step. */
+  var spotEl = document.createElement('div'); spotEl.className = 'spot'; spotEl.setAttribute('role', 'button'); spotEl.setAttribute('tabindex', '-1');
+  var ring = document.createElement('div'); ring.className = 'spot-ring'; ring.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(spotEl); document.body.appendChild(ring);
   /* r60: a sizer gives the phone stage a real scroll height; the hint and cursor follow the page while it scrolls */
   var sizer = document.createElement('div'); sizer.className = 'stz'; sizer.setAttribute('aria-hidden', 'true'); stage.appendChild(sizer);
-  stage.addEventListener('scroll', function () { if (!phone()) return; placeHint(); var p = aim(); if (p && cur.classList.contains('on')) putCursor(p, false); }, { passive: true });
+  stage.addEventListener('scroll', function () { placeHint(); spot(); }, { passive: true });
   if (panel && panel.parentNode !== document.body) document.body.appendChild(panel); /* r58: the result card covers the whole page, not the moving stage */
   var tc = $('#tc'), autoEl = $('#auto');
   var HOT = null, CUR = null;
@@ -265,10 +269,11 @@
     stage.scrollTop = Math.max(0, Math.min(max, y));
   }
   function showHint(st) {
-    if (st.last) { hintEl.hidden = true; return; } // r49h: the bind panel already says this (desktop right, phone bottom); the bubble only covered content
+    if (OKV) { hintEl.hidden = true; return; } // r61: the last step has its hint too (there is no side panel any more)
     var txt = st[L()], cp = st.copy || null, ex = '<em class="ex">' + esc(t('cx.ex')) + '</em>', body = '', btns = '';
     if (cp === 'pub') { body = pubEx() ? ex : ''; }
     else if (cp === 'ips') { body = ipsEx() ? ex : ''; btns = ipList().map(function (ip, i) { return '<button type="button" class="cp ip" data-copy="ip" data-i="' + i + '">' + esc(ip) + '</button>'; }).join(''); }
+    else if (cp === 'ipw') { body = ipsEx() ? ex : ''; }
     else if (cp) { body = ' <code>' + esc(cp === 'name' ? B.nameEx : B.labelEx) + '</code>'; btns = '<button type="button" class="cp" data-copy="' + cp + '">' + esc(t('cx.copy')) + '</button>'; }
     hintEl.innerHTML = '<span>' + esc(txt) + body + '</span>' + (btns ? '<span class="cps">' + btns + '</span>' : '');
     hintEl.hidden = false;
@@ -276,7 +281,10 @@
   }
   function placeHint() {
     if (!HOT || hintEl.hidden) return;
-    var r = HOT.getBoundingClientRect(), hw = hintEl.offsetWidth, hh = hintEl.offsetHeight, VW = window.innerWidth, VH = window.innerHeight - tc.offsetHeight;
+    /* r61: keep the hint off the whole lit area (the bind form on the last step) and off anything the step names in ha (the chosen IP radio) */
+    var r = (spotTarget() || HOT).getBoundingClientRect(), st0 = subs(S.b)[S.s], ha = st0 && st0.ha && stage.querySelector(st0.ha);
+    if (ha) { var q = ha.getBoundingClientRect(); r = { left: Math.min(r.left, q.left), right: Math.max(r.right, q.right), top: Math.min(r.top, q.top), bottom: Math.max(r.bottom, q.bottom) }; r.width = r.right - r.left; r.height = r.bottom - r.top; }
+    var hw = hintEl.offsetWidth, hh = hintEl.offsetHeight, VW = window.innerWidth, VH = window.innerHeight - tc.offsetHeight;
     var top0 = stage.getBoundingClientRect().top, G2 = 14, M = 10, x, y;
     var cy = function (v) { return Math.max(top0 + M, Math.min(v, VH - hh - M)); }, cx = function (v) { return Math.max(M, Math.min(v, VW - hw - M)); };
     if (r.right + G2 + hw <= VW - M && !phone()) { x = r.right + G2; y = cy(r.top + r.height / 2 - hh / 2); }
@@ -295,20 +303,51 @@
     CUR = p;
   }
   function demo() {
-    cur.classList.remove('press');
-    var p = aim();
-    if (!p || S.hold) { cur.classList.remove('on'); return; }
-    cur.classList.add('on');
-    if (RM.matches) { putCursor(p, false); return; }
-    if (!CUR) putCursor({ x: p.x + 80, y: p.y + 60 }, false);
-    later(function () {
-      putCursor(p, true);
-      later(function () {
-        cur.classList.remove('press'); void cur.offsetWidth; cur.classList.add('press');
-        if (S.auto) later(auto, DWELL); // only with 自动播放 switched on (off by default)
-      }, MOVE);
-    }, SETTLE);
+    spotFollow();
+    if (!HOT || S.hold) return;
+    if (S.auto) later(auto, MOVE + DWELL); // only with 自动播放 switched on (off by default)
   }
+  function spotTarget() {
+    var st = subs(S.b)[S.s];
+    if (st && st.last && tkF && tkF.parentNode && tkF.parentNode !== hold) return tkF; // the whole form: key, name and 绑定
+    return HOT;
+  }
+  function spot() {
+    var de = document.documentElement, el = (S.hold || OKV || de.classList.contains('intro')) ? null : spotTarget();
+    var r = el && el.getBoundingClientRect();
+    /* r61: the public-key step says "click the key box to copy it, then Next", so the lit area takes in the key box as well as Next
+       (a dimmed key box would only have moved on, and the key could not be copied) */
+    var cur = subs(S.b)[S.s], pk = r && cur && cur.copy === 'pub' && document.querySelector('#view [data-copy="pub"]'), q = pk && pk.getBoundingClientRect();
+    if (q && q.width && q.height) { var L0 = Math.min(r.left, q.left), T0 = Math.min(r.top, q.top), R0 = Math.max(r.right, q.right), B0 = Math.max(r.bottom, q.bottom);
+      r = { left: L0, top: T0, right: R0, bottom: B0, width: R0 - L0, height: B0 - T0 }; }
+    if (!r || (!r.width && !r.height)) { spotEl.classList.remove('on'); ring.classList.remove('on'); de.classList.remove('spotting'); return; }
+    var W = window.innerWidth, H = Math.max(0, window.innerHeight - tc.offsetHeight), P = 6;
+    var x = Math.max(2, r.left - P), y = Math.max(2, r.top - P), x2 = Math.min(W - 2, r.right + P), y2 = Math.min(H - 2, r.bottom + P);
+    var hole = x2 - x > 4 && y2 - y > 4, d = 'M0 0H' + W + 'V' + H + 'H0Z';
+    if (hole) {
+      var k = Math.min(10, (x2 - x) / 2, (y2 - y) / 2), f = function (n) { return Math.round(n * 10) / 10; };
+      x = f(x); y = f(y); x2 = f(x2); y2 = f(y2); k = f(k);
+      var A = 'A' + k + ' ' + k + ' 0 0 1 ';
+      d += 'M' + f(x + k) + ' ' + y + 'H' + f(x2 - k) + A + x2 + ' ' + f(y + k) + 'V' + f(y2 - k) + A + f(x2 - k) + ' ' + y2 + 'H' + f(x + k) + A + x + ' ' + f(y2 - k) + 'V' + f(y + k) + A + f(x + k) + ' ' + y + 'Z';
+    }
+    spotEl.style.height = H + 'px';
+    var cp = "path(evenodd, '" + d + "')"; spotEl.style.clipPath = cp; spotEl.style.webkitClipPath = cp;
+    spotEl.setAttribute('aria-label', t('cx.spotL')); spotEl.title = t('cx.spotL');
+    spotEl.classList.add('on'); de.classList.add('spotting');
+    if (hole) { ring.style.transform = 'translate(' + x + 'px,' + y + 'px)'; ring.style.width = (x2 - x) + 'px'; ring.style.height = (y2 - y) + 'px'; ring.classList.add('on'); }
+    else ring.classList.remove('on');
+  }
+  /* follow the target while the page fades / the stage settles after a step change */
+  function spotFollow() {
+    cancelAnimationFrame(spotFollow.id); var t0 = performance.now();
+    (function f() { spot(); if (performance.now() - t0 < 900) spotFollow.id = requestAnimationFrame(f); })();
+  }
+  spotEl.addEventListener('click', function (e) {
+    e.preventDefault(); if (S.auto) setAuto(false);
+    var st = subs(S.b)[S.s];
+    if (st && st.last) { ring.classList.remove('nudge'); void ring.offsetWidth; ring.classList.add('nudge'); return; }
+    S.hold = false; manual();
+  });
   /* autoplay: next sub-step, or back to the first sub-step of the SAME big step — never into another big step */
   function auto() { var n = subs(S.b).length; if (S.s < n - 1) S.s++; else { S.s = 0; S.loops++; } render(true); }
   /* by hand: next sub-step; from the last one of steps 1–2, the next big step */
@@ -356,12 +395,12 @@
     var ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
     document.body.appendChild(ta); ta.select(); var ok = false; try { ok = document.execCommand('copy'); } catch (x) { ok = false; } document.body.removeChild(ta); return ok;
   }
-  function copyVal(kind, i) { return kind === 'name' ? B.nameEx : kind === 'label' ? B.labelEx : kind === 'pub' ? pubPem() : kind === 'ip' ? ipList()[+i || 0] || '' : ''; }
+  function copyVal(kind, i) { return kind === 'name' ? B.nameEx : kind === 'label' ? B.labelEx : kind === 'pub' ? pubPem() : kind === 'ip' ? ipList()[+i || 0] || '' : kind === 'ips' ? ipList().join(' ') : ''; }
   function doCopy(b) {
     var kind = b.dataset.copy, v = copyVal(kind, b.dataset.i); if (!v) return;
     var p = navigator.clipboard && window.isSecureContext && navigator.clipboard.writeText ? navigator.clipboard.writeText(v).then(function () { return true; }, function () { return execCopy(v); }) : Promise.resolve(execCopy(v));
     p.then(function (ok) {
-      var said = kind === 'pub' ? t('cx.cpdPub') + (pubEx() ? t('cx.cpdEx') : '') : kind === 'ip' ? t('cx.cpdIp', { v: v }) + (ipsEx() ? t('cx.cpdEx') : '') : t('cx.copied') + (L() === 'en' ? ': ' : '：') + v;
+      var said = kind === 'pub' ? t('cx.cpdPub') + (pubEx() ? t('cx.cpdEx') : '') : kind === 'ips' ? t('cx.cpdIps', { v: v }) + (ipsEx() ? t('cx.cpdEx') : '') : kind === 'ip' ? t('cx.cpdIp', { v: v }) + (ipsEx() ? t('cx.cpdEx') : '') : t('cx.copied') + (L() === 'en' ? ': ' : '：') + v;
       toast(ok ? said : t('cx.copyFail', { v: kind === 'pub' ? '' : v }));
       if (ok) { b.classList.add('done'); clearTimeout(b._t); b._t = setTimeout(function () { b.classList.remove('done'); }, 1600); }
     });
@@ -389,7 +428,7 @@
     try { var qr = window.qrcode(0, 'M'); qr.addData(bindHref()); qr.make(); q.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); q.classList.add('real'); q.setAttribute('role', 'img'); q.setAttribute('aria-label', t('cx.qrL')); q.dataset.href = bindHref(); } catch (x) { /* leave the plain box */ }
   }
   if (TB && tkNm) tkNm.value = TB.draft();
-  function tkReset() { OKV = null; panel.hidden = true; tkOk.innerHTML = ''; tkKey.value = ''; tkN.textContent = '0 / 64'; tkErr.textContent = ''; tkRes.hidden = true; tkNm.value = TB ? TB.draft() : ''; }
+  function tkReset() { OKV = null; setTimeout(spot, 0); panel.hidden = true; tkOk.innerHTML = ''; tkKey.value = ''; tkN.textContent = '0 / 64'; tkErr.textContent = ''; tkRes.hidden = true; tkNm.value = TB ? TB.draft() : ''; }
   var CK = '<svg viewBox="0 0 64 64" aria-hidden="true"><circle class="rg" cx="32" cy="32" r="28"/><path class="tk" d="M20 33l8.5 8.5L45 24"/></svg>';
   function okHtml(v) {
     var all = v.signed && TB ? TB.demoList() : [];
@@ -404,13 +443,25 @@
         : '<button type="button" class="tcb" id="tkReg">' + esc(t('cx.okReg')) + '</button><button type="button" class="tk-go" id="tkLogin">' + esc(t('cx.okLogin')) + '</button>') + '</div>';
   }
   function showOk(v) {
-    OKV = v; tkKey.value = ''; tkN.textContent = '0 / 64'; panel.hidden = false; tkOk.innerHTML = okHtml(v);
+    OKV = v; tkKey.value = ''; tkN.textContent = '0 / 64'; panel.hidden = false; tkOk.innerHTML = okHtml(v); spot();
     if (S.auto) setAuto(false); cur.classList.remove('on'); hintEl.hidden = true;
     toast(t('cx.okToast', { n: v.name }));
     try { $('#tkOkT').focus({ preventScroll: true }); } catch (x) { $('#tkOkT').focus(); }
   }
   if (tkF) {
     tkKey.addEventListener('input', function () { tkN.textContent = tkKey.value.trim().length + ' / 64'; tkErr.textContent = ''; tkRes.hidden = true; tkKey.classList.remove('bad'); });
+    /* r61 (Jasper): on the last step a click in the empty API Key field pastes what was just copied on Binance (read only
+     * on that click, never stored or sent; the browser may ask first). If reading is refused, the field keeps focus for ⌘/Ctrl+V. */
+    tkKey.addEventListener('click', function () {
+      var st = subs(S.b)[S.s]; if (!st || !st.last || tkKey.value.trim()) return;
+      var cb = navigator.clipboard;
+      if (!cb || !cb.readText || !window.isSecureContext) { toast(t('cx.pasteFail')); return; }
+      cb.readText().then(function (v) {
+        v = String(v || '').trim();
+        if (!v) { toast(t('cx.pasteNone')); return; }
+        tkKey.value = v.slice(0, 80); tkKey.dispatchEvent(new Event('input', { bubbles: true })); toast(t('cx.pasted')); spot();
+      }, function () { toast(t('cx.pasteFail')); });
+    });
     tkNm.addEventListener('input', function () { tkErr.textContent = ''; tkNm.classList.remove('bad'); if (TB) TB.saveDraft(tkNm.value); });
     tkF.addEventListener('submit', function (e) {
       e.preventDefault(); if (S.auto) setAuto(false);
@@ -453,7 +504,7 @@
   icons();
   window.addEventListener(A.events.lang, relang);
   var rz, lastW = window.innerWidth;
-  window.addEventListener('resize', function () { lastW = window.innerWidth; clearTimeout(rz); rz = setTimeout(function () { CUR = null; render(false); }, 120); });
+  window.addEventListener('resize', function () { lastW = window.innerWidth; clearTimeout(rz); rz = setTimeout(function () { CUR = null; render(false); }, 120); spot(); });
   if (typeof RM.addEventListener === 'function') RM.addEventListener('change', function () { if (RM.matches) setAuto(false); autoEl.disabled = RM.matches; render(false); });
   autoEl.checked = false; autoEl.disabled = RM.matches; if (RM.matches) autoEl.parentNode.title = t('cx.autoRm');
   A.apply(document);
@@ -461,19 +512,19 @@
      tutorial bar / hint / cursor, no timers); 'tut' = the step-by-step tutorial, always from step 1 with autoplay off. */
   function mode(m) {
     var intro = m === 'intro'; document.documentElement.classList.toggle('intro', intro);
-    if (S.auto) setAuto(false); S.b = 0; S.s = 0; S.hold = intro; CUR = null; render(false); if (intro) stopAll();
+    if (S.auto) setAuto(false); S.b = 0; S.s = 0; S.hold = intro; CUR = null; render(false); if (intro) stopAll(); spot();
   }
   window.addEventListener('message', function (e) {
     if (e.origin !== location.origin || e.source !== window.parent || !e.data) return;
     if (e.data.bn49cmd === 'intro' || e.data.bn49cmd === 'tut') mode(e.data.bn49cmd);
   });
-  document.documentElement.classList.add('intro'); S.hold = true; render(false); stopAll();
+  document.documentElement.classList.add('intro'); S.hold = true; render(false); stopAll(); spot();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (!S.hold) render(false); });
 
   /* test hooks: read-only state, plus the same moves a person can make */
   window.__guide = {
     get big() { return S.b; }, get sub() { return S.s; }, get loops() { return S.loops; }, get pending() { return TM.length; },
-    get auto() { return S.auto; }, get target() { return HOT; },
+    get auto() { return S.auto; }, get target() { return HOT; }, get spot() { return spotEl.classList.contains('on') ? spotTarget() : null; },
     get step() { var a = subs(S.b)[S.s]; return a ? { d: a.d, p: a.p, cam: a.cam, pcam: a.pcam, last: !!a.last } : null; }, // r59: read-only, for tests
     subs: function (b) { return subs(b == null ? S.b : b).length; },
     go: function (b, s) { S.b = b; S.s = s || 0; S.hold = false; render(false); },

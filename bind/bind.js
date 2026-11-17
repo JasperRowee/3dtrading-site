@@ -186,7 +186,7 @@
 
   /* ---------- the window over the Binance replica, and the tutorial behind it ---------- */
   var gf = $('#guideFrame'), win = $('#win'), dim = $('#dim');
-  gf.src = 'tutorial/?lang=' + L() + '&v=r57'; // set after this page has stored ?lang=, so both agree
+  gf.src = 'tutorial/?lang=' + L() + '&v=r61'; // set after this page has stored ?lang=, so both agree
   function tell(cmd) { try { gf.contentWindow.postMessage({ bn49cmd: cmd }, location.origin); } catch (x) { /* not loaded yet */ } }
   function setInert(el, on) { if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert'); }
   function openWin(focusKey) {

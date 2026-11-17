@@ -2256,4 +2256,13 @@ window.I18N_EN = {
 "把 Dodo 绑定到你自己的 Bot API；只认本站后台的真实回应": "Link Dodo to your own Bot API; only a real reply from this site’s backend counts",
 "Dodo 语言": "Dodo language",
 "Dodo：打开设置的 Dodo 页": "Dodo: open the Dodo page in Settings",
+"偏好": "Preferences",
+"隐私与通知": "Privacy & notifications",
+"绑定 Bot API": "Link Bot API",
+"通知": "Notifications",
+"后台和 Dodo 使用同一种语言": "The dashboard and Dodo use the same language",
+"1,234,567 或 1234567": "1,234,567 or 1234567",
+"会话、偏好和 Dodo 历史只保存在这个浏览器": "Sessions, preferences and Dodo history are stored only in this browser",
+"已跳过：可随时在左上角或个人菜单里添加币安账户": "Skipped: you can add a Binance account any time from the top left or the profile menu",
+"账号、偏好（昼 / 夜 / 跟随系统、语言、单位）、隐私与通知": "Account, preferences (day / night / system, language, units), privacy & notifications",
 };

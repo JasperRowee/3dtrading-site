@@ -163,8 +163,8 @@ function start() {
   /* ---------- geometry: the planet's disc (same numbers as planet.js) ---------- */
   function geo() {
     const mob = W < 900;
-    const R = mob ? W * .62 : Math.min(W * .36, H * .74);
-    const cx = mob ? W * .92 : W * .3, cy = mob ? 40 : H + R * .12;
+    const R = mob ? W * .78 : Math.min(W * .36, H * .74);   // r61: phone placement = planet.js PM
+    const cx = mob ? W * .97 : W * .3, cy = mob ? 24 : H + R * .12;
     return { mob, cx, cy, R, hz: mob ? cy - R * .62 : H * .47 };
   }
 

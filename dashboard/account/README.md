@@ -1,7 +1,7 @@
 # 3dtrading 账户 / 语言公共模块 · 接入说明（r38，演示版）
 
 负责人：Sova。目录：`/Users/sen/.chorus2/workspaces/ba7a4ad4-cec3-4a41-85fe-153e0b18442b/3dtrading-account/`
-统一预览（同源，localStorage 共享）：http://127.0.0.1:8796/ → `/site/` 官网 · `/app/` 后台方案二 · `/account/` 本模块。完整路线：官网 → 注册/登录 → 连接币安（可跳过）→ 方案二后台
+统一预览（同源，localStorage 共享）：http://127.0.0.1:8796/ → `/3dtrading-site/site/` 官网 · `/app/` 后台方案二 · `/account/` 本模块。完整路线：官网 → 注册/登录 → 连接币安（可跳过）→ 方案二后台
 **演示版：没有后端。** 注册/登录不校验密码、不存密码；绑定只做格式检查，密钥提交后立即清空、从不写入任何存储；“接入测试通过”只能由页面上标着“演示”的模拟按钮产生。禁止上线。
 
 ## 文件
@@ -20,7 +20,7 @@
 
 ## 引入
 ```html
-<script src="/account/td-account.js" data-site="/site/index.html" data-app="/app/index.html#/dashboard" defer></script>
+<script src="/account/td-account.js" data-site="/3dtrading-site/site/index.html" data-app="/app/index.html#/dashboard" defer></script>
 ```
 `data-site` / `data-app` 可选；也可以用 `window.TD_ROUTES = {...}` 覆盖。auth/bind 地址跟随脚本所在目录。
 

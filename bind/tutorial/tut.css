@@ -233,3 +233,39 @@ html.intro .bnh .logo,html.intro #lg{visibility:hidden}
   .tcm .tcb{height:38px}
   .stage{background:#0b0e11}
 }
+
+/* ---------- r61 (Jasper) · spotlight instead of the demo cursor ---------- */
+.cur{display:none!important}
+.spot{position:fixed;left:0;top:0;right:0;z-index:50;display:none;background:rgba(5,7,9,.68);cursor:pointer;-webkit-tap-highlight-color:transparent;outline:0}
+.spot.on{display:block;animation:spot-in .25s ease-out}
+@keyframes spot-in{from{opacity:0}to{opacity:1}}
+.spot-ring{position:fixed;left:0;top:0;z-index:51;pointer-events:none;display:none;border-radius:10px;box-shadow:0 0 0 2px #2fdcbc,0 0 0 7px rgba(47,220,188,.22);transition:transform .32s cubic-bezier(.3,0,.2,1),width .32s cubic-bezier(.3,0,.2,1),height .32s cubic-bezier(.3,0,.2,1)}
+.spot-ring.on{display:block}
+.spot-ring.nudge{animation:spot-nudge .5s ease-in-out}
+@keyframes spot-nudge{30%{box-shadow:0 0 0 3px #2fdcbc,0 0 0 12px rgba(47,220,188,.32)}}
+html.intro .spot,html.intro .spot-ring{display:none!important}
+html.spotting .bn .hot,html.spotting .ba .hot,html.spotting .hic .bi.hot,html.spotting .hum .hot{box-shadow:none}
+html.spotting #tkKey.cue{box-shadow:none}
+@media (prefers-reduced-motion:reduce){.spot.on{animation:none}.spot-ring{transition:none}.spot-ring.nudge{animation:none}}
+
+/* r61 · the key page in Binance's own order, and its QR card: white code top-left of a dark card, caption under it */
+.bn-qr{width:auto;height:auto;padding:18px 18px 14px;align-self:flex-start;display:flex;flex-direction:column;align-items:center;gap:12px;border-radius:12px;background:#1e2329;color:#eaecef;font-size:14px}
+.bn-qr .q,.bn-qr .q.real{width:180px;height:180px;border-radius:8px;outline:0}
+.bn-qr .q.real{padding:8px}
+.bn-sacc{margin:0 0 18px;font-size:19px;color:#eaecef}
+.bn-perm .bn-plh{margin-top:6px}
+.bn-perm .bn-lockn{margin:-16px 0 22px}
+.bn-ipt{margin-top:4px}
+.bn-ck.skip{opacity:.7}
+.bn-ipw{display:block;cursor:pointer;border-radius:8px;margin:0 0 6px}
+.bn-ipw .bn-chips{margin-bottom:10px}
+.bn-ipw .bn-ipin b{color:#2fdcbc}
+.bn-ipw.done .bn-ipin b{color:#eaecef}
+.bn-ipin code{font:600 13px var(--mono,ui-monospace,monospace);color:#eaecef}
+.ba-qr{display:flex;flex-direction:column;align-items:center;justify-self:start;width:max-content;gap:10px;padding:14px 14px 12px;border-radius:12px;background:#1e2329;color:#eaecef;font-size:13px;margin:12px 0 4px}
+.ba-qr .q,.ba-qr .q.real{width:128px;height:128px}
+.ba-ck.skip{opacity:.7}
+.ba-ipw{display:block;cursor:pointer;border-radius:8px}
+.ba-ipw .ba-ipin{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
+.ba-ipw .ba-ipin code{font:600 12.5px var(--mono,ui-monospace,monospace);color:#eaecef;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ba-ipw .ba-ipin b{color:#2fdcbc}

@@ -12,16 +12,29 @@
    No WebGL, no three.js: two 2D canvases. Reduced motion = one still frame. A hidden tab stops drawing. */
 (function () {
   'use strict';
-  var GL = document.getElementById('gx'), cv = document.getElementById('orb');
+  /* r61 · two uses of this one drawing:
+     - the log-in page (default): as before. Arriving through the website's transition (?via=exit|door|…) the first frame is
+       already complete: the planet is not faded in, the sky is this file's 2D sky at once (the same picture the website's last
+       transition frame showed), and when the WebGL sky (space.js) is ready it cross-fades in underneath over ~1.2 s.
+     - ART (loaded by the website with data-art): no loop, no listeners; the website calls __planetArt.frame() each frame of its
+       「镜头后退、穿出星球」/「穿过门」/「飞回星球」 transitions, so the transition's last frame is this page's first frame. */
+  var ME = document.currentScript, ART = !!(ME && ME.dataset && ME.dataset.art);
+  var GL = document.getElementById(ART ? ME.dataset.gx : 'gx'), cv = document.getElementById(ART ? ME.dataset.orb : 'orb');
   if (!cv || !cv.getContext || !GL) return;
   var g = cv.getContext('2d'), W, H, dpr, cx, cy, R, mob;
   var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var MODE = 'wait'; // 'wait' → 'gl' (space.js draws the sky) or '2d' (this file draws the r56 sky too)
-  function setMode(m) { if (MODE === m) return; MODE = m; GL.hidden = m !== '2d'; if (still) draw(performance.now()); }
-  GL.hidden = true;
-  addEventListener('td:space', function (e) { setMode(e.detail && e.detail.mode === 'webgl' ? 'gl' : '2d'); });
-  if (window.__space) setMode(window.__space.mode === 'webgl' ? 'gl' : '2d');
-  setTimeout(function () { if (MODE === 'wait') setMode('2d'); }, 2500);
+  var VIA = ''; try { VIA = ART ? '' : (new URLSearchParams(location.search).get('via') || ''); } catch (e) {}
+  var ARRIVE = !!VIA, K2D = 1, k2dT = 0; // K2D: how much of the 2D sky still shows while the WebGL sky fades in after an arrival
+  var MODE = ART || ARRIVE ? '2d' : 'wait'; // 'wait' → 'gl' (space.js draws the sky) or '2d' (this file draws the r56 sky too)
+  function setMode(m) { if (MODE === m) return;
+    if (ARRIVE && m === 'gl' && MODE === '2d' && !still) { if (!k2dT) k2dT = performance.now(); return; } // keep painting, fade (see draw)
+    MODE = m; GL.hidden = m !== '2d'; if (still) draw(performance.now()); }
+  GL.hidden = MODE !== '2d';
+  if (!ART) {
+    addEventListener('td:space', function (e) { setMode(e.detail && e.detail.mode === 'webgl' ? 'gl' : '2d'); });
+    if (window.__space) setMode(window.__space.mode === 'webgl' ? 'gl' : '2d');
+    setTimeout(function () { if (MODE === 'wait') setMode('2d'); }, 2500);
+  }
   function hash(i) { var x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); }
   function rnd(seed) { var x = Math.sin(seed * 91.17 + 12.9) * 43758.5453; return x - Math.floor(x); }
 
@@ -32,6 +45,9 @@
   GOLD.forEach(function (q) { var l = Math.hypot(q[0], q[1], q[2]); q[0] /= l; q[1] /= l; q[2] /= l; });
   var tilt = -.32, ct = Math.cos(tilt), st = Math.sin(tilt);
   function rot(p, a) { var c = Math.cos(a), s = Math.sin(a), x = p[0] * c + p[2] * s, z = -p[0] * s + p[2] * c, y = p[1]; return [x, y * ct - z * st, y * st + z * ct]; }
+  /* r61 · phone placement (W < 900): the planet sits in the upper right, a little larger, its lower-left limb under the headline;
+     the form floats on open sky below it. Same numbers in space.js (geo) and the website's transition (it reads them from here). */
+  var PM = { r: .78, x: .97, y: 24 };
   var LX = -.55, LY = .6, LZ = .58; (function () { var l = Math.hypot(LX, LY, LZ); LX /= l; LY /= l; LZ /= l; })();
 
   var FIELD = [], MOON = null, boxes = [], SKY = null, GM = null;
@@ -103,7 +119,8 @@
     l.setTransform(dpr, 0, 0, dpr, 0, 0);
     if (!SKY) SKY = bake();
     l.drawImage(SKY, -pad - Math.sin(T * .00003) * 14 - mx * 12, -pad - Math.cos(T * .000025) * 9 - my * 8, W + pad * 2, H + pad * 2);
-    if (GM) { l.setTransform(1, 0, 0, 1, 0, 0); l.globalCompositeOperation = 'destination-in'; l.drawImage(GM, 0, 0, GL.width, GL.height); l.globalCompositeOperation = 'source-over'; }
+    if (GM && MK > 0) { l.setTransform(1, 0, 0, 1, 0, 0); l.globalCompositeOperation = 'destination-in'; l.drawImage(GM, 0, 0, GL.width, GL.height); l.globalCompositeOperation = 'source-over';
+      if (MK < 1) { l.setTransform(dpr, 0, 0, dpr, 0, 0); l.globalAlpha = 1 - MK; l.drawImage(SKY, -pad - Math.sin(T * .00003) * 14 - mx * 12, -pad - Math.cos(T * .000025) * 9 - my * 8, W + pad * 2, H + pad * 2); l.globalAlpha = 1; } }
   }
 
   function size() {
@@ -115,10 +132,10 @@
       var z = hash(s * 1.37 + .2); z = z * z; // most far away, a few near
       FIELD.push({ x: hash(s + .1), y: hash(s + .7), z: z, ph: hash(s + .9) * 6.28, sp: .3 + hash(s + .3) * .7, slow: s % 9 === 0 });
     }
-    measure();
+    if (!ART) measure();
   }
   function place() {
-    if (mob) { R = W * .62; cx = W * .92; cy = 40; return; }
+    if (mob) { R = W * PM.r; cx = W * PM.x; cy = PM.y; return; }
     R = Math.min(W * .36, H * .74); cx = W * .3; cy = H + R * .12;
   }
   function measure() {
@@ -130,7 +147,7 @@
   }
   function clear(x, y) { for (var i = 0; i < boxes.length; i++) { var b = boxes[i]; if (x > b[0] && x < b[2] && y > b[1] && y < b[3]) return .45; } return 1; }
   var mx = 0, my = 0, tx = 0, ty = 0;
-  if (!still) addEventListener('pointermove', function (e) { tx = e.clientX / W - .5; ty = e.clientY / H - .5; }, { passive: true });
+  if (!still && !ART) addEventListener('pointermove', function (e) { tx = e.clientX / W - .5; ty = e.clientY / H - .5; }, { passive: true });
 
   function field(t) { // the live, twinkling layer; near stars move more with the pointer than far ones
     for (var i = 0; i < FIELD.length; i++) {
@@ -138,13 +155,13 @@
       var x = ((f.x + drift) % 1) * W - mx * (4 + z * 22), y = f.y * H - my * (3 + z * 16);
       var dx = x - cx, dy = y - cy; if (dx * dx + dy * dy < R * R * 1.02) continue; // behind the planet
       var tw = still ? .8 : f.slow ? .35 + .65 * Math.pow(.5 + .5 * Math.sin(t * .0007 * f.sp + f.ph), 2) : .7 + .3 * Math.sin(t * .0011 * f.sp + f.ph);
-      var m = clear(x, y), s = .6 + z * 1.6, al = (.14 + .5 * z) * tw * m;
+      var m = clear(x, y), s = .6 + z * 1.6, al = (.14 + .5 * z) * tw * m * K2D;
       g.fillStyle = (z > .7 ? 'rgba(150,240,224,' : 'rgba(220,230,238,') + al.toFixed(3) + ')'; g.fillRect(x - s / 2, y - s / 2, s, s);
       if (f.slow && z > .3 && !still) { var gl = al * .5; g.fillStyle = 'rgba(230,246,250,' + gl.toFixed(3) + ')'; g.fillRect(x - s * 2, y - .35, s * 4, .7); g.fillRect(x - .35, y - s * 2, .7, s * 4); }
     }
   }
   function moon() {
-    if (!MOON) return; var x = MOON.x - mx * 6, y = MOON.y - my * 4, r = MOON.r;
+    if (!MOON) return; g.save(); g.globalAlpha *= K2D * MK; var x = MOON.x - mx * 6, y = MOON.y - my * 4, r = MOON.r;
     var h = g.createRadialGradient(x, y, r * .8, x, y, r * 3.2);
     h.addColorStop(0, 'rgba(47,220,188,.07)'); h.addColorStop(1, 'rgba(47,220,188,0)');
     g.fillStyle = h; g.beginPath(); g.arc(x, y, r * 3.2, 0, 7); g.fill();
@@ -152,19 +169,21 @@
     b.addColorStop(0, '#1e2b2d'); b.addColorStop(.6, '#0e1517'); b.addColorStop(1, '#070a0b');
     g.fillStyle = b; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill();
     g.strokeStyle = 'rgba(110,240,215,.4)'; g.lineWidth = 1;
-    g.beginPath(); g.arc(x, y, r - .5, Math.PI * .72, Math.PI * 1.62); g.stroke();
+    g.beginPath(); g.arc(x, y, r - .5, Math.PI * .72, Math.PI * 1.62); g.stroke(); g.restore();
   }
   function nebula(X, Y, t) { // a quiet teal nebula just outside the planet's lit limb, breathing very slowly
-    var br = still ? 1 : .9 + .1 * Math.sin(t * .00016);
+    var br = (still ? 1 : .9 + .1 * Math.sin(t * .00016)) * K2D;
     var nx = X + R * (mob ? -.55 : .62), ny = Y - R * (mob ? -.55 : .78), nr = R * (mob ? .9 : .75);
     var ng = g.createRadialGradient(nx, ny, 0, nx, ny, nr);
     ng.addColorStop(0, 'rgba(47,200,180,' + (.07 * br).toFixed(3) + ')'); ng.addColorStop(.5, 'rgba(40,140,170,' + (.03 * br).toFixed(3) + ')'); ng.addColorStop(1, 'rgba(40,140,170,0)');
     g.fillStyle = ng; g.fillRect(nx - nr, ny - nr, nr * 2, nr * 2);
   }
-  function planet(a, px, py, t) {
+  function planet(a, px, py, t, o) {
     var X = cx + px, Y = cy + py;
     if (MODE === '2d') nebula(X, Y, t);
     haloOut(X, Y);
+    if (o && o.inner) o.inner(g, X, Y, R);           // r61 · the website seen from inside, before the shell closes over it
+    if (o && o.shell < 1) { if (o.shell <= 0) return; g.save(); g.globalAlpha *= o.shell; }
     /* r58 · the body takes the deep-space palette (cool blue-black, not olive) and is lit from the same side as its rim:
        a soft day side, a terminator, a night side that sinks into the sky; the dots fade with the light, so it reads round */
     var bd = g.createRadialGradient(X + LX * R * .45, Y - LY * R * .45, R * .05, X, Y, R * 1.02);
@@ -182,6 +201,7 @@
       var s = .55 + 1.15 * k; g.fillRect(x - s / 2, y - s / 2, s, s);
     }
     pillars(a, X, Y);
+    if (o && o.shell < 1) g.restore();
   }
   function pillars(a, X, Y) {
     GOLD.forEach(function (p, idx) {
@@ -209,26 +229,61 @@
     gr.addColorStop(0, 'rgba(47,220,188,0)'); gr.addColorStop(.5, 'rgba(47,220,188,.08)'); gr.addColorStop(1, 'rgba(110,240,214,.38)');
     g.fillStyle = gr; g.fillRect(X - R, Y - R, R * 2, R * 2); g.restore();
   }
-  var t0 = 0, frames = 0;
+  var t0 = 0, frames = 0, MK = ARRIVE || ART ? 0 : 1, mkT = 0, FLY = null; // MK: the dimming under the copy / form and the far moon come in with the form
+  function spin() { return (Date.now() % 157080) * .00004; } // r61: wall-clock spin, so the website's last frame and this page's first agree
   function draw(now) {
-    if (!t0) t0 = now; var el = still ? 1 : Math.min(1, (now - t0) / 1400), ein = 1 - Math.pow(1 - el, 3);
+    if (!t0) t0 = now; var el = still || ARRIVE ? 1 : Math.min(1, (now - t0) / 1400), ein = 1 - Math.pow(1 - el, 3);
+    if (ARRIVE) {
+      if (MK < 1) { if (!mkT) mkT = now + 380; MK = still ? 1 : Math.max(0, Math.min(1, (now - mkT) / 900)); }
+      if (k2dT) { K2D = still ? 0 : Math.max(0, 1 - (now - k2dT) / 1200); GL.style.opacity = K2D; if (K2D <= 0) { ARRIVE = false; K2D = 1; MK = 1; GL.style.opacity = ''; MODE = 'gl'; GL.hidden = true; } }
+    }
     mx += (tx - mx) * .04; my += (ty - my) * .04;
-    var a = now * .00004;
+    var a = spin();
     g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
-    if (MODE === '2d') sky(now);
-    g.save(); g.globalAlpha = ein; if (MODE === '2d') { field(now); moon(); } planet(a, -mx * 8, -my * 6, now); g.restore();
+    var wt = Date.now() % 1e9; // the sky's drift and twinkle run on the wall clock too (same picture across the two pages)
+    if (MODE === '2d') sky(wt);
+    var keep = null;
+    if (FLY) { // r61 · 返回官网: the camera flies into the planet; it ends centred and covering the screen (the website's first frame)
+      var fq = Math.min(1, (now - FLY.t0) / FLY.ms), fp = fq < .5 ? 4 * fq * fq * fq : 1 - Math.pow(-2 * fq + 2, 3) / 2, rc = Math.hypot(W, H) / 2 * 1.04;
+      keep = { cx: cx, cy: cy, R: R }; cx = cx + (W / 2 - cx) * fp; cy = cy + (H / 2 - cy) * fp; R = Math.exp(Math.log(R) + (Math.log(rc) - Math.log(R)) * fp);
+      mx *= 1 - fp; my *= 1 - fp; if (fq >= 1 && FLY.done) { var d = FLY.done; FLY.done = null; setTimeout(d, 0); }
+    }
+    g.save(); g.globalAlpha = ein; if (MODE === '2d') { field(wt); moon(); } planet(a, -mx * 8, -my * 6, wt); g.restore();
+    if (keep) { cx = keep.cx; cy = keep.cy; R = keep.R; }
     frames++;
   }
   var raf = 0;
   function loop(t) { draw(t); raf = requestAnimationFrame(loop); }
+  if (ART) {
+    /* the website's transitions. frame(o): o.p = where the planet is (0 = all around us / inside, 1 = the log-in composition),
+       o.inner(ctx, X, Y, r) paints the website inside the shell, o.shell = the shell's opacity, o.sky = the sky's opacity.
+       place(): the log-in composition for this window, for the caller's own maths. */
+    var AW = 0, AH = 0;
+    window.__planetArt = {
+      fit: function () { if (AW !== innerWidth || AH !== innerHeight) { AW = innerWidth; AH = innerHeight; size(); } },
+      place: function () { this.fit(); place(); return { cx: cx, cy: cy, R: R, W: W, H: H, mob: mob }; },
+      frame: function (o) {
+        this.fit(); place(); var now = Date.now() % 1e9, F = { cx: cx, cy: cy, R: R };
+        if (o.cx != null) { cx = o.cx; cy = o.cy; R = o.R; }
+        g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
+        GL.style.opacity = o.sky == null ? 1 : o.sky; sky(now);
+        g.save(); g.globalAlpha = o.sky == null ? 1 : o.sky; field(now); g.restore();
+        planet(spin(), 0, 0, now, o);
+        cx = F.cx; cy = F.cy; R = F.R; frames++;
+      }
+    };
+    return;
+  }
   size(); addEventListener('resize', function () { size(); draw(performance.now()); });
-  if (still) draw(performance.now()); else raf = requestAnimationFrame(loop);
+  if (still || ARRIVE) draw(performance.now()); if (!still) raf = requestAnimationFrame(loop); // arriving: paint before the first frame, no blank
+  if (ARRIVE) document.documentElement.classList.add('arrive');
   addEventListener('td:lang', function () { setTimeout(function () { measure(); draw(performance.now()); }, 30); });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { measure(); });
   if (window.ResizeObserver) { var ro = new ResizeObserver(function () { measure(); }); ['.card', '.hero'].forEach(function (q) { var e = document.querySelector(q); if (e) ro.observe(e); }); }
   document.addEventListener('visibilitychange', function () { if (still) return; cancelAnimationFrame(raf); if (!document.hidden) raf = requestAnimationFrame(loop); });
   window.__planet = {
-    version: 'r57', mode: function () { return MODE; }, source: 'r42–r47 night planet (28d0e36)', webgl: false, still: still, frames: function () { return frames; },
+    fly: function (ms, done) { if (still) { if (done) done(); return; } if (MODE === 'gl') { MODE = '2d'; GL.hidden = false; GL.style.opacity = 1; } FLY = { t0: performance.now(), ms: ms || 1100, done: done }; },
+    version: 'r61', arrive: function () { return { via: VIA, k2d: K2D, mk: MK, mode: MODE }; }, mode: function () { return MODE; }, source: 'r42–r47 night planet (28d0e36)', webgl: false, still: still, frames: function () { return frames; },
     planet: function () { return { R: Math.round(R), cx: Math.round(cx), cy: Math.round(cy), mob: mob, W: W, H: H, dots: N, pillars: GOLD.length }; },
     stars: function () { return FIELD.length; }, moon: function () { return MOON ? { x: Math.round(MOON.x), y: Math.round(MOON.y) } : null; }
   };

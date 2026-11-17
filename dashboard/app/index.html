@@ -2980,6 +2980,72 @@ html[data-theme="night"] .ddm{box-shadow:0 40px 100px -30px rgba(0,0,0,.8),0 0 0
   .ai{height:calc(100dvh - var(--top) - var(--navh) - 14px - env(safe-area-inset-bottom))}
 }
 </style>
+<style id="r61">
+/* ---------- r61（Jasper 2026-11-17） ----------
+   4 顶部导航「假悬浮」：卡片仍是悬浮样子（左/下/右阴影），但从屏幕顶端到导航底部是一整块实底，正文滚到这里被完全挡住，两侧空隙也不透出。
+   8 手机：顶栏与探头 Dodo 用 position:fixed，根元素 overscroll-behavior:none 去掉橡皮筋回弹，滚动、回弹、地址栏伸缩时都不被带动。
+   9 手机底部导航深色，选中项用主题色。10 手机 Dodo 输入框与底部导航连成一块，平时收起，点开向上长出。7 手机绑定币安是底部升起的面板。 */
+html,body{overscroll-behavior-y:none}
+.stg-prof{display:flex;align-items:center;gap:14px;padding:10px 0 14px}
+.stg-prof .av{width:52px;height:52px;border-radius:15px;background:var(--blk);color:#fff;display:grid;place-items:center;font-size:20px;font-weight:700;flex:none}
+.stg-prof b{display:block;font-size:16px}.stg-prof small{display:block;font-size:13px;color:var(--ink3);margin-top:2px;word-break:break-all}
+.qbx{display:none}
+@media (min-width:761px){
+  body::before{height:calc(12px + var(--fh));opacity:1!important;background:var(--bg);transition:none}
+}
+@media (max-width:760px){
+  :root{--navbg:#12181a;--navfg:#98a2aa}
+  html[data-theme="night"]{--navbg:#0b0f10}
+  header.top{position:fixed;left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right));top:calc(6px + env(safe-area-inset-top));margin:0}
+  body{padding-top:var(--top)}
+  body::before{height:var(--top)}
+  body.kb-open[data-page="ai"] header.top{left:0;right:0}
+  /* 9 底部导航：深色底，选中＝主题色 */
+  .tnav,html[data-theme="night"] .tnav{background:var(--navbg);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 1px 2px rgba(0,0,0,.2),0 16px 38px -12px rgba(15,23,42,.45)}
+  html[data-theme="night"] .tnav{box-shadow:0 0 0 1px rgba(255,255,255,.06),0 18px 40px -12px rgba(0,0,0,.75)}
+  .tnav a,html[data-theme="night"] .tnav a{color:var(--navfg);background:none}
+  .tnav a[aria-current="page"],html[data-theme="night"] .tnav a[aria-current="page"]{color:var(--brand);background:rgba(47,220,188,.12)}
+  .tnav a[aria-current="page"] svg,html[data-theme="night"] .tnav a[aria-current="page"] svg{color:var(--brand)}
+  .tnav a:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+  /* 10 Dodo 输入框：贴在底部导航上方，和导航是同一块深色底 */
+  body[data-page="ai"] .composer{background:var(--navbg);padding:8px 8px 6px;border-radius:20px 20px 0 0}
+  body[data-page="ai"]:not(.kb-open) .composer{position:fixed;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:calc(var(--navb) + var(--navh) - 1px);z-index:35;margin:0;flex:none;display:block;box-shadow:0 -14px 30px -20px rgba(15,23,42,.45)}
+  body[data-page="ai"]:not(.kb-open) .tnav{border-radius:0 0 20px 20px}
+  body[data-page="ai"].kb-open .composer{border-radius:18px;margin:0 0 8px}
+  body[data-page="ai"] .composer .disc{display:none}
+  body[data-page="ai"] .composer .cmp-n{color:#c8d0d6;margin:6px 6px 0;font-size:12px}
+  body[data-page="ai"] .box,body[data-page="ai"] .chat:not(.fresh) .box{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;max-width:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);box-shadow:none;border-radius:16px;padding:4px 4px 4px 14px;color:#f3f5f6;cursor:text}
+  body[data-page="ai"] .box textarea{flex:1 1 0;min-width:0;width:auto;color:#f3f5f6;min-height:36px;max-height:88px;padding:7px 0;line-height:1.4}
+  body[data-page="ai"] .box textarea::placeholder{color:#8d979e}
+  body[data-page="ai"] .box .ctxc,body[data-page="ai"] .box .att{flex:1 0 100%}
+  body[data-page="ai"] .box .ib{color:#c3cbd1}
+  body[data-page="ai"] .box .bar{margin-top:0;flex:none;overflow:hidden;max-width:0;opacity:0;transition:max-width .32s cubic-bezier(.2,.8,.2,1),opacity .2s}
+  body[data-page="ai"] .box .bar small,body[data-page="ai"] .box .bar .sp{display:none}
+  body[data-page="ai"] .send{width:36px;height:36px}
+  body[data-page="ai"].cmp-open .box textarea,body[data-page="ai"].kb-open .box textarea{flex:1 0 100%;min-height:44px}
+  body[data-page="ai"].cmp-open .box .bar,body[data-page="ai"].kb-open .box .bar{flex:1 0 100%;max-width:none;opacity:1;display:flex}
+  body[data-page="ai"].cmp-open .box .bar .sp,body[data-page="ai"].kb-open .box .bar .sp{display:block;flex:1}
+  body[data-page="ai"].cmp-open:not(.kb-open) .composer{animation:cmpGrow .32s cubic-bezier(.2,.8,.2,1)}
+  @keyframes cmpGrow{from{clip-path:inset(calc(100% - 58px) 0 0 0 round 20px 20px 0 0)}to{clip-path:inset(0 0 0 0 round 20px 20px 0 0)}}
+  body[data-page="ai"]:not(.kb-open) .ai{height:calc(100dvh - var(--top) - var(--navh) - 22px - 58px - env(safe-area-inset-bottom))}
+  body[data-page="ai"].cmp-open:not(.kb-open) .stream{padding-bottom:60px}
+  /* 7 绑定币安：底部升起的面板；取消在左上、查看完整教程在右上；可下拉或点遮罩关闭 */
+  .mdl.qbm{opacity:1;transform:translateY(105%);transition:transform .34s cubic-bezier(.2,.8,.2,1)}
+  .mdl.qbm.on{transform:none}
+  .mdl.qbm.drag{transition:none}
+  .mdl.qbm::before{content:"";position:absolute;left:50%;top:7px;width:38px;height:5px;margin-left:-19px;border-radius:3px;background:var(--line);z-index:3}
+  .mdl.qbm .mdl-hd{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:20px 8px 8px;touch-action:none}
+  .mdl.qbm .mdl-hd h2{grid-column:2;grid-row:1;text-align:center;font-size:16.5px;white-space:nowrap}
+  .mdl.qbm .mdl-hd .sp,.mdl.qbm .mdl-hd .xbtn{display:none}
+  .mdl.qbm .qbx{display:inline-flex;align-items:center;min-height:44px;padding:0 10px;border:0;background:none;font:inherit;font-size:15px;font-weight:600;color:var(--ink2);cursor:pointer;text-decoration:none}
+  .mdl.qbm .qbx.l{grid-column:1;grid-row:1;justify-self:start}
+  .mdl.qbm .qbx.r{grid-column:3;grid-row:1;justify-self:end;color:var(--brandD)}
+  html[data-theme="night"] .mdl.qbm .qbx.r{color:var(--brand)}
+  .mdl.qbm .qb-ft{display:none}
+}
+@media (max-width:760px) and (prefers-reduced-motion:reduce){.mdl.qbm,body[data-page="ai"] .box .bar{transition:none}body[data-page="ai"].cmp-open .composer{animation:none!important}}
+html.rm .mdl.qbm,html.rm body[data-page="ai"] .box .bar{transition:none}html.rm body[data-page="ai"].cmp-open .composer{animation:none!important}
+</style>
 </head>
 <body>
 
@@ -2995,7 +3061,7 @@ html[data-theme="night"] .ddm{box-shadow:0 40px 100px -30px rgba(0,0,0,.8),0 0 0
     </button>
     <div class="menu" id="acctMenu" role="menu"></div>
   </div>
-  <nav class="fnav" id="fnav" aria-label="页面导航"><div class="fn-g fn-l"><a class="fn-a" href="#/dashboard" data-nav="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="8" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.8"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.8"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.8"/></svg><span>总览</span></a><a class="fn-a" href="#/trades" data-nav="trades"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M17 4v16"/><rect x="4.5" y="7" width="5" height="8" rx="1"/><rect x="14.5" y="9" width="5" height="6" rx="1"/></svg><span>交易记录</span></a></div><a class="fn-logo" href="../../site/index.html" data-site-link aria-label="3dtrading，返回官网"><img src="assets/3dtrading-logo.svg" width="108" height="26" alt="3dtrading"></a><div class="fn-g fn-r"><a class="fn-a" href="#/wallet" data-nav="wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="6" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M16 14.5h1.5M6.5 6l9-2.5"/></svg><span>费用</span></a><a class="fn-a" href="#/ai" data-nav="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17H6.5A2.5 2.5 0 0 1 4 14.5z"/></svg><span>Dodo</span></a></div></nav>
+  <nav class="fnav" id="fnav" aria-label="页面导航"><div class="fn-g fn-l"><a class="fn-a" href="#/dashboard" data-nav="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="8" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.8"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.8"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.8"/></svg><span>总览</span></a><a class="fn-a" href="#/trades" data-nav="trades"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M17 4v16"/><rect x="4.5" y="7" width="5" height="8" rx="1"/><rect x="14.5" y="9" width="5" height="6" rx="1"/></svg><span>交易记录</span></a></div><a class="fn-logo" href="../../site/index.html" data-site-link aria-label="3dtrading，返回官网"><img src="assets/3dtrading-logo.svg" width="108" height="26" alt="3dtrading"></a><div class="fn-g fn-r"><a class="fn-a" href="#/wallet" data-nav="wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="6" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M16 14.5h1.5M6.5 6l9-2.5"/></svg><span>钱包</span></a><a class="fn-a" href="#/ai" data-nav="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17H6.5A2.5 2.5 0 0 1 4 14.5z"/></svg><span>Dodo</span></a></div></nav>
   <i id="layTg" hidden></i>
   <div class="me-m" id="meM">
     <button class="av-btn" id="avBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="我的：账号与偏好"><span class="av" id="avIni" aria-hidden="true">J</span><span class="car">▼</span></button>
@@ -3021,7 +3087,7 @@ html[data-theme="night"] .ddm{box-shadow:0 40px 100px -30px rgba(0,0,0,.8),0 0 0
   </section>
 
   <section class="page" id="pg-wallet" data-page="wallet" aria-labelledby="h-wallet" hidden>
-    <header class="ph"><div><h1 id="h-wallet" tabindex="-1">费用 · 订阅</h1><p>每月按总资产 1% 订阅 · 仅 Crypto 充值</p></div></header>
+    <header class="ph"><div><h1 id="h-wallet" tabindex="-1">钱包</h1><p>每月按总资产 1% 订阅 · 仅 Crypto 充值</p></div></header>
     <div id="walBody"></div>
   </section>
 
@@ -3090,7 +3156,7 @@ html[data-theme="night"] .ddm{box-shadow:0 40px 100px -30px rgba(0,0,0,.8),0 0 0
             <div class="dds-r"><span><b>按 Enter 发送</b><small id="ddsEnN">关闭后 Enter 换行，⌘/Ctrl + Enter 发送</small></span><button type="button" class="sw" role="switch" id="ddsEnter" aria-checked="true" aria-labelledby="ddsEnL"><span class="sr-only" id="ddsEnL">按 Enter 发送</span><i aria-hidden="true"></i></button></div>
             <div class="dds-r"><span><b>新话题</b><small>当前对话保存在历史里</small></span><button type="button" class="btn ghost sm" id="ddsNew">开始</button></div>
             <div class="dds-r"><span><b>历史话题</b><small>只保存在这个浏览器</small></span><button type="button" class="btn ghost sm" id="ddsHist">查看</button></div></section>
-          <section class="dsb-s" aria-labelledby="dsbAppT"><h3 id="dsbAppT">后台设置</h3><p class="dsb-n">个性化（昼 / 夜 / 跟随系统）、单位、隐私、语言和通知</p><a class="btn ghost sm dds-go" href="#/settings" id="ddsApp">打开后台设置 →</a></section>
+          <section class="dsb-s" aria-labelledby="dsbAppT"><h3 id="dsbAppT">后台设置</h3><p class="dsb-n">账号、偏好（昼 / 夜 / 跟随系统、语言、单位）、隐私与通知</p><a class="btn ghost sm dds-go" href="#/settings" id="ddsApp">打开后台设置 →</a></section>
         </div>
       </aside>
 
@@ -3452,7 +3518,7 @@ function renderAll() {
   if (DW.kind === 'stable' || DW.kind === 'pos') fillDrawer(DW.kind);
   markDemo();
 }
-const LIVE_BAR = () => `<div class="demo-acct live-bar" role="note"><p><b>币安只读 · 实时数据</b>：账户、持仓、成交和资金流水来自币安统一账户只读 API（${fmtD(new Date(LIVE.fetchedAt || LIVE.now), { hour: '2-digit', minute: '2-digit', hour12: false })} 读取），不会下单。钱包、服务费与 Dodo 是平台自有模块，不来自币安。</p><span class="sp"></span><a class="lnk" href="#/me">数据范围 →</a></div>`;
+const LIVE_BAR = () => `<div class="demo-acct live-bar" role="note"><p><b>币安只读 · 实时数据</b>：账户、持仓、成交和资金流水来自币安统一账户只读 API（${fmtD(new Date(LIVE.fetchedAt || LIVE.now), { hour: '2-digit', minute: '2-digit', hour12: false })} 读取），不会下单。钱包、服务费与 Dodo 是平台自有模块，不来自币安。</p></div>`;
 const hasTestLive = () => ACCTS.some(a => !a.demo && a.live && (S.view === 'all' || a.id === S.view));
 const TEST_BAR = () => `<div class="demo-acct" role="note"><p><span class="demo">演示</span> 这些数字是<b>演示数据</b>：没有连接币安，不代表真实收益，也不会下单。</p></div>`;
 const DEMO_BAR = () => `<div class="demo-acct" role="note"><p>正在查看<b>${DEMO_NAME}</b>：未连接币安，数字为示例，不代表真实收益，也不会下单。</p><span class="sp"></span><a class="lnk" href="${esc(bindUrl())}">添加币安账户 →</a><button class="lnk mut" type="button" data-rmdemo="${DEMO_ID}">移除示例</button></div>`;
@@ -3882,6 +3948,7 @@ function openDlg(title, html) {
   const d = $('#modal'), was = !d.hidden && d.classList.contains('on');
   if (!was) DLG_BACK = document.activeElement;
   d.classList.remove('wide', 'qbm', 'setm');
+  $$('#modal .mdl-hd .qbx').forEach(x => x.remove());
   $('#mdT').textContent = title; $('#mdB').innerHTML = html;
   if (!was) showLayer(d);
   setTimeout(() => ($('#mdB [data-first]') || $('#mdT')).focus({ preventScroll: true }), RM ? 0 : 50);
@@ -5190,7 +5257,7 @@ function renderMe() {
   const st = (k, v, off) => `<div class="me-row"><div><b>${k}</b><small>${v}</small></div><span class="stt ${off ? 'off' : 'demo2'}">${off ? '未连接' : '示例'}</span></div>`;
   box.innerHTML = `<div class="me"><div class="me-col">
     <section class="prof"><span class="av" aria-hidden="true">${esc(meIni())}</span><b>${esc(meName())}</b><small>${esc(SESS().email || '')} · 本机账号，只保存在这台电脑</small>
-      <div class="st3"><div><span>已添加币安账户</span><b class="num">${ACCTS.length}</b></div><div><span>测试通过</span><b class="num">${live.filter(a => !a.demo).length}</b></div><div><span>本月剩余额度</span><b class="num">${meLeft()}% <a href="#/wallet" style="color:var(--brand);font-size:12px;font-weight:600">费用 →</a></b></div></div></div></section>
+      <div class="st3"><div><span>已添加币安账户</span><b class="num">${ACCTS.length}</b></div><div><span>测试通过</span><b class="num">${live.filter(a => !a.demo).length}</b></div><div><span>本月剩余额度</span><b class="num">${meLeft()}% <a href="#/wallet" style="color:var(--brand);font-size:12px;font-weight:600">钱包 →</a></b></div></div></div></section>
     <section class="set"><div class="hd2"><div><h2>币安账号</h2><p>每个账号用一个币安子账户的 API，策略分别运行；资金一直留在你的币安账户里</p></div><span class="sp"></span><a class="btn brand sm" href="${esc(bindUrl())}">＋ 添加</a></div>
       <ul class="acc-li">${ACCTS.map(a => `<li class="${S.view === a.id ? 'on' : ''}"><span class="bn" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#2fd8bd" stroke-width="1.6"><rect x="2" y="3" width="10" height="8" rx="2"/><path d="M2 6h10"/></svg></span>
         <div class="tx"><b>${esc(a.name)}</b><small>${esc(a.demo ? '未连接币安' : a.uid)}</small></div><span class="stt ${a.demo ? 'demo2' : a.live ? '' : a.st === 'failed' || a.st === 'halted' ? 'bad' : 'off'}">${stTx(a)}</span>
@@ -5199,7 +5266,7 @@ function renderMe() {
       <p class="me-note">${LIVE_ERR ? '数据来源：本机只读服务这次没有读到币安数据，页面不显示示例数字；密钥只保存在本机服务端，不进网页。' : LIVE ? `数据来源：本机只读服务用币安 API 签名读取（只有读取权限，不能交易或提现）；密钥只保存在本机服务端，不进网页。账户、持仓、利息、空投和逐笔成交是币安真实数据，读取于 ${fmtD(new Date(LIVE.fetchedAt), { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })}。` : !ACCTS.length ? '还没有添加币安账户，金额都是 0。' : '未连接币安：绑定只做格式检查，显示的收益和持仓是示例数据。'}</p></section>
   </div><div class="me-col">
     <section class="set"><h2>订阅与充值</h2>
-      <div class="me-row"><div><b>订阅 · 每月按总资产 1%</b><small>本月剩余额度 ${meLeft()}%${anyDemo() ? '（示例）' : ''}</small></div><a class="btn ghost sm" href="#/wallet">费用 →</a></div>
+      <div class="me-row"><div><b>订阅 · 每月按总资产 1%</b><small>本月剩余额度 ${meLeft()}%${anyDemo() ? '（示例）' : ''}</small></div><a class="btn ghost sm" href="#/wallet">钱包 →</a></div>
       <div class="me-row"><div><b>充值记录</b><small>仅 Crypto 充值</small></div><button class="btn ghost sm" type="button" data-merec>查看 →</button></div></section>
     <section class="set"><h2>安全</h2>
       <div class="me-row"><div><b>本机数据</b><small>会话、偏好和 Dodo 历史只保存在这个浏览器</small></div><button class="btn ghost sm" type="button" id="wipeBtn" data-wipe>清除</button></div>
@@ -5215,7 +5282,7 @@ document.addEventListener('click', e => {
   const w = e.target.closest('[data-wipe]'); if (!w) return;
   NOSAVE = true;
   try { [DENS_KEY, VIEW_KEY, CONV_KEY, CCUR_KEY, WAL_KEY, '3dtrading.dash.wallet', PREF_KEY, '3dt.theme.dash', BIND_DRAFT].forEach(k => localStorage.removeItem(k)); [SS_KEY, BIND_DRAFT].forEach(k => sessionStorage.removeItem(k)); sessionStorage.setItem(WIPED_KEY, '1'); } catch (e) {}
-  location.replace(location.pathname + location.search + '#/' + ($('#stg') ? 'settings' : 'me')); location.reload();
+  location.replace(location.pathname + location.search + '#/settings'); location.reload();
 });
 
 /* ===================== r56: 设置页 + 绑定币安弹窗 ===================== */
@@ -5226,8 +5293,8 @@ const BIND_DRAFT = '3dt.bindDraft';
    - TOTP 秘密只在开启过程中留在内存；开启后用登录密码派生的密钥（PBKDF2 → AES-GCM）加密存放，不以明文保存。
    - 恢复码只显示一次，本机只存 SHA-256 摘要。
    - 这里的二维码只给验证器 App 扫描（otpauth://），和绑定教程里的「手机版页面」二维码完全分开。 */
-const SET = { tab: 'look', tfa: null, rec: null, off: false, err: '' };
-const SET_TABS = [['look', '个性化'], ['unit', '单位'], ['priv', '隐私'], ['sec', '安全'], ['lang', '语言'], ['dodo', 'Dodo'], ['more', '通知与记录']]; // r59: Dodo 页（只放语言和绑定）
+const SET = { tab: 'acct', tfa: null, rec: null, off: false, err: '' };
+const SET_TABS = [['acct', '账号'], ['pref', '偏好'], ['priv', '隐私与通知'], ['dodo', 'Dodo']]; // r61: 7 页并为 4 页；个人资料 = 账号页
 const tfaEmail = () => String(SESS().email || '').trim().toLowerCase();
 function openSettings(tab) {
   if (tab && SET_TABS.some(t => t[0] === tab)) SET.tab = tab;
@@ -5243,30 +5310,23 @@ function setPanel(t) {
   const seg = (attr, cur, opts, label) => `<div class="seg r56seg" role="group" aria-label="${label}">${opts.map(([v, x]) => `<button type="button" ${attr}="${v}" aria-pressed="${String(String(cur) === String(v))}">${x}</button>`).join('')}</div>`;
   const sw = (id, on, label) => `<button type="button" class="sw" role="switch" id="${id}" aria-checked="${String(!!on)}" aria-label="${label}"><i aria-hidden="true"></i></button>`;
   const row = (b, s, r) => `<div class="stg-r"><div><b>${b}</b>${s ? `<small>${s}</small>` : ''}</div>${r || ''}</div>`;
-  if (t === 'look') return `<h3>个性化</h3>
+  if (t === 'acct') return `<h3>账号</h3>
+    <div class="stg-prof"><span class="av" aria-hidden="true">${esc(meIni())}</span><div><b>${esc(meName())}</b><small>${esc(SESS().email || '')}</small></div></div>
+    ${tfaPanel()}`;
+  if (t === 'pref') return `<h3>偏好</h3>
     ${row('外观', '只作用于后台；官网和登录页不变', seg('data-thm', tp, [['day', '昼'], ['night', '夜'], ['system', '跟随系统']], '外观'))}
-    ${row('页面密度', '总览和交易记录的信息密度', `<div class="dens" role="group" aria-label="页面密度">${DENS_BTNS}</div>`)}`;
-  if (t === 'unit') return `<h3>单位</h3>
-    ${row('计价单位', '所有金额按 USDT 计价', '<span class="stt">USDT</span>')}
+    ${row('语言', '后台和 Dodo 使用同一种语言', `<div class="seg r56seg" role="group" aria-label="语言"><button type="button" data-lang="zh" aria-pressed="${String(lang === 'zh')}">中文</button><button type="button" data-lang="en" aria-pressed="${String(lang === 'en')}">English</button></div>`)}
     ${row('金额小数位', `例：${esc(nf2.format(12345.678))} USDT`, seg('data-unit-dec', PREF.dec ? 2 : 0, [[2, '2 位'], [0, '取整']], '金额小数位'))}
-    ${row('千分位分隔', '1,234,567 或 1234567', sw('setGroup', PREF.group, '千分位分隔'))}`;
-  if (t === 'priv') return `<h3>隐私</h3>
+    ${row('千分位分隔', '1,234,567 或 1234567', sw('setGroup', PREF.group, '千分位分隔'))}
+    ${row('页面密度', '总览和交易记录的信息密度', `<div class="dens" role="group" aria-label="页面密度">${DENS_BTNS}</div>`)}`;
+  if (t === 'priv') return `<h3>隐私与通知</h3>
     ${row('隐藏金额', '在别人面前打开后台时，金额和收益会模糊显示', sw('setHide', PREF.hide, '隐藏金额'))}
-    ${row('API 密钥', '网页不保存、不发送币安 API 密钥')}
+    ${row('通知', '强平风险、日报和到期提醒', '<a class="btn ghost sm" href="#/notify" data-stgo>打开 →</a>')}
     ${row('清除本机数据', '会话、偏好和 Dodo 历史只保存在这个浏览器', '<button class="btn ghost sm" type="button" data-wipe>清除</button>')}`;
-  if (t === 'sec') return `<h3>安全</h3>${tfaPanel()}`;
-  if (t === 'lang') return `<h3>语言</h3>
-    ${row('界面语言', '中文 / English', `<div class="seg r56seg" role="group" aria-label="语言"><button type="button" data-lang="zh" aria-pressed="${String(lang === 'zh')}">中文</button><button type="button" data-lang="en" aria-pressed="${String(lang === 'en')}">English</button></div>`)}`;
-  /* r59 (Jasper)：设置里的 Dodo 页只有「语言」和「绑定」。引用、回车发送等不放这里。Dodo 页里探头的 Dodo 直接打开这一页。 */
-  if (t === 'dodo') return `<h3>Dodo</h3>
-    ${row('语言', 'Dodo 和后台界面使用同一种语言', `<div class="seg r56seg" role="group" aria-label="Dodo 语言"><button type="button" data-lang="zh" aria-pressed="${String(lang === 'zh')}">中文</button><button type="button" data-lang="en" aria-pressed="${String(lang === 'en')}">English</button></div>`)}
-    <div class="stg-r stg-bot"><div><b>绑定</b><small>把 Dodo 绑定到你自己的 Bot API；只认本站后台的真实回应</small></div></div>
+  /* r61：设置里的 Dodo 页只留「绑定 Bot API」；语言跟随全局（偏好页）。探头的 Dodo 直接打开这一页。 */
+  return `<h3>Dodo</h3>
+    <div class="stg-r stg-bot"><div><b>绑定 Bot API</b><small>把 Dodo 绑定到你自己的 Bot API；只认本站后台的真实回应</small></div></div>
     <div id="dsbBot" class="stg-botb"></div>`;
-  return `<h3>通知与记录</h3>
-    ${row('通知设置', '强平风险、日报和到期提醒', '<a class="btn ghost sm" href="#/notify" data-stgo>打开 →</a>')}
-    ${row('操作记录', '我们替你做了什么', '<a class="btn ghost sm" href="#/actions" data-stgo>打开 →</a>')}
-    ${row('费用与订阅', '每月按总资产 1% · 充值记录', '<a class="btn ghost sm" href="#/wallet" data-stgo>打开 →</a>')}
-    ${row('币安子账户', LIVE ? '币安只读已连接 · 不会下单' : '未连接币安', '<button class="btn ghost sm" type="button" data-bind-open>绑定币安</button>')}`;
 }
 function tfaPanel() {
   const e = tfaEmail(), A = window.TDAuth, acc = A && A.account(e), on = !!(acc && acc.tfa && acc.tfa.on), err = SET.err ? `<p class="bnm-err" role="alert">${esc(SET.err)}</p>` : '<p class="bnm-err" role="alert"></p>';
@@ -5296,7 +5356,7 @@ function renderSettings() {
   const t = SET.tab;
   box.innerHTML = `<div class="stg-nav" role="tablist" aria-label="设置分类" aria-orientation="vertical">${SET_TABS.map(([k, x]) => `<button type="button" role="tab" id="stab-${k}" data-stab="${k}" aria-selected="${String(k === t)}" aria-controls="stgP" tabindex="${k === t ? 0 : -1}">${x}</button>`).join('')}</div>
     <div class="stg-p" id="stgP" role="tabpanel" aria-labelledby="stab-${t}">${setPanel(t)}</div>`;
-  if (t === 'sec' && SET.tfa) tfaQr();
+  if (t === 'acct' && SET.tfa) tfaQr();
   if (t === 'dodo' && window.__dodo) { __dodo.botRender(); if (__dodo.bot().st === 'idle') __dodo.check(); }
   syncDens();
 }
@@ -5353,7 +5413,7 @@ document.addEventListener('submit', async e => {
       if (r.code !== 'badPw' && $('#tfaOffPw')) $('#tfaOffPw').value = pw;
       return;
     }
-    SET.off = false; SET.err = ''; renderSettings(); $('#stg [data-stab="sec"]')?.focus(); toast('两步验证已关闭');
+    SET.off = false; SET.err = ''; renderSettings(); $('#stg [data-stab="acct"]')?.focus(); toast('两步验证已关闭');
   } finally { if (btn && btn.isConnected) btn.disabled = false; }
 });
 document.addEventListener('click', e => {
@@ -5420,6 +5480,10 @@ function qbRender(focus) {
   const b = $('#mdB'); if (!b) return;
   b.innerHTML = QB.done ? qbDone() : qbForm();
   $('#mdT').textContent = QB.done ? '绑定结果' : '绑定币安账户';
+  /* r61 · 手机底部面板：顶部左「取消」、右「查看完整教程」 */
+  const hd = $('#modal .mdl-hd'); $$('.qbx', hd).forEach(x => x.remove());
+  hd.insertAdjacentHTML('afterbegin', `<button type="button" class="qbx l" data-qbx>${QB.done ? '关闭' : '取消'}</button>`);
+  if (!QB.done) hd.insertAdjacentHTML('beforeend', `<a class="qbx r" id="bnGuide2" href="/3dtrading-site/bind/?from=app&lang=${EN() ? 'en' : 'zh'}#guide">查看完整教程</a>`);
   if (focus) (QB.done ? $('[data-bxnext]') : focus === 'key' ? $('#bnKey') : $('#qbKey'))?.focus({ preventScroll: true });
 }
 function openBind(done, carried) {
@@ -5430,6 +5494,28 @@ function openBind(done, carried) {
   qbRender(); setTimeout(() => (done ? $('[data-bxnext]') : $('#qbKey'))?.focus({ preventScroll: true }), RM ? 0 : 60);
 }
 function qbCopied(btn) { btn.classList.add('done'); clearTimeout(btn._t); btn._t = setTimeout(() => btn.classList.remove('done'), 1600); }
+document.addEventListener('click', e => {
+  const x = e.target.closest('#modal .qbx'); if (!x) return;
+  if (x.id === 'bnGuide2') { bnSave(); return; }
+  e.preventDefault(); bnSave(); closeDlg(); if (!QB.done) toast('已跳过：可随时在左上角或个人菜单里添加币安账户'); QB.done = null;
+});
+/* r61 · 手机 Dodo 输入框：平时收起成一条，点了才从底部导航上方长出来（只在手机的 Dodo 页） */
+(() => { const f = $('#askForm'), ta = $('#askIn'), B = document.body; if (!f || !ta) return;
+  const mob = () => innerWidth <= 760;
+  const busy = () => ta.value.trim() || ($('#attRow') && !$('#attRow').hidden) || ($('#recBar') && !$('#recBar').hidden);
+  ta.addEventListener('focus', () => { if (mob() && CUR === 'ai') B.classList.add('cmp-open'); });
+  f.addEventListener('click', e => { if (!mob() || B.classList.contains('cmp-open') || e.target === ta) return; ta.focus(); });
+  f.addEventListener('focusout', e => { if (f.contains(e.relatedTarget)) return; setTimeout(() => { if (!f.contains(document.activeElement) && !busy()) B.classList.remove('cmp-open'); }, 160); });
+  addEventListener('hashchange', () => { if (CUR !== 'ai') B.classList.remove('cmp-open'); });
+  addEventListener('resize', () => { if (!mob()) B.classList.remove('cmp-open'); });
+})();
+/* r61 · 手机底部面板：从标题栏往下拉超过 90px 就关闭 */
+(() => { let y0 = null, dy = 0; const m = () => $('#modal');
+  document.addEventListener('touchstart', e => { const hd = e.target.closest('#modal.qbm .mdl-hd'); if (!hd || e.target.closest('.qbx') || innerWidth > 760) return; y0 = e.touches[0].clientY; dy = 0; m().classList.add('drag'); }, { passive: true });
+  document.addEventListener('touchmove', e => { if (y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); m().style.transform = `translateY(${dy}px)`; }, { passive: true });
+  const end = () => { if (y0 == null) return; y0 = null; const d = m(); d.classList.remove('drag'); d.style.transform = ''; if (dy > 90) { bnSave(); closeDlg(); } dy = 0; };
+  document.addEventListener('touchend', end); document.addEventListener('touchcancel', end);
+})();
 document.addEventListener('click', e => {
   if (!e.target.closest('#qb')) return;
   const c = e.target.closest('[data-qbcp]');
@@ -5493,10 +5579,10 @@ function emptyState(a) {
     act: ACCTS.map(x => `<button type="button" class="btn ghost" data-setv="${esc(x.id)}">${esc(x.name)} · ${esc(stTx(x))}</button>`).join('') };
   const id = a.id, st = a.loading ? 'loading' : a.st, eb = `${a.name} · ${a.uid} · ${stTx(a)}`;
   if (st === 'observing') return { key: 'observing', head: head(eb, '试运行（只观察）'), p: '系统正在只读观察行情和这个子账户，不下任何单，所以这里没有收益和持仓。观察期结束、你确认方案后才会开始运行。', tr: '试运行期间不会下单，所以还没有交易记录。',
-    act: '<a class="btn ghost" href="#/actions">我们替你做了什么</a>' + ddBtn('试运行（只观察）期间系统在做什么？', '试运行（只观察）') + all,
+    act: ddBtn('试运行（只观察）期间系统在做什么？', '试运行（只观察）') + all,
     demo: `<div class="pend-c"><b>演示</b><span>没有后端，这里可以模拟观察期结束。</span><button type="button" class="btn sm" data-demorun="${esc(id)}">演示：切换为运行中</button></div>` };
   if (st === 'halted') return { key: 'halted', head: head(eb, '已停机'), p: '这个子账户的策略已经停止新增交易。已有仓位不会被自动平掉；停机原因和下一步会通知你。', tr: '停机后不会再有新的交易。',
-    act: '<a class="btn brand" href="#/actions">查看停机前做了什么</a>' + ddBtn('为什么停机了？现在该怎么办？', '已停机') + all };
+    act: ddBtn('为什么停机了？现在该怎么办？', '已停机') + all };
   if (st === 'failed') return { key: 'test-failed', head: head(eb, '测试失败'), p: '接入测试没有通过。按绑定页给出的原因逐项修改后重新测试；结果出来前这里不显示任何收益或持仓。', tr: '接入测试没有通过，所以还没有交易记录。',
     act: B(bindUrl(id), '查看原因并重新测试') + ddBtn('接入测试为什么没有通过？', '测试失败') + all };
   if (st === 'unbound') return { key: 'unbound', head: head(eb, '已解绑'), p: '这个子账户已经解绑，不再显示数据。', tr: '已解绑，没有交易记录。', act: B(bindUrl(), '绑定新的币安子账户') + all };
@@ -5547,7 +5633,7 @@ const planCardHtml = (p, from) => `<article class="plan-card" data-plan="${esc(p
   <p class="ask">你说：「${esc(p.ask)}」</p>
   <dl class="plan-dl">${planRow('做什么', p.what)}${planRow('分几批', `${p.batches} 批`)}${planRow('预计磨损', p.cost)}${planRow('对保证金率的影响', p.marginImpact)}${planRow('和“什么都不做”相比', p.vsNothing)}${planRow('版本号', p.version)}</dl>
   <div class="acts"><button type="button" class="btn brand sm" data-plan-ok>确认</button><button type="button" class="tbtn" data-plan-edit aria-expanded="false">展开修改</button><span class="sp"></span><button type="button" class="tbtn dd-l" data-askq="解释一下这张方案卡：${esc(p.what)}" data-ctxl="方案卡 ${esc(p.version)}">问 Dodo</button></div>
-  <div class="plan-x"></div><p class="pc-note">方案卡由后台生成，页面不计算任何交易参数；确认后也不会真实下单。<a href="#/actions">我们替你做了什么 →</a></p></article>`;
+  <div class="plan-x"></div><p class="pc-note">方案卡由后台生成，页面不计算任何交易参数；确认后也不会真实下单。</p></article>`;
 async function draftPlan(text, from) {
   if (CUR !== 'dashboard') nav('dashboard');
   const out = $('#planOut'); if (!out) return;
@@ -5638,7 +5724,7 @@ const PAGES = ['dashboard', 'trades', 'wallet', 'ai', 'me', 'actions', 'notify',
 (() => { const t = $('#tnav'), ink = $('#tnavInk');
   $$('#fnav a.fn-a[data-nav]').forEach(a => { const c = document.createElement('a'); c.href = a.getAttribute('href'); c.dataset.nav = a.dataset.nav;
     const ic = a.querySelector('svg'); if (ic) c.appendChild(ic.cloneNode(true)); c.appendChild(document.createTextNode(a.textContent.trim())); t.insertBefore(c, ink); }); })();
-const TITLES = { ai: 'Dodo', dashboard: '总览', trades: '交易记录', wallet: '费用 · 订阅', me: '个人资料', actions: '我们替你做了什么', notify: '通知设置', settings: '设置' };
+const TITLES = { ai: 'Dodo', dashboard: '总览', trades: '交易记录', wallet: '钱包', me: '设置', actions: '总览', notify: '通知设置', settings: '设置' };
 let CUR = null, rendered = false; const SCR = {};
 const pageOf = () => { const h = location.hash.replace(/^#\/?/, ''); return PAGES.includes(h) ? h : 'dashboard'; };
 function drawVisible() {
@@ -5673,17 +5759,18 @@ function showPage(p, o = {}) {
   if (!RM && prev) pg.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 240, easing: 'cubic-bezier(.2,.8,.2,1)' });
   if (prev && o.focus !== false) { if (p !== 'ai') $('h1', pg)?.focus({ preventScroll: true }); else if (!focusAsk()) { const h = $('h1,h2', pg) || pg; if (!h.hasAttribute('tabindex')) h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
 }
-function nav(p, o) { if (p === 'settings') { openSettings(); return; } if (location.hash !== '#/' + p) history.pushState(null, '', '#/' + p); showPage(p, o); }
+function nav(p, o) { if (p === 'settings') { openSettings(); return; } if (p === 'me') { openSettings('acct'); return; } if (p === 'actions') p = 'dashboard'; if (location.hash !== '#/' + p) history.pushState(null, '', '#/' + p); showPage(p, o); }
 document.addEventListener('click', e => {
   const a = e.target.closest('a[href^="#/"]'); if (!a || e.metaKey || e.ctrlKey || e.shiftKey || document.body.classList.contains('binding')) return;
   const p = a.getAttribute('href').slice(2); if (!PAGES.includes(p)) return;
   e.preventDefault(); nav(p);
 });
 function route() {
-  const bind = location.hash === '#/bind', sett = location.hash === '#/settings';
+  const bind = location.hash === '#/bind', me = location.hash === '#/me', sett = location.hash === '#/settings' || me;
+  if (location.hash === '#/actions') history.replaceState(null, '', '#/dashboard');
   if (!rendered) { renderAll(); renderCvList(); renderChat(); rendered = true; window.CONVS_READY = true; }
   /* #/bind（菜单、空态、教程回来）是弹窗：盖在当前页上，地址回到当前页 */
-  if (bind || sett) { const back = CUR || 'dashboard'; history.replaceState(null, '', '#/' + back); if (!CUR) showPage(back, { restore: true }); if (bind) openBind(); else openSettings(); return; }
+  if (bind || sett) { const back = CUR || 'dashboard'; history.replaceState(null, '', '#/' + back); if (!CUR) showPage(back, { restore: true }); if (bind) openBind(); else openSettings(me ? 'acct' : undefined); return; }
   showPage(pageOf(), { restore: true });
 }
 document.addEventListener('click', e => {
@@ -5703,9 +5790,8 @@ function mountAccount() {
   const IC = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
   TDAccount.mountMenu($('#avBtn'), { context: 'app', layout: 'r56', profile: '#/me', settings: '#/settings', logoutTo: OUT_URL, theme: () => document.documentElement.dataset.theme === 'day' ? 'light' : 'dark', items: [
     { label: { zh: '我的', en: 'Me' }, sub: { zh: '账号、币安账户、偏好和连接状态', en: 'Account, Binance accounts, preferences and connections' }, href: '#/me', icon: IC('<circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.2 7.5-5.2s6.3 1.6 7.5 5.2"/>') },
-    { label: { zh: '我们替你做了什么', en: 'What we did for you' }, sub: { zh: '每次操作的时间、动作、结果和方案版本', en: 'Time, action, result and plan version of every action' }, href: '#/actions', icon: IC('<path d="M5 6h14M5 12h14M5 18h9"/>') },
     { label: { zh: '通知设置', en: 'Notifications' }, sub: { zh: 'Telegram · Discord · 邮箱（演示）', en: 'Telegram · Discord · Email (demo)' }, href: '#/notify', icon: IC('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5h4"/>') },
-    { label: { zh: '费用 · 订阅', en: 'Fees · Subscription' }, sub: { zh: '每月按总资产 1% · Crypto 充值', en: '1% of total assets per month · Crypto top-up' }, href: '#/wallet', icon: IC('<rect x="3.5" y="6" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M16 14.5h1.5"/>') }
+    { label: { zh: '钱包', en: 'Wallet' }, sub: { zh: '每月按总资产 1% · Crypto 充值', en: '1% of total assets per month · Crypto top-up' }, href: '#/wallet', icon: IC('<rect x="3.5" y="6" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M16 14.5h1.5"/>') }
   ] });
   /* caret + ring follow the shared menu's open state */
   new MutationObserver(() => $('#meM').classList.toggle('open', $('#avBtn').getAttribute('aria-expanded') === 'true')).observe($('#avBtn'), { attributes: true, attributeFilter: ['aria-expanded'] });

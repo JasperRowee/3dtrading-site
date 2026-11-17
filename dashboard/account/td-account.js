@@ -127,7 +127,7 @@
   ROUTES.dashboard = ROUTES.app;
   /* The website's tag sets data-site but no data-app. Remember where that page really lives on this origin, so
      "back to website" from the dashboard or account pages returns there even when a preview serves the site
-     folder at the root (where /site/index.html does not exist). Same-origin paths only. */
+     folder at the root (where /3dtrading-site/site/index.html does not exist). Same-origin paths only. */
   try {
     var SITE_K = '3dt.siteUrl';
     if (ds.site && !ds.app) {

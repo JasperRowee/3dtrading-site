@@ -110,6 +110,19 @@ h2 .l{color:var(--up)}h2 .s{color:var(--dn)}h2 .y{color:var(--bn)}
 .door img{height:clamp(30px,4vw,48px);opacity:0;transform:scale(.9);transition:opacity .3s .3s,transform .5s .25s cubic-bezier(.2,.75,.2,1)}
 .door.on{opacity:1;pointer-events:auto;clip-path:circle(150% at var(--dx,50%) var(--dy,50%))}.door.on img{opacity:1;transform:none}
 .door.rm{clip-path:none;transition:opacity .2s}
+/* r61 · 去登录 / 注册 (not signed in): the website is the inside of our planet. The camera pulls back out through its shell and stops
+   on the log-in page's own composition (planet + deep space, drawn by /3dtrading-site/login/planet.js in art mode), or, at the door, the door opens
+   onto that planet and space. Back from the log-in page the camera flies into the planet and the shell opens onto the scene again */
+.pfx{position:fixed;inset:0;z-index:21;display:none;pointer-events:none;background:transparent}
+.pfx canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#pfxS{background:#05070a}   /* the log-in page's sky colour (its body background); the canvas carries only stars and haze */
+.pfx::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(95% 85% at 50% 42%,transparent 62%,rgba(0,0,0,.28));opacity:var(--vg,1)}
+.pfx.on{display:block;pointer-events:auto}
+.pfx.dr{clip-path:circle(0% at var(--dx,50%) var(--dy,50%));transition:clip-path .9s cubic-bezier(.6,0,.25,1)}
+.pfx.dr.open{clip-path:circle(150% at var(--dx,50%) var(--dy,50%))}
+html.via-planet .pfx{display:block}
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
 .copy .mo{display:none}@media (max-width:760px){.copy .pc{display:none}.copy .mo{display:inline}}
 /* day: the same page, light. The scene recolours itself in the canvas; here the copy, header and controls follow */
 html[data-theme=day]{--bg:#2fdcbc;--ink:#14201f;--ink2:#3d4d4a;--ink3:#4a5a57}
@@ -283,6 +296,15 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 <div class="hfade" id="hfade" aria-hidden="true"></div>
 
 <div class="door" id="door" aria-hidden="true"><img src="assets/3dtrading-logo-white.svg" alt=""></div>
+<script>/* r61 · the cross-page fade (@view-transition) is only for the website <-> log-in pair; leaving for any other page (dashboard,
+   bind, tutorial) it is skipped here, before the switch: those pages don't opt in, and Chrome would abort it there with an error */
+addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) return; var u = '';
+  try { u = new URL(e.activation && e.activation.entry && e.activation.entry.url || '', location.href).pathname; } catch (x) {}
+  if (!/^\/(site|login)\//.test(u)) { v.ready.catch(function () {}); v.finished.catch(function () {}); v.skipTransition(); } });</script>
+<div class="pfx" id="pfx" aria-hidden="true"><canvas id="pfxS"></canvas><canvas id="pfxP"></canvas></div>
+<script>/* r61 · back from the log-in page (?via=planet): the shell covers the screen from the first paint */
+try { if (/[?&]via=planet\b/.test(location.search) && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('via-planet'); } catch (e) {}</script>
+<script src="/3dtrading-site/login/planet.js?v=r61" data-art="1" data-gx="pfxS" data-orb="pfxP"></script>
 
 <script src="i18n/r48.js?v=r55"></script>
 <script>
@@ -471,54 +493,53 @@ function pose(c, a) {
 /* a sideways swing on the way between two stops, so moves arc instead of sliding in a line */
 const BUL = [null, [0, 0, 0], [.6, .4, 0], [0, -.8, 0], [.4, .4, 0], [-4, 6, 6], [10, -10, 8], [0, 0, 0], [0, 0, 0], [-2, 3, 0], [0, 7, 0]];
 
-/* ---------- motion: one spring along the steps. One gesture = one step; a gesture the other way turns it round at once ---------- */
-// camera pace per move (01→02 … 10→11): the camera spring runs this much faster than the scene's own actions; path and easing stay the same.
-// Measured settle times (old → new): 2.28→1.93, 2.85→2.35, 2.23→1.86, 2.03→1.72, 3.33→2.53, 2.78→2.28, 2.93→2.40 ×3, 2.93→2.47 s
-const LAND = .085;   // landing deceleration for the scene clock (K), in units of its spring rate² (see frame)
-/* r41 · the camera (CK) no longer runs on a spring with a separate slow "adaptive" mode for back moves and mid-flight retargets
-   (that mode capped it at ~0.5 step/s and is what made going back, or swiping again while moving, feel heavy and stall).
-   One law for every case: it chases the speed of a stopping curve (√(2·dec·distance), softened in the last few %), capped at a
-   cruise speed, and the speed itself follows within ~60 ms. Forward, back, a second swipe mid-move, a turn-round: all the same,
-   speed is never thrown away. CPACE: per move (01→02 … 10→11), longer arcs a little slower so every move reads at the same visual pace.
-   CRUN: with a further step already queued, cruise a little faster through the stop in between instead of braking into it. */
-const CPACE = [1.0, .86, 1.04, 1.08, .78, .88, .84, .84, .84, .8], CV = 1.25, CDEC = 1.9, CACC = 10.5, CGAIN = 16, CSOFT = .06, CRUN = 1.45, CKICK = .4;
-/* r48 · 11 builds on its own clock (B11). Since the camera got faster it lands on 11 ~1.4 s after the swipe, but the stairs, the door
-   and the logo were tied to the slower scene clock K, so they only got going as the camera arrived and the door finished ~2 s after it.
-   B11 replays K's own 10→11 move (same spring, same landing) and A[10]'s ramp (DUR[10]) for these pieces only, so every piece keeps
-   its old duration, speed, easing and step-by-step order; it is just started B11LEAD s further along that move, at the instant the
-   camera leaves 10 (at that point nothing of 11 shows yet, so the first frame is not a jump). Going back it winds down with K
-   (proportionally, never faster than K comes back); turning round mid-way resumes from where it is; back at 10 it resets and replays. */
-const B11 = { on: false, t: 9, v: 0, a: 0, land: 0, back: null }, B11LEAD = .37;
-function b11Spring(m, dt) { const wn = 1.5, acc = wn * wn * (10 - m.t) - 2 * .9 * wn * m.v; m.v += acc * dt; const brk = acc * m.v < 0; m.t += m.v * dt;
-  const d = 10 - m.t, ad = Math.abs(d);
-  if (ad < 1e-3 && Math.abs(m.v) < .05) { m.t = 10; m.v = 0; }
-  else if (d * m.v > 0 && ad < .5) { const vf = Math.sqrt(2 * LAND * wn * wn * ad); if (m.v < vf && (m.land || brk)) { m.land = 1; m.v = vf; } if (m.v * dt >= ad) { m.t = 10; m.v = 0; } }
-  if (d * m.v <= 0 || ad >= .5) m.land = 0; }
+/* ---------- motion (r61): only the destination counts ----------
+   The camera, the 11 build and every step's action follow one law. Each frame the speed toward the destination is the slower of
+     vAcc = v + a·dt        (keep speeding up from the speed it has now; v is signed: moving away from the destination counts negative)
+     vDec = distance / f    (a glide that slows as it closes in and never quite stops: no cut-off, no jump at the end)
+   From rest (speed 0) it speeds up at a; once vAcc would pass vDec it rides the vDec curve. A new destination mid-move keeps the speed
+   it has and runs the same comparison again: further away → it speeds up again; turned round → the old speed counts negative and a
+   brakes it to zero, then it turns. No queue, no limit on how far ahead the destination may run.
+   The camera runs on its real path length (where it stands + a share of where it looks), so a long move takes longer than a short one.
+   r60 measured (1440×900, swipe → 95 % / 99.5 % of the move): 01→02 .96/1.10 s, 02→03 1.07/1.24, 03→04 .89/1.04, 04→05 .86/.97,
+   05→06 1.21/1.39, 06→07 1.01/1.16, 07→08 1.10/1.24, 08→09 1.10/1.25, 09→10 1.10/1.25, 10→11 1.14/1.31; mean 1.04/1.19 s. */
+const MV = { CA: 7, CF: .16, LW: .25, FLOOR: .04, AA: 4, AF: .18, BA: 2.5, BF: .22 };
+// CA: camera acceleration in (median move)/s² · CF: camera factor (s) · LW: share of the look point in the path length ·
+// AA, AF: an action's acceleration and factor for a 1-s action (an action of DUR s uses AA/DUR² and AF·DUR, same shape, its own length) · BA, BF: the 11 build
+function chase(m, tgt, a, f, dt, eps = 1e-4) { const d = tgt - m.x, ad = Math.abs(d); if (!ad && !m.v) return;
+  const dir = Math.sign(d) || Math.sign(m.v) || 1, vr = m.v * dir, vAcc = vr + a * dt, vDec = ad / f;
+  if (vAcc >= vDec) { const nd = ad * Math.exp(-dt / f); m.x = tgt - dir * nd; m.v = dir * nd / f; }   // gliding in: exact, so a long frame never overshoots
+  else { let nx = m.x + dir * (vr + vAcc) / 2 * dt; if ((tgt - nx) * dir < 0) nx = tgt; m.x = nx; m.v = dir * vAcc; }
+  if (Math.abs(tgt - m.x) < eps && Math.abs(m.v) < 2 * eps / f) { m.x = tgt; m.v = 0; } }   // below a ten-thousandth of the way: nothing on screen moves any more
+/* the camera's path, measured: per move the camera position (and LW of its look point) sampled along the same curve frame() draws */
+let ARC = null;
+function camPL(cams, i, u) { const ca = cams[i], cb = cams[i + 1], lu = i ? sm(u) : eio(sg(u, .1, 1)), pu = i ? sm(u) : eio(sg(u, 0, .9)), bw = Math.sin(PI * pu), bv = BUL[i + 1] || [0, 0, 0], [cap, cal] = pose(ca, 1), [cbp, cbl] = pose(cb, 0);
+  return [cap.map((v, k) => L(v, cbp[k], pu) + bv[k] * bw * (ML ? 1.3 : 1)), cal.map((v, k) => L(v, cbl[k], lu))]; }
+function arc() { const key = W + 'x' + H + (mob ? 'm' : '') + (ML ? 'l' : '') + (LSQ() ? 'q' : ''); if (ARC && ARC.key === key) return ARC;
+  const cams = CAM(), N = 48, segs = [], raw = [], dd = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+  for (let i = 0; i < NS - 1; i++) { const c = [0]; let [pp, pl] = camPL(cams, i, 0);
+    for (let k = 1; k <= N; k++) { const [q, l] = camPL(cams, i, k / N); c.push(c[k - 1] + dd(q, pp) + MV.LW * dd(l, pl)); pp = q; pl = l; }
+    segs.push(c); raw.push(c[N]); }
+  const med = raw.slice().sort((a, b) => a - b)[raw.length >> 1] || 1, S = [0];
+  // + a small even share (MV.FLOOR of a typical move) everywhere: where a shot eases in or out the camera hardly moves, and without it the
+  // last ten-thousandth of the way would still be a visible bit of scene time, cut off at the end (r61 self-test: a 0.03 jump back at 01)
+  segs.forEach((c, i) => { const add = Math.max(0, med * .5 - c[N]) + med * MV.FLOOR; for (let k = 0; k <= N; k++) c[k] += add * k / N; S.push(S[i] + c[N]); });   // a move where the camera hardly moves (phones, 02→05) still takes half a typical move, so its scene has time
+  return ARC = { key, N, segs, S, med, raw }; }
+function sOf(t) { const R = arc(), tc = clamp(t, 0, NS - 1), i = Math.min(NS - 2, Math.floor(tc)), x = (tc - i) * R.N, k = Math.min(R.N - 1, Math.floor(x)), c = R.segs[i]; return R.S[i] + c[k] + (c[k + 1] - c[k]) * (x - k); }
+function tOf(s) { const R = arc(); let i = 0; while (i < NS - 2 && s > R.S[i + 1]) i++; const c = R.segs[i], r = clamp(s - R.S[i], 0, c[R.N]); let lo = 0, hi = R.N;
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (c[m] <= r) lo = m; else hi = m; } const sp = c[hi] - c[lo]; return i + (lo + (sp > 0 ? (r - c[lo]) / sp : 0)) / R.N; }
+function camStep(m, dt) { const R = arc(), cs = { x: sOf(m.t), v: m.vs || 0 }, t0 = m.t;
+  chase(cs, R.S[clamp(m.tgt, 0, NS - 1)], MV.CA * R.med, MV.CF, dt, R.med * 1e-4); m.vs = cs.v; m.t = cs.x === R.S[m.tgt] ? m.tgt : tOf(cs.x); m.v = dt > 0 ? (m.t - t0) / dt : 0; }
+/* 11 builds on its own clock (B11.t 9→10: the stairs rise, the door, the logo). It sets off the moment the destination becomes 11, i.e. as the
+   camera leaves 10, with the same law; going back it winds down the same way. B11.a is 11's action (A[10]) */
+const B11 = { on: false, t: 9, v: 0, a: 0 };
 function b11Step(dt) {
-  if (RM || HOLDU != null) { Object.assign(B11, { on: K.t > 9.2, t: Math.min(K.t, 10), v: 0, a: A[NS - 1], land: 0, back: null }); return; }   // reduced motion / test hook: exactly the scene clock, as before
-  if (!B11.on && K.t > 9.2) Object.assign(B11, { on: true, t: Math.min(K.t, 10), v: Math.max(0, K.v), a: A[NS - 1], land: 0, back: null });   // opened already on 11 (?at=end): as before
-  if (K.tgt >= NS - 1) {
-    if (!B11.on) { if (CK.t <= NS - 2) return;
-      Object.assign(B11, { on: true, t: 9, v: .45, a: 0, land: 0, back: null }); for (let i = 0; i < Math.round(B11LEAD * 60); i++) b11Spring(B11, 1 / 60); }
-    if (B11.back) { B11.back = null; B11.v = .45; }   // turned round on the way back: picks up from where it is, with K's own restart kick
-    b11Spring(B11, dt);
-    if (K.t > B11.t) { B11.t = Math.min(K.t, 10); B11.v = Math.max(B11.v, K.v); }   // never behind what K alone would have shown (fast chained moves)
-    if (B11.t > NS - 1 - .03) B11.a = Math.min(1, B11.a + dt / DUR[NS - 1]);
-    B11.a = Math.max(B11.a, A[NS - 1]);
-  } else if (B11.on) {
-    if (!B11.back) B11.back = K.t > 9.001 ? { t: B11.t, k: 1, z: K.t } : { t: B11.t, k: 0, z: Math.max(CK.t, 9.001) };
-    const b = B11.back, z = b.k ? K.t : CK.t; B11.v = 0; B11.land = 0;
-    B11.t = Math.min(B11.t, 9 + (b.t - 9) * clamp((z - 9) / (b.z - 9)));
-    if (z <= 9) { B11.on = false; B11.t = 9; B11.a = 0; B11.back = null; } }
-}
-const KLAG = .5;   // the scene clock may trail the camera by at most this much (only reached when moves are chained fast); single moves keep their own pace
-function camStep(m, dt) { const d = m.tgt - m.t, ad = Math.abs(d), sd = Math.sign(d);
-  const k = CPACE[clamp(Math.floor(clamp(d >= 0 ? m.t : m.t - 1e-6, 0, NS - 1.01)), 0, CPACE.length - 1)];
-  const vstop = Math.sqrt(2 * CDEC * k * k * ad + (CSOFT * k) ** 2) - CSOFT * k, vd = sd * Math.min(CV * k * (ad > 1.02 ? CRUN : 1), vstop);
-  m.v += clamp((vd - m.v) * CGAIN, -CACC * k, CACC * k) * dt; m.t += m.v * dt;
-  if (sd && (m.tgt - m.t) * sd < 0) { m.t = m.tgt; m.v = 0; }
-  if (Math.abs(m.tgt - m.t) < 2e-3 && Math.abs(m.v) < .04) { m.t = m.tgt; m.v = 0; } }
-const CK = { t: 0, v: 0, tgt: 0, speed: 1 }, K = { t: 0, v: 0, tgt: 0 }, A = new Array(NS).fill(0); A[0] = 1;
+  if (RM || HOLDU != null) { Object.assign(B11, { on: K.t > 9.2, t: Math.min(K.t, 10), v: 0, a: A[NS - 1] }); return; }   // reduced motion / test hook: exactly the scene clock, as before
+  if (!B11.on && B11.t === 9 && K.t > 9.2) { B11.t = Math.min(K.t, 10); }   // opened already on 11 (?at=end)
+  const m = { x: B11.t, v: B11.v }; chase(m, K.tgt >= NS - 1 ? 10 : 9, MV.BA, MV.BF, dt); B11.t = m.x; B11.v = m.v;
+  B11.on = B11.t > 9.0005; B11.a = A[NS - 1]; }
+
+const CK = { t: 0, v: 0, vs: 0, tgt: 0, speed: 1 }, K = { t: 0, v: 0, tgt: 0 }, A = new Array(NS).fill(0), AV = new Array(NS).fill(0); A[0] = 1;   // K: the scene clock, now the camera's own (r61)
 const DUR = [0, 1.1, .2, 2.6, 1.4, .3, 7, 5.4, 8.5, 6, 4.2];
 // Trading actions and construction start with travel; 02 retains its introduction beat.
 const PRE = [0, .3, 0, 1.1, 1.1, 0, 0, 1.1, 1.1, 0, 0], REACT = .3, WT = new Array(NS).fill(0);
@@ -528,43 +549,99 @@ const user = () => { try { return window.TDAccount && TDAccount.getSession(); } 
 /* going in (sign in, sign up, the dashboard): one short move, the same every time. The scene rushes forward, the screen closes to black
    round our logo from where you clicked, then the next page opens out of that black. A second click while it plays does nothing */
 let diveT = 0; const doorEl = document.getElementById('door');
-function enter(kind, ev) { if (leaving) return; leaving = true; const r = routes(), url = user() ? (kind === 'ai' ? r.ai : r.dashboard) : kind === 'ai' ? r.signup : (r[kind] || r.signup);
+function enter(kind, ev) { if (leaving) return; if (!user() && kind !== 'dashboard' && PFX.door(kind, ev)) return; leaving = true; const r = routes(), url = user() ? (kind === 'ai' ? r.ai : r.dashboard) : kind === 'ai' ? r.signup : (r[kind] || r.signup);
   try { sessionStorage.setItem('r49site.door', String(Date.now())); } catch (e) {}
   const x = ev && ev.clientX ? ev.clientX : W / 2, y = ev && ev.clientY ? ev.clientY : H / 2;
   doorEl.style.setProperty('--dx', (x / W * 100).toFixed(1) + '%'); doorEl.style.setProperty('--dy', (y / H * 100).toFixed(1) + '%');
   window.__enter = { kind, url, at: performance.now() };
   if (RM) { doorEl.classList.add('rm', 'on'); setTimeout(() => location.href = url, 220); return; }
   diveT = performance.now(); doorEl.classList.add('on'); setTimeout(() => location.href = url, 760); }
-addEventListener('pageshow', e => { if (!e.persisted) return; leaving = false; diveT = 0; doorEl.classList.remove('on', 'rm'); });   // back from the next page: the scene again
-// Normal forward steps retain their original spring and launch impulse.
-// Backward navigation and any mid-flight retarget keep velocity continuous.
-function targetStep(tg) {
-  if (tg === K.tgt) return;
-  const adaptive = tg < K.tgt || Math.abs(K.tgt - K.t) > .025 || Math.abs(K.v) > .04;
-  // the camera judges its own state: it may already be at rest while the scene still plays out
-  // the camera: from rest it starts with a small kick so the first frame already moves; moving, it just gets a new target (speed kept)
-  const dir = Math.sign(tg - CK.t); CK.tgt = tg; if (dir && CK.v * dir < .05) CK.v = dir * CKICK * CPACE[clamp(Math.floor(dir > 0 ? CK.t : CK.t - 1e-6), 0, CPACE.length - 1)];
-  K.adaptive = adaptive;
-  const direction = Math.sign(tg - K.tgt); K.tgt = tg;
-  if (!adaptive) { if (Math.sign(K.v) === -direction) K.v *= .2; K.v += direction * .45; }
-}
+addEventListener('pageshow', e => { if (!e.persisted) return; leaving = false; diveT = 0; doorEl.classList.remove('on', 'rm'); PFX.reset(); });   // back from the next page: the scene again
+/* ---------- r61 · the planet transitions (not signed in) ----------
+   exit(url): 登录/注册 from any step. The camera pulls back: the scene shrinks into a disc (the inside seen through the shell),
+     the disc moves to where the log-in page has its planet, the shell (dots, gold pillars, teal rim) closes over it and deep
+     space opens round it. The last frame is the log-in page's first frame, so the page change shows no seam.
+   door(kind, ev): the door at 11 (click, or scrolling past the end). The scene still rushes at the door, and the door opens
+     onto that planet in deep space, settling into the same composition.
+   back: arriving with ?via=planet (from the log-in page's 返回官网): the planet's shell fills the screen and opens onto the scene.
+   The step you left from is kept in sessionStorage (r61.site.at) so the way back lands on it. Reduced motion: plain links. */
+const PFX = (() => {
+  const box = document.getElementById('pfx'), art = () => window.__planetArt;
+  const ease = t => (t = clamp(t), t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2), out3 = t => 1 - Math.pow(1 - clamp(t), 3);
+  const stepNow = () => { const b = [...document.querySelectorAll('#rail button')], i = b.findIndex(x => x.classList.contains('on')); return i < 0 ? 1 : i + 1; };
+  const remember = () => { try { sessionStorage.setItem('r61.site.at', String(stepNow())); } catch (e) {} };
+  const loginURL = (url, via) => url + (url.indexOf('?') < 0 ? '?' : '&') + 'via=' + via;
+  let raf = 0, busy = false;
+  // the scene inside the shell: a disc of radius r round (X, Y), the website drawn at scale s about that centre, dimming with depth
+  const inner = (s, dim) => (c, X, Y, r) => { c.save(); c.beginPath(); c.arc(X, Y, r, 0, 7); c.clip();
+    c.fillStyle = '#06090b'; c.fillRect(X - r, Y - r, r * 2, r * 2);
+    try { c.drawImage(cv, X - W / 2 * s, Y - H / 2 * s, W * s, H * s); } catch (e) {}
+    if (dim > 0) { c.fillStyle = `rgba(2,5,9,${dim.toFixed(3)})`; c.fillRect(X - r, Y - r, r * 2, r * 2); } c.restore(); };
+  const cover = () => Math.hypot(W, H) / 2 * 1.04;
+  function run(ms, f, done) { const t0 = performance.now(); cancelAnimationFrame(raf);
+    const tick = now => { const p = clamp((now - t0) / ms); f(p); if (p < 1) raf = requestAnimationFrame(tick); else if (done) done(); }; raf = requestAnimationFrame(tick); }
+  function exit(url) {
+    if (busy || leaving || !art()) return false; busy = true; leaving = true; remember();
+    const A = art(), F = A.place(), r0 = cover(), go = loginURL(url, 'exit');
+    box.className = 'pfx on'; window.__enter = { kind: 'exit', url: go, at: performance.now() };
+    if (RM) { A.frame({}); setTimeout(() => location.href = go, 120); return true; }
+    run(1500, q => { const p = ease(q), lr = Math.exp(Math.log(r0) + (Math.log(F.R) - Math.log(r0)) * p);
+      const X = L(W / 2, F.cx, p), Y = L(H / 2, F.cy, p);
+      A.frame({ cx: X, cy: Y, R: lr, sky: sg(q, .05, .5), shell: sm(sg(q, .3, .82)), inner: inner(lr / r0, .45 * sg(q, 0, .7)) }); },
+    () => { A.frame({}); location.href = go; });
+    return true;
+  }
+  function door(kind, ev) {
+    if (busy || leaving || !art()) return false; const r = routes(), url = kind === 'login' ? r.login : r.signup, go = loginURL(url, 'door');
+    busy = true; leaving = true; remember();
+    const A = art(), F = A.place(), q = DOORQ, x = q ? q.reduce((a, b) => a + b.x, 0) / q.length : ev && ev.clientX ? ev.clientX : W / 2,
+      y = q ? q.reduce((a, b) => a + b.y, 0) / q.length : ev && ev.clientY ? ev.clientY : H / 2;
+    window.__enter = { kind: 'door', url: go, at: performance.now() };
+    if (RM) { A.frame({}); box.className = 'pfx on'; setTimeout(() => location.href = go, 120); return true; }
+    box.style.setProperty('--dx', (x / W * 100).toFixed(1) + '%'); box.style.setProperty('--dy', (y / H * 100).toFixed(1) + '%');
+    diveT = performance.now();   // the scene still rushes at the door underneath
+    const z0 = 1.7; A.frame({ cx: x + (F.cx - x) * z0, cy: y + (F.cy - y) * z0, R: F.R * z0 });
+    box.className = 'pfx on dr'; requestAnimationFrame(() => requestAnimationFrame(() => box.classList.add('open')));
+    run(1250, t => { const z = L(z0, 1, out3(t)); A.frame({ cx: x + (F.cx - x) * z, cy: y + (F.cy - y) * z, R: F.R * z }); }, () => { A.frame({}); location.href = go; });
+    return true;
+  }
+  function back() {
+    if (!de.classList.contains('via-planet') || !art()) return;
+    try { const u = new URL(location.href); u.searchParams.delete('via'); u.searchParams.delete('at'); history.replaceState(null, '', u.pathname + (u.search === '?' ? '' : u.search) + u.hash); } catch (e) {}
+    const A = art(), r0 = cover(); box.className = 'pfx on';
+    // the log-in page left the planet's shell filling the screen; it opens and the scene inside comes up to full size
+    A.frame({ cx: W / 2, cy: H / 2, R: r0, shell: 1, inner: inner(.62, .5) });
+    let started = false; const start = () => { if (started) return; started = true;
+      run(1200, q => { const p = ease(q), lr = r0 * L(1, 1.5, p);
+        A.frame({ cx: W / 2, cy: H / 2, R: lr, sky: 0, shell: 1 - sm(sg(q, 0, .7)), inner: inner(L(.62, 1, p), .5 * (1 - sg(q, .1, .85))) }); },
+      () => { box.className = 'pfx'; de.classList.remove('via-planet'); }); };
+    requestAnimationFrame(() => requestAnimationFrame(start));   // two frames: the scene canvas has drawn once
+  }
+  function reset() { cancelAnimationFrame(raf); busy = false; box.className = 'pfx'; de.classList.remove('via-planet'); }
+  // 登录/注册 (and 和 Dodo 对话, which also goes to sign-up) from any step: the pull-back. Signed in, they stay plain links
+  document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[data-go]'); if (!a || user() || a.dataset.go === 'dashboard') return;
+    if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; if (exit(a.href)) e.preventDefault(); }, true);
+  // warm up: size the art and bake its sky once the page is idle, and fetch the log-in page's files so it opens at once
+  const warm = () => { try { if (art()) { art().fit(); art().frame({}); } } catch (e) {}
+    ['/3dtrading-site/login/', '/3dtrading-site/login/login.css?v=r61', '/3dtrading-site/login/login.js?v=r61', '/3dtrading-site/login/space.js?v=r61', '/3dtrading-site/login/vendor/three/build/three.module.min.js', '/3dtrading-site/login/vendor/three/build/three.core.min.js', '/3dtrading-site/dashboard/account/td-auth.js?v=r58']
+      .forEach(h => { const l = document.createElement('link'); l.rel = 'prefetch'; l.href = h; document.head.appendChild(l); }); };
+  if (!de.classList.contains('via-planet')) (window.requestIdleCallback || setTimeout)(warm, { timeout: 2500 });
+  return { exit, door, back, reset, warm };
+})();
+setTimeout(PFX.back, 0); window.__pfx = { enter: k => enter(k), exit: u => PFX.exit(u || routes().login) };   // test hook (r61 self-test)
+// r61: a new destination only; camera, scene and actions keep the speed they have (from rest that is 0)
+function targetStep(tg) { if (tg === CK.tgt) return; CK.tgt = K.tgt = tg; }
 let GATE = false, PEND = null; const go = (d, why) => { if (GATE) return;   // the motion layer over 01 is up: nothing moves under it
-  if (PEND && PEND.d !== d) PEND = null;   // turned round: a held step the other way is dropped
   if (d > 0 && K.tgt === NS - 1) { if (K.t > NS - 1.2 && B11.a > .5) enter('signup'); return; }
-  if (d * (CK.tgt - CK.t) > WH.QMAX) {   // one step already waits beyond the one playing: never pile up. A separate swipe or notch that lands now is
-    if (why !== 'drive' && !PEND) { PEND = { d, at: performance.now() }; setTimeout(pendTry, 40); }   // held (one at most, PEND ms) and plays once the slot frees; a held drag's repeat is just dropped
-    return; }
-  const tg = clamp(K.tgt + d, 0, NS - 1); if (tg === K.tgt) return; targetStep(tg);
+  const tg = clamp(CK.tgt + d, 0, NS - 1); if (tg === CK.tgt) return; targetStep(tg);   // every swipe moves the destination one stop, however far ahead it already is
  };
-function pendTry() { if (!PEND) return; if (performance.now() - PEND.at > WH.PEND) { PEND = null; return; } if (PEND.d * (CK.tgt - CK.t) <= WH.QMAX) { const d = PEND.d; PEND = null; go(d); return; } setTimeout(pendTry, 40); }
-const jump = i => { PEND = null; if (i === K.tgt) return; targetStep(i);
+const jump = i => { if (i === CK.tgt) return; targetStep(i);
  };
 /* one gesture = one step. A gesture is split from the next by a short silence (QUIET), by the wheel turning the other way, or by the
    wheel clearly speeding up again from the lowest point of the decaying tail (RISE×, and RISE_ABS more, two events in a row) — so a quick second swipe is caught even while the
-   first one's inertia is still coming in, and that inertia tail itself never adds a step. Inside one gesture, only a real sustained
-   push (a held trackpad drag, a wheel spun on) adds the next step, every DRIVE ms, while the last 120 ms stay near the gesture's peak;
-   a tail decays below that within a few hundred ms. A step the other way turns round after REV ms. Never more than one step waits
-   beyond the one playing (QMAX); the move itself always plays at its own fixed pace, whatever the wheel speed.
+   first one's inertia is still coming in, and that inertia tail itself never adds a step. r61: one gesture is one step, a held push
+   no longer repeats, and nothing waits in a queue: each step just moves the destination (no limit on how far ahead). A step the other
+   way turns round after REV ms. The move itself plays at the camera's own pace, whatever the wheel speed.
    Magic Mouse / trackpad glides are bumpy and can start after a short pause: speeds are read as a median of 5 (one uneven frame is not a new
    swipe), a same-direction pause within LOCK ms of a swiped step stays in that gesture, and a held push is timed from the glide's restart */
 const WH = { TRIG: 14, MIN: 200, REV: 140, QUIET: 140, LOCK: 380, RISE: 2.5, RISE_ABS: 12, RISE_N: 3, RISE_PK: .45, DECAY: .6, DRIVE: 560, DRIVE_K: .7, DRIVE_MIN: 9, WIN: 120, QMAX: 1.05, PEND: 450 };
@@ -580,7 +657,7 @@ function wheelStep(n, d, fire) { const s = Math.sign(d), gap = n - WS.t; WS.t = 
   WS.peak = Math.max(WS.peak, ad); WS.win.push([n, ad]); while (WS.win.length && n - WS.win[0][0] > WH.WIN) WS.win.shift();
   let why = '';
   if (!WS.fired) { WS.acc += d; if (Math.abs(WS.acc) > WH.TRIG && n - WS.at > (s === WS.fdir ? WH.MIN : WH.REV)) why = 'swipe'; }
-  else if (n - Math.max(WS.at, WS.ds) > WH.DRIVE && WS.win.length >= 3) { const m = WS.win.reduce((a, b) => a + b[1], 0) / WS.win.length; if (m >= Math.max(WS.peak * WH.DRIVE_K, WH.DRIVE_MIN)) why = 'drive'; }
+  // r61: a held push no longer adds steps by itself (the old 0.56-s repeat is gone): one gesture, one step
   if (!why) return 0;
   WS.fired = true; WS.at = n; WS.ds = n; WS.fdir = s; WS.acc = 0; WS.lo = ad; WS.rise = 0; WLOG.push([Math.round(n), s, why]); if (WLOG.length > 200) WLOG.shift(); if (fire) fire(s, why); return s; }
 addEventListener('wheel', e => { e.preventDefault(); const d = e.deltaMode === 1 ? e.deltaY * 30 : e.deltaMode === 2 ? e.deltaY * H : e.deltaY; wheelStep(performance.now(), d, go); }, { passive: false });
@@ -694,7 +771,7 @@ const PT = [];
 let HIT = null, nextHit = 1.2, hitN = 0, LBLCL = true, LCW = 1;
 /* the logo goes home: a short fade to the page colour hides the jump, then everything is put back as on a fresh load of 01 */
 const homeEl = document.getElementById('home'), hfadeEl = document.getElementById('hfade'); let HOMING = false;
-function homeReset() { Object.assign(CK, {t:0,v:0,tgt:0,speed:1}); K.t = K.tgt = 0; K.v = 0; Object.assign(B11, { on: false, t: 9, v: 0, a: 0, land: 0, back: null }); A.fill(0); A[0] = 1; WT.fill(0); PEND = null; HOLDU = null; GOLD.clear();
+function homeReset() { Object.assign(CK, {t:0,v:0,vs:0,tgt:0,speed:1}); K.t = K.tgt = 0; K.v = 0; Object.assign(B11, { on: false, t: 9, v: 0, a: 0 }); A.fill(0); A[0] = 1; AV.fill(0); WT.fill(0); PEND = null; HOLDU = null; GOLD.clear();
   HIT = null; nextHit = T + 1.2; WS.fired = false; WS.acc = 0; WS.dir = 0; WS.t = -1e9; side = -1; inS = -1; smx = smy = 0;
   BLK.forEach(b => b.classList.remove('in')); de.classList.add('snap'); setTimeout(() => de.classList.remove('snap'), 400); }
 function goHome(e) { if (e) e.preventDefault(); if (GATE || HOMING) return; doorEl.classList.remove('on', 'rm');
@@ -1381,41 +1458,17 @@ function inkScan() {
 function frame(now) {
   FN++; if (FN % 4 === 0) inkScan();
   const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
-  if (RM) { CK.t = CK.tgt; CK.v = 0; } else camStep(CK, dt);
-  for (const motion of [K]) {
-    const stepDt = dt;
-  const seg = Math.floor(clamp(Math.min(motion.t, motion.tgt), 0, NS - 1.01)), wn = (seg === 0 ? 1.8 : seg === 1 ? 1.55 : seg === 4 ? 1.3 : seg === 5 ? 1.6 : seg >= 6 ? 1.5 : 2.1);
-  if (RM) { motion.t = motion.tgt; motion.v = 0; } else {
-    if (motion.adaptive) {
-      const desired = clamp(wn * (motion.tgt - motion.t) / 2, -.48, .48);
-      const a0 = 2 * wn * (desired - motion.v), lim = .85;
-      const acc = clamp(a0, -lim, lim);
-      motion.v += acc * stepDt; motion.brk = acc * motion.v < 0; motion.t += motion.v * stepDt;
-    } else {
-      const acc = wn * wn * (motion.tgt - motion.t) - 2 * .9 * wn * motion.v;
-      motion.v += acc * stepDt; motion.brk = acc * motion.v < 0; motion.t += motion.v * stepDt;
-    }
-    // landing: a spring only creeps up on its stop (the last few % took a second or more, so the camera and the copy kept drifting after
-    // the scene had settled). Once the move is already braking, never let it go slower than a constant-deceleration stop would, and
-    // lay it down exactly on the stop. The body of the move (up to ~90 % of the way) keeps its old pace; nothing else is sped up.
-    { const d = motion.tgt - motion.t, ad = Math.abs(d);
-      if (ad < 1e-3 && Math.abs(motion.v) < .05) { motion.t = motion.tgt; motion.v = 0; }
-      else if (d * motion.v > 0 && ad < .5) { const vf = Math.sqrt(2 * LAND * wn * wn * ad), sg0 = Math.sign(d);
-        if (Math.abs(motion.v) < vf && (motion.landing || motion.brk)) { motion.landing = 1; motion.v = sg0 * vf; }
-        if (Math.abs(motion.v) * stepDt >= ad) { motion.t = motion.tgt; motion.v = 0; } }
-      if (d * motion.v <= 0 || ad >= .5) motion.landing = 0; }
-    if (motion.t < -.04) { motion.t = -.04; motion.v = Math.max(0, motion.v); }
-    if (motion.t > NS - .96) { motion.t = NS - .96; motion.v = Math.min(0, motion.v); }
-  }
-  }
-  // chained fast, the scene clock is pulled along so it never trails the camera by more than KLAG (what is on screen stays the camera's)
-  if (K.tgt === CK.tgt) { const lag = CK.t - K.t; if (Math.abs(lag) > KLAG) { const sd = Math.sign(lag); K.t = CK.t - sd * KLAG; if (K.v * sd < CK.v * sd) K.v = CK.v; } }
+  if (RM) { CK.t = CK.tgt; CK.v = 0; CK.vs = 0; } else camStep(CK, dt);
+  K.t = CK.t; K.v = CK.v; K.tgt = CK.tgt;   // r61: the scene clock is the camera's; what it shows moves with the shot
   const t = clamp(K.t, 0, NS - 1); LBLCL = t < 5.5; LCW = LBLCL ? 1 : 1 - sm(Math.abs(t - Math.round(t)) / .12);   // 07 on: kept on screen only while at rest, let go as soon as the camera moves
+  /* r61 · each step's action has one destination: done (1) once the camera is headed for this step or past it, back to the start (0)
+     once it is headed before it. It sets off when the camera is within PRE[s] of the step (on the move away from the step before for
+     04, 05, 08, 09; on arrival for the rest) and from then on keeps going whatever comes next: swiping on to the next step lets it finish
+     while the next one starts; coming back to it neither stops nor replays it; going before it winds it back with the same law */
   for (let s = 1; s < NS; s++) {
-    const early = PRE[s], near = K.t > s - (early || .03);
-    if (K.tgt >= s && near && (A[s - 1] >= 1 || [3, 4, 7, 8].includes(s))) { WT[s] += dt; if (WT[s] >= ([3, 4, 7, 8].includes(s) ? 0 : early ? REACT : 0) || K.tgt > s) A[s] = Math.min(1, A[s] + dt / (RM ? .01 : DUR[s]) * (K.tgt > s ? 3 : 1)); }
-    else if (s === 4 && K.tgt < 4) { A[4] = Math.max(0, A[4] - dt / .65); WT[4] = 0; }
-    else if (K.tgt < s && K.t < s - 1.1) { WT[s] = 0; A[s] = 0; }   // reset only offscreen; interruption keeps the visible scene intact
+    const at = s === NS - 1 ? B11.t : K.t, go1 = K.tgt >= s && (A[s] > 0 || at > s - (PRE[s] || .03)), tg = go1 ? 1 : 0;
+    if (RM) { A[s] = tg; AV[s] = 0; continue; }
+    const D = DUR[s], m = { x: A[s], v: AV[s] }; chase(m, tg, MV.AA / (D * D), MV.AF * D, dt, 1e-3); A[s] = clamp(m.x, 0, 1); AV[s] = m.v;
   }
   if (HOLDU != null) A[K.tgt] = HOLDU;   // test hook: hold the step's progress
   b11Step(dt);

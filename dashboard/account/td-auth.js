@@ -29,7 +29,7 @@
   function hex(u) { return Array.prototype.map.call(new Uint8Array(u), function (x) { return ('0' + x.toString(16)).slice(-2); }).join(''); }
   function secure() { return !!(S && g.isSecureContext !== false); }
 
-  /* ---------- the demo account list (shared with /login/) ---------- */
+  /* ---------- the demo account list (shared with /3dtrading-site/login/) ---------- */
   function accounts() { var a = J(localStorage, KACC, {}); return a && typeof a === 'object' ? a : {}; }
   function account(e) { return accounts()[norm(e)] || null; }
   function saveAccount(e, rec) { var a = accounts(); a[norm(e)] = rec; W(localStorage, KACC, a); return rec; }

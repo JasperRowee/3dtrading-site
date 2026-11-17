@@ -271,3 +271,39 @@ html[data-theme="day"] .orbnav button[aria-pressed="true"]{background:#0a8a72}
  .card{padding-top:16px}
  .tabs{margin:4px 0 10px}
 }
+
+/* ---------- r61 (需求 11 · 登录 / 注册卡片去底色) ----------
+   No panel any more: the form floats on the sky, on desktop and phone. The sky under the copy and the form is already dimmed
+   by planet.js (its mask follows .card and .hero), and each control keeps its own fill, rim and blur, so text stays readable.
+   Phone: no bottom sheet; the planet sits in the upper-right corner (as before r60), the headline under its lower-left edge
+   and the form on open sky below. Safe areas, 16px inputs (no iOS zoom), the keyboard just scrolls the page. */
+.card,html[data-theme=night] .card{background:transparent;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.card::before{display:none}
+.card h2,.card .sub,.tabs button,.lab,.fine,.row2 a{text-shadow:0 1px 12px rgba(0,0,0,.65)}
+.tabs{border-bottom-color:rgba(255,255,255,.14)}
+.inp input,#tfc{background:rgba(7,11,15,.62);border-color:rgba(255,255,255,.16);-webkit-backdrop-filter:blur(14px) saturate(1.2);backdrop-filter:blur(14px) saturate(1.2)}
+.inp input:hover{border-color:rgba(255,255,255,.26)}
+.inp input:focus,#tfc:focus{background:rgba(9,15,19,.78)}
+@media(max-width:900px){
+ .wrap{grid-template-rows:auto auto;min-height:100svh;min-height:100dvh;padding-bottom:env(safe-area-inset-bottom)}
+ .hero{min-height:0;padding:clamp(56px,18vw,96px) max(20px,env(safe-area-inset-left)) 6px}
+ .hero::before{top:-30px;bottom:-30px;left:-10%;right:10%;background:radial-gradient(80% 70% at 22% 55%,rgba(2,5,12,.6),rgba(2,5,12,.22) 60%,transparent 80%)}
+ .side{padding:4px max(20px,env(safe-area-inset-right)) calc(24px + env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));align-items:flex-start;justify-content:stretch}
+ .card{max-width:none;width:100%;margin:0;border-radius:0;padding:12px 0 0}
+ .tabs{margin:0 0 16px}
+ .inp input,.inp.has-btn input,#tfc{font-size:16px}
+}
+@media(max-width:900px) and (max-height:740px){
+ .hero{padding-top:44px}
+ .card{padding-top:4px}
+}
+/* arriving from the website's transition: the scene is already there (planet.js paints it before the first frame);
+   the copy and the form come in on top of it */
+@keyframes r61in{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+html.arrive .top,html.arrive .hero,html.arrive .side{animation:r61in .6s cubic-bezier(.2,.7,.2,1) both}
+html.arrive .top{animation-delay:.25s}html.arrive .hero{animation-delay:.32s}html.arrive .side{animation-delay:.42s}
+/* 返回官网: the copy and the form go first, then the camera flies into the planet */
+html.leave .top,html.leave .wrap{opacity:0;transform:translateY(6px);transition:opacity .28s,transform .28s;pointer-events:none}
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
+@media (prefers-reduced-motion:reduce){html.arrive .top,html.arrive .hero,html.arrive .side{animation:none}}
