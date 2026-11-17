@@ -10,7 +10,7 @@
 <script>(function(){var d=document.documentElement,t='night',l='zh';try{l=localStorage.getItem('3dt.r49login.lang')==='en'?'en':'zh'}catch(e){}try{var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='zh'){l=q;localStorage.setItem('3dt.r49login.lang',q)}}catch(e){}d.dataset.theme=t;try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}d.lang=l==='en'?'en':'zh-CN';d.dataset.lang=l})()</script>
 <link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/dodo-180.png">
-<link rel="stylesheet" href="login.css?v=r58&o=r57">
+<link rel="stylesheet" href="login.css?v=r59">
 </head>
 <body>
 <div class="scene" id="scene" aria-hidden="true"><canvas id="space"></canvas><canvas id="gx"></canvas><canvas id="orb"></canvas></div>
@@ -48,12 +48,12 @@
           <div class="note bad" id="alert" role="alert"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg><span id="alertT"></span></div>
 
           <div class="fld" id="fEmail"><label class="lab" for="email"><span data-i18n="auth.email">邮箱</span></label>
-            <div class="inp"><input id="email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="off" spellcheck="false" required data-i18n-attr="placeholder:auth.emailPh" aria-describedby="mEmail"></div>
+            <div class="inp"><input id="email" name="email" type="email" inputmode="email" autocomplete="username" enterkeyhint="next" autocapitalize="off" spellcheck="false" required data-i18n-attr="placeholder:auth.emailPh" aria-describedby="mEmail"></div>
             <div class="msg" id="mEmail"></div></div>
 
           <!-- r58 · sign-up email code (DEMO: no mail service; the code is shown in the 演示收件箱 box below, kept in page memory only) -->
           <div class="fld" data-only="register" id="fCode"><label class="lab" for="code"><span data-i18n="auth.code">邮箱验证码</span><em data-i18n="auth.codeRule">6 位数字 · 10 分钟内有效</em></label>
-            <div class="inp has-btn"><input id="code" name="one-time-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6" spellcheck="false" aria-describedby="mCode inbox" data-i18n-attr="placeholder:auth.codePh"><button type="button" class="sendc" id="sendc" data-i18n="auth.send">发送验证码</button></div>
+            <div class="inp has-btn"><input id="code" name="one-time-code" inputmode="numeric" enterkeyhint="next" autocomplete="one-time-code" maxlength="6" spellcheck="false" aria-describedby="mCode inbox" data-i18n-attr="placeholder:auth.codePh"><button type="button" class="sendc" id="sendc" data-i18n="auth.send">发送验证码</button></div>
             <div class="msg" id="mCode"></div>
             <div class="inbox" id="inbox" role="status" aria-live="polite" hidden></div></div>
 
@@ -64,7 +64,7 @@
             <div class="msg" id="mPw"></div></div>
 
           <div class="fld" data-only="register" id="fPw2"><label class="lab" for="pw2"><span data-i18n="auth.pw2">再输入一次密码</span></label>
-            <div class="inp has-eye"><input id="pw2" name="password2" type="password" autocomplete="new-password" aria-describedby="mPw2">
+            <div class="inp has-eye"><input id="pw2" name="password2" type="password" autocomplete="new-password" enterkeyhint="go" aria-describedby="mPw2">
               <button type="button" class="eye" data-eye="pw2" aria-pressed="false" data-i18n-attr="aria-label:auth.show"><svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/><path class="slash" d="M4 4l16 16"/></svg></button></div>
             <div class="msg" id="mPw2"></div></div>
 
@@ -89,7 +89,7 @@
           <p class="sub" id="tfS"></p>
           <div class="note bad" id="tfAlert" role="alert"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg><span id="tfAlertT"></span></div>
           <div class="fld" id="fTf"><label class="lab" for="tfc"><span id="tfL"></span></label>
-            <div class="inp"><input id="tfc" name="otp" inputmode="numeric" autocomplete="one-time-code" maxlength="9" spellcheck="false" autocapitalize="off" aria-describedby="mTf"></div>
+            <div class="inp"><input id="tfc" name="otp" inputmode="numeric" enterkeyhint="go" autocomplete="one-time-code" maxlength="9" spellcheck="false" autocapitalize="off" aria-describedby="mTf"></div>
             <div class="msg" id="mTf"></div></div>
           <button class="btn pri" type="submit" id="tfGo"><span class="spin" aria-hidden="true"></span><span id="tfGoT"></span></button>
           <button type="button" class="link tfr" id="tfRec"></button>
@@ -102,7 +102,7 @@
 </main>
 
 <script src="/3dtrading-site/dashboard/account/td-auth.js?v=r58"></script>
-<script src="login.js?v=r58"></script>
+<script src="login.js?v=r59"></script>
 <script src="planet.js?v=r58"></script>
 <script type="module" src="space.js?v=r58"></script>
 <script nomodule>window.__space={mode:"2d",why:"nomodule"};document.getElementById("space").hidden=true;dispatchEvent(new CustomEvent("td:space",{detail:window.__space}))</script>

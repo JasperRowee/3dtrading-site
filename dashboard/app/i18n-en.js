@@ -2252,4 +2252,8 @@ window.I18N_EN = {
 "开启两步验证": "Turn on two-step verification",
 "新": "New",
 "绑定结果": "Bind result",
+"Dodo 和后台界面使用同一种语言": "Dodo uses the same language as the dashboard",
+"把 Dodo 绑定到你自己的 Bot API；只认本站后台的真实回应": "Link Dodo to your own Bot API; only a real reply from this site’s backend counts",
+"Dodo 语言": "Dodo language",
+"Dodo：打开设置的 Dodo 页": "Dodo: open the Dodo page in Settings",
 };

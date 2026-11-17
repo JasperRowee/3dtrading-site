@@ -195,7 +195,7 @@ html[lang=en] .blk p{font-size:14px;line-height:1.55}
 html[lang=en] .note{max-width:42vw;font-size:10px}
 @media(max-width:760px){html[lang=en] .blk h1{font-size:28px}html[lang=en] .blk h2{font-size:25px}html[lang=en] .bar .logo{height:19px}html[lang=en] .acts a{padding:0 9px;font-size:11px}html[lang=en] .blk p{font-size:13px;line-height:1.5}}
 </style>
-<script src="reveal.js?v=r49"></script>
+<script src="reveal.js?v=r59"></script>
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="icons/dodo.svg?v=20261112">
 <link rel="apple-touch-icon" sizes="180x180" href="icons/dodo-180.png?v=20261112">
@@ -523,7 +523,7 @@ const DUR = [0, 1.1, .2, 2.6, 1.4, .3, 7, 5.4, 8.5, 6, 4.2];
 // Trading actions and construction start with travel; 02 retains its introduction beat.
 const PRE = [0, .3, 0, 1.1, 1.1, 0, 0, 1.1, 1.1, 0, 0], REACT = .3, WT = new Array(NS).fill(0);
 let leaving = false;
-function routes() { const r = window.TDAccount.routes; return { signup: r.entry, login: r.login, dashboard: r.entry, ai: r.entry }; }   // r49: the website alone; every way in goes to the separate log-in preview
+function routes() { const r = window.TDAccount.routes; return { signup: r.entry, login: r.login, dashboard: r.dashboard || r.entry, ai: r.dashboard || r.entry }; }   // r59: signed in → the dashboard itself   // r49: the website alone; every way in goes to the separate log-in preview
 const user = () => { try { return window.TDAccount && TDAccount.getSession(); } catch (e) { return null; } };
 /* going in (sign in, sign up, the dashboard): one short move, the same every time. The scene rushes forward, the screen closes to black
    round our logo from where you clicked, then the next page opens out of that black. A second click while it plays does nothing */
@@ -613,7 +613,9 @@ function syncAuth() { const u = user(), r = routes();
   const acts = document.getElementById('acts'); const en = (() => { try { return localStorage.getItem('r49site.lang') === 'en'; } catch (e) { return false; } })();
   acts.innerHTML = u ? siteText(`<a class="pr" data-go="dashboard">${en ? 'Dashboard' : '进入后台'}</a>`) : siteText(`<a class="pr" data-go="signup">${en ? 'Log in / Sign up' : '登录/注册'}</a>`); wire(document);
   document.getElementById('hint').textContent = u ? siteText('点击门，或继续下滑进入后台') : siteText('点击门，或继续下滑进入'); }
-syncAuth(); addEventListener('storage', syncAuth);
+syncAuth(); addEventListener('storage', e => { if (!e.key || e.key === '3dt.session') syncAuth(); });
+/* r59 · back/forward (bfcache) and returning to this tab after signing in or out elsewhere: re-read the session */
+addEventListener('pageshow', syncAuth); document.addEventListener('visibilitychange', () => { if (!document.hidden) syncAuth(); });
 /* day / night: the scene redraws itself in the other palette (textures are rebuilt, the colour map is cleared), the page follows by CSS. Remembered */
 const thc = document.getElementById('thc'), barLogo = document.querySelector('.bar .logo'), doorLogo = document.querySelector('#door img');
 function setTheme(day, quick) { DAY = day ? 1 : 0; de.dataset.theme = day ? 'day' : 'night'; try { localStorage.setItem('r49site.theme', de.dataset.theme); } catch (e) {}

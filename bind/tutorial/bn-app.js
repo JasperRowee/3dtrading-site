@@ -15,7 +15,11 @@
  * Binance's official pages (read 2026-11-16) do not describe these App screens; they are taken from the screenshots only.
  * The real App was shown in light mode; this replica uses Binance's dark palette to match our night page — a colour choice,
  * the layout follows the screenshots. Names, UIDs and keys are made-up examples. [data-t] marks the one control the guide
- * may light up. */
+ * may light up.
+ * r59 (Jasper, 2026-11-17): profile / 账号信息 / 子账户 / API管理 / 上传公钥 / 编辑API are redrawn from Jasper's own Binance App
+ * screenshots (layout only — no name, e-mail, UID or key from them is used; everything shown is a made-up example).
+ * Route: 个人主页 › → 账号信息 → 子账户 → + 创建子账户 (虚拟邮箱) → ⋮ 允许合约 → ⋮ 开通统一账户 → 账号管理 ▾ → API管理 → + 创建API →
+ * 自行生成 → 上传公钥 → 编辑API (API 密钥 → 只访问受信任的IP → IP → 勾选 → 保存). The HMAC 编辑API screenshot is layout reference only. */
 (function (global) {
   'use strict';
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -24,15 +28,19 @@
       mk: [['BNB', '622.87', '-1.35%'], ['BTC', '76,758.47', '-1.61%']], tabs: ['首页', '行情', '交易', '合约', '资产'],
       tags: ['普通用户', '已认证'], quick: '快捷入口', qk: ['C2C买币', '理财', '热门活动', '邀请奖励'],
       info: '账号信息', uid: '币安 ID (UID)', reg: '注册信息', vip: '升级至 VIP 1', vipS: '交易更多资产，以升至下一等级', perk: '福利',
-      rows: [['身份认证', '已认证'], ['账户安全', ''], ['Twitter', '未绑定'], ['子账户', '']], out: '退出',
+      rows: [['认证中心', '已认证'], ['账户安全', ''], ['绑定社交账号', ''], ['子账户', '']], out: '退出',
+      idL: 'ID', cs: '币安客服', csS: '获取支持', cards: [['邀请好友', '邀请好友，一起赚'], ['猜你喜欢', '为你推荐'], ['现货跟单', '跟随优秀交易员'], ['合约跟单', '一键跟单']], lite: '简易版',
+      dep: '充值', xfer: '划转', pubT: '上传公钥', pubY: '您的公钥', pubHow: '如何生成公钥？', pubPem: 'RSA公钥须符合PEM格式。', warnK: '请务必立即复制您的 API 密钥和私钥。离开此页面后，它们将不会再完整显示。',
+      anyW: '这个API密钥允许任何地址访问，不推荐。为保障您的资金安全，如果此IP不受限制，且启用了除读取以外的任何权限，则该API密钥将被删除。',
       subT: '子账户', mgmt: '账号管理', apiM: 'API管理', cnt: '子账户', create: '创建子账户', uidL: '用户 ID', stL: '状态', dtL: '创建日期', normal: '正常', more: '更多',
       ok1: '成功', pmWait: '统一账户更新中。请稍后查看。',
       mT: '创建子账户', mType: '子账户类型', mTypeV: '虚拟邮箱创建', mName: '虚拟邮箱创建', mHint: '请输入字符串，我们将为您创建一个虚拟邮箱进行注册。',
       mNote: '注意：虚拟邮箱不能用于登录子账户。请使用主账户创建子账户API来管理子账户。', ok: '确认', cancel: '取消',
-      vmail: '3dtusdt01_virtual@example.com', menu1: ['转入', '允许合约', '启用期权', '冻结', '删除'], menu2: ['转入', '开通统一账户', '允许合约', '启用期权', '冻结', '删除'],
+      vmail: '3dtusdt01_virtual@example.com', menu1: ['转入', '允许合约', '启用期权', '充值', '划转', '冻结', '删除'], menu2: ['转入', '开通统一账户', '允许合约', '启用期权', '充值', '划转', '冻结', '删除'],
       cf1: '请确认是否为该子账户开通合约功能。', tip: '提示', cf2: '请确认是否为该子账户开通统一账户。', cf2n: '注意：此操作耗时几分钟，请稍后返回查看。',
       mgT: '子账户', mgRows: ['账号管理', 'API管理', '资产管理', '订单管理'],
-      notes: ['每个子账户最多可以创建30个 API Key。', '请勿将您的API密钥、HMAC密钥、Ed25519或RSA私钥透露给任何人。', '为提高您账户的安全性，建议仅授予可信IP以访问权限。', '请在创建API密钥前完成身份认证。'],
+      notes: ['每个子账户最多可以创建30个 API Key。', '请勿将您的API密钥、HMAC密钥、Ed25519或RSA私钥透露给任何人，以免造成资产损失。您应将您的API密钥、HMAC密钥、Ed25519或RSA私钥视为密码一样妥善保管。', '为提高您账户的安全性，建议仅授予可信IP以访问权限。', '请在创建API密钥前完成身份认证。',
+        '使用 API Key 即表示您已阅读并同意受 API Key 条款约束，该等条款自您首次使用或接受（以较早者为准）之日起生效。', '若通过 API Key 将 OMS 提供商绑定至您的币安账户，即表示您确认 OMS 提供商会收取服务费用，币安可代 OMS 提供商收取该等费用，收费形式为在您的交易手续费基础上加价计收。'],
       api: 'API', stp: '自成交预防', newApi: '创建API',
       cT: '创建API', cSub: '子账户', cLabel: 'API 标签', next: '下一步',
       kT: '选择API密钥类型', k1: '系统生成', k1p: '使用HMAC对称加密方式运作。您将获得API密钥和HMAC密钥。请将该API密钥和HMAC密钥视为密码一样妥善保管，切勿与任何第三方分享。',
@@ -44,15 +52,19 @@
       mk: [['BNB', '622.87', '-1.35%'], ['BTC', '76,758.47', '-1.61%']], tabs: ['Home', 'Markets', 'Trade', 'Futures', 'Assets'],
       tags: ['Regular', 'Verified'], quick: 'Shortcuts', qk: ['P2P', 'Earn', 'Campaigns', 'Referral'],
       info: 'Account Info', uid: 'Binance ID (UID)', reg: 'Registration info', vip: 'Upgrade to VIP 1', vipS: 'Trade more to reach the next level', perk: 'Perks',
-      rows: [['Identification', 'Verified'], ['Security', ''], ['Twitter', 'Not linked'], ['Sub Accounts', '']], out: 'Log Out',
+      rows: [['Verification Center', 'Verified'], ['Security', ''], ['Linked Social Accounts', ''], ['Sub Accounts', '']], out: 'Log Out',
+      idL: 'ID', cs: 'Binance Support', csS: 'Get help', cards: [['Referral', 'Invite friends, earn together'], ['For You', 'Picked for you'], ['Spot Copy Trading', 'Follow top traders'], ['Futures Copy Trading', 'Copy in one tap']], lite: 'Lite',
+      dep: 'Deposit', xfer: 'Transfer', pubT: 'Upload Public Key', pubY: 'Your public key', pubHow: 'How do I generate a public key?', pubPem: 'An RSA public key must be in PEM format.', warnK: 'Copy your API key and private key now. They will not be shown in full again after you leave this page.',
+      anyW: 'This API key allows access from any IP address. This is not recommended. To keep your funds safe, if the IP is unrestricted and any permission other than reading is enabled, the API key will be deleted.',
       subT: 'Sub Accounts', mgmt: 'Account Management', apiM: 'API Management', cnt: 'Sub accounts', create: 'Create Sub Account', uidL: 'User ID', stL: 'Status', dtL: 'Created', normal: 'Normal', more: 'More',
       ok1: 'Success', pmWait: 'Portfolio Margin is updating. Check back later.',
       mT: 'Create Sub Account', mType: 'Sub-account type', mTypeV: 'Create with virtual email', mName: 'Create with virtual email', mHint: 'Enter a string; we create a virtual email to register with.',
       mNote: 'Note: a virtual email cannot log in to the sub-account. Use the master account to create a sub-account API to manage it.', ok: 'Confirm', cancel: 'Cancel',
-      vmail: '3dtusdt01_virtual@example.com', menu1: ['Transfer', 'Enable Futures', 'Enable Options', 'Freeze', 'Delete'], menu2: ['Transfer', 'Enable Portfolio Margin', 'Enable Futures', 'Enable Options', 'Freeze', 'Delete'],
+      vmail: '3dtusdt01_virtual@example.com', menu1: ['Transfer In', 'Enable Futures', 'Enable Options', 'Deposit', 'Transfer', 'Freeze', 'Delete'], menu2: ['Transfer In', 'Enable Portfolio Margin', 'Enable Futures', 'Enable Options', 'Deposit', 'Transfer', 'Freeze', 'Delete'],
       cf1: 'Enable futures for this sub-account?', tip: 'Notice', cf2: 'Enable Portfolio Margin for this sub-account?', cf2n: 'Note: this takes a few minutes; check back later.',
       mgT: 'Sub Accounts', mgRows: ['Account Management', 'API Management', 'Asset Management', 'Order Management'],
-      notes: ['Each sub-account can create up to 30 API keys.', 'Never share your API key, HMAC key or Ed25519/RSA private key with anyone.', 'For safety, grant access to trusted IPs only.', 'Complete identity verification before creating API keys.'],
+      notes: ['Each sub-account can create up to 30 API keys.', 'Never share your API key, HMAC key or Ed25519/RSA private key with anyone, to avoid losing assets. Keep them as safe as a password.', 'For your account’s security, grant access to trusted IPs only.', 'Complete identity verification before creating API keys.',
+        'By using an API key you agree to the API Key terms, effective from when you first use or accept them (whichever is earlier).', 'If you link an OMS provider to your Binance account through an API key, you confirm the OMS provider charges a service fee, which Binance may collect on its behalf as a mark-up on your trading fees.'],
       api: 'API', stp: 'Self-Trade Prevention', newApi: 'Create API',
       cT: 'Create API', cSub: 'Sub-account', cLabel: 'API label', next: 'Next',
       kT: 'Choose API Key type', k1: 'System generated', k1p: 'Works using HMAC symmetric encryption. You get an API key and an HMAC key. Keep them as safe as a password and never share them with anyone.',
@@ -74,6 +86,12 @@
     filt: '<svg viewBox="0 0 24 24"><path d="M4 5h16l-6 7v6l-4 2v-8z"/></svg>',
     ok: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>',
     sun: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2"/></svg>',
+    addU: '<svg viewBox="0 0 24 24"><circle cx="10" cy="9" r="3.5"/><path d="M3.5 19c1.2-3 3.6-4.6 6.5-4.6s5.3 1.6 6.5 4.6M18 7v6M15 10h6"/></svg>',
+    scan: '<svg viewBox="0 0 24 24"><path d="M4 9V5h4M16 5h4v4M20 15v4h-4M8 19H4v-4M4 12h16"/></svg>',
+    gear: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>',
+    cp: '<svg viewBox="0 0 16 16"><rect x="5" y="5" width="8.5" height="8.5" rx="1.8"/><path d="M3 10.5V3.8C3 3.3 3.3 3 3.8 3h6.7"/></svg>',
+    eye: '<svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+    info: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
     tab: ['<svg viewBox="0 0 24 24"><path d="M12 3l8 9-8 9-8-9z"/></svg>', '<svg viewBox="0 0 24 24"><path d="M4 19l5-6 4 3 7-9"/></svg>',
       '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M8 12h8M12 8l4 4-4 4"/></svg>', '<svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M8 9h8M8 13h5"/></svg>',
       '<svg viewBox="0 0 24 24"><rect x="3.5" y="6" width="17" height="13" rx="2"/><path d="M15 12.5h5.5"/></svg>'],
@@ -106,24 +124,28 @@
         '<div class="ba-mk">' + w.mk.map(function (r) { return '<div><b>' + esc(r[0]) + '</b><span>' + esc(r[1]) + '</span><i class="r">' + esc(r[2]) + '</i></div>'; }).join('') + '</div>' +
         '<nav class="ba-tabs">' + w.tabs.map(function (x, i) { return '<span' + (i === 0 ? ' class="on"' : '') + '>' + I.tab[i] + '<em>' + esc(x) + '</em></span>'; }).join('') + '</nav></div>';
     },
-    /* Excepta p.11 right: the profile drawer, › at the right of the profile card */
+    /* r59 · 个人主页 (Jasper's screenshot): ← and three icons on top, avatar + name + ID + tags with › on the right, 币安客服,
+     * four cards, 简易版. Example name/ID only. */
     profile: function (w, cfg, o) {
-      return '<div class="ba-app">' + nav('') + '<div class="ba-me"><span class="ba-av big">' + I.user + '</span><div><b>3dtrading</b><p>' + w.tags.map(function (x, i) { return '<em' + (i === 1 ? ' class="g"' : '') + '>' + esc(x) + '</em>'; }).join('') + '</p></div>' +
-        '<span class="ba-ic go"' + hot(o, 'prof') + '>' + I.chev + '</span></div>' +
-        '<b class="ba-h5">' + esc(w.quick) + '</b><div class="ba-quick">' + w.qk.map(function (x) { return '<span>' + I.q + '<em>' + esc(x) + '</em></span>'; }).join('') + '</div></div>';
+      return '<div class="ba-app">' + sbar() + '<div class="ba-nav"><span class="ba-ic">' + I.back + '</span><span class="ba-icr"><span class="ba-ic">' + I.addU + '</span><span class="ba-ic">' + I.scan + '</span><span class="ba-ic">' + I.gear + '</span></span></div>' +
+        '<div class="ba-me pf"' + hot(o, 'prof') + '><span class="ba-av big">' + I.user + '</span><div><b>3dtrading</b><small>' + esc(w.idL) + ': 1024 3366 <span class="ba-cpi">' + I.cp + '</span></small>' +
+        '<p><em class="g">' + esc(w.tags[1]) + '</em><em>' + esc(w.tags[0]) + '</em></p></div><span class="ba-ic go">' + I.chev + '</span></div>' +
+        '<div class="ba-row ba-cs"><span class="ba-ic">' + I.head + '</span><span>' + esc(w.cs) + '</span><em>' + esc(w.csS) + '</em>' + I.chev + '</div>' +
+        '<div class="ba-cards">' + w.cards.map(function (c) { return '<div><b>' + esc(c[0]) + '</b><small>' + esc(c[1]) + '</small></div>'; }).join('') + '</div>' +
+        '<div class="ba-row ba-lite"><span><b class="ba-brandw">BINANCE</b> ' + esc(w.lite) + '</span>' + I.chev + '</div></div>';
     },
-    /* Excepta p.12 left: 账号信息, 子账户 row */
+    /* r59 · 账号信息: card (name, 普通用户 corner badge, 币安 ID, 注册信息), rows 认证中心 / 账户安全 / 绑定社交账号 / 子账户, 退出 */
     info: function (w, cfg, o) {
-      return '<div class="ba-app">' + nav(w.info) + '<div class="ba-card"><div class="ba-me in"><span class="ba-av big">' + I.user + '</span><b>3dtrading</b></div>' +
-        '<p><span>' + esc(w.uid) + '</span><em>1024 3366</em></p><p><span>' + esc(w.reg) + '</span><em>•••</em></p>' +
-        '<div class="ba-vip"><b>' + esc(w.vip) + '</b><em>' + esc(w.perk) + ' ›</em><small>' + esc(w.vipS) + '</small></div></div>' +
-        '<div class="ba-list">' + w.rows.map(function (r, i) { return '<div class="ba-row"' + (i === 3 ? hot(o, 'subacc') : '') + '><span>' + esc(r[0]) + '</span><em>' + esc(r[1]) + '</em>' + I.chev + '</div>'; }).join('') + '</div>' +
+      return '<div class="ba-app">' + nav(w.info) + '<div class="ba-card ba-ic2"><i class="ba-corner">' + esc(w.tags[0]) + '</i><div class="ba-me in"><span class="ba-av big">' + I.user + '</span><b>3dtrading</b></div>' +
+        '<p><span>' + esc(w.uid) + '</span><em>1024 3366</em></p><p><span>' + esc(w.reg) + '</span><em>•••</em></p></div>' +
+        '<div class="ba-list">' + w.rows.map(function (r, i) { return '<div class="ba-row"' + (i === 3 ? hot(o, 'subacc') : '') + '><span>' + esc(r[0]) + '</span><em' + (i === 0 ? ' class="g"' : '') + '>' + esc(r[1]) + '</em>' + I.chev + '</div>'; }).join('') + '</div>' +
         '<span class="ba-btn block ghost">' + esc(w.out) + '</span></div>';
     },
-    /* Excepta pp.12–17: 子账户 page (账号管理 ▾, + 创建子账户, ⋮ menus, confirm sheets, the 账号管理 switch sheet) */
+    /* 子账户 page (r59 screenshot): 账号管理 ▾ with 充值 / 划转 on the right, 子账户 (n) + filter, + 创建子账户, cards with ⋮ and 更多;
+     * the ⋮ popover lists 转入 允许合约 启用期权 充值 划转 冻结 删除 (after 允许合约: 开通统一账户 is added, 允许合约 greyed). */
     sub: function (w, cfg, o) {
       var n = o.rows ? 3 : 2, body = nav(w.subT) +
-        '<div class="ba-dd"' + hot(o, 'mgmt') + '><b>' + esc(w.mgmt) + '</b>' + I.tri + '</div>' +
+        '<div class="ba-subh"><div class="ba-dd"' + hot(o, 'mgmt') + '><b>' + esc(w.mgmt) + '</b>' + I.tri + '</div><span class="ba-btn y sm">' + esc(w.dep) + '</span><span class="ba-btn sm">' + esc(w.xfer) + '</span></div>' +
         (o.toast ? '<div class="ba-toast">' + (o.toast === 'pm' ? I.sun + esc(w.pmWait) : I.ok + esc(w.ok1)) + '</div>' : '') +
         '<div class="ba-cnt"><u>' + esc(w.cnt) + ' (' + n + ')</u>' + I.filt + '</div>' +
         '<div class="ba-bar"' + hot(o, 'create') + '>+ ' + esc(w.create) + '</div>';
@@ -138,49 +160,51 @@
       if (o.sheet === 'mgmt') body += sheet(w.mgT, '<div class="ba-acts">' + w.mgRows.map(function (x, i) { return '<span' + (i === 1 ? ' data-t="apim"' : '') + '>' + esc(x) + (i === 0 ? '<i>✓</i>' : '') + '</span>'; }).join('') + '</div>');
       return '<div class="ba-app">' + body + '</div>';
     },
-    /* Excepta p.18: API管理 (notes, 自成交预防, + 创建API); p.19 right / p.20 left: the 创建API sheet (子账户 + API 标签).
-     * r46: p.19 left (选择API密钥类型) is drawn again as its own sheet: the guide taps 系统生成 (sys: true marks it chosen), then 下一步.
-   * 自行生成 is drawn as the App shows it and is never chosen. */
+    /* API管理: six notes, API (0) + filter, 自成交预防, + 创建API; sheets: 选择API密钥类型 (自行生成 chosen), 上传公钥 (r59 screenshot:
+     * 您的公钥 box, a help link, the PEM note, 下一步). The 您的公钥 box here is the guide's copy control for 3dtrading's public key. */
     api: function (w, cfg, o) {
+      var en = w === W.en;
       var body = nav(w.subT, I.x) + '<div class="ba-dd"><b>' + esc(w.apiM) + '</b>' + I.tri + '</div>' +
         '<ol class="ba-notes">' + w.notes.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ol>' +
         '<div class="ba-cnt"><span>' + esc(w.api) + ' (0)</span>' + I.filt + '</div><div class="ba-bar y">' + esc(w.stp) + '</div>' +
         '<div class="ba-bar"' + hot(o, 'newapi') + '>+ ' + esc(w.newApi) + '</div>';
-      /* r48: o.self = the 自行生成 route (connect.html since r48): 自行生成 chosen, 系统生成 drawn plain */
       if (o.sheet === 'type') body += sheet(w.kT,
         '<div class="ba-opt' + (o.sys ? ' on' : '') + '" data-t="optSys">' + I.keyA + '<div><b>' + esc(w.k1) + '</b><p>' + esc(w.k1p) + '</p></div>' + (o.sys ? '<i class="corner"></i>' : '') + '</div>' +
         '<div class="ba-opt' + (o.self ? ' on' : ' off') + '" data-t="optSelf"' + (o.self ? '' : ' aria-disabled="true"') + '>' + I.keyB + '<div><b>' + esc(w.k2) + '</b><p>' + esc(w.k2p) + '</p></div>' + (o.self ? '<i class="corner"></i>' : '') + '</div>' +
         '<span class="ba-btn y block" data-t="next">' + esc(w.next) + '</span>', 'tall');
-      /* r48: the 自行生成 创建API sheet — sub-account, label and the public-key box (示意: drawn from Binance's FAQ wording, the
-       * App's own screen for this route is not in the Excepta screenshots) */
-      if (o.sheet === 'pub') body += sheet(w.cT, '<small>' + esc(w.cSub) + '</small><div class="ba-in sel">' + esc(w.vmail) + I.tri + '</div><small>' + esc(w.cLabel) + '</small><div class="ba-in">' + esc(cfg.labelEx) + '</div>' +
-        '<small>' + esc(w.pubL) + '</small><button type="button" class="ba-in ba-pk" data-copy="pub" aria-label="' + esc(w === W.en ? 'Copy the full public key' : '复制完整公钥') + '"><code>' + esc(cfg.pubShort || '') + '</code><span class="cpi" aria-hidden="true"><svg viewBox="0 0 16 16"><rect x="5" y="5" width="8.5" height="8.5" rx="1.8"/><path d="M3 10.5V3.8C3 3.3 3.3 3 3.8 3h6.7"/></svg></span></button>' +
+      if (o.sheet === 'pub') body += sheet(w.pubT, '<small>' + esc(w.pubY) + '</small>' +
+        '<button type="button" class="ba-in ba-ta ba-pk" data-copy="pub" aria-label="' + esc(en ? 'Copy 3dtrading’s full public key' : '复制 3dtrading 的完整公钥') + '"><code>' + esc(cfg.pubShort || '') + '</code><span class="cpi" aria-hidden="true">' + I.cp + '</span></button>' +
+        '<p class="ba-link">' + esc(w.pubHow) + '</p><p class="ba-hint ba-pem">' + I.info + esc(w.pubPem) + '</p>' +
         '<span class="ba-btn y block" data-t="next2">' + esc(w.next) + '</span>', 'tall');
       if (o.sheet === 'label') body += sheet(w.cT, '<small>' + esc(w.cSub) + '</small><div class="ba-in sel">' + esc(w.vmail) + I.tri + '</div><small>' + esc(w.cLabel) + '</small><div class="ba-in focus">' + esc(cfg.labelEx) + '<i class="caret"></i></div>' +
         '<span class="ba-btn y block" data-t="next2">' + esc(w.next) + '</span>', 'mid');
       return '<div class="ba-app">' + body + '</div>';
     },
-    /* Excepta pp.21–23: 编辑API (保存 / 取消 at the top), 子账户, 标签 HMAC·统一账户, API 密钥 + 密钥 with Copy, API权限, IP访问限制 */
-    /* r58 · parts: 'keys' (just created: Reading only, the rest locked), 'iponly' (pick trusted IPs), 'ips' (add the two IPs),
-     * 'save' (IPs in: permissions unlocked + ticked, then 保存), 'bind' (saved: the API Key row is EMPTY — the tutorial's own
-     * API Key field goes there). */
+    /* r59 · 编辑API card (layout from Jasper's screenshot of the App's edit page): 编辑API with 保存 / 取消, a QR box (filled by the
+     * guide with this site's own binding page, no key in it), 子账户, 标签 Ed25519 · 统一账户, the "copy now" warning, 公钥 (copy
+     * 3dtrading's public key), API 密钥 = the guide's own input (from the first key step on), API权限 as a vertical list, and
+     * IP访问限制 (无限制 carries Binance's red warning while chosen). parts: keys → iponly → ips → save → bind. */
     key: function (w, cfg, o, en) {
-      var part = o.part, open = part === 'save' || part === 'bind', ipsIn = part === 'ips' || open, tr = part !== 'keys';
+      var part = o.part, open = part === 'save' || part === 'bind', ipsIn = part === 'ips' || open, tr = part !== 'keys' && part !== 'iponly';
       var LK = '<svg class="lk" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.6"/><path d="M5.3 7V5.2a2.7 2.7 0 0 1 5.4 0V7"/></svg>';
       var perms = permsOf(cfg).map(function (p) {
         var lock = !open && p.key !== 'read', on = p.key === 'read' || (open && p.required);
-        return '<span class="ba-ck' + (on ? ' on' : '') + (lock ? ' lock' : '') + (open && p.key === 'prediction' ? ' no' : '') + '"><i></i>' + esc(en ? p.en : p.zh) + (lock ? LK : '') + '</span>';
+        return '<span class="ba-ck' + (on ? ' on' : '') + (lock ? ' lock' : '') + (open && p.key === 'prediction' ? ' no' : '') + '"><i></i><u>' + esc(en ? p.en : p.zh) + '</u>' + (lock ? LK : '') + '</span>';
       }).join('');
-      return '<div class="ba-app">' + nav(w.subT, I.x) + '<div class="ba-key">' +
+      return '<div class="ba-app">' + nav(w.subT, I.x) + '<div class="ba-dd"><b>' + esc(w.apiM) + '</b>' + I.tri + '</div><div class="ba-key ba-ecard">' +
         '<div class="ba-eh"><b>' + esc(w.edit) + '</b><span class="ba-btn y sm"' + (part === 'save' ? ' data-t="save"' : '') + '>' + esc(w.save) + '</span><span class="ba-btn sm">' + esc(w.cancel) + '</span></div>' +
+        '<div class="ba-qr" data-slot="qr"><div class="q"></div></div>' +
         '<small>' + esc(w.cSub) + '</small><p class="ba-v">' + esc(w.vmail) + '</p>' +
-        '<small>' + esc(w.label) + '</small><div class="ba-kt"><span class="t1">' + (o.self ? 'Ed25519' : 'HMAC') + '</span><span class="t2">' + esc(w.pm) + '</span><b>' + esc(cfg.labelEx) + '</b></div>' +
-        '<small>' + esc(w.key) + '</small><div class="ba-kv' + (part === 'bind' ? ' slot' : '') + '" data-slot="key">' + (part === 'bind' ? '' : '<code class="mute">' + esc(en ? 'Shown after saving' : '保存后显示') + '</code>') + '</div>' +
+        '<small>' + esc(w.label) + '</small><div class="ba-kt"><span class="t1">Ed25519</span><span class="t2">' + esc(w.pm) + '</span><b>' + esc(cfg.labelEx) + '</b></div>' +
+        '<p class="ba-warn">' + esc(w.warnK) + '</p>' +
+        '<small>' + esc(w.pubL) + '</small><button type="button" class="ba-kv ba-pk" data-copy="pub" aria-label="' + esc(en ? 'Copy 3dtrading’s full public key' : '复制 3dtrading 的完整公钥') + '"><code>' + esc(cfg.pubShort || '') + '</code><span class="cpi" aria-hidden="true">' + I.cp + '</span></button>' +
+        '<small>' + esc(w.key) + '</small><div class="ba-kv slot" data-slot="key"></div>' +
         '<small>' + esc(w.perm) + '</small><div class="ba-grid one">' + perms + '</div>' +
         (open ? '' : '<p class="ba-lockn">' + LK + esc(en ? 'Trading permissions unlock once trusted IPs are added.' : '添加受信任的 IP 后，才能勾选交易权限。') + '</p>') +
-        '<b class="ba-ipt">' + esc(w.ipT) + '</b><div class="ba-rad' + (tr ? '' : ' on') + '"><i></i>' + esc(w.ipAny) + '</div><div class="ba-rad' + (tr ? ' on' : '') + '"' + (part === 'iponly' ? ' data-t="iponly"' : '') + '><i></i>' + esc(w.ipOnly) + '</div>' +
-        (o.self ? '<div class="ba-chips">' + (ipsIn ? ((cfg.kit && cfg.kit.ips) || []).map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') : '') + '</div>' +
-          (tr ? '<div class="ba-in mute ba-ipin">' + esc(w.ipIn) + '<b' + (part === 'ips' ? ' data-t="ipadd"' : '') + '>' + esc(w.ipOk) + '</b></div>' : '') : '<div class="ba-in mute">' + esc(w.ipPh) + '</div>') + '</div></div>';
+        '<b class="ba-ipt">' + esc(w.ipT) + '</b><div class="ba-rad' + (tr ? '' : ' on') + '"><i></i>' + esc(w.ipAny) + '</div>' + (tr ? '' : '<p class="ba-anyw">' + esc(w.anyW) + '</p>') +
+        '<div class="ba-rad' + (tr ? ' on' : '') + '"' + (part === 'iponly' ? ' data-t="iponly"' : '') + '><i></i>' + esc(w.ipOnly) + '</div>' +
+        (tr ? '<div class="ba-chips">' + (ipsIn ? ((cfg.kit && cfg.kit.ips) || []).map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') : '') + '</div>' +
+          '<div class="ba-in mute ba-ipin">' + esc(w.ipIn) + '<b' + (part === 'ips' ? ' data-t="ipadd"' : '') + '>' + esc(w.ipOk) + '</b></div>' : '') + '</div></div>';
     }
   };
   global.TD_BNAPP = {

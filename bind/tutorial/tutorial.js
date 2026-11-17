@@ -21,7 +21,7 @@
   if (!EMBED) { location.replace('../#guide'); return; }
   document.documentElement.classList.add('embed');
   function up(m) {
-    /* r58: opened on its own (not inside /bind/), log-in / sign-up / dashboard are plain links */
+    /* r58: opened on its own (not inside /3dtrading-site/bind/), log-in / sign-up / dashboard are plain links */
     if (window.parent === window && (m === 'login' || m === 'register')) { location.href = '/3dtrading-site/login/?mode=' + m + '&lang=' + (window.BN49 ? BN49.lang() : 'zh'); return; }
     try { window.parent.postMessage({ bn49: m }, location.origin); } catch (x) { /* */ }
   }
@@ -96,34 +96,38 @@
       { d: ['home', 1], t: '[data-t="subacc"]', zh: '点「子账户」', en: 'Click Sub Accounts' },
       { d: ['create'], t: '[data-t="create"]', zh: '点「+ 创建子账户」', en: 'Click + Create Sub Account' },
       { d: ['vmail'], t: '[data-t="ok"]', copy: 'name', zh: '选「虚拟邮箱创建」，粘贴名称后点「确认」', en: 'Pick virtual email, paste the name, click Confirm' },
-      { d: ['futures', 0], t: '.bn-tr .more', zh: '点这一行的「···」', en: 'Click “···” on the row' },
-      { d: ['futures', 1], t: '[data-t="dd"]', zh: '点「允许合约」', en: 'Click Enable Futures' },
-      { d: ['pm', 0], t: '.bn-tr .more', zh: '再点「···」', en: 'Click “···” again' },
-      { d: ['pm', 1], t: '[data-t="dd"]', zh: '点「开通统一账户」', en: 'Click Enable Portfolio Margin' },
+      { d: ['futures', 0], t: '.bn-tr .more', cam: '.bn-tr', zh: '点这一行的「···」', en: 'Click “···” on the row' },
+      { d: ['futures', 1], t: '[data-t="dd"]', cam: '.bn-tr', zh: '点「允许合约」', en: 'Click Enable Futures' },
+      { d: ['pm', 0], t: '.bn-tr .more', cam: '.bn-tr', zh: '再点「···」', en: 'Click “···” again' },
+      { d: ['pm', 1], t: '[data-t="dd"]', cam: '.bn-tr', zh: '点「开通统一账户」', en: 'Click Enable Portfolio Margin' },
       { p: ['home', { hot: 'menu' }], pt: '[data-t="menu"]', zh: '打开币安 App，点左上角「☰」', en: 'Open the Binance App, tap ☰ at the top left' },
       { p: ['profile', { hot: 'prof' }], pt: '[data-t="prof"]', zh: '点个人资料右侧「›」', en: 'Tap › on the profile card' },
       { p: ['info', { hot: 'subacc' }], pt: '[data-t="subacc"]', zh: '点「子账户」', en: 'Tap Sub Accounts' },
       { p: ['sub', { hot: 'create' }], pt: '[data-t="create"]', zh: '点「+ 创建子账户」', en: 'Tap + Create Sub Account' },
       { p: ['sub', { sheet: 'create' }], pt: '[data-t="ok"]', copy: 'name', zh: '选「虚拟邮箱创建」，粘贴名称后点「确认」', en: 'Pick virtual email, paste the name, tap Confirm' },
-      { p: ['sub', { rows: 1, toast: 'ok', hot: 'more' }], pt: '[data-t="more"]', zh: '点新子账户右上角「⋮」', en: 'Tap ⋮ on the new sub-account' },
-      { p: ['sub', { rows: 1, menu: 'menu1' }], pt: '[data-t="dd"]', zh: '点「允许合约」', en: 'Tap Enable Futures' },
-      { p: ['sub', { rows: 1, sheet: 'cf1' }], pt: '[data-t="cf"]', zh: '点「确认」', en: 'Tap Confirm' },
-      { p: ['sub', { rows: 1, toast: 'ok', hot: 'more' }], pt: '[data-t="more"]', zh: '再点「⋮」', en: 'Tap ⋮ again' },
-      { p: ['sub', { rows: 1, menu: 'menu2' }], pt: '[data-t="dd"]', zh: '点「开通统一账户」', en: 'Tap Enable Portfolio Margin' },
-      { p: ['sub', { rows: 1, sheet: 'cf2' }], pt: '[data-t="cf"]', zh: '点「确认」，再由你本人完成币安验证', en: 'Tap Confirm, then pass Binance’s check yourself' }
+      { p: ['sub', { rows: 1, toast: 'ok', hot: 'more' }], pt: '[data-t="more"]', pcam: '.ba-sc', zh: '点新子账户右上角「⋮」', en: 'Tap ⋮ on the new sub-account' },
+      { p: ['sub', { rows: 1, menu: 'menu1' }], pt: '[data-t="dd"]', pcam: '.ba-sc', zh: '点「允许合约」', en: 'Tap Enable Futures' },
+      { p: ['sub', { rows: 1, sheet: 'cf1' }], pt: '[data-t="cf"]', pcam: '.ba-sc', zh: '点「确认」', en: 'Tap Confirm' },
+      { p: ['sub', { rows: 1, toast: 'ok', hot: 'more' }], pt: '[data-t="more"]', pcam: '.ba-sc', zh: '再点「⋮」', en: 'Tap ⋮ again' },
+      { p: ['sub', { rows: 1, menu: 'menu2' }], pt: '[data-t="dd"]', pcam: '.ba-sc', zh: '点「开通统一账户」', en: 'Tap Enable Portfolio Margin' },
+      { p: ['sub', { rows: 1, sheet: 'cf2' }], pt: '[data-t="cf"]', pcam: '.ba-sc', zh: '点「确认」，再由你本人完成币安验证', en: 'Tap Confirm, then pass Binance’s check yourself' }
     ] },
     { id: 'api', url: 'api', subs: [
       { d: ['apis'], t: '.bn-newapi', zh: '「API管理」里点「+ 创建API」', en: 'In API Management click + Create API' },
       { d: ['type', 'next'], t: '[data-t="next"]', kind: 'self', zh: '选「自行生成」，点「下一步」', en: 'Choose Self-generated, click Next' },
       { d: ['pub'], t: '[data-t="next3"]', copy: 'pub', zh: '选子账户、填标签；点「公钥」框复制 3dtrading 的公钥并粘贴，点「下一步」，再由你本人完成安全验证', en: 'Pick the sub-account and enter the label; click the Public key box to copy 3dtrading’s key and paste it, click Next, then pass the security check yourself' },
-      { d: ['selfKeys'], t: '.bn-edit', zh: '创建好后只有「允许读取」可用，其他权限锁着。点「编辑权限」', en: 'Once created only Reading is available; the rest are locked. Click Edit restrictions' },
-      { d: ['perm', 'ips'], t: '[data-t="ipok"]', kind: 'self', copy: 'ips', zh: '先选「只访问受信任的IP」，填入下面两个 IP，点「确认」——加好 IP 后交易权限才会解锁', en: 'First choose trusted IPs only, add the two IPs below and click Confirm — trading permissions unlock only after that' },
+      /* r59 (Jasper): no 编辑权限 on Binance desktop — paste the API Key into its own row right away, then 只访问受信任的IP →
+       * IP whitelist → tick permissions → 保存. The key typed here stays in the field for the bind step. */
+      { d: ['perm', 'keys'], t: '#tkKey', kind: 'self', zh: '币安生成 API Key 后，直接粘贴到这一行的「API Key」框里，再点「下一步」', en: 'Once Binance shows the API Key, paste it right into this API Key row, then press Next' },
+      { d: ['perm', 'iponly'], t: '[data-t="iponly"]', kind: 'self', zh: '先点「只访问受信任的IP」', en: 'First choose Restrict access to trusted IPs only' },
+      { d: ['perm', 'ips'], t: '[data-t="ipok"]', kind: 'self', copy: 'ips', zh: '填入下面两个 IP 加入白名单，点「确认」——加好后交易权限才会解锁', en: 'Add the two IPs below to the whitelist and click Confirm — trading permissions unlock after that' },
       { d: ['perm', 'perm'], t: '[data-t="save"]', kind: 'self', zh: '权限已解锁：勾选亮着的 5 项；「允许预测交易权限」不勾；交易币对白名单可选（会限制可交易币对，收益可能下降）。点「保存」，再由你本人完成验证', en: 'Permissions are unlocked: tick the 5 lit ones; leave Prediction Trading unticked; the symbol whitelist is optional (it limits tradable pairs, so returns may be lower). Click Save, then pass the check yourself' },
       { p: ['sub', { rows: 1, toast: 'pm', hot: 'mgmt' }], pt: '[data-t="mgmt"]', zh: '统一账户更新完成后，点左上角「账号管理 ▾」', en: 'When Portfolio Margin is ready, tap Account Management ▾' },
       { p: ['sub', { rows: 1, sheet: 'mgmt' }], pt: '[data-t="apim"]', zh: '点「API管理」', en: 'Tap API Management' },
       { p: ['api', { hot: 'newapi' }], pt: '[data-t="newapi"]', zh: '点「+ 创建API」', en: 'Tap + Create API' },
       { p: ['api', { sheet: 'type', self: true }], pt: '[data-t="next"]', zh: '选「自行生成」，点「下一步」', en: 'Choose Self-generated, tap Next' },
-      { p: ['api', { sheet: 'pub' }], pt: '[data-t="next2"]', copy: 'pub', zh: '选子账户、填标签；点「公钥」框复制 3dtrading 的公钥并粘贴，点「下一步」，再由你本人完成验证', en: 'Pick the sub-account and enter the label; tap the Public key box to copy 3dtrading’s key and paste it, tap Next, then pass the check yourself' },
+      { p: ['api', { sheet: 'pub' }], pt: '[data-t="next2"]', copy: 'pub', zh: '在「上传公钥」里点下面的公钥框复制 3dtrading 的公钥，粘贴进「您的公钥」，点「下一步」，再由你本人完成验证', en: 'In Upload public key, tap the key box below to copy 3dtrading’s public key, paste it into Your public key, tap Next, then pass the check yourself' },
+      { p: ['key', { self: true, part: 'keys' }], pt: '#tkKey', zh: '币安显示 API 密钥后点「Copy」，直接粘贴到这一行，再点「下一步」', en: 'When Binance shows the API Key, tap Copy and paste it right into this row, then tap Next' },
       { p: ['key', { self: true, part: 'iponly' }], pt: '[data-t="iponly"]', zh: '现在只有「允许读取」可用，其他权限锁着。先选「只访问受信任的IP」', en: 'Only Reading is available now; the rest are locked. First choose Restrict access to trusted IPs only' },
       { p: ['key', { self: true, part: 'ips' }], pt: '[data-t="ipadd"]', copy: 'ips', zh: '逐个填入两个 IP，点「确认」——之后交易权限才会解锁', en: 'Add the two IPs one by one and tap Confirm — trading permissions unlock after that' },
       { p: ['key', { self: true, part: 'save' }], pt: '[data-t="save"]', zh: '权限已解锁：勾选亮着的 5 项；「允许预测交易权限」不勾；交易币对白名单可选（收益可能下降）。回到上方点「保存」，再由你本人完成验证', en: 'Unlocked: tick the 5 lit ones; leave Prediction Trading unticked; the symbol whitelist is optional (returns may be lower). Tap Save at the top, then pass the check yourself' }
@@ -185,7 +189,11 @@
       if (um) { um.remove(); if (scr.d[1] === 1) { hum.appendChild(um); hum.hidden = false; } }
     }
     if (ph) { hum.innerHTML = ''; hum.hidden = true; }
-    if (fresh) { view.classList.remove('fade'); void view.offsetWidth; view.classList.add('fade'); }
+    /* r59 (Jasper: 允许合约 / 统一账户 — the screen must not move, only the menu changes): fade only when the page itself
+     * changes; the ··· / menu / confirm steps of one page share a key, so they swap the menu in place. */
+    var key = ph ? 'p:' + scr.p[0] : 'd:' + ({ futures: 'am', pm: 'am' }[scr.d[0]] || scr.d[0]);
+    if (fresh && key !== draw.key) { view.classList.remove('fade'); void view.offsetWidth; view.classList.add('fade'); }
+    draw.key = key;
     return ph ? ba : bn;
   }
   function render(fresh) {
@@ -202,8 +210,10 @@
     if (HOT) { HOT.classList.remove('hot', 'cue'); if (!HOT.closest('.panel')) HOT.removeAttribute('tabindex'); }
     var sel = ph ? st.pt : st.t;
     HOT = st.our ? $(st.our) : host.querySelector(sel) || hb.querySelector(sel);
-    if (HOT && !st.our) { HOT.classList.add('hot'); HOT.setAttribute('tabindex', '0'); HOT.setAttribute('role', 'button'); HOT.setAttribute('aria-label', st[L()]); }
-    if (HOT && st.our) HOT.classList.add('cue');
+    var inForm = HOT && tkF && tkF.contains(HOT);
+    if (tkF) tkF.classList.toggle('pre', !st.last); // r59: before the last step only the API Key box shows (name + 绑定 come last)
+    if (HOT && (st.our || inForm)) HOT.classList.add('cue');
+    if (HOT && !st.our && !inForm) { HOT.classList.add('hot'); HOT.setAttribute('tabindex', '0'); HOT.setAttribute('role', 'button'); HOT.setAttribute('aria-label', st[L()]); }
     if (big3) panel.scrollTop = 0;
     camera(host, st);
     showHint(st);
@@ -221,7 +231,9 @@
     host.style.width = natW + 'px';
     host.style.minHeight = Math.ceil(ph ? Math.max(760, ah / s) : ah / s) + 'px';
     var nh = host.scrollHeight;
-    var tgt = !HOT || !host.contains(HOT) ? null : HOT, r = null;
+    /* r59: a step may name a fixed anchor (cam / pcam): the camera frames that, not the menu item, so the page holds still */
+    var anc = st && (ph ? st.pcam : st.cam), aEl = anc ? host.querySelector(anc) : null;
+    var tgt = aEl || (!HOT || !host.contains(HOT) ? null : HOT), r = null;
     if (tgt) { var a = tgt.getBoundingClientRect(), o = host.getBoundingClientRect(); r = { x: a.left - o.left, y: a.top - o.top, w: a.width, h: a.height }; }
     var tx = 0, ty = 0;
     if (r && natW * s > aw + 1) tx = Math.max(aw - natW * s, Math.min(0, aw / 2 - (r.x + r.w / 2) * s));
@@ -350,7 +362,7 @@
   function mountForm(host) { var sl = host.querySelector('[data-slot="key"].slot'); if (sl && tkF) sl.appendChild(tkF); }
   /* the QR box on the key page: this site's own binding page (phone opens the App-style walkthrough). Built from the live origin;
      no caption, no key or secret in it. It is NOT the authenticator QR of the dashboard's 2FA settings. */
-  function bindHref() { return location.origin + '/3dtrading-site/bind/?lang=' + L() + '#guide'; }
+  function bindHref() { return new URL('../?lang=' + L() + '#guide', location.href).href; } // r59: relative, so it also works under the /3dtrading-site/ prefix
   function fillQr(host) {
     var q = host.querySelector('[data-slot="qr"] .q'); if (!q || typeof window.qrcode !== 'function') return;
     try { var qr = window.qrcode(0, 'M'); qr.addData(bindHref()); qr.make(); q.innerHTML = qr.createSvgTag({ cellSize: 4, margin: 2, scalable: true }); q.classList.add('real'); q.setAttribute('role', 'img'); q.setAttribute('aria-label', t('cx.qrL')); q.dataset.href = bindHref(); } catch (x) { /* leave the plain box */ }
@@ -381,6 +393,7 @@
     tkNm.addEventListener('input', function () { tkErr.textContent = ''; tkNm.classList.remove('bad'); if (TB) TB.saveDraft(tkNm.value); });
     tkF.addEventListener('submit', function (e) {
       e.preventDefault(); if (S.auto) setAuto(false);
+      if (tkF.classList.contains('pre')) { manual(); return; } // r59: Enter in the API Key box before the last step = go on (IP + permissions come first)
       tkErr.textContent = ''; tkRes.hidden = true;
       var c = TB ? TB.check(tkKey.value) : 'bad', en = L() === 'en';
       if (c === 'empty' || c === 'bad') { tkErr.textContent = t(c === 'empty' ? 'cx.eEmpty' : 'cx.eBad'); tkKey.classList.add('bad'); tkKey.focus(); return; }
@@ -440,6 +453,7 @@
   window.__guide = {
     get big() { return S.b; }, get sub() { return S.s; }, get loops() { return S.loops; }, get pending() { return TM.length; },
     get auto() { return S.auto; }, get target() { return HOT; },
+    get step() { var a = subs(S.b)[S.s]; return a ? { d: a.d, p: a.p, cam: a.cam, pcam: a.pcam, last: !!a.last } : null; }, // r59: read-only, for tests
     subs: function (b) { return subs(b == null ? S.b : b).length; },
     go: function (b, s) { S.b = b; S.s = s || 0; S.hold = false; render(false); },
     tap: manual, back: back, skip: function () { bigGo(S.b + 1); }, bigGo: bigGo, subGo: subGo, setAuto: setAuto

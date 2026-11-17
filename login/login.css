@@ -210,3 +210,35 @@ html[data-theme="day"] .orbnav button[aria-pressed="true"]{background:#0a8a72}
 #tfc::placeholder{letter-spacing:.32em}
 .tfr{display:block;margin:14px auto 0;font-size:13px}
 @media (prefers-reduced-motion:reduce){.sendc{transition:none}}
+
+/* ---------- r59 (Jasper: 手机登录页还需要滑动；右上角放个星球又不代表不能被盖住) ----------
+   The planet stays where r54 put it (city.js, upper-right) but is now only background: the headline and the card sit
+   over it instead of below a 230px gap, so on a phone the tabs, fields and the main button fit one screen without the
+   keyboard. MWG form-factor-adaptation / responsive-design: small/dynamic viewport units, safe-area padding,
+   scroll-padding so a focused field and the button stay reachable above the keyboard; 44px tap targets kept. */
+@media(max-width:900px){
+ html{scroll-padding-top:calc(var(--barH) + 8px);scroll-padding-bottom:96px}
+ .wrap{min-height:100svh;min-height:100dvh;grid-template-rows:auto 1fr}
+ .hero{min-height:0;padding:10px 20px 12px;justify-content:flex-start}
+ .hero::before{top:0;bottom:-30%;right:0;background:linear-gradient(100deg,rgba(2,5,12,.6),rgba(2,5,12,.2) 62%,transparent 85%)}
+ .hero h1{font-size:25px;margin:0 0 6px;text-shadow:0 2px 14px rgba(0,0,0,.45)}
+ html[lang=en] .hero h1{font-size:22px}
+ .hero .lede{font-size:13px;max-width:24em;text-shadow:0 1px 10px rgba(0,0,0,.5)}
+ .side{padding:0 14px max(18px,env(safe-area-inset-bottom))}
+ .card{padding:16px 18px 16px;background:color-mix(in srgb,var(--panel) 92%,transparent)}
+ .tabs{margin-bottom:14px}
+ .card h2{font-size:18px}
+ .card .sub{margin-bottom:12px;font-size:13px}
+}
+/* short phones (or Safari with its bars showing): drop the lede before anything the person has to press */
+@media(max-width:900px) and (max-height:740px){
+ .hero{padding-top:6px;padding-bottom:8px}
+ .hero .lede{display:none}
+ .card .sub{display:none}
+ .card h2{display:none}               /* the 登录 / 注册 tab already says it */
+ .card{padding-top:12px}
+ .tabs{margin-bottom:10px}
+ .fld{margin-bottom:10px}
+ .hero h1{font-size:23px}
+ .lab{margin-bottom:5px}
+}

@@ -143,6 +143,8 @@
     $('#fs').textContent = t(mode === 'login' ? 'auth.loginS' : 'auth.regS');
     $('#goT').textContent = t(mode === 'login' ? 'auth.goLogin' : 'auth.goReg');
     pw.setAttribute('autocomplete', mode === 'login' ? 'current-password' : 'new-password');
+    /* r59 (MWG autofill-sign-in-form): the phone keyboard's Enter key says what happens next */
+    pw.setAttribute('enterkeyhint', mode === 'login' ? 'go' : 'next');
     ink();
   }
   function setMode(m, keep) {

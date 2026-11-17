@@ -14,6 +14,12 @@
     if (el) { var b = el.getBoundingClientRect(); if (b.width) return [b.left + b.width / 2, b.top + b.height / 2]; }
     return [document.documentElement.clientWidth - 40, 40];
   }
+  /* r59 · the header shows who is signed in: the dashboard's own demo session (localStorage '3dt.session', written by
+     /3dtrading-site/dashboard/enter.html after log-in, removed by 退出登录). Same origin, so every page agrees; nothing is sent anywhere. */
+  function getSession() {
+    try { var s = JSON.parse(localStorage.getItem('3dt.session') || 'null'); return s && typeof s.email === 'string' && s.email ? s : null; }
+    catch (e) { return null; }
+  }
   function reveal(apply, src) {
     var de = document.documentElement, rm = global.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (rm || document.hidden || !document.startViewTransition) { apply(); return Promise.resolve('instant'); }
@@ -35,8 +41,8 @@
   }
   global.TDAccount = {
     standalone: true,
-    routes: { entry: base, login: base + sep + 'mode=login' },
-    getSession: function () { return null; },
+    routes: { entry: base, login: base + sep + 'mode=login', dashboard: '/3dtrading-site/dashboard/app/index.html#/dashboard' },
+    getSession: getSession,
     reveal: reveal
   };
 })(window);
