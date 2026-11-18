@@ -2394,7 +2394,9 @@ html.rm .rec .dot{animation:none}
 /* ===================== r48 · Dodo：回答里的数据卡片 + 探头情绪 + 侧栏 / 输入细节 ===================== */
 /* 卡片不套白框：浅底、无边、靠字号和留白分层；来源标签必在右上角（实时 / 示例 / 规则） */
 .vz{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:10px;margin:14px 0 2px;font-size:13.5px;line-height:1.5}
-.vz-c{position:relative;min-width:0;padding:13px 15px 14px;border-radius:14px;background:var(--vzbg,#f5f7f7)}
+.vz-c{position:relative;min-width:0;padding:15px 16px 15px;border-radius:14px;background:var(--vzbg,#fff);box-shadow:0 0 0 1px rgba(18,24,26,.045),0 2px 6px rgba(18,24,26,.04),0 10px 24px -10px rgba(18,24,26,.14)}
+.vz-c::after{content:"";position:absolute;left:16px;top:0;width:26px;height:3px;border-radius:0 0 3px 3px;background:var(--brand);pointer-events:none}
+.vz-e::after{display:none}
 .vz-curve,.vz-steps,.vz-bars,.vz-c:only-child{grid-column:1/-1}
 .vz-e{background:none;box-shadow:inset 0 0 0 1px var(--line2);border-radius:14px}
 .vz-h{display:flex;align-items:center;gap:8px;margin-bottom:10px;min-width:0}
@@ -2468,7 +2470,7 @@ html.rm .rec .dot{animation:none}
 .vz-st li.on>i{background:var(--brand);color:#04261f}
 .vz-em{display:flex;align-items:center;gap:9px;margin:0;font-size:13.5px;color:var(--ink2)}
 .vz-em i{width:8px;height:8px;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1.5px var(--ink3)}
-html[data-theme="night"] .vz{--vzbg:#182023}
+html[data-theme="night"] .vz{--vzbg:#182023}html[data-theme="night"] .vz-c{box-shadow:0 0 0 1px rgba(255,255,255,.06),0 10px 24px -12px rgba(0,0,0,.5)}
 html[data-theme="night"] .vz-s.demo{background:rgba(227,199,102,.12)}
 html[data-theme="night"] .vz i.c2{background:#2aa892}html[data-theme="night"] .vz i.c3{background:#1d6f63}html[data-theme="night"] .vz i.c5{background:#4d5759}
 html[data-theme="night"] .vz-dot{box-shadow:0 0 0 3px var(--vzbg),0 0 0 6px rgba(67,216,189,.25)}
@@ -2529,10 +2531,10 @@ html.rm .ddp.in.think .ddp-pu,html.rm .ddp.in.think .ddp-head svg,html.rm .ddp.i
 .slp-i b{font-weight:700;font-size:14.5px;white-space:nowrap}.slp-i small{font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.slp-i em{font-style:normal;font-size:12px;color:var(--ink3)}
 .slp-i.on,.slp-i:hover{background:var(--hov)}.slp-i.on b{color:var(--brandD)}
 .slp-e{margin:0;padding:12px 10px;font-size:13.5px;color:var(--ink3)}
-.vz-c.vz-r7ln,.vz-c.vz-r7vb,.vz-c.vz-r7st,.vz-c.vz-r7cmp,.vz-c.vz-r7prog{overflow:visible}
-.sc{position:relative;margin-top:4px;max-width:600px}.sc-svg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y;cursor:crosshair}
-.sc-gr{stroke:var(--line2);stroke-width:1}.sc-gr.z{stroke:var(--line);stroke-dasharray:3 3}
-.sc-x,.sc-y,.sc-n{font-size:10.5px;fill:var(--ink3);font-variant-numeric:tabular-nums}.sc-n{font-size:12px;font-weight:650;fill:var(--ink)}
+.vz-c.vz-r7ln,.vz-c.vz-r7vb,.vz-c.vz-r7st,.vz-c.vz-r7cmp,.vz-c.vz-r7prog{overflow:visible;grid-column:1/-1}
+.sc{position:relative;margin-top:6px}.sc-svg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y;cursor:crosshair}
+.sc-gr{stroke:var(--line2);stroke-width:1;stroke-dasharray:2 4}.sc-gr.z{stroke:var(--line);stroke-dasharray:3 3}
+.sc-x,.sc-y,.sc-n{font-size:11.5px;fill:var(--ink3);font-variant-numeric:tabular-nums}.sc-n{font-size:12px;font-weight:650;fill:var(--ink)}
 .sc-a0{stop-color:var(--brand);stop-opacity:.26}.sc-a1{stop-color:var(--brand);stop-opacity:0}
 .sc-l{fill:none;stroke:var(--brandD);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
 .sc-p{fill:var(--sf);stroke:var(--brandD);stroke-width:1.5}.sc-p.last{fill:var(--brandD)}.sc-p.hl{fill:var(--gold);stroke:var(--sf);stroke-width:2}
@@ -2568,6 +2570,42 @@ html.rm .r67-hl{animation:none;box-shadow:0 0 0 3px var(--brandD)}
 .qmn-h{font-size:12px;color:var(--ink3);padding:6px 10px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .qmn button{display:block;width:100%;text-align:left;appearance:none;border:0;background:none;font:inherit;font-size:14px;color:var(--ink);padding:9px 10px;border-radius:8px;cursor:pointer;min-height:38px}.qmn button:hover,.qmn button:focus-visible{background:var(--hov);outline:none}
 #attRow .ach.ref .l{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+/* r69 · 指引卡片：竖向步骤条，底部按钮 */
+.gdc{margin-top:2px}
+.gdc-st{list-style:none;margin:0;padding:0;counter-reset:g}
+.gdc-st li{position:relative;display:flex;gap:12px;align-items:flex-start;padding:0 0 14px;font-size:14px;line-height:1.45;color:var(--ink3)}
+.gdc-st li:last-child{padding-bottom:2px}
+.gdc-st li::before{content:"";position:absolute;left:11px;top:26px;bottom:2px;width:2px;border-radius:2px;background:var(--line2)}
+.gdc-st li:last-child::before{display:none}
+.gdc-st li.done::before{background:var(--brand)}
+.gdc-d{flex:0 0 24px;height:24px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;background:var(--sf);color:var(--ink3);box-shadow:inset 0 0 0 1.5px var(--line)}
+.gdc-d svg{width:13px;height:13px}
+.gdc-st li.done .gdc-d{background:var(--brand);color:#04261f;box-shadow:none}
+.gdc-st li.now{color:var(--ink);font-weight:650}
+.gdc-st li.now .gdc-d{background:var(--brandD);color:#fff;box-shadow:0 0 0 4px rgba(47,220,188,.22)}
+.gdc-st li.done span{color:var(--ink2)}
+.gdc-st span{padding-top:2px}
+.gdc-st li.now span small{display:block;font-size:12px;font-weight:500;color:var(--brandD);margin-top:1px}
+.gdc-f{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line2)}
+.gdc-f .gdc-n{flex:1;min-width:0;font-size:12.5px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.gdc-f .btn.sm{height:34px;padding:0 14px;font-size:13.5px}
+/* r69 · 交易记录分页 */
+.tx-pg{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px 16px;padding:14px 4px 4px;margin-top:8px;border-top:1px solid var(--line2);font-size:13px;color:var(--ink3)}
+.pg-nums{display:flex;align-items:center;gap:4px}
+.pg-n{appearance:none;font:inherit;font-size:13.5px;font-weight:600;min-width:34px;height:34px;padding:0 8px;border-radius:9px;border:0;background:none;color:var(--ink2);cursor:pointer;font-variant-numeric:tabular-nums}
+.pg-n:hover:not(:disabled){background:var(--hov);color:var(--ink)}
+.pg-n.on,.pg-n.on:hover{background:var(--brandL);color:var(--brandD)}
+.pg-n:disabled{opacity:.3;cursor:default}
+.pg-ar{font-size:18px;line-height:1}
+.pg-gap{padding:0 3px;color:var(--ink3)}
+.pg-per{display:flex;align-items:center;gap:6px;white-space:nowrap}.pg-per .sel{height:32px;min-width:66px}
+@media (max-width:760px){.tx-pg{justify-content:center}.pg-info{order:2;width:100%;text-align:center}.pg-per{order:3}.pg-n{min-width:36px;height:36px}}
+/* r69 · 触屏长按不再全选：只在输入框里允许选字，长按交给引用菜单 */
+@media (hover:none) and (pointer:coarse){
+  body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input,textarea,[contenteditable="true"]{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+}
+button,.btn,.seg,.chipf,.pg-n,.r67-chip,nav a{-webkit-user-select:none;user-select:none}
 @media (max-width:760px){
   .gdb{bottom:calc(76px + env(safe-area-inset-bottom));padding:9px 10px;gap:8px}.gdb.qsel{bottom:calc(140px + env(safe-area-inset-bottom))}
   .gdb-t b{font-size:13.5px}.gdb .btn.sm{height:36px;padding:0 10px}
@@ -3306,7 +3344,7 @@ html[data-theme="night"] .qb-lead{background:#0a0d10;box-shadow:0 0 0 1px rgba(2
     </button>
     <div class="menu" id="acctMenu" role="menu"></div>
   </div>
-  <nav class="fnav" id="fnav" aria-label="页面导航"><div class="fn-g fn-l"><a class="fn-a" href="#/dashboard" data-nav="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="8" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.8"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.8"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.8"/></svg><span>总览</span></a><a class="fn-a" href="#/trades" data-nav="trades"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M17 4v16"/><rect x="4.5" y="7" width="5" height="8" rx="1"/><rect x="14.5" y="9" width="5" height="6" rx="1"/></svg><span>交易记录</span></a></div><a class="fn-logo" href="../../site/index.html" data-site-link aria-label="3dtrading，返回官网"><img src="assets/3dtrading-logo.svg" width="108" height="26" alt="3dtrading"></a><div class="fn-g fn-r"><a class="fn-a" href="#/wallet" data-nav="wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="6" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M16 14.5h1.5M6.5 6l9-2.5"/></svg><span>钱包</span></a><a class="fn-a" href="#/ai" data-nav="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17H6.5A2.5 2.5 0 0 1 4 14.5z"/></svg><span>Dodo</span></a></div></nav>
+  <nav class="fnav" id="fnav" aria-label="页面导航"><div class="fn-g fn-l"><a class="fn-a" href="#/dashboard" data-nav="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="8" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.8"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.8"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.8"/></svg><span>总览</span></a><a class="fn-a" href="#/trades" data-nav="trades"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M17 4v16"/><rect x="4.5" y="7" width="5" height="8" rx="1"/><rect x="14.5" y="9" width="5" height="6" rx="1"/></svg><span>交易记录</span></a></div><a class="fn-logo" href="../site/index.html" data-site-link aria-label="3dtrading，返回官网"><img src="assets/3dtrading-logo.svg" width="108" height="26" alt="3dtrading"></a><div class="fn-g fn-r"><a class="fn-a" href="#/wallet" data-nav="wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="6" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M16 14.5h1.5M6.5 6l9-2.5"/></svg><span>钱包</span></a><a class="fn-a" href="#/ai" data-nav="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17H6.5A2.5 2.5 0 0 1 4 14.5z"/></svg><span>Dodo</span></a></div></nav>
   <i id="layTg" hidden></i>
   <div class="me-m" id="meM">
     <button class="av-btn" id="avBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="我的：账号与偏好"><span class="av" id="avIni" aria-hidden="true">J</span><span class="car">▼</span></button>
@@ -3675,7 +3713,7 @@ function aggregate(ids) {
 }
 
 /* ---------- state ---------- */
-const S = { view: 'all', range: 30, tf: { coin: '', act: '', acct: '', day: '' }, tShow: 20, flip: null, tDetail: null, ovd: null };
+const S = { view: 'all', range: 30, tf: { coin: '', act: '', acct: '', day: '' }, tShow: 20, tPage: 1, tPer: 20, flip: null, tDetail: null, ovd: null };
 /* r64 · 手机总览：一个时间筛选管住整页（默认近 30 天；'' = 全部，格式同交易记录 dayRng） */
 const OVD = () => S.ovd == null ? 'r' + (DAYS - 29) + '-' + DAYS : S.ovd;
 const OVR = () => dayRng(OVD()) || [FIRST(), DAYS];
@@ -3737,7 +3775,7 @@ addEventListener('scroll', () => document.body.classList.toggle('scrolled', scro
 /* one place to change which account is shown; every page re-renders from the same state */
 function setView(v, quiet) {
   if (!(v === 'all' || acctById(v))) return;
-  S.view = v; S.tf.acct = ''; S.tShow = 20; S.tDetail = null; if (TDAccount.accounts().active !== v) TDAccount.setActive(v); renderAll(); saveState();
+  S.view = v; S.tf.acct = ''; S.tPage = 1; S.tDetail = null; if (TDAccount.accounts().active !== v) TDAccount.setActive(v); renderAll(); saveState();
   if (!quiet) toast(`现在查看：${viewName()}`);
 }
 document.addEventListener('click', e => { const b = e.target.closest('[data-setv]'); if (b) setView(b.dataset.setv); });
@@ -4068,7 +4106,7 @@ document.addEventListener('click', e => {
     $$('#kpis .lg').forEach(x => { const on = x === r && o; x.classList.toggle('open', on); $('.lh', x).setAttribute('aria-expanded', on); $('.lx', x).inert = !on; }); return; }
   const u = e.target.closest('[data-umh]'); if (u) { UMH = !UMH; const b = u.closest('.umrc'); b.classList.toggle('umh-on', UMH); $('#umh').hidden = !UMH; u.setAttribute('aria-expanded', UMH); return; }
   if (e.target.closest('[data-gopos]')) { $('#posMini').scrollIntoView({ block: 'start', behavior: RM ? 'auto' : 'smooth' }); return; }
-  if (e.target.closest('[data-allg]')) { S.tf.day = ''; S.tf.coin = ''; S.tf.act = ''; S.tDetail = null; S.tShow = 20; renderTrades('back'); goTo('#trades'); saveState(); return; }
+  if (e.target.closest('[data-allg]')) { S.tf.day = ''; S.tf.coin = ''; S.tf.act = ''; S.tDetail = null; S.tPage = 1; renderTrades('back'); goTo('#trades'); saveState(); return; }
   if (e.target.closest('[data-ovday]')) { S.tf.day = 'today'; S.tf.coin = ''; S.tf.act = ''; renderTrades('back'); goTo('#trades'); saveState(); return; }
   const q = e.target.closest('[data-askq]'); if (q) askFrom(q.dataset.askq, q.dataset.ctxl ? { k: 'txt', label: q.dataset.ctxl } : null);
 });
@@ -4158,7 +4196,7 @@ document.addEventListener('click', e => { const b = e.target.closest('[data-mft]
 document.addEventListener('click', e => {
   const h = e.target.closest('.bf-r .bh'); if (h) { const r = h.parentNode, o = !r.classList.contains('open'); PCO = o ? r.dataset.bf : '';
     $$('#posMini .bf-r').forEach(x => { const on = x === r && o; x.classList.toggle('open', on); $('.bh', x).setAttribute('aria-expanded', on); $('.bx', x).inert = !on; }); return; }
-  const t = e.target.closest('[data-bft]'); if (t) { S.tf.coin = S.kc = t.dataset.bft; S.tf.day = ''; S.tf.act = ''; S.tDetail = null; S.tShow = 20; renderTrades('back'); goTo('#trades'); saveState(); }
+  const t = e.target.closest('[data-bft]'); if (t) { S.tf.coin = S.kc = t.dataset.bft; S.tf.day = ''; S.tf.act = ''; S.tDetail = null; S.tPage = 1; renderTrades('back'); goTo('#trades'); saveState(); }
 });
 document.addEventListener('click', e => { const p = e.target.closest('[data-pcoin]'); if (p) { S.open.add(p.dataset.pcoin); openDrawer('pos'); setTimeout(() => $(`#pos [data-c="${p.dataset.pcoin}"]`)?.scrollIntoView({ block: "center" }), RM ? 0 : 80); } });
 
@@ -4420,7 +4458,7 @@ function stepFlip(dir, focus) {
 document.addEventListener('click', e => {
   const p = e.target.closest('[data-pc]'); if (p) { const a = p.dataset.pc; if (a === 'x') setFlip(null); else if (a === 'full') openDrawer('ledger'); else stepFlip(a === 'prev' ? -1 : 1); return; }
   const b = e.target.closest('[data-lg]'); if (b && b.closest('#ledger')) { const a = b.dataset.lg; if (a === 'back') closeDrawer(); else { stepFlip(a === 'prev' ? -1 : 1, false); $(`#ledger [data-lg="${a}"]`)?.focus({ preventScroll: true }); } return; }
-  const d = e.target.closest('[data-lgday]'); if (d) { e.preventDefault(); closeDrawer(true); S.tf.day = 'd' + d.dataset.lgday; S.tf.coin = ''; S.tf.act = ''; S.tDetail = null; S.tShow = 20; renderTrades('back'); goTo('#trades'); saveState(); }
+  const d = e.target.closest('[data-lgday]'); if (d) { e.preventDefault(); closeDrawer(true); S.tf.day = 'd' + d.dataset.lgday; S.tf.coin = ''; S.tf.act = ''; S.tDetail = null; S.tPage = 1; renderTrades('back'); goTo('#trades'); saveState(); }
 });
 document.addEventListener('keydown', e => {
   if (S.flip == null || !e.target.closest?.('#ptc')) return;
@@ -4581,7 +4619,7 @@ function renderPos() {
   $$('#pos .pr-h').forEach(h => h.onclick = () => { const r = h.parentNode, c = r.dataset.c, o = !r.classList.contains('open');
     r.classList.toggle('open', o); h.setAttribute('aria-expanded', o); $('.pr-d', r).inert = !o; o ? S.open.add(c) : S.open.delete(c); });
   $$('#pos .pr').forEach(r => { const d = $('.pr-d', r); if (d) d.inert = !r.classList.contains('open'); });
-  $$('#pos [data-ct]').forEach(c => c.onclick = () => { closeDrawer(true); S.tf.coin = S.kc = c.dataset.ct; S.tDetail = null; S.tShow = 20; renderTrades('back'); goTo('#trades'); });
+  $$('#pos [data-ct]').forEach(c => c.onclick = () => { closeDrawer(true); S.tf.coin = S.kc = c.dataset.ct; S.tDetail = null; S.tPage = 1; renderTrades('back'); goTo('#trades'); });
   if (!RM && !SEEN.has('pos')) $('#pos').addEventListener('seen', () => {
     $$('#pos .ps-bar i, #pos .mb i').forEach((b, k) => b.animate([{ transform: 'scaleX(0)' }, { transform: 'scaleX(1)' }], { duration: 560, delay: 140 + Math.floor(k / 2) * 45, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' }));
   }, { once: true });
@@ -5387,13 +5425,15 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape' && DP.open) {
 function renderRecords() {
   const box = $('#trView'); if (!box) return;
   const f = S.tf, list = tradeList(), all = S.view === 'all', dd = selDay(), open = S.tDetail && groupOf(S.tDetail);
-  $('#txBar').innerHTML = `<div class="seg sg2" role="group" aria-label="方向" style="--n:3;--i:${['', 'L', 'S'].indexOf(f.act)}">${[['', '全部'], ['L', '平多止盈'], ['S', '平空止盈']].map(([v, l]) => `<button type="button" data-tact="${v}" aria-pressed="${f.act === v}">${l}</button>`).join('')}</div>
-    <button type="button" class="tx-ft" data-mft="txf" aria-expanded="${MF.has('txf')}">筛选${(f.day ? 1 : 0) + (f.acct ? 1 : 0) ? `<b class="num">${(f.day ? 1 : 0) + (f.acct ? 1 : 0)}</b>` : ''}<i aria-hidden="true"></i></button>
-    <span class="tx-more${mfCls('txf')}" data-mf="txf"><span class="dpw"><button type="button" class="dpb${f.day ? ' on' : ''}" id="fDayBtn" aria-haspopup="dialog" aria-expanded="${DP.open}"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4.5" width="14" height="12.5" rx="2.5"/><path d="M3 8.5h14M7 2.8v3.4M13 2.8v3.4"/></svg><span>${esc(rngLabel(f.day))}</span><i aria-hidden="true"></i></button>${DP.open && DP.t === 'tf' ? dpHtml() : ''}</span>
-    ${all ? `<select class="sel" id="fAcct" aria-label="账号"><option value="">全部账号</option>${ACCTS.filter(a => a.live).map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select>` : ''}</span>
+  f.act = '';
+  $('#txBar').innerHTML = `${all ? `<button type="button" class="tx-ft" data-mft="txf" aria-expanded="${MF.has('txf')}">筛选${f.acct ? '<b class="num">1</b>' : ''}<i aria-hidden="true"></i></button>
+    <span class="tx-more${mfCls('txf')}" data-mf="txf"><select class="sel" id="fAcct" aria-label="账号"><option value="">全部账号</option>${ACCTS.filter(a => a.live).map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select></span>` : ''}
     ${f.coin ? `<span class="chipf">${f.coin}<button type="button" data-kc="" aria-label="取消只看 ${f.coin}">✕</button></span>` : ''}
+    ${f.day ? `<span class="chipf">${esc(rngLabel(f.day))}<button type="button" data-tdayx aria-label="取消只看 ${esc(rngLabel(f.day))}">✕</button></span>` : ''}
     <span class="sp"></span><span class="cnt">${list.length} ${LIVE ? '单' : '次'} · 新的在上 · 点一行展开详情</span>`;
-  const rows = list.slice(0, S.tShow), byDay = new Map();
+  const per = [10, 20, 50, 100].includes(S.tPer) ? S.tPer : 20, pages = Math.max(1, Math.ceil(list.length / per));
+  S.tPage = Math.min(Math.max(1, S.tPage || 1), pages);
+  const p0 = (S.tPage - 1) * per, rows = list.slice(p0, p0 + per), byDay = new Map();
   list.forEach(g => { const o = byDay.get(g.d) || { n: 0, p: 0 }; o.n++; o.p += g.lead.pnl; byDay.set(g.d, o); });
   let html = '', cur = -1;
   rows.forEach((g, k) => {
@@ -5406,15 +5446,30 @@ function renderRecords() {
   });
   if (cur !== -1) html += '</div>';
   box.innerHTML = rows.length ? `<div class="tx-sheet ${all ? '' : 'na'}" id="rtBox"><div class="tx-cols" aria-hidden="true"><span>时间</span><span>币种</span><span>动作</span>${all ? '<span>账号</span>' : ''}<span class="r">成交价</span><span class="r">已实现</span><span class="r">${LIVE ? '手续费' : '转入计奖'}</span><span></span></div>${html}
-      ${list.length > S.tShow ? `<div class="tx-more"><button class="btn ghost" type="button" id="moreBtn">再看 20 ${LIVE ? '单' : '次'}（还有 ${list.length - S.tShow} ${LIVE ? '单' : '次'}）</button></div>` : `<div class="tx-end">已经到底 · 共 ${list.length} ${LIVE ? '单' : '次'}</div>`}</div>`
+      ${txPager(list.length, per, pages)}</div>`
     : `<div class="tx-sheet"><div class="tx-empty"><b>${f.coin ? f.coin + ' ' : '这些条件'}${f.day === 'today' ? '今天' : f.day ? (dayRng(f.day)[0] === dayRng(f.day)[1] ? '这一天' : '这段时间') : ''}还没有止盈记录</b>价格还没走到止盈线，仓位保持不动。<div style="margin-top:14px"><button class="btn ghost sm" type="button" data-treset>清除筛选</button></div></div></div>`;
   const xb = $('#xd [data-td="back"]'); if (xb) xb.textContent = '收起 ↑';
   const map = { fAcct: 'acct' };
-  Object.keys(map).forEach(id => { const el = $('#' + id); if (!el) return; el.value = f[map[id]]; el.onchange = () => { f[map[id]] = el.value; S.tShow = 20; S.tDetail = null; renderTrades(); saveState(); }; });
-  const mb = $('#moreBtn'); if (mb) mb.onclick = () => { const k = S.tShow; S.tShow += 20; renderRecords(); $$('#rtBox .row')[k]?.focus({ preventScroll: true }); saveState(); };
+  Object.keys(map).forEach(id => { const el = $('#' + id); if (!el) return; el.value = f[map[id]]; el.onchange = () => { f[map[id]] = el.value; S.tPage = 1; S.tDetail = null; renderTrades(); saveState(); }; });
+  const pp = $('#tPer'); if (pp) pp.onchange = () => { const first = (S.tPage - 1) * per; S.tPer = +pp.value; S.tPage = Math.floor(first / S.tPer) + 1; S.tDetail = null; renderRecords(); saveState(); $('#tPer')?.focus({ preventScroll: true }); };
   placeK();
 }
 function markRows() {}
+/* r69 · 交易记录分页：默认每页 20，底部翻页，可改每页条数 */
+function txPager(n, per, pages) {
+  const en = EN(), u = en ? '' : (LIVE ? ' 单' : ' 次'), cur = S.tPage, a = (cur - 1) * per + 1, z = Math.min(n, cur * per);
+  let nums = [];
+  if (pages <= 7) nums = [...Array(pages).keys()].map(k => k + 1);
+  else { const set = new Set([1, pages, cur - 1, cur, cur + 1].filter(k => k >= 1 && k <= pages)); const ks = [...set].sort((x, y) => x - y); ks.forEach((k, j) => { if (j && k - ks[j - 1] > 1) nums.push(0); nums.push(k); }); }
+  const btn = k => k ? `<button type="button" class="pg-n${k === cur ? ' on' : ''}" data-tpg="${k}"${k === cur ? ' aria-current="page"' : ''} aria-label="${en ? 'Page ' + k : '第 ' + k + ' 页'}">${k}</button>` : '<span class="pg-gap">…</span>';
+  return `<nav class="tx-pg" aria-label="${en ? 'Pages' : '翻页'}" data-i18n-skip><span class="pg-info num">${en ? `${a}–${z} of ${n}` : `第 ${a}–${z}${u} · 共 ${n}${u}`}</span>
+    <span class="pg-nums"><button type="button" class="pg-n pg-ar" data-tpg="${cur - 1}" ${cur <= 1 ? 'disabled' : ''} aria-label="${en ? 'Previous page' : '上一页'}">‹</button>${nums.map(btn).join('')}<button type="button" class="pg-n pg-ar" data-tpg="${cur + 1}" ${cur >= pages ? 'disabled' : ''} aria-label="${en ? 'Next page' : '下一页'}">›</button></span>
+    <label class="pg-per">${en ? 'Per page' : '每页'}<select class="sel" id="tPer" aria-label="${en ? 'Rows per page' : '每页条数'}">${[10, 20, 50, 100].map(v => `<option value="${v}"${v === per ? ' selected' : ''}>${v}</option>`).join('')}</select>${u}</label></nav>`;
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-tpg]'); if (b && !b.disabled) { S.tPage = +b.dataset.tpg; S.tDetail = null; renderRecords(); saveState(); const sh = $('#rtBox'); if (sh) { const y = sh.getBoundingClientRect().top + scrollY - 90; if (y < scrollY) scrollTo({ top: y, behavior: 'smooth' }); } $(`#rtBox [data-tpg="${S.tPage}"]`)?.focus({ preventScroll: true }); return; }
+  if (e.target.closest('[data-tdayx]')) { S.tf.day = ''; S.tPage = 1; S.tDetail = null; renderTrades(); saveState(); }
+});
 /* hovering a row lights its marker on the K line, and the other way round */
 document.addEventListener('pointerover', e => {
   const r = e.target.closest?.('#rtBox .row'), m = e.target.closest?.('#kline .mk');
@@ -5423,7 +5478,7 @@ document.addEventListener('pointerover', e => {
   if (m) { m.classList.add('hot'); const ids = m.dataset.gs.split(' '); $$('#rtBox .row').forEach(x => ids.includes(x.dataset.open) && x.classList.add('hot')); }
 });
 document.addEventListener('keydown', e => { if ((e.key === 'Enter' || e.key === ' ') && e.target.matches?.('#rtBox .row')) { e.preventDefault(); e.target.click(); } });
-function trRefresh() { S.tShow = 20; S.tDetail = null; if (S.kOpen === 'row') S.kOpen = ''; renderTrades(); saveState(); }
+function trRefresh() { S.tPage = 1; S.tDetail = null; if (S.kOpen === 'row') S.kOpen = ''; renderTrades(); saveState(); }
 document.addEventListener('click', e => {
   const c = e.target.closest('[data-kc]');
   if (c) { const s = c.dataset.kc; if (s) S.kc = s; S.tf.coin = s; trRefresh(); if (s) $(`#wlList [data-kc="${s}"]`)?.focus({ preventScroll: true }); return; }
@@ -5444,7 +5499,7 @@ function openTrade(id, o = {}) {
   if (o.toggle && open0() === g) { S.tDetail = null; if (S.kOpen === 'row') S.kOpen = ''; renderRecords(); saveState(); $(`#rtBox .row[data-open="${CSS.escape(id)}"]`)?.focus({ preventScroll: true }); return; }
   S.tDetail = id;
   if (!tradeList().includes(g)) S.tf = { coin: '', act: '', acct: S.tf.acct === g.acct ? g.acct : '', day: '' };
-  const k = tradeList().indexOf(g); if (k >= S.tShow) S.tShow = Math.ceil((k + 1) / 20) * 20;
+  const k = tradeList().indexOf(g); if (k >= 0) S.tPage = Math.floor(k / (S.tPer || 20)) + 1;
   if (S.kOpen === 'row') { S.kc = g.coin; const age = DAYS - g.d; S.kp = age <= 4 ? '1H' : age <= 18 ? '4H' : '1D'; }
   if (CUR !== 'trades') nav('trades', { focus: false });
   renderTrades(); saveState();
@@ -5464,7 +5519,7 @@ document.addEventListener('click', e => {
   if (a === 'back') { const id = S.tDetail; S.tDetail = null; if (S.kOpen === 'row') S.kOpen = ''; renderRecords(); saveState(); id && $(`#rtBox .row[data-open="${CSS.escape(tid(groupOf(id).lead))}"]`)?.focus({ preventScroll: true }); }
   else if (a === 'prev' && k > 0) { openTrade(tid(list[k - 1].lead)); $('#xd [data-td="prev"]')?.focus({ preventScroll: true }); }
   else if (a === 'next' && k >= 0 && k < list.length - 1) { openTrade(tid(list[k + 1].lead)); $('#xd [data-td="next"]')?.focus({ preventScroll: true }); }
-  else if (a === 'coin' && t) { S.tf.coin = S.kc = t.coin; S.tShow = 20; renderTrades(); saveState(); }
+  else if (a === 'coin' && t) { S.tf.coin = S.kc = t.coin; S.tPage = 1; renderTrades(); saveState(); }
   else if (a === 'day' && t) gotoLedger(t.d);
 });
 
@@ -6215,7 +6270,7 @@ function saveState() {
   if (NOSAVE) return;
   try {
     localStorage.setItem(VIEW_KEY, S.view);
-    sessionStorage.setItem(SS_KEY, JSON.stringify({ range: S.range, ir: S.ir, rc: S.rc, hid: [...S.hid], open: [...S.open], tf: S.tf, flip: S.flip, tShow: S.tShow, kc: S.kc, kp: S.kp, kOpen: S.kOpen === 'top' ? 'top' : '', ovd: S.ovd }));
+    sessionStorage.setItem(SS_KEY, JSON.stringify({ range: S.range, ir: S.ir, rc: S.rc, hid: [...S.hid], open: [...S.open], tf: S.tf, flip: S.flip, tPage: S.tPage, tPer: S.tPer, kc: S.kc, kp: S.kp, kOpen: S.kOpen === 'top' ? 'top' : '', ovd: S.ovd }));
   } catch (e) {}
 }
 function loadState() {
@@ -6228,10 +6283,11 @@ function loadState() {
       if (R.includes(o.ir)) S.ir = o.ir;
       if (Array.isArray(o.hid)) S.hid = new Set(o.hid.filter(k => STB[k]));
       if (Array.isArray(o.open)) S.open = new Set(o.open.filter(coin));
-      if (o.tf) S.tf = { coin: coin(o.tf.coin) ? o.tf.coin : '', act: ['L', 'S'].includes(o.tf.act) ? o.tf.act : '', acct: acctById(o.tf.acct) ? o.tf.acct : '', day: /^(today|d\d+|r\d+-\d+)$/.test(o.tf.day || '') ? o.tf.day : '' };
+      if (o.tf) S.tf = { coin: coin(o.tf.coin) ? o.tf.coin : '', act: '', acct: acctById(o.tf.acct) ? o.tf.acct : '', day: /^(today|d\d+|r\d+-\d+)$/.test(o.tf.day || '') ? o.tf.day : '' };
       if (Number.isInteger(o.flip) && o.flip >= 0 && o.flip < DAYS) S.flip = o.flip;
       if (typeof o.rc === 'string' && /^[A-Z0-9]{2,8}$/.test(o.rc)) S.rc = o.rc;
-      if (Number.isInteger(o.tShow) && o.tShow >= 20) S.tShow = o.tShow;
+      if (Number.isInteger(o.tPage) && o.tPage >= 1) S.tPage = o.tPage;
+      if ([10, 20, 50, 100].includes(o.tPer)) S.tPer = o.tPer;
       if (coin(o.kc)) S.kc = o.kc;
       if (KP[o.kp]) S.kp = o.kp;
       if (o.kOpen === 'top') S.kOpen = 'top';
@@ -6640,7 +6696,7 @@ const PORTALS = [
   { id: 'theme', zh: '昼夜外观', en: 'Day / night', kw: 'waiguan theme dark night 夜间 外观 主题', run: () => openSettings('pref'), el: () => $('#stg [data-thm]')?.closest('.seg') },
   { id: 'lang', zh: '切换语言', en: 'Language', kw: 'yuyan language english 中文 语言', run: () => openSettings('pref'), el: () => $('#stg [data-lang]')?.closest('.seg') },
   { id: 'range', zh: '收益曲线范围', en: 'Curve range', kw: 'fanwei range curve 30 60 曲线', run: () => nav('dashboard'), el: () => $('#rangeSeg') },
-  { id: 'blog', zh: '博客', en: 'Blog', kw: 'boke blog 文章', run: () => { $('#avBtn')?.click(); }, el: () => $('[data-tda-blog]') },
+  { id: 'blog', zh: '资源', en: 'Resources', kw: 'ziyuan boke blog 博客 文章 资源中心', run: () => { $('#avBtn')?.click(); }, el: () => $('[data-tda-blog]') },
 ];
 /* 程序指引：预设最短路径。程序替你打开页面、点亮下一步；随时停止，自由操作后点「继续指引」回到原步骤 */
 const FLOWS = [
@@ -6691,7 +6747,9 @@ const fmtV = (v, f) => f === 'n' ? String(Math.round(v)) : f === 'm0' ? money(v,
 const axV = v => v === 0 ? '0' : Math.abs(v) >= 1e6 ? (v < 0 ? '−' : '') + (Math.abs(v) / 1e6).toFixed(Math.abs(v) >= 1e7 ? 1 : 2).replace(/\.?0+$/, '') + 'M' : Math.abs(v) >= 1e4 ? (v < 0 ? '−' : '') + (Math.abs(v) / 1e3).toFixed(Math.abs(v) >= 1e5 ? 0 : 1) + 'k' : (v < 0 ? '−' : '') + Math.abs(Math.round(v * 10) / 10);
 function ticks3(lo, hi) { const st = (hi - lo) / 3, p = Math.pow(10, Math.floor(Math.log10(st || 1))), m = st / p, s = (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p, out = []; for (let v = Math.ceil(lo / s) * s; v <= hi + 1e-9; v += s) out.push(Math.abs(v) < s / 1e6 ? 0 : v); return out; }
 const dayLabels = (d0, n, today) => Array.from({ length: n }, (_, k) => d0 + k === DAYS && today ? vT('r67today') : dl(d0 + k));
-const SW = 340, SH = 172, ML = 40, MR = 10, MT = 12, MB = 24;
+let SW = 340, SH = 172; const ML = 40, MR = 10, MT = 12, MB = 24;
+/* r69 · 画布宽度跟着对话区走，图里的字按真实像素出，不再被放大 */
+function scSize() { const lg = document.getElementById('log'), w = lg ? lg.clientWidth : 0; SW = w > 200 ? Math.round(Math.max(300, Math.min(640, w - 34))) : 340; SH = Math.round(Math.max(170, Math.min(210, SW * .34))); }
 function scWrap(id, kind, data, svg, legend) {
   return `<div class="sc sc-${kind}" data-sc-id="${id}"><svg class="sc-svg" viewBox="0 0 ${SW} ${SH}" role="img" aria-label="${esc(data.al || '')}" data-sc="${esc(JSON.stringify(data))}">${svg}<line class="sc-g" x1="0" x2="0" y1="${MT}" y2="${SH - MB}" opacity="0"/></svg>${legend || ''}</div>`;
 }
@@ -6751,11 +6809,29 @@ Object.assign(VZC, {
   /* 指引进度：每一步一段，已完成 / 当前 / 未开始 */
   r7prog(c) {
     const f = FLOWS.find(x => x.id === c.f); if (!f) return '';
-    const n = f.steps.length, gap = 6, w = (SW - gap * (n - 1)) / n, cur = c.i || 0;
-    const segs = f.steps.map((s, k) => `<g class="sc-row" data-k="${k}"><rect class="sc-pg ${k < cur ? 'done' : k === cur ? 'cur' : ''}" x="${(k * (w + gap)).toFixed(1)}" y="10" width="${w.toFixed(1)}" height="12" rx="6"/><text class="sc-x" x="${(k * (w + gap) + w / 2).toFixed(1)}" y="40" text-anchor="middle">${k + 1}</text></g>`).join('');
-    const data = { k: 'prog', n, lab: f.steps.map((s, k) => `${k + 1}. ${EN() ? s.en : s.zh}`), s: [], al: vzTi(c) };
-    return `<div class="sc sc-prog"><svg class="sc-svg" viewBox="0 0 ${SW} 48" role="img" aria-label="${esc(data.al)}" data-sc="${esc(JSON.stringify(data))}">${segs}</svg><ol class="sc-steps">${f.steps.map((s, k) => `<li class="${k < cur ? 'done' : k === cur ? 'cur' : ''}">${esc(EN() ? s.en : s.zh)}</li>`).join('')}</ol></div>`;
+    return `<div class="gdc" data-gdf="${f.id}">${gdcInner(f.id)}</div>`;
   },
+});
+/* r69 · 指引卡片和底部浮动条同步：当前步高亮，做完的打勾，停止 / 继续指引在卡片底部 */
+function gdcInner(id) {
+  const f = FLOWS.find(x => x.id === id); if (!f) return '';
+  const en = EN(), act = GD.f === id, fin = !act && GD.fin === id, cur = fin ? f.steps.length : act ? GD.i : -1, n = f.steps.length;
+  const ck = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>';
+  const st = f.steps.map((x, k) => { const cl = k < cur ? 'done' : k === cur ? 'now' : '';
+    return `<li class="${cl}"${cl === 'now' ? ' aria-current="step"' : ''}><i class="gdc-d" aria-hidden="true">${k < cur ? ck : k + 1}</i><span>${esc(en ? x.en : x.zh)}${cl === 'now' && !GD.on ? `<small>${en ? 'Paused here' : '停在这一步'}</small>` : ''}</span></li>`; }).join('');
+  const info = fin ? (en ? 'All done' : '已全部完成') : act ? (en ? `Step ${cur + 1} of ${n}${GD.on ? '' : ' · paused'}` : `第 ${cur + 1} / ${n} 步${GD.on ? '' : ' · 已暂停'}`) : (en ? `${n} steps` : `共 ${n} 步`);
+  const btn = act && GD.on ? `<button type="button" class="btn ghost sm" data-gdc="stop">${en ? 'Stop' : '停止'}</button>`
+    : act ? `<button type="button" class="btn ghost sm" data-gdc="end">${en ? 'End' : '结束'}</button><button type="button" class="btn brand sm" data-gdc="resume">${en ? 'Resume guide' : '继续指引'}</button>`
+    : `<button type="button" class="btn brand sm" data-gdc="start">${fin ? (en ? 'Start again' : '重新开始') : (en ? 'Start guide' : '开始指引')}</button>`;
+  return `<ol class="gdc-st">${st}</ol><div class="gdc-f"><span class="gdc-n">${info}</span>${btn}</div>`;
+}
+function gdcSync() { document.querySelectorAll('.gdc[data-gdf]').forEach(el => { el.innerHTML = gdcInner(el.dataset.gdf); }); }
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-gdc]'); if (!b) return; const id = b.closest('.gdc')?.dataset.gdf, k = b.dataset.gdc;
+  if (k === 'start') guideStart(id);
+  else if (k === 'stop') { guideStop(); toast(LL('指引已暂停：自由操作吧，随时点「继续指引」', 'Guide paused — do your thing, then tap “Resume guide”')); }
+  else if (k === 'resume') { GD.on = true; guideShow(); }
+  else if (k === 'end') guideEnd();
 });
 /* 要点和传送门按钮不画在卡片里：接在图后面 */
 const _vizHtml = vizHtml;
@@ -6763,6 +6839,7 @@ vizHtml = function (vz) {
   if (!Array.isArray(vz)) return '';
   const main = vz.filter(c => c.t !== 'pts' && c.t !== 'chips'), pt = vz.find(c => c.t === 'pts'), ch = vz.find(c => c.t === 'chips');
   const L2 = x => esc(Array.isArray(x) ? x[EN() ? 1 : 0] : x);
+  scSize();
   return _vizHtml(main)
     + (ch ? `<div class="r67-chips" data-i18n-skip>${ch.it.map(x => `<button type="button" class="r67-chip" data-go="${esc(x.go)}">${L2(x.l)}</button>`).join('')}</div>` : '')
     + (pt ? `<ul class="r67-pts" data-i18n-skip>${pt.it.map(x => `<li>${Array.isArray(x) ? x[EN() ? 1 : 0] : x}</li>`).join('')}</ul>` : '');
@@ -7011,11 +7088,11 @@ goTo = function (sel) {
 };
 
 /* ---------- 程序指引：浮动条，可停止、可继续 ---------- */
-const GD = { f: null, i: 0, on: false };
+const GD = { f: null, i: 0, on: false, fin: null };
 const gbar = document.createElement('div'); gbar.className = 'gdb'; gbar.id = 'guideBar'; gbar.hidden = true; gbar.setAttribute('role', 'region'); gbar.setAttribute('data-i18n-skip', ''); document.body.appendChild(gbar);
 const guideOn = () => GD.on;
 function guideRender() {
-  const f = FLOWS.find(x => x.id === GD.f); if (!f) { gbar.hidden = true; return; }
+  const f = FLOWS.find(x => x.id === GD.f); if (!f) { gbar.hidden = true; gdcSync(); return; }
   const en = EN(), s = f.steps[GD.i], last = GD.i === f.steps.length - 1;
   gbar.setAttribute('aria-label', en ? 'Dodo guide' : 'Dodo 指引');
   gbar.className = 'gdb' + (GD.on ? '' : ' paused');
@@ -7024,23 +7101,23 @@ function guideRender() {
        <div class="gdb-b"><button type="button" class="btn ghost sm" data-gd="stop">${en ? 'Stop' : '停止'}</button>${GD.i > 0 ? `<button type="button" class="btn ghost sm" data-gd="prev">${en ? 'Back' : '上一步'}</button>` : ''}<button type="button" class="btn brand sm" data-gd="next">${last ? (en ? 'Done' : '完成') : (en ? 'Next' : '下一步')}</button></div>`
     : `<span class="gdb-dd" aria-hidden="true">${ddMini()}</span><div class="gdb-t"><small>${en ? 'Guide paused' : '指引已暂停'} · ${GD.i + 1}/${f.steps.length}</small><b>${esc(en ? f.en : f.zh)}</b></div>
        <div class="gdb-b"><button type="button" class="btn ghost sm" data-gd="end" aria-label="${en ? 'End guide' : '结束指引'}">✕</button><button type="button" class="btn brand sm" data-gd="resume">${en ? 'Resume guide' : '继续指引'}</button></div>`;
-  gbar.hidden = false;
+  gbar.hidden = false; gdcSync();
 }
 function guideShow() {
   const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i];
   guideRender(); s.run();
   waitEl(s.el, el => { if (!GD.on) return; glow(el); if (el) { clearTimeout(el._hl); } });
 }
-function guideStart(id) { if (!FLOWS.some(x => x.id === id)) return; GD.f = id; GD.i = 0; GD.on = true; guideShow(); }
+function guideStart(id) { if (!FLOWS.some(x => x.id === id)) return; GD.f = id; GD.i = 0; GD.on = true; GD.fin = null; guideShow(); }
 function guideStop() { GD.on = false; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); guideRender(); }
-function guideEnd() { GD.on = false; GD.f = null; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); gbar.hidden = true; }
+function guideEnd(done) { GD.fin = done ? GD.f : null; GD.on = false; GD.f = null; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); gbar.hidden = true; gdcSync(); }
 gbar.addEventListener('click', e => {
   const b = e.target.closest('[data-gd]'); if (!b) return; const k = b.dataset.gd, f = FLOWS.find(x => x.id === GD.f);
   if (k === 'stop') { guideStop(); toast(LL('指引已暂停：自由操作吧，随时点「继续指引」', 'Guide paused — do your thing, then tap “Resume guide”')); return; }
   if (k === 'end') { guideEnd(); return; }
   if (k === 'resume') { GD.on = true; guideShow(); return; }
   if (k === 'prev') { GD.i = Math.max(0, GD.i - 1); guideShow(); return; }
-  if (k === 'next') { if (GD.i >= f.steps.length - 1) { guideEnd(); toast(LL(`「${f.zh}」指引完成`, `“${f.en}” guide finished`)); return; } GD.i++; guideShow(); }
+  if (k === 'next') { if (GD.i >= f.steps.length - 1) { guideEnd(true); toast(LL(`「${f.zh}」指引完成`, `“${f.en}” guide finished`)); return; } GD.i++; guideShow(); }
 });
 /* 用户点了被点亮的按钮，就自动走到下一步 */
 document.addEventListener('click', e => {

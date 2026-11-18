@@ -24,7 +24,7 @@ html.snap *{transition:none!important}
 
 /* top bar: our logo, bigger; sign in / sign up stay at the top right */
 .bar{position:fixed;z-index:10;top:0;left:0;right:0;height:84px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,56px)}
-.bar .logo{height:26px;width:auto;display:block}
+.bar .logo{height:30px;width:auto;display:block}   /* r69: a little bigger (Jasper) */
 .acts{display:flex;gap:10px;align-items:center}
 .acts a{height:40px;padding:0 20px;border-radius:20px;display:inline-flex;align-items:center;font:600 14px var(--sans);text-decoration:none;cursor:pointer}
 .acts .gh{color:#e9edf0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
@@ -81,7 +81,7 @@ h2 .l{color:var(--up)}h2 .s{color:var(--dn)}h2 .y{color:var(--bn)}
 .note .nbl{color:var(--ink2,#c9d1d6);text-decoration:none;margin-left:14px;pointer-events:auto}.note .nbl::before{content:"· ";color:var(--ink3)}.note .nbl:hover{color:var(--brand)}   /* r67: the blog, in the corner line too */
 
 @media (max-width:760px){
-  .bar{height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 16px 0}.bar .logo{height:21px}.acts a{height:32px;padding:0 13px;font-size:13px}.acts .gh{display:inline-flex}
+  .bar{height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 16px 0}.bar .logo{height:23px}.acts a{height:32px;padding:0 13px;font-size:13px}.acts .gh{display:inline-flex}
   .blk{width:calc(100vw - 44px);transform-origin:0 0}
   .blk.c{width:calc(100vw - 36px);transform-origin:50% 0}
   h1{font-size:30px}h2{font-size:26px}
@@ -208,6 +208,7 @@ html[data-theme=day] .tm{background:transparent;color:#0c1f2e;box-shadow:inset 0
 @media (max-width:760px){.tm{width:32px;height:32px;margin-right:8px}.tm svg{width:16px;height:16px}}
 #tdLay{display:none!important}
 /* phones, first visit: one tap turns on motion (iOS only asks inside a real tap). Skipping it never asks again */
+@media (hover:none) and (pointer:coarse){body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}input,textarea{-webkit-user-select:text;user-select:text}}   /* r69: a long press no longer selects the whole page */
 .gate{position:fixed;inset:0;z-index:15;display:flex;align-items:center;justify-content:center;background:#000;opacity:0;transition:opacity .5s;cursor:pointer;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;touch-action:none}
 .gate.on{opacity:1}.gate[hidden]{display:none}
 .gate b{font:500 17px var(--sans);color:#e9edf0;letter-spacing:.32em;padding-left:.32em;animation:gbr 2.8s ease-in-out infinite}
@@ -266,7 +267,7 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 <div class="lay">
 <header class="bar">
   <a class="home" id="home" href="#" aria-label="3dtrading，回到首页" title="回到首页"><img class="logo" src="assets/3dtrading-logo-white.svg" alt="3dtrading"></a>
-  <div class="acts" id="acts"><a class="gh bl" id="blogT" href="../blog/">博客</a><a class="pr" data-go="signup">登录/注册</a></div>
+  <div class="acts" id="acts"><a class="gh bl" id="blogT" href="../blog/">资源</a><a class="pr" data-go="signup">登录/注册</a></div>
 </header>
 
 <section class="copy" id="copy" aria-live="polite">
@@ -327,7 +328,7 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 
 <nav class="rail" id="rail" aria-label="步骤"></nav>
 <button class="cue" id="cue" aria-label="下一步"><span>向下</span><i></i></button>
-<div class="note">合成条件演示 · 账面余额未扣浮亏，演示数据不代表真实账户或未来收益<a class="nbl" id="blogF" href="../blog/">博客</a></div>
+<div class="note">合成条件演示 · 账面余额未扣浮亏，演示数据不代表真实账户或未来收益<a class="nbl" id="blogF" href="../blog/">资源</a></div>
 <div class="scrim" aria-hidden="true"></div>
 <a class="talk" id="talk" data-go="ai">和 Dodo 对话</a>
 <button class="chap" id="chap" aria-haspopup="dialog" aria-label="选择章节"><b>01</b>&nbsp;/ 11</button>
@@ -941,8 +942,11 @@ SCL.addEventListener('scroll', () => {
    之后每站 STEP[1]、STEP[2]……越来越少（下限 STEP 末项），最多 4 站。累计过了第一站门槛时镜头就朝下一站起步（只加速），锁定后若要走更远，
    就从当前位置、带着当前速度改成直线飞向终点，然后只减速一次。滚轮一格（单次大值）= 一站。
    手机：恢复一划一站（r65），飞行中再划同方向终点 +1、反向 −1，都接着当前速度走 */
-const WTH = { BASE: +QP.get('wth') || 196, WIN: 250, GAP: 90, MAXN: 4 };
-const wthAt = n => n <= 0 ? 0 : WTH.BASE + WTH.BASE * 2 * (n - 1);   // r68c (Jasper 2026-11-18): first stop BASE, every further stop a fixed 2×BASE more (196 · 588 · 980 · 1372)
+/* r69 · 滚轮 = 触发 + CD（Jasper 2026-11-18）。一划的滑动量一过 BASE（196）镜头马上出发去下一站；从出发那一刻起 CD（0.35 s）内，
+   每多滑 2×BASE（392）多走一站（196 · 588 · 980 · 1372，最多 4 站）。CD 一结束这一划就锁住，剩下的惯性全部吃掉，要明显再划一下才算下一次。
+   太轻、没过门槛的一划不动；鼠标滚轮一格（一两个大值）= 一站。手机触屏不受影响 */
+const WTH = { BASE: +QP.get('wth') || 196, CD: +QP.get('wcd') || 350, GAP: 90, MAXN: 4 };
+const wthAt = n => n <= 0 ? 0 : WTH.BASE + WTH.BASE * 2 * (n - 1);
 const stepsOf = est => { let n = 0; while (n < WTH.MAXN && est >= wthAt(n + 1)) n++; return n; };
 const busyIn = () => GATE || PFX.busy() || HOMING;
 function gesture(dir, n, why) { if (busyIn() || n < 1) return; GLAST = performance.now(); window.__lastG = { dir, n, why };
@@ -950,29 +954,34 @@ function gesture(dir, n, why) { if (busyIn() || n < 1) return; GLAST = performan
   if (n === 1) { go(dir); return; }
   const tg = clamp(CK.tgt + dir * n, 0, NS - 1); if (tg !== CK.tgt) jump(tg); window.__lastG.tg = tg; }
 let WG = null, GLAST = 0;
-function wLock(why) { const g = WG; if (!g || g.locked) return; g.locked = true; g.tl = performance.now(); clearTimeout(g.tm); g.minL = 1e9;
-  const d = g.ds, k = d.length, a3 = d[k - 1] || 0, a2 = d[k - 2] || 0; let tail = 0;
-  if (k >= 3 && a3 < a2) { const r = clamp(a3 / a2, .5, .94); tail = Math.min(a3 * r / (1 - r), g.sum * 4); }   // decaying: the rest of the geometric tail
-  else if (why === 'win' && k >= 3) tail = Math.min(a3 * 10, g.sum * 4);                                       // still pushing at the window's end
-  const notch = k <= 2 && g.peak >= 40, est = g.sum + tail, n = notch ? 1 : Math.max(stepsOf(est), g.started ? 1 : 0);
-  window.__lastW = { sum: Math.round(g.sum), tail: Math.round(tail), est: Math.round(est), n, why, k };
-  if (n < 1) return;
-  if (g.dir > 0 && g.base === NS - 1) { go(1); return; }   // the door
+function wStep(g) {   // inside the CD: the scroll so far decides how far this swipe goes
+  const n = Math.min(WTH.MAXN, Math.max(1, stepsOf(g.sum))); if (n <= g.n) return;
+  if (busyIn() || (g.dir > 0 && g.base === NS - 1)) return; g.n = n;
   const tg = clamp(g.base + g.dir * n, 0, NS - 1); if (tg === CK.tgt) return;
-  if (busyIn()) return; GLAST = performance.now(); window.__lastG = { dir: g.dir, n, why: 'wheel:' + Math.round(est), tg }; jump(tg); }
+  GLAST = performance.now(); window.__lastG = { dir: g.dir, n, why: 'wheel:' + Math.round(g.sum), tg }; jump(tg); }
+function wLock(why) { const g = WG; if (!g || g.locked) return; g.locked = true; g.tl = performance.now(); clearTimeout(g.tm); clearTimeout(g.cd); g.minL = 1e9;
+  if (!g.n && why === 'gap' && g.ds.length <= 2 && g.peak >= 40 && !busyIn()) { g.n = 1; gesture(g.dir, 1, 'notch'); }   // one click of a mouse wheel
+  window.__lastW = { sum: Math.round(g.sum), n: g.n, why, k: g.ds.length }; }
 SCL.addEventListener('wheel', e => { e.preventDefault(); if (gateOn() || chsOpen()) return;
   let dy = e.deltaY; if (e.deltaMode === 1) dy *= 16; else if (e.deltaMode === 2) dy *= innerHeight; if (Math.abs(dy) < .5) return;
   const n = performance.now(), dir = Math.sign(dy), ad = Math.abs(dy), W0 = WG;
   let fresh = !W0 || n - W0.last > 160 || (dir !== W0.dir && ad > 2);
   if (!fresh && W0.locked) { W0.minL = Math.min(W0.minL, ad); W0.rise = ad > W0.la ? W0.rise + 1 : 0;
-    if (n - W0.tl > 220 && W0.rise >= 3 && ad > Math.max(12, W0.minL * 2.2 + 8)) fresh = true; }   // a real new push rising out of the old one's tail
-  if (fresh) { if (W0 && !W0.locked) wLock('next'); WG = { dir, sum: 0, ds: [], peak: 0, t0: n, last: n, la: ad, rise: 0, locked: false, started: false, base: CK.tgt }; }
-  const g = WG; g.last = n; g.la = ad; if (g.locked) return;   // locked: the rest of this gesture's inertia is eaten
+    if (n - W0.tl > 60 && W0.rise >= 3 && ad > Math.max(12, W0.minL * 2.2 + 8)) fresh = true; }   // a real new push rising out of the old one's tail
+  if (fresh) { if (W0 && !W0.locked) wLock('next'); WG = { dir, sum: 0, ds: [], peak: 0, t0: n, last: n, la: ad, rise: 0, locked: false, n: 0, tt: 0, base: CK.tgt }; }
+  const g = WG; g.last = n; g.la = ad; if (g.locked) return;   // after the CD: the rest of this swipe's inertia is eaten
   g.sum += ad; g.ds.push(ad); g.peak = Math.max(g.peak, ad);
-  clearTimeout(g.tm); g.tm = setTimeout(() => wLock('gap'), WTH.GAP);
-  if (!g.started && g.sum >= wthAt(1) && !busyIn() && !(dir > 0 && g.base === NS - 1)) { const tg = clamp(g.base + dir, 0, NS - 1);
-    if (tg !== CK.tgt || DF) { g.started = true; GLAST = n; go(tg - CK.tgt); } }   // past the first stop's bar: the camera sets off now (speeding up only)
-  if (g.ds.length >= 3 && ad < g.peak * .7) wLock('peak'); else if (n - g.t0 >= WTH.WIN) wLock('win');
+  if (!g.n) {   // not triggered yet
+    clearTimeout(g.tm); g.tm = setTimeout(() => wLock('gap'), WTH.GAP);
+    if (g.sum < wthAt(1) || busyIn()) return;
+    clearTimeout(g.tm); g.n = 1; g.tt = n; g.base = CK.tgt; g.cd = setTimeout(() => wLock('cd'), WTH.CD);
+    GLAST = n; window.__lastW = null;
+    if (dir > 0 && g.base === NS - 1) { window.__lastG = { dir, n: 1, why: 'wheel:door' }; go(1); wLock('door'); return; }
+    const tg = clamp(g.base + dir, 0, NS - 1); window.__lastG = { dir, n: 1, why: 'wheel:' + Math.round(g.sum), tg };
+    if (tg !== CK.tgt || DF) go(tg - CK.tgt);   // past the bar: the camera sets off now
+    wStep(g); return;
+  }
+  if (n - g.tt <= WTH.CD) wStep(g); else wLock('cd');
 }, { passive: false });
 addEventListener('keydown', e => { if (e.repeat) return; if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(1); } if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
   if (e.key === 'Home') jump(0); if (e.key === 'End') jump(NS - 1); });
@@ -1008,7 +1017,7 @@ const wire = root => root.querySelectorAll('[data-go]').forEach(a => { a.href = 
 wire(document);
 function syncAuth() { const u = user(), r = routes();
   const acts = document.getElementById('acts'); const en = (() => { try { return localStorage.getItem('r49site.lang') === 'en'; } catch (e) { return false; } })();
-  const blog = `<a class="gh bl" id="blogT" href="../blog/">${en ? 'Blog' : '博客'}</a>`;   // r67: the blog stays in the top bar, signed in or not
+  const blog = `<a class="gh bl" id="blogT" href="../blog/">${en ? 'Resources' : '资源'}</a>`;   // r67: the blog stays in the top bar, signed in or not
   acts.innerHTML = blog + (u ? siteText(`<a class="pr" data-go="dashboard">${en ? 'Dashboard' : '进入后台'}</a>`) : siteText(`<a class="pr" data-go="signup">${en ? 'Log in / Sign up' : '登录/注册'}</a>`)); wire(document);
   document.getElementById('hint').textContent = u ? siteText('点击门，或继续下滑进入后台') : siteText('点击门，或继续下滑进入'); }
 syncAuth(); addEventListener('storage', e => { if (!e.key || e.key === '3dt.session') syncAuth(); });
@@ -1283,7 +1292,7 @@ function drawWall(a) {
   const mg = g; g = wg; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, WL.width, WL.height); g.setTransform(DPR, 0, 0, DPR, 0, 0);
   wallBody();
   // r50 day: the screens give way behind the 01 headline, so the copy sits on clean teal instead of over a screen
-  if (BLK[0] && !ML) {   // r64 #6: night too — the 01 headline and body no longer sit over the cards
+  if (BLK[0] && !ML && QP.get('cut') === '1') {   // r69 (Jasper 2026-11-18): the dark cut-out under the 01 copy is gone; the cards show through again (?cut=1 brings it back)
   const op = +getComputedStyle(BLK[0]).opacity; if (op > .01) { const r = BLK[0].getBoundingClientRect(), px = 46;
     g.save(); g.globalCompositeOperation = 'destination-out'; g.filter = 'blur(' + Math.round(px * DPR * .9) + 'px)'; g.globalAlpha = (DAY ? .97 : .93) * op; g.fillStyle = '#000';
     g.beginPath(); g.roundRect(-200, r.top - px, r.right + px * 1.2 + 200, r.height + px * 2, px); g.fill(); g.restore(); } }

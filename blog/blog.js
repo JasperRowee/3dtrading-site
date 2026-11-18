@@ -5,7 +5,7 @@
   var POSTS = (window.BLOG_POSTS || []).slice().sort(function (a, b) { return (b.pin ? 1 : 0) - (a.pin ? 1 : 0) || (a.date < b.date ? 1 : a.date > b.date ? -1 : 0); });
   var BY = {}; POSTS.forEach(function (p) { BY[p.slug] = p; });
   var T = {
-    zh: { hub: '资源中心', login: '登录', site: '官网', foot: '资产留在你本人的币安子账户 · 提现永远关闭',
+    zh: { hub: '资源', login: '登录', site: '官网', foot: '资产留在你本人的币安子账户 · 提现永远关闭',
       eyebrow: 'Resources', h1: '把 3dtrading <em>讲清楚</em>', lede: '策略怎么运作、后台数字怎么算、怎么绑定币安，以及每次更新的说明，都在这里。',
       all: '全部', article: '文章', notice: '公告', guide: '教程', min: ' 分钟', back: '资源中心', copy: '复制链接', copied: '链接已复制', share: '分享',
       copyFail: '复制失败，请手动复制地址栏', more: '继续阅读', nf: '没有找到这篇内容', nfp: '链接可能已更新，回到资源中心看看其他内容。', none: '这一栏暂时还没有内容。', title: '资源中心 · 3dtrading', newest: '最新' },
@@ -143,5 +143,5 @@
     for (var i = 0; i < n; i++) { cx.globalAlpha = R() * .5 + .08; cx.fillStyle = '#fff'; cx.beginPath(); cx.arc(R() * w, R() * h, R() * .8 + .2, 0, 6.283); cx.fill(); }
     cx.globalAlpha = 1;
   }
-  var rz; addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(sky, 120); }); sky();
+  /* r69: star field off (Jasper: no galaxy, keep it simple) */
 })();

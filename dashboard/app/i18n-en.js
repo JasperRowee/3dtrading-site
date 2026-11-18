@@ -638,7 +638,7 @@ window.I18N_EN = {
 "账号信息是演示数据": "Account details are demo data",
 "账号名称": "Account name",
 "账户": "Account",
-"账户模块没有加载（/account/td-account.js），后台暂不可用。": "The account module didn't load (/account/td-account.js), so the dashboard is unavailable.",
+"账户模块没有加载（/account/td-account.js），后台暂不可用。": "The account module didn't load (/3dtrading-site/account/td-account.js), so the dashboard is unavailable.",
 "账户类型": "Account type",
 "账户资产": "Account assets",
 "账户资产 ≥ {0} USDT": "Account assets ≥ {0} USDT",
