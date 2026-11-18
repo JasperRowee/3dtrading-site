@@ -122,7 +122,9 @@ h2 .l{color:var(--up)}h2 .s{color:var(--dn)}h2 .y{color:var(--bn)}
 .pfx.on{display:block;pointer-events:auto}
 .pfx.on{will-change:opacity,clip-path}
 /* r62 · while the camera leaves (or comes back), the page's own copy, bar and controls step aside; they come back as it lands */
-html.tx3 .bar,html.tx3 .copy,html.tx3 .rail,html.tx3 .cue,html.tx3 .note,html.tx3 .talk,html.tx3 .scrim,html.tx3 .toast,html.tx3 .gate{opacity:0!important;pointer-events:none!important;transition:opacity .38s ease!important}
+/* r63 · 转场时文字跟着场景走（--txk 缩放、--txf 淡出，由镜头每帧给出），不再自己淡出 */
+html.tx3 :is(.bar,.copy,.rail,.cue,.note,.talk){scale:calc(1 - var(--txk,0));opacity:calc(1 - var(--txf,1))!important;pointer-events:none!important;transition:none!important}
+html.tx3 .scrim,html.tx3 .toast,html.tx3 .gate{opacity:0!important;pointer-events:none!important;transition:opacity .38s ease!important}
 html.tx3o .bar,html.tx3o .copy,html.tx3o .rail,html.tx3o .cue,html.tx3o .note,html.tx3o .talk,html.tx3o .scrim{transition:opacity .7s ease!important}
 html.via-planet .pfx{display:block}
 @view-transition{navigation:auto}
@@ -215,6 +217,7 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 <script src="reveal.js?v=r59"></script>
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="icons/dodo.svg?v=20261112">
+<script>(function(l){if(l)l.href=l.href})(document.querySelector('link[rel=icon]'))</script>
 <link rel="apple-touch-icon" sizes="180x180" href="icons/dodo-180.png?v=20261112">
 <link rel="manifest" href="manifest.webmanifest?v=20261112">
 <meta name="application-name" content="3dtrading">
@@ -309,7 +312,7 @@ addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) re
 <div class="pfx" id="pfx" aria-hidden="true"><canvas id="pfxS"></canvas><canvas id="pfxP"></canvas></div>
 <script>/* r62 · back from the log-in page (?via=planet): the shell covers the screen from the first paint, the copy waits for the landing */
 try { if (/[?&]via=planet\b/.test(location.search) && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('via-planet', 'tx3'); } catch (e) {}</script>
-<script src="/3dtrading-site/login/planet.js?v=r62" data-art="1" data-gx="pfxS" data-orb="pfxP"></script>
+<script src="/3dtrading-site/login/planet.js?v=r63" data-art="1" data-gx="pfxS" data-orb="pfxP"></script>
 
 <script src="i18n/r48.js?v=r55"></script>
 <script>
@@ -538,7 +541,24 @@ function arc() { const key = W + 'x' + H + (mob ? 'm' : '') + (ML ? 'l' : '') + 
 function sOf(t) { const R = arc(), tc = clamp(t, 0, NS - 1), i = Math.min(NS - 2, Math.floor(tc)), x = (tc - i) * R.N, k = Math.min(R.N - 1, Math.floor(x)), c = R.segs[i]; return R.S[i] + c[k] + (c[k + 1] - c[k]) * (x - k); }
 function tOf(s) { const R = arc(); let i = 0; while (i < NS - 2 && s > R.S[i + 1]) i++; const c = R.segs[i], r = clamp(s - R.S[i], 0, c[R.N]); let lo = 0, hi = R.N;
   while (hi - lo > 1) { const m = (lo + hi) >> 1; if (c[m] <= r) lo = m; else hi = m; } const sp = c[hi] - c[lo]; return i + (lo + (sp > 0 ? (r - c[lo]) / sp : 0)) / R.N; }
-function camStep(m, dt) { const R = arc(), cs = { x: sOf(m.t), v: m.vs || 0 }, t0 = m.t;
+/* r63 · 02–05 (t 1–4): a move that starts and ends there runs slow and even (Jasper 2026-11-18): UNI.SEC s per stop, about UNI.EASE s
+   easing at each end. A swipe on while it runs moves the destination one stop further and keeps the same speed. Coming in from 01
+   (01→03) or leaving 02–05 keeps the accelerate + glide law above. */
+const UNI = { SEC: 1.4, EASE: .1, LO: 1, HI: 4 };
+const inUni = x => x >= UNI.LO - 1e-6 && x <= UNI.HI + 1e-6;
+function uniStep(m, dt) { const vmax = 1 / UNI.SEC, a = vmax / UNI.EASE, d = m.tgt - m.t, ad = Math.abs(d), dir = Math.sign(d) || Math.sign(m.v) || 1;
+  let vr = (m.v || 0) * dir; const cap = Math.min(vmax, Math.sqrt(2 * a * ad));
+  vr = vr < cap ? Math.min(cap, vr + a * dt) : cap;   // speed up over EASE s; near the end ride the braking curve so it stops exactly there
+  let nx = m.t + dir * vr * dt; if ((m.tgt - nx) * dir <= 1e-5) { nx = m.tgt; vr = 0; }
+  m.t = nx; m.v = dir * vr; const R = arc(), e = 1e-3; m.vs = m.v * (sOf(Math.min(NS - 1, m.t + e)) - sOf(m.t)) / e; }
+function camStep(m, dt) {
+  const rest = m.t === m.tgt && !m.v;
+  if (rest) m.uni = false;
+  else if (m.uni == null || m.uni === false && Math.abs(m.v || 0) < 1e-3) m.uni = inUni(m.t) && inUni(m.tgt);   // decided when a move starts
+  if (m.uni && !inUni(m.tgt)) m.uni = false;    // the destination left 02–05: on from here with the camera law, at the speed it has (m.vs)
+  if (m.uni) return uniStep(m, dt);
+  camLaw(m, dt); }
+function camLaw(m, dt) { const R = arc(), cs = { x: sOf(m.t), v: m.vs || 0 }, t0 = m.t;
   chase(cs, R.S[clamp(m.tgt, 0, NS - 1)], MV.CA * R.med, MV.CK, dt, R.med * 1e-4); m.vs = cs.v; m.t = cs.x === R.S[m.tgt] ? m.tgt : tOf(cs.x); m.v = dt > 0 ? (m.t - t0) / dt : 0; }
 /* 11 builds on its own clock (B11.t 9→10: the stairs rise, the door, the logo). It sets off the moment the destination becomes 11, i.e. as the
    camera leaves 10, with the same law; going back it winds down the same way. B11.a is 11's action (A[10]) */
@@ -608,25 +628,39 @@ const PFX = (() => {
   // the axis we leave along: the way the camera looks now, tipped down so the point where we cross the shell is above the floor
   function axis() { const yaw = Math.atan2(C.f[0], C.f[2]), sp = (clamp(C.p[1], 12, 60) - SC[1]) / SR, cp = Math.sqrt(1 - sp * sp);
     X.fe = [cp * Math.sin(yaw), -sp, cp * Math.cos(yaw)]; X.Pc = X.fe.map((v, i) => SC[i] - v * SR); }
+  /* r63 · 文字跟着场景走：标题、导航、文案不自己淡出，而是以屏幕中心为原点随镜头后退一起缩小（门：一起冲过去放大），
+     缩到很小（或冲出画面）时才淡掉；只用 scale / opacity（合成层，不重排） */
+  const TXEL = '.bar,.copy,.rail,.cue,.note,.talk';
+  function txStart() { document.querySelectorAll(TXEL).forEach(el => { const r = el.getBoundingClientRect(); el.style.transformOrigin = (W / 2 - r.left).toFixed(0) + 'px ' + (H / 2 - r.top).toFixed(0) + 'px'; }); }
+  function txFollow() { const u = X.u; let k, f;
+    if (X.kind === 'door') { k = -1.4 * sm(sg(u, 0, .3)); f = sm(sg(u, .06, .24)); }
+    else { k = .8 * sm(sg(u, 0, UC * .9)); f = sm(sg(u, UC * .35, UC * .8)); }
+    de.style.setProperty('--txk', k.toFixed(4)); de.style.setProperty('--txf', f.toFixed(4)); }
+  function txClear() { de.style.removeProperty('--txk'); de.style.removeProperty('--txf'); document.querySelectorAll(TXEL).forEach(el => { el.style.transformOrigin = ''; }); }
+  /* r63 · 转场时官网画面降到一半分辨率（画面在缩小、被星球盖住，看不出来），结束恢复 */
+  let LORES = false;
+  function setRes(lo) { LORES = lo; const d = Math.min(2, devicePixelRatio || 1) * (lo ? .5 : 1), nd = lo ? Math.max(.6, d) : d; if (nd === DPR) return; DPR = nd; cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
   const busy = () => !!X;
   // the scene is wholly under the overlay (the shell has closed over it, or we are through the door): it need not be drawn
-  const hidden = () => !!X && (X.kind === 'door' ? X.past && X.u >= .22 : X.out && X.o >= X.oh);
+  const hidden = () => !!X && (X.kind === 'door' ? X.past && X.u >= .22 : X.out && (X.o >= X.oh || !!X.snap));
   function exit(url) {
     if (X || leaving || !art()) return false; leaving = true; remember();
     const go = loginURL(url, 'exit'); window.__enter = { kind: 'exit', url: go, at: performance.now() };
     if (RM) { location.href = go; return true; }
-    X = plan('exit', go); de.classList.add('tx3'); return true;
+    X = plan('exit', go); txStart(); JOIN.prep(go); de.classList.add('tx3'); return true;
   }
   function door(kind) {
     if (X || leaving || !art() || !DOORG) return false; leaving = true; remember();
     const r = routes(), go = loginURL(kind === 'login' ? r.login : r.signup, 'door'); window.__enter = { kind: 'door', url: go, at: performance.now() };
     if (RM) { location.href = go; return true; }
-    X = plan('door', go); const D = DOORG; X.Dc = onS(D.da, (D.e0 + D.e1) / 2, D.rr); X.n = [Math.sin(D.da), 0, Math.cos(D.da)]; X.Pd = add3(X.Dc, mul3(X.n, 9));
+    X = plan('door', go); txStart(); JOIN.prep(go); const D = DOORG; X.Dc = onS(D.da, (D.e0 + D.e1) / 2, D.rr); X.n = [Math.sin(D.da), 0, Math.cos(D.da)]; X.Pd = add3(X.Dc, mul3(X.n, 9));
     de.classList.add('tx3'); return true;
   }
   /* each frame, after the scene's own camera is worked out (it stays the start of the path, so coming back lands exactly on it) */
   function cam(dt) {
-    if (!X) { CULL = null; TXW = 0; TXD = 0; FOGD = 150; return; }
+    if (!X) { CULL = null; TXW = 0; TXD = 0; FOGD = 150; if (LORES) setRes(false); return; }
+    if (!LORES && !RM) setRes(true);
+    txFollow();
     const m = { x: X.u, v: X.v }; chase(m, X.tgt, MV.CA / (X.kind === 'door' ? LEN_DOOR : LEN), MV.CK, dt, 1e-5); X.u = m.x; X.v = m.v;
     const P0 = C.p.slice(), f0 = C.f.slice(), cx0 = C.cx, cy0 = C.cy, F0 = C.F, u = X.u;
     let P, f, cx, cy, F = F0;
@@ -668,24 +702,30 @@ const PFX = (() => {
       box.className = 'pfx on'; box.style.opacity = ''; box.style.clipPath = '';
       const o = X.o, r = Math.min(1e5, X.Fe * SR / Math.sqrt(Math.max(1e-6, X.d * X.d - SR * SR))), dim = .35 * sm(sg(o, 0, X.oh));
       box.style.setProperty('--vg', sg(o, 0, X.ox).toFixed(3));
-      art().frame({ cx: X.pcx, cy: X.pcy, R: r, sky: 1, shell: .4 * sm(sg(o, 0, X.ox)) + .6 * sm(sg(o, X.ox, X.oh)), inner: (c, x, y, R) => { c.save(); c.beginPath(); c.arc(x, y, R, 0, 7); c.clip();
-        try { c.drawImage(cv, 0, 0, W, H); } catch (e) {} if (dim > .005) { c.fillStyle = `rgba(2,5,9,${dim.toFixed(3)})`; c.fillRect(0, 0, W, H); } c.restore(); } });
+      /* r63 · 减负：穿出星球后，官网场景只画最后一次，存成一张图贴在内壁上（跟着圆盘一起缩小），之后不再画整套场景 */
+      if (!X.snap && X.kind !== 'back') { try { const s = document.createElement('canvas'); s.width = cv.width; s.height = cv.height; s.getContext('2d').drawImage(cv, 0, 0); X.snap = { c: s, r, x: X.pcx, y: X.pcy }; } catch (e) {} }
+      art().frame({ cx: X.pcx, cy: X.pcy, R: r, sky: 1, lite: 1, shell: .4 * sm(sg(o, 0, X.ox)) + .6 * sm(sg(o, X.ox, X.oh)), inner: (c, x, y, R) => { c.save(); c.beginPath(); c.arc(x, y, R, 0, 7); c.clip();
+        try { if (X.snap) { const k = R / X.snap.r; c.save(); c.translate(x, y); c.scale(k, k); c.drawImage(X.snap.c, -X.snap.x, -X.snap.y, W, H); c.restore(); } else c.drawImage(cv, 0, 0, W, H); } catch (e) {}
+        if (dim > .005) { c.fillStyle = `rgba(2,5,9,${dim.toFixed(3)})`; c.fillRect(0, 0, W, H); } c.restore(); } });
     }
     if (X.kind === 'back') {
-      if (X.u < .2 && de.classList.contains('tx3')) { de.classList.remove('tx3'); de.classList.add('tx3o'); setTimeout(() => de.classList.remove('tx3o'), 900); }
-      if (X.u === 0) { X = null; CULL = null; TXW = 0; FOGD = 150; box.className = 'pfx'; de.classList.remove('via-planet'); }
-    } else if (!X.nav && X.tgt >= 1 && X.tgt - X.u < 1e-3) { X.nav = true; location.href = X.url; }
+      if (X.u === 0) { de.classList.remove('tx3'); txClear(); X = null; CULL = null; TXW = 0; FOGD = 150; box.className = 'pfx'; de.classList.remove('via-planet'); }
+    } else {
+      // r63 · the log-in page's own topbar, headline and form come in over the late part of the pull-back and are whole on the last frame
+      JOIN.ui(X.kind === 'door' ? sm(sg(X.u, .55, .985)) : sm(sg(X.u, .66, .985)));
+      if (!X.nav && X.tgt >= 1 && X.tgt - X.u < 1e-3) { X.nav = true; if (!JOIN.go(X.url)) location.href = X.url; }
+    }
   }
   /* back from the log-in page: the shell covers the screen from the first paint, exactly that page's last frame */
   function back() {
     if (!de.classList.contains('via-planet') || !art()) return;
     try { const u = new URL(location.href); u.searchParams.delete('via'); u.searchParams.delete('at'); history.replaceState(null, '', u.pathname + (u.search === '?' ? '' : u.search) + u.hash); } catch (e) {}
     let s = null; try { s = JSON.parse(sessionStorage.getItem('r62.site.back') || 'null'); sessionStorage.removeItem('r62.site.back'); } catch (e) {}
-    X = plan('back', ''); X.tgt = 0;
+    X = plan('back', ''); X.tgt = 0; txStart();
     const ux = UC + (1 - UC) * X.oh; if (s && Date.now() - s.at < 20000 && s.u > UC) { X.u = Math.max(ux, s.u); X.v = Math.min(0, s.v); } else X.u = ux;
     X.out = true; X.o = (X.u - UC) / (1 - UC); X.d = SR + (X.dEnd - SR) * X.o; de.classList.add('tx3'); compose();
   }
-  function reset() { X = null; CULL = null; TXW = 0; TXD = 0; FOGD = 150; box.className = 'pfx'; box.style.clipPath = ''; box.style.opacity = ''; de.classList.remove('via-planet', 'tx3', 'tx3o'); }
+  function reset() { txClear(); X = null; CULL = null; TXW = 0; TXD = 0; FOGD = 150; box.className = 'pfx'; box.style.clipPath = ''; box.style.opacity = ''; de.classList.remove('via-planet', 'tx3', 'tx3o'); }
   // 登录/注册 (and 和 Dodo 对话, which also goes to sign-up) from any step: the pull-back. Signed in, they stay plain links
   document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[data-go]'); if (!a || user() || a.dataset.go === 'dashboard') return;
     if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; if (exit(a.href)) e.preventDefault(); }, true);
@@ -697,7 +737,47 @@ const PFX = (() => {
   const hold = t => { if (X) X.tgt = t; };   // test hook: park the camera part-way
   return { exit, door, back, reset, warm, cam, compose, busy, hidden, hold, state: () => X && { kind: X.kind, u: +X.u.toFixed(4), v: +X.v.toFixed(3), out: X.out, o: +X.o.toFixed(4), d: +X.d.toFixed(2), ox: +X.ox.toFixed(4), oh: +X.oh.toFixed(4), dEnd: +X.dEnd.toFixed(2), past: !!X.past } };
 })();
-setTimeout(PFX.back, 0); window.__pfx = { enter: k => enter(k), exit: u => PFX.exit(u || routes().login), state: () => PFX.state(), hold: t => PFX.hold(t) };   // test hooks
+/* r63 · 同页衔接（官网 → 登录 / 注册，含 11 的门）：官网空闲时把登录页预载进一个看不见的全屏 iframe（它的文件、字体、星空着色器
+   都在这时准备好）。镜头后退的后段，登录页自己的顶栏、标题、表单按镜头进度进场；最后一帧把场景交给登录页（同一幅画面），
+   地址栏 pushState 成登录页地址，官网停止绘制。返回官网（Logo 或浏览器返回）：登录页飞回星球，官网在同一页里接着飞回原来那一站。
+   没准备好（还在加载、被拦截）就照旧整页跳转。 */
+let SITESTOP = false, LOOPING = true; const TITLE0 = document.title;
+const JOIN = (() => {
+  let fr = null, ok = false, joined = false, shown = false, from = '';
+  const base = () => { try { return routes().login.split('?')[0]; } catch (e) { return '/3dtrading-site/login/'; } };
+  function make() { if (fr || RM || user() || !window.TDAccount || /[?&]nojoin\b/.test(location.search)) return;
+    fr = document.createElement('iframe'); fr.id = 'joinf'; fr.title = 'login'; fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1;
+    fr.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0;z-index:40;visibility:hidden;pointer-events:none;background:transparent;color-scheme:dark';
+    fr.addEventListener('load', () => { try { ok = !!fr.contentWindow.__join; } catch (e) { ok = false; } });
+    fr.src = base() + '?embed=1&via=exit'; document.body.appendChild(fr); }
+  const J = () => { try { return ok && !joined && fr.contentWindow.__join; } catch (e) { return null; } };
+  function prep(url) { const j = J(); if (j) try { j.prep(url); j.ui(0); } catch (e) {} }
+  function ui(p) { const j = J(); if (!j) return; if (p > 0 && !shown) { shown = true; fr.style.visibility = 'visible'; } try { j.ui(p); } catch (e) {} }
+  function go(url) { const j = J(); if (!j) return false;
+    try { j.go(); } catch (e) { return false; }
+    joined = true; from = location.href; fr.style.visibility = 'visible'; fr.style.pointerEvents = 'auto'; fr.removeAttribute('aria-hidden'); fr.tabIndex = 0;
+    let clean = url; try { const u = new URL(url, location.href); u.searchParams.delete('via'); clean = u.pathname + u.search + u.hash; } catch (e) {}
+    history.pushState({ join: 1 }, '', clean); try { document.title = fr.contentDocument.title; } catch (e) {}
+    try { fr.focus(); fr.contentWindow.focus(); } catch (e) {}
+    SITESTOP = true; window.__joined = { at: performance.now(), url: clean }; return true; }
+  function back() {   // the joined page has flown its planet back to the shell (its 返回官网, or the browser's back button)
+    if (!joined) return; joined = false; shown = false;
+    fr.style.visibility = 'hidden'; fr.style.pointerEvents = 'none'; fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1;
+    if (location.href !== from) history.pushState(null, '', from);
+    document.title = TITLE0; leaving = false; PFX.reset(); de.classList.add('via-planet', 'tx3'); PFX.back();
+    SITESTOP = false; if (!LOOPING) { LOOPING = true; last = performance.now(); requestAnimationFrame(frame); }
+    window.__joined = null;
+    setTimeout(() => { ok = false; try { fr.contentWindow.location.replace(base() + '?embed=1&via=exit'); } catch (e) { fr.src = base() + '?embed=1&via=exit'; } }, 1600);   // fresh for next time
+  }
+  addEventListener('popstate', () => {
+    if (joined) { try { fr.contentWindow.__joinBack(); } catch (e) { back(); } }
+    else if (/\/login\/?$/.test(location.pathname)) location.reload();
+  });
+  window.__siteJoin = { back };
+  return { make, prep, ui, go, back, state: () => ({ ok, joined, shown }) };
+})();
+(window.requestIdleCallback || setTimeout)(() => setTimeout(JOIN.make, 600), { timeout: 3500 });
+setTimeout(PFX.back, 0); window.__pfx = { join: () => JOIN.state(), enter: k => enter(k), exit: u => PFX.exit(u || routes().login), state: () => PFX.state(), hold: t => PFX.hold(t) };   // test hooks
 // r61: a new destination only; camera, scene and actions keep the speed they have (from rest that is 0)
 function targetStep(tg) { if (tg === CK.tgt) return; CK.tgt = K.tgt = tg; }
 let GATE = false, PEND = null; const go = (d, why) => { if (GATE || PFX.busy()) return;   // the motion layer over 01 is up: nothing moves under it
@@ -715,7 +795,10 @@ const jump = i => { if (i === CK.tgt || PFX.busy()) return; targetStep(i);
    The other direction is a new push at once. A mouse wheel's notches (line / page mode, or the same big tick again after a pause)
    are one step each. Speeds are read as a median of 3, so one bumpy Magic Mouse frame is neither a release nor a new push.
    Every step only moves the destination (no queue, no limit how far ahead); the camera plays it at its own pace. */
-const WH = { TRIG: 6, DEC: .72, DEC_N: 3, WIND: .35, RISE: 1.6, RISE_ABS: 4, RISE_N: 2, STOP: 1.5, NOTCH: 50, HUSH: 4 };
+const WH = { TRIG: 6, DEC: .72, DEC_N: 3, WIND: .35, RISE: 1.6, RISE_ABS: 4, RISE_N: 3, RISE_MIN: 10, STOP: 1.5, NOTCH: 50, HUSH: 4, GQ: 180, AFTER: 600, BIG: 14, TICKGAP: 60 };
+// r63 (Jasper: a Magic Mouse / mouse still made false second steps) — tighter: GQ ms of real quiet before a glide counts as over ·
+// AFTER ms after a glide a new push must come as one event of BIG px (a late inertia burst is not a hand) · RISE_N rising readings, each
+// over RISE_MIN px, to call a new push out of a glide · a tick again only after TICKGAP ms (equal values 16 ms apart are the pad, not notches)
 // TRIG px to start a push · DEC/DEC_N: a release = DEC_N falling readings in a row, ending under DEC of the push's peak · WIND: or under
 // WIND of the peak at all (wound down, no inertia) · RISE×, +RISE_ABS, RISE_N readings in a row: a new push out of a glide · STOP px: a push must have
 // peaked above twice this before it can be let go (the glide itself only ends when the stream goes quiet) · NOTCH px: a wheel tick · HUSH: the stream counts as quiet after HUSH of its own typical event gaps (only to tell ticks apart)
@@ -724,28 +807,43 @@ function wheelStep(n, d, fire, mode = 0) { const s = Math.sign(d), ad = Math.abs
   const quiet = gap > Math.max(40, WS.gap * WH.HUSH); if (!quiet) WS.gap = L(WS.gap, clamp(gap, 4, 40), .2);
   let why = '';
   // a mouse wheel's tick: one step each — line / page mode; or a big tick out of quiet; or, right after a tick, the same tick again
-  const tick = mode > 0 || (ad >= WH.NOTCH && ((quiet && (WS.ph !== 1 || WS.tk)) || (WS.tk && s === WS.dir && Number.isInteger(ad) && ad === WS.tick)));
+  const tick = mode > 0 || (ad >= WH.NOTCH && Number.isInteger(ad) && gap >= WH.TICKGAP && ((quiet && (WS.ph !== 1 || WS.tk)) || (WS.tk && s === WS.dir && ad === WS.tick)));
   if (tick) { why = 'tick'; Object.assign(WS, { ph: 1, dir: s, acc: ad, pk: ad, lo: ad, prev: ad, dn: 0, rn: 0, b: [ad], fired: true, tick: ad, tk: true, cnt: 1 }); }
   else {
     WS.tk = false;
-    if (quiet && (WS.ph === 2 || WS.cnt <= 2)) WS.ph = 0;                             // a glide that went quiet is over, and so is a lone small tick (a push that pauses is still that push)
+    if (WS.ph === 2 && gap > WH.GQ || quiet && WS.ph === 1 && WS.cnt <= 2) { if (WS.ph === 2) WS.gEnd = n; WS.ph = 0; }   // a glide is over only after GQ ms of real quiet                             // a glide that went quiet is over, and so is a lone small tick (a push that pauses is still that push)
     if (s !== WS.dir && WS.ph) WS.ph = 0;                                             // the other way: a new push
     WS.b.push(ad); if (WS.b.length > 3) WS.b.shift(); const v = WS.ph ? WS.b.slice().sort((x, y) => x - y)[WS.b.length >> 1] : ad;
     if (!WS.ph) Object.assign(WS, { ph: 1, dir: s, acc: 0, pk: 0, lo: v, prev: v, dn: 0, rn: 0, b: [ad], fired: false, cnt: 0 });
     WS.cnt++;
     if (WS.ph === 1) {                                                                // pushing
-      if (!WS.fired) { WS.acc += ad; if (WS.acc > WH.TRIG) { WS.fired = true; why = 'push'; } }
+      if (!WS.fired) { WS.acc += ad; const late = n - (WS.gEnd || -1e9) < WH.AFTER; if (late ? ad >= WH.BIG : WS.acc > WH.TRIG) { WS.fired = true; why = 'push'; } }
       WS.dn = v < WS.prev ? WS.dn + 1 : v > WS.prev ? 0 : WS.dn; WS.pk = Math.max(WS.pk, v);
       if (WS.fired && WS.pk > WH.STOP * 2 && ((WS.dn >= WH.DEC_N && v < WS.pk * WH.DEC) || v < WS.pk * WH.WIND)) { WS.ph = 2; WS.lo = v; WS.rn = 0; }   // let go
     } else {                                                                          // gliding: a rise is a new push; dying out is the end
-      if (v > Math.max(WS.lo * WH.RISE, WS.lo + WH.RISE_ABS)) { if (++WS.rn >= WH.RISE_N) { why = 'again'; Object.assign(WS, { ph: 1, pk: v, dn: 0, rn: 0, fired: true, b: [ad], cnt: 3 }); } }
+      if (v > Math.max(WS.lo * WH.RISE, WS.lo + WH.RISE_ABS) && ad >= WH.RISE_MIN && v >= WS.prev) { if (++WS.rn >= WH.RISE_N) { why = 'again'; Object.assign(WS, { ph: 1, pk: v, dn: 0, rn: 0, fired: true, b: [ad], cnt: 3 }); } }
       else { WS.rn = 0; WS.lo = Math.min(WS.lo, v); }   // a tail of 1 px events is still this glide (r62 self-test: a long heavy swipe made a 2nd step out of its own tail); only quiet ends it
     }
     WS.prev = v;
   }
   if (!why) return 0;
   WLOG.push([Math.round(n), s, why]); if (WLOG.length > 200) WLOG.shift(); if (fire) fire(s, why); return s; }
-addEventListener('wheel', e => { e.preventDefault(); const d = e.deltaMode === 1 ? e.deltaY * 30 : e.deltaMode === 2 ? e.deltaY * H : e.deltaY; wheelStep(e.timeStamp || performance.now(), d, go, e.deltaMode); }, { passive: false });   // the event's own time: a slow frame that holds events back is not a pause in the hand
+/* r63 · ?wlog=1: recording mode. Every wheel event (time, deltaY, deltaMode, deltaX) and every step it made is kept; the panel at
+   the bottom left exports it as a file, so the rules can be tuned on Jasper's real Magic Mouse / mouse / trackpad data */
+const WREC = /[?&]wlog=1/.test(location.search) ? { raw: [], t0: performance.now() } : null;
+if (WREC) { const pn = document.createElement('div'); pn.id = 'wrec';
+  pn.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:9999;font:12px/1.4 -apple-system,system-ui,sans-serif;color:#fff;background:rgba(10,14,20,.86);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;backdrop-filter:blur(8px)';
+  pn.innerHTML = '<span>● 记录中 <b id="wrN">0</b> 事件 · <b id="wrS">0</b> 步</span><button id="wrX" style="all:unset;cursor:pointer;background:#2fdcbc;color:#04241d;font-weight:700;border-radius:8px;padding:4px 10px">导出</button><button id="wrC" style="all:unset;cursor:pointer;opacity:.75;padding:4px 6px">清空</button>';
+  addEventListener('DOMContentLoaded', () => document.body.appendChild(pn)); if (document.body) document.body.appendChild(pn);
+  pn.addEventListener('wheel', e => e.stopPropagation());
+  pn.querySelector('#wrX').onclick = () => { const blob = new Blob([JSON.stringify({ ua: navigator.userAgent, dpr: devicePixelRatio, at: new Date().toISOString(), rules: WH, events: WREC.raw }, null, 0)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'wheel-' + Date.now() + '.json'; document.body.appendChild(a); a.click(); a.remove(); };
+  pn.querySelector('#wrC').onclick = () => { WREC.raw.length = 0; WREC.steps = 0; pn.querySelector('#wrN').textContent = 0; pn.querySelector('#wrS').textContent = 0; };
+  window.__wrec = WREC; }
+addEventListener('wheel', e => { if (WREC) { const r = [Math.round((e.timeStamp || performance.now()) * 10) / 10, +e.deltaY.toFixed(2), e.deltaMode, +e.deltaX.toFixed(2)]; WREC.raw.push(r);
+    const s = wheelStep(e.timeStamp || performance.now(), e.deltaMode === 1 ? e.deltaY * 30 : e.deltaMode === 2 ? e.deltaY * H : e.deltaY, go, e.deltaMode); e.preventDefault(); if (s) { r.push(WLOG[WLOG.length - 1][2]); WREC.steps = (WREC.steps || 0) + 1; }
+    const q = document.getElementById('wrN'); if (q) { q.textContent = WREC.raw.length; document.getElementById('wrS').textContent = WREC.steps || 0; } return; }
+  e.preventDefault(); const d = e.deltaMode === 1 ? e.deltaY * 30 : e.deltaMode === 2 ? e.deltaY * H : e.deltaY; wheelStep(e.timeStamp || performance.now(), d, go, e.deltaMode); }, { passive: false });   // the event's own time: a slow frame that holds events back is not a pause in the hand
 addEventListener('keydown', e => { if (e.repeat) return; if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(1); } if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
   if (e.key === 'Home') jump(0); if (e.key === 'End') jump(NS - 1); });
 let ty = null, tx = 0, tDone = false, tLook = false, tmx = 0, tmy = 0; addEventListener('touchstart', e => { ty = e.touches[0].clientY; tx = e.touches[0].clientX; tDone = false; tLook = false; tmx = mx; tmy = my; }, { passive: true });
@@ -1500,16 +1598,19 @@ addEventListener('click', ask, true); addEventListener('pointerup', e => { if (e
    "暂不开启" goes straight in. Either way it is shown once per visit, and refused or skipped is never asked again */
 const gateEl = document.getElementById('gate');
 const gateOn = () => GATE;
+/* r63 · 「轻触开始体验」一次会话只出现一次：点过就不再出现；从登录 / 注册回到官网（?via=、返回官网、浏览器返回）也不出现 */
+function gateSeen(set) { try { if (set) sessionStorage.setItem('r63.gate', '1'); return sessionStorage.getItem('r63.gate') === '1'; } catch (e) { return !!set; } }
+const BACKVISIT = QP.has('via') || /\/login\//.test(document.referrer || '') || (() => { try { return !!sessionStorage.getItem('r62.site.at') || !!sessionStorage.getItem('r49site.door'); } catch (e) { return false; } })();
 function gyKeep(v) { try { sessionStorage.setItem('r49site.gy', v); } catch (e) {} }
 function gateHide() { if (!GATE) return; GATE = false; gateEl.classList.remove('on'); gateEl.setAttribute('aria-hidden', 'true'); setTimeout(() => { if (!GATE) gateEl.hidden = true; }, 600); }
 function gateShow() { GATE = true; gateEl.hidden = false; gateEl.setAttribute('aria-hidden', 'false'); requestAnimationFrame(() => requestAnimationFrame(() => gateEl.classList.add('on'))); }
-gateEl.addEventListener('click', e => { e.preventDefault(); e.stopPropagation();
+gateEl.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); gateSeen(true);
   if (GY.state !== 'denied') gyKeep('on'); if (needAsk()) ask(e); else gyStart(); gateHide(); });   // the tap's own touch may already have asked and been refused: keep that answer
 gateEl.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
 function gyBoot() { if (!touchDev || !window.DeviceOrientationEvent) return; let kept = null; try { kept = sessionStorage.getItem('r49site.gy'); } catch (e) {}
   if (kept === 'skip' || kept === 'denied') { GY.skip = true; GY.state = kept; return; }
-  if (!kept && K.tgt === 0 && !QP.has('nogate')) { gateShow(); GY.state = 'ask'; return; }
-  if (needAsk()) { GY.state = 'ask'; setTimeout(() => { if (!GY.on && !GY.asked && GY.state === 'ask' && !QP.has('nogate')) toast(siteText('轻点屏幕，开启体感')); }, 1400); } else gyStart(); }   // a later visit in the same session: the first touch asks again, said once
+  if (!kept && K.tgt === 0 && !QP.has('nogate') && !gateSeen() && !BACKVISIT) { gateShow(); GY.state = 'ask'; return; }
+  if (needAsk()) { GY.state = 'ask'; setTimeout(() => { if (!GY.on && !GY.asked && GY.state === 'ask' && !QP.has('nogate') && !BACKVISIT && !gateSeen()) toast(siteText('轻点屏幕，开启体感')); }, 1400); } else gyStart(); }   // a later visit in the same session: the first touch asks again, said once
 addEventListener('orientationchange', recal); if (screen.orientation) screen.orientation.addEventListener('change', recal);
 document.addEventListener('visibilitychange', () => { if (!GY.on) return; if (document.hidden) gyListen(false); else { gyListen(true); recal(); } });
 addEventListener('pagehide', () => gyListen(false));
@@ -1542,6 +1643,7 @@ function inkScan() {
     for (let a = 0; a < nx; a++) for (let b = 0; b < ny; b++) { sum += lumAt(r.left + (a + .5) / nx * r.width, r.top + (b + .5) / ny * r.height); n++; }
     const m = sum / n, on = e.classList.contains('dk'); if (!on && m < .42) e.classList.add('dk'); else if (on && m > .5) e.classList.remove('dk'); }); }
 function frame(now) {
+  if (SITESTOP) { LOOPING = false; return; }   // r63 · joined to the log-in page: the website draws nothing until it comes back
   FN++; if (FN % 4 === 0) inkScan();
   const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
   if (RM) { CK.t = CK.tgt; CK.v = 0; CK.vs = 0; } else camStep(CK, dt);

@@ -2,6 +2,13 @@
    值 = 英文；{n} 原样填回数字/日期。改文案只改这个文件，不用动 index.html。
    查不到整句时，引擎会按 · ，；。：（） 分段再查；仍查不到的段落保持中文，可在控制台用 I18N.missing() 列出。 */
 window.I18N_EN = {
+"近 7 天": "Last 7 days",
+"近 30 天": "Last 30 days",
+"选择日期": "Choose dates",
+"上个月": "Previous month",
+"下个月": "Next month",
+"点一天开始，再点一天结束": "Tap a start day, then an end day",
+"这段时间": "this period",
 "金额都是 {0}": "all amounts are {0}",
 "点一下开始提问": "Tap to ask a question",
 "演示口径下多空两腿浮盈亏等额抵消": "In this demo, unrealized gains and losses on the long and short legs offset equally",

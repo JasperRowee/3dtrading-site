@@ -26,7 +26,8 @@
   var VIA = ''; try { VIA = ART ? '' : (new URLSearchParams(location.search).get('via') || ''); } catch (e) {}
   var ARRIVE = !!VIA, K2D = 1, k2dT = 0; // K2D: how much of the 2D sky still shows while the WebGL sky fades in after an arrival
   var MODE = ART || ARRIVE ? '2d' : 'wait'; // 'wait' → 'gl' (space.js draws the sky) or '2d' (this file draws the r56 sky too)
-  function setMode(m) { if (MODE === m) return;
+  var WAIT = function () { return document.documentElement.classList.contains('embed-wait'); }, PEND = null;
+  function setMode(m) { if (!ART && WAIT()) { PEND = m; return; } if (MODE === m) return;
     if (ARRIVE && m === 'gl' && MODE === '2d' && !still) { if (!k2dT) k2dT = performance.now(); return; } // keep painting, fade (see draw)
     MODE = m; GL.hidden = m !== '2d'; if (still) draw(performance.now()); }
   GL.hidden = MODE !== '2d';
@@ -50,6 +51,7 @@
   var PM = { r: .78, x: .97, y: 24 };
   var LX = -.55, LY = .6, LZ = .58; (function () { var l = Math.hypot(LX, LY, LZ); LX /= l; LY /= l; LZ /= l; })();
 
+  var LITE = false; // r63 · 转场时星球还很大（远大于登录页尺寸）只画一半的点；到登录页尺寸前恢复全部，最后一帧和登录页一致
   var FIELD = [], MOON = null, boxes = [], SKY = null, GM = null;
 
   /* ---- deep space, baked once per size ---- */
@@ -193,7 +195,7 @@
     sh.addColorStop(0, 'rgba(2,4,8,0)'); sh.addColorStop(.55, 'rgba(2,4,8,.18)'); sh.addColorStop(1, 'rgba(2,4,8,.62)');
     g.fillStyle = sh; g.beginPath(); g.arc(X, Y, R, 0, 7); g.fill();
     haloIn(X, Y);
-    for (var i = 0; i < N; i++) {
+    for (var i = 0; i < N; i += LITE ? 2 : 1) {
       var q = rot(P[i], a); if (q[2] < -.15) continue;
       var x = X + q[0] * R, y = Y - q[1] * R, k = (q[2] + .15) / 1.15;
       var lit = Math.max(0, q[0] * LX + q[1] * LY + q[2] * LZ), li = .4 + .6 * Math.pow(lit, .8);
@@ -268,7 +270,10 @@
     frames++;
   }
   var raf = 0;
-  function loop(t) { draw(t); raf = requestAnimationFrame(loop); }
+  function loop(t) { if (!WAIT()) draw(t); raf = requestAnimationFrame(loop); }
+  /* r63 · 同页衔接：官网把场景交过来的那一刻才开始「到达」（2D 天空先在，WebGL 天空随后淡入），和整页打开时一样 */
+  if (!ART) window.__planetJoin = function () { t0 = 0; mkT = 0; MK = 0; k2dT = 0; K2D = 1; ARRIVE = true; MODE = '2d'; GL.hidden = false; GL.style.opacity = '';
+    if (PEND) { var m = PEND; PEND = null; setMode(m); } draw(performance.now()); };
   if (ART) {
     /* the website's transitions. frame(o): o.p = where the planet is (0 = all around us / inside, 1 = the log-in composition),
        o.inner(ctx, X, Y, r) paints the website inside the shell, o.shell = the shell's opacity, o.sky = the sky's opacity.
@@ -279,12 +284,13 @@
       place: function () { this.fit(); place(); return { cx: cx, cy: cy, R: R, W: W, H: H, mob: mob }; },
       frame: function (o) {
         this.fit(); place(); var now = Date.now() % 1e9, F = { cx: cx, cy: cy, R: R };
+        LITE = !!o.lite && o.R != null && o.R > F.R * 1.6;
         if (o.cx != null) { cx = o.cx; cy = o.cy; R = o.R; }
         g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
         GL.style.opacity = o.sky == null ? 1 : o.sky; sky(now);
         g.save(); g.globalAlpha = o.sky == null ? 1 : o.sky; field(now); g.restore();
         planet(spin(), 0, 0, now, o);
-        cx = F.cx; cy = F.cy; R = F.R; frames++;
+        cx = F.cx; cy = F.cy; R = F.R; LITE = false; frames++;
       }
     };
     return;

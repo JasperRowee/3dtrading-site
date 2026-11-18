@@ -47,7 +47,7 @@
       'cx.okT': '演示绑定成功', 'cx.okTag': '演示账户', 'cx.okP': '没有连接真实币安，也没有发送或保存 API Key；后台里的数字均为演示数据。',
       'cx.okL': '已演示绑定的账户', 'cx.okSub': '演示绑定 · 未连接币安', 'cx.okNext': '继续绑定下一个账户', 'cx.okDash': '完成，回到后台', 'cx.okToast': '演示绑定成功：{n}', 'cx.nextToast': '换一个子账户，从第 1 步再走一遍',
       'cx.cpPub': '复制公钥', 'cx.ex': '示例', 'cx.toBind': '回到绑定',
-      'cx.close': '回到绑定', 'cx.prev': '上一步', 'cx.next': '下一步', 'cx.auto': '自动播放', 'cx.tcL': '教程控制', 'cx.dot': '第 {n} 步，共 {m} 步',
+      'cx.close': '回到绑定', 'cx.exit': '退出教程', 'cx.goBind': '去绑定', 'cx.of': '第 {n} / {m} 步', 'cx.prev': '上一步', 'cx.next': '下一步', 'cx.auto': '自动播放', 'cx.tcL': '教程控制', 'cx.dot': '第 {n} 步，共 {m} 步',
       'cx.autoRm': '已开启“减少动态效果”，不会自动播放', 'cx.cpdPub': '已复制公钥', 'cx.cpdEx': '（示例）', 'cx.cpdIp': '已复制 IP：{v}',
       'cx.cpdIps': '已复制白名单：{v}', 'cx.pasted': '已粘贴 API Key', 'cx.pasteNone': '剪贴板是空的，先在币安复制 API Key', 'cx.pasteFail': '浏览器没让读取剪贴板，请长按输入框或按 ⌘/Ctrl+V 粘贴', 'cx.spotL': '点暗处进入下一步'
     },
@@ -68,7 +68,7 @@
       'cx.okT': 'Demo binding complete', 'cx.okTag': 'Demo account', 'cx.okP': 'Binance is not connected and your API Key was not sent or stored; the dashboard’s numbers are demo data.',
       'cx.okL': 'Demo-bound accounts', 'cx.okSub': 'Demo binding · Not connected to Binance', 'cx.okNext': 'Bind another account', 'cx.okDash': 'Done, back to the dashboard', 'cx.okToast': 'Demo binding complete: {n}', 'cx.nextToast': 'Use another sub-account and go through step 1 again',
       'cx.cpPub': 'Copy public key', 'cx.ex': 'Example', 'cx.toBind': 'Back to binding',
-      'cx.close': 'Back to binding', 'cx.prev': 'Back', 'cx.next': 'Next', 'cx.auto': 'Autoplay', 'cx.tcL': 'Tutorial controls', 'cx.dot': 'Step {n} of {m}',
+      'cx.close': 'Back to binding', 'cx.exit': 'Exit tutorial', 'cx.goBind': 'Go to binding', 'cx.of': 'Step {n} / {m}', 'cx.prev': 'Back', 'cx.next': 'Next', 'cx.auto': 'Autoplay', 'cx.tcL': 'Tutorial controls', 'cx.dot': 'Step {n} of {m}',
       'cx.autoRm': 'Reduce motion is on, so autoplay is unavailable', 'cx.cpdPub': 'Public key copied', 'cx.cpdEx': ' (example)', 'cx.cpdIp': 'IP copied: {v}',
       'cx.cpdIps': 'Whitelist copied: {v}', 'cx.pasted': 'API Key pasted', 'cx.pasteNone': 'The clipboard is empty — copy the API Key on Binance first', 'cx.pasteFail': 'The browser blocked reading the clipboard; long-press the field or press ⌘/Ctrl+V to paste', 'cx.spotL': 'Click the dark area to go on'
     }
@@ -171,7 +171,12 @@
       return '<li><button type="button" data-dot="' + i + '"' + (i === S.s ? ' aria-current="step" class="on"' : i < S.s ? ' class="done"' : '') + ' aria-label="' + esc(t('cx.dot', { n: i + 1, m: m })) + '"></button></li>';
     }).join('');
     $('#tcPrev').disabled = S.b === 0 && S.s === 0;
-    $('#tcNext').disabled = !!(list[Math.min(S.s, m - 1)] || {}).last;
+    /* r63 · 全程第几步 / 共几步；最后一步「下一步」变成「去绑定」，直接回到绑定窗口并把光标放进 API Key */
+    var tot = 0, at = 0; BIG.forEach(function (x, i) { var k = subs(i).length; if (i < S.b) at += k; tot += k; }); at += Math.min(S.s, m - 1) + 1;
+    $('#sc').textContent = t('cx.of', { n: at, m: tot });
+    var isLast = !!(list[Math.min(S.s, m - 1)] || {}).last, nx = $('#tcNext');
+    nx.disabled = false; nx.classList.toggle('fin', isLast);
+    nx.firstElementChild.textContent = isLast ? t('cx.goBind') : t('cx.next');
   }
   function layout() {
     stage.style.top = Math.round(hb.getBoundingClientRect().bottom) + 'px';
@@ -380,7 +385,17 @@
   $('#big').addEventListener('click', function (e) { var b = e.target.closest('[data-big]'); if (b) bigGo(+b.dataset.big); });
   $('#skip').addEventListener('click', function () { bigGo(S.b + 1); });
   $('#tcPrev').addEventListener('click', back);
-  $('#tcNext').addEventListener('click', function () { S.hold = false; manual(); });
+  $('#tcNext').addEventListener('click', function () { if ($('#tcNext').classList.contains('fin')) { if (S.auto) setAuto(false); up('key'); return; } S.hold = false; manual(); });
+  /* r63 · 随时离开：左上角「退出教程」回到打开教程前的地方（从后台来就回后台的绑定面板） */
+  (function () { var x = $('#tcExit'); if (x && x.parentNode !== document.body) document.body.appendChild(x); })(); /* 放在压暗层之上，任何一步都不会被压暗 */
+  $('#tcExit').addEventListener('click', function () { if (S.auto) setAuto(false); up('top'); });
+  /* r63 · 手机上左右滑动翻步（竖向滑动仍是滚动画面） */
+  (function () { var x0 = null, y0 = 0, t0 = 0;
+    stage.addEventListener('touchstart', function (e) { if (e.touches.length !== 1 || e.target.closest('#tkF')) { x0 = null; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now(); }, { passive: true });
+    stage.addEventListener('touchend', function (e) { if (x0 == null) return; var c = e.changedTouches[0], dx = c.clientX - x0, dy = c.clientY - y0; x0 = null;
+      if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.6 || Date.now() - t0 > 700) return;
+      if (S.auto) setAuto(false); if (dx < 0) { S.hold = false; manual(); } else back(); }, { passive: true });
+  })();
   $('#dots').addEventListener('click', function (e) { var d = e.target.closest('[data-dot]'); if (d) subGo(+d.dataset.dot); });
   autoEl.addEventListener('change', function () { setAuto(autoEl.checked); });
   document.addEventListener('keydown', function (e) {

@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="robots" content="noindex">
 <script>/* 电脑版/手机版不再手动切换：按屏幕宽度自适应。清掉旧的「手机版」偏好，账户模块就不会再把页面送进手机外框 */
 try{localStorage.removeItem('3dtrading.dash.layout')}catch(e){}</script>
@@ -3046,6 +3046,62 @@ html,body{overscroll-behavior-y:none}
 @media (max-width:760px) and (prefers-reduced-motion:reduce){.mdl.qbm,body[data-page="ai"] .box .bar{transition:none}body[data-page="ai"].cmp-open .composer{animation:none!important}}
 html.rm .mdl.qbm,html.rm body[data-page="ai"] .box .bar{transition:none}html.rm body[data-page="ai"].cmp-open .composer{animation:none!important}
 </style>
+<style id="r63">
+/* r63 · 分段按钮：一条完整的轨道，选中项是一块滑动的底色（总览「收益 / 持仓 / 资产池」、交易记录「全部 / 平多止盈 / 平空止盈」同一套） */
+.sg2{position:relative;display:inline-grid!important;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:0!important;padding:3px!important;border-radius:12px!important;background:color-mix(in srgb,var(--ink) 6%,var(--bg))!important;border:0!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 5%,transparent)!important;overflow:visible!important}
+.sg2::before{content:"";position:absolute;top:3px;bottom:3px;left:3px;width:calc((100% - 6px) / var(--n,3));border-radius:9px;background:var(--sf);box-shadow:0 1px 2px rgba(15,23,42,.10),0 2px 8px -2px rgba(15,23,42,.14);transform:translateX(calc(var(--i,0) * 100%));transition:transform .3s cubic-bezier(.3,.7,.2,1)}
+.sg2 button{position:relative;z-index:1;background:none!important;box-shadow:none!important;border-radius:9px!important;color:var(--ink3)!important;font-weight:600!important;padding:0 14px!important;transition:color .2s;min-width:0}
+.sg2 button[aria-pressed="true"],.sg2 button[aria-selected="true"]{color:var(--ink)!important;font-weight:700!important}
+.sg2 button:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+html[data-theme="night"] .sg2{background:color-mix(in srgb,#fff 6%,var(--bg))!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)!important}
+html[data-theme="night"] .sg2::before{background:color-mix(in srgb,#fff 14%,var(--sf));box-shadow:0 1px 3px rgba(0,0,0,.4)}
+.tx-bar .sg2 button{height:32px}
+@media (max-width:760px){.tx-bar .sg2{flex:1 1 auto}.tx-bar .sg2 button{height:40px;padding:0 6px!important}.ovseg.sg2{display:grid!important;position:sticky}.ovseg.sg2 button{height:40px}}
+@media (prefers-reduced-motion:reduce){.sg2::before{transition:none}}
+html.rm .sg2::before{transition:none}
+/* r63 · 日期筛选：按钮显示所选范围，点开是推荐选项 + 日历 */
+.dpw{position:relative;display:inline-flex}
+.dpb{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 12px 0 10px;border:1px solid var(--line);border-radius:10px;background:var(--sf-hi,var(--sf));font:inherit;font-size:13.5px;font-weight:600;color:var(--ink);cursor:pointer;white-space:nowrap}
+.dpb svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;color:var(--ink3)}
+.dpb i{width:6px;height:6px;margin:0 2px 3px 2px;border-right:1.5px solid var(--ink3);border-bottom:1.5px solid var(--ink3);transform:rotate(45deg)}
+.dpb.on{border-color:color-mix(in srgb,var(--brand) 70%,var(--line));background:color-mix(in srgb,var(--brand) 10%,var(--sf))}
+.dpb[aria-expanded="true"]{border-color:var(--ink)}
+.dp{position:absolute;left:0;top:calc(100% + 8px);z-index:30;width:312px;padding:14px;border-radius:16px;background:var(--sf);border:1px solid var(--line);box-shadow:0 24px 60px -18px rgba(15,23,42,.35);text-align:left;animation:dpIn .18s ease-out}
+@keyframes dpIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.dp-ps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px}
+.dp-ps button{height:32px;border:1px solid var(--line);border-radius:9px;background:none;font:inherit;font-size:13px;font-weight:600;color:var(--ink2);cursor:pointer}
+.dp-ps button:hover{background:var(--soft)}
+.dp-ps button.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.dp-hd{display:flex;align-items:center;justify-content:space-between;margin:2px 0 6px}
+.dp-hd b{font-size:14px}
+.dp-nv{width:32px;height:32px;border:0;border-radius:8px;background:none;font-size:20px;line-height:1;color:var(--ink2);cursor:pointer}
+.dp-nv:hover:not(:disabled){background:var(--soft)}.dp-nv:disabled{opacity:.3;cursor:default}
+.dp-wk,.dp-gd{display:grid;grid-template-columns:repeat(7,1fr);gap:2px 0}
+.dp-wk span{text-align:center;font-size:11.5px;color:var(--ink3);padding:4px 0}
+.dp-gd button{height:36px;border:0;background:none;font:inherit;font-size:13.5px;font-variant-numeric:tabular-nums;color:var(--ink);cursor:pointer;border-radius:0}
+.dp-gd button:disabled{color:var(--ink3);opacity:.35;cursor:default}
+.dp-gd button:hover:not(:disabled):not(.ed){background:var(--soft);border-radius:9px}
+.dp-gd button.in{background:color-mix(in srgb,var(--brand) 16%,transparent)}
+.dp-gd button.ed{background:var(--brand);color:#04241d;font-weight:700;border-radius:9px}
+.dp-gd button.td:not(.ed){font-weight:700;color:var(--brandD,var(--brand))}
+.dp-tip{margin:10px 2px 0;font-size:12px;color:var(--ink3);line-height:1.45}
+@media (max-width:760px){
+  .tx-more .dpw{flex:1 1 100%}
+  .dpb{flex:1;height:42px;font-size:14.5px}.dpb span{flex:1;text-align:left}
+  .dp{position:fixed;left:12px;right:12px;top:auto;bottom:calc(var(--navh,62px) + 22px + env(safe-area-inset-bottom));width:auto;padding:16px;border-radius:20px;z-index:70}
+  .dp-ps button{height:38px;font-size:14px}.dp-gd button{height:42px;font-size:15px}
+}
+
+/* r63 · Dodo 软键盘：顶栏、对话区按可见区域偏移只用 transform（不改 top，不触发重排）；
+   键盘开合时顶栏原地不动，输入框跟着键盘高度平滑移动（由脚本做一次位移动画） */
+@media (max-width:760px){
+  body.kb-open[data-page="ai"] header.top{top:calc(6px + env(safe-area-inset-top));transform:translate3d(0,var(--vvt,0px),0);will-change:transform}
+  body.kb-open[data-page="ai"]::before{top:0;transform:translate3d(0,var(--vvt,0px),0)}
+  body.kb-open[data-page="ai"] .ai{top:var(--top);transform:translate3d(0,var(--vvt,0px),0);will-change:transform}
+  body.kb-open[data-page="ai"] .topcov{top:0;transform:translate3d(0,var(--vvt,0px),0)}
+  body[data-page="ai"]{overscroll-behavior:none}
+}
+</style>
 <style id="r62">
 /* ---------- r62（Jasper 2026-11-18） ----------
    3 手机顶栏：从屏幕最顶端（含状态栏 / 安全区）到导航下沿是一整块实底。用真实元素 .topcov（不是伪元素），
@@ -3270,7 +3326,7 @@ html.rm .mdl.qbm,html.rm body[data-page="ai"] .box .bar{transition:none}html.rm 
 
 <div class="tip" id="tip"></div>
 <div class="toast" id="toast" role="status"></div>
-<script src="i18n-en.js?v=r59"></script>
+<script src="i18n-en.js?v=r63"></script>
 <script id="i18n-engine">
 /* i18n · zh ⇄ en。源码文案保持中文；英文来自 i18n-en.js（window.I18N_EN）。
    键规则：去掉首尾空白、合并空白；日期与数字替换成 {0}{1}…，按出现顺序。查不到整句时按 · ，；。： 分段再查。 */
@@ -3693,7 +3749,7 @@ const CMP_LG = () => HAS_CMP() ? `<div class="cmp-lg" id="cmpLg" role="list" ari
 let OVT = 'rv';
 const TPL = () => `<div class="ov" data-ovt="${OVT}">
 <section class="ov-top" id="kpis" aria-label="核心财务摘要"></section>
-<div class="ovseg" role="tablist" aria-label="总览分组">${[['rv','收益'],['ps','持仓'],['yd','资产池']].map(([k,t])=>`<button type="button" role="tab" data-ovt="${k}" aria-selected="${OVT===k}">${t}</button>`).join('')}</div>
+<div class="ovseg sg2" role="tablist" aria-label="总览分组" style="--n:3;--i:${['rv','ps','yd'].indexOf(OVT)}">${[['rv','收益'],['ps','持仓'],['yd','资产池']].map(([k,t])=>`<button type="button" role="tab" data-ovt="${k}" aria-selected="${OVT===k}">${t}</button>`).join('')}</div>
 <div class="ov-mid">
   <section class="panel cvp" id="curveSec" aria-label="收益与账本">
     <div class="hd2"><div><h2>累计净收益</h2><p id="cvNote"></p>${CMP_LG()}</div><span class="sp"></span>
@@ -3708,7 +3764,7 @@ const TPL = () => `<div class="ov" data-ovt="${OVT}">
 <p class="ov-note">${LIVE ? LIVE_NOTE() : `示例数据，未连接币安，不代表真实收益。`}</p>
 </div>`;
 
-document.addEventListener('click', e => { const t = e.target.closest('.ovseg [data-ovt]'); if (!t) return; OVT = t.dataset.ovt; const ov = t.closest('.ov'); ov.dataset.ovt = OVT; ov.querySelectorAll('.ovseg [data-ovt]').forEach(b => b.setAttribute('aria-selected', b === t)); const sg = ov.querySelector('.ovseg'); const y = sg.getBoundingClientRect().top; const top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 70; if (y < top) window.scrollBy({ top: y - top - 4, behavior: 'instant' }); });
+document.addEventListener('click', e => { const t = e.target.closest('.ovseg [data-ovt]'); if (!t) return; OVT = t.dataset.ovt; const ov = t.closest('.ov'); ov.dataset.ovt = OVT; ov.querySelector('.ovseg')?.style.setProperty('--i', ['rv', 'ps', 'yd'].indexOf(OVT)); ov.querySelectorAll('.ovseg [data-ovt]').forEach(b => b.setAttribute('aria-selected', b === t)); const sg = ov.querySelector('.ovseg'); const y = sg.getBoundingClientRect().top; const top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 70; if (y < top) window.scrollBy({ top: y - top - 4, behavior: 'instant' }); });
 document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) { e.preventDefault(); goTo(g.dataset.go); } });
 /* a link names a section; go to its page, and open the drawer when the detail lives there */
 function goTo(sel) {
@@ -4041,10 +4097,12 @@ document.addEventListener('keydown', e => {
   if (DW.kind && !e.target.closest?.('#ptc')) { e.preventDefault(); closeDrawer(); }
 });
 let DLG_BACK = null;
-function openDlg(title, html) {
+function openDlg(title, html, cls) {
   const d = $('#modal'), was = !d.hidden && d.classList.contains('on');
   if (!was) DLG_BACK = document.activeElement;
   d.classList.remove('wide', 'qbm', 'setm');
+  /* r63 · 样式类要在显示之前加上：r62 先显示居中弹窗再加 qbm，手机上面板是从上往下落的 */
+  if (cls) d.classList.add(...cls.split(' '));
   $$('#modal .mdl-hd .qbx').forEach(x => x.remove());
   $('#mdT').textContent = title; $('#mdB').innerHTML = html;
   if (!was) showLayer(d);
@@ -4426,9 +4484,20 @@ function allGroups() {
   GR = [...m.values()]; GR.forEach(g => { g.lead = g.items.find(t => /止盈/.test(t.act)) || g.items[0]; g.g = g.items.find(t => t.side === 'G'); g.re = g.items.find(t => /补回/.test(t.act)); });
   GRV = V; return GR;
 }
+/* r63 · 日期筛选可以是一段范围：'' 全部 · 'today' · 'dN' 某一天 · 'rA-B' 第 A 天到第 B 天（含） */
+function dayRng(v) {
+  if (!v) return null; if (v === 'today') return [DAYS, DAYS];
+  if (v[0] === 'd') { const n = +v.slice(1); return [n, n]; }
+  const m = /^r(\d+)-(\d+)$/.exec(v); if (!m) return null; const a = +m[1], b = +m[2]; return a <= b ? [a, b] : [b, a];
+}
+function rngLabel(v) {
+  const r = dayRng(v); if (!r) return '全部日期'; const [a, b] = r;
+  if (a === b) return a === DAYS ? '今天' : a === DAYS - 1 ? '昨天' : dLabel(a);
+  return dLabel(a) + ' – ' + (b === DAYS ? '今天' : dLabel(b));
+}
 function tradeList() {
-  const f = S.tf, dd = f.day === 'today' ? DAYS : f.day ? +f.day.slice(1) : null;
-  return allGroups().filter(g => (dd == null || g.d === dd) && (!f.coin || g.coin === f.coin) && (!f.acct || g.acct === f.acct) && (!f.act || g.lead.side === f.act));
+  const f = S.tf, rg = dayRng(f.day);
+  return allGroups().filter(g => (!rg || (g.d >= rg[0] && g.d <= rg[1])) && (!f.coin || g.coin === f.coin) && (!f.acct || g.acct === f.acct) && (!f.act || g.lead.side === f.act));
 }
 const groupOf = id => allGroups().find(g => g.items.some(t => tid(t) === id));
 function grLine(g) {
@@ -5036,7 +5105,7 @@ S.kc = LIVE ? COINS[0][0] : 'BTC'; S.kp = '4H'; S.kOpen = '';   /* K line is clo
 const coinTps = sym => allGroups().filter(g => g.coin === sym && (!S.tf.acct || g.acct === S.tf.acct));
 const noDayList = () => { const f = S.tf; return allGroups().filter(g => (!f.coin || g.coin === f.coin) && (!f.acct || g.acct === f.acct) && (!f.act || g.lead.side === f.act)); };
 const dayName = d => d === DAYS ? '今天' : fmtD(dayDate(d), { month: 'long', day: 'numeric', weekday: 'short' });
-const selDay = () => S.tf.day === 'today' ? DAYS : S.tf.day ? +S.tf.day.slice(1) : null;
+const selDay = () => { const r = dayRng(S.tf.day); return r && r[0] === r[1] ? r[0] : null; };
 let KPANEL = null;
 
 function renderTrades() {
@@ -5063,7 +5132,7 @@ function renderWatch() {
   const N = 30, d0 = DAYS - N + 1, cnt = Array(N).fill(0), pn = Array(N).fill(0);
   base.forEach(g => { const i = g.d - d0; if (i >= 0) { cnt[i]++; pn[i] += g.lead.pnl; } });
   const mx = Math.max(1, ...cnt), todayN = cnt[N - 1], any = f.coin || f.act || f.acct || f.day;
-  const scope = [f.coin || '全部币种', f.acct ? acctById(f.acct).name.split(' · ')[0] : '', f.act === 'L' ? '只看平多' : f.act === 'S' ? '只看平空' : '', dd != null ? dayName(dd) : '全部日期'].filter(Boolean).join(' · ');
+  const scope = [f.coin || '全部币种', f.acct ? acctById(f.acct).name.split(' · ')[0] : '', f.act === 'L' ? '只看平多' : f.act === 'S' ? '只看平空' : '', dd != null ? dayName(dd) : rngLabel(f.day)].filter(Boolean).join(' · ');
   $('#txHero').innerHTML = `<span class="geo" aria-hidden="true"></span><span class="geo g2" aria-hidden="true"></span>
     <div class="tx-l"><span class="k">${LIVE ? `已实现盈亏（不含资金费）· ${esc(scope)}` : `累计兑现结转额 · ${esc(scope)}（账面结转，非净权益增量）`}</span>
       <div class="v num">${sgn(tp, 0)}<small>USDT</small></div>
@@ -5169,14 +5238,54 @@ document.addEventListener('keydown', e => {
   if ((e.key === 'Enter' || e.key === ' ') && e.target.closest?.('#kline .mk')) { e.preventDefault(); openTrade(e.target.closest('.mk').dataset.mk); }
 });
 
+
+/* ---------- r63 · 日期筛选：推荐选项 + 日历自由选起止日期（替代「全部日期 / 只看今天」下拉） ---------- */
+const DP = { open: false, a: null, m: null };   /* a = 已点的起点（等第二下）；m = 正在看的月份 [年, 月0-11] */
+const dpYMD = i => { const s = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(dayDate(i)).split('-'); return [+s[0], +s[1] - 1, +s[2]]; };
+const dpIdx = (y, mo, d) => { const [ty, tm, td] = dpYMD(DAYS); return DAYS - Math.round((Date.UTC(ty, tm, td) - Date.UTC(y, mo, d)) / 864e5); };
+function dpPresets() {
+  const [, , td] = dpYMD(DAYS);
+  return [['今天', 'today'], ['昨天', 'd' + (DAYS - 1)], ['近 7 天', 'r' + (DAYS - 6) + '-' + DAYS], ['近 30 天', 'r' + (DAYS - 29) + '-' + DAYS], ['本月', 'r' + Math.max(0, DAYS - td + 1) + '-' + DAYS], ['全部', '']];
+}
+function dpHtml() {
+  const f = S.tf, rg = dayRng(f.day), [ty, tm] = dpYMD(DAYS);
+  if (!DP.m) { const [y, m] = rg ? dpYMD(rg[1]) : [ty, tm]; DP.m = [y, m]; }
+  const [y, m] = DP.m, first = new Date(Date.UTC(y, m, 1)).getUTCDay(), nd = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
+  const lo = 0, cells = [];
+  for (let k = 0; k < (first + 6) % 7; k++) cells.push('<span></span>');
+  for (let d = 1; d <= nd; d++) {
+    const i = dpIdx(y, m, d), out = i > DAYS || i < lo, sel = DP.a != null ? i === DP.a : rg && i >= rg[0] && i <= rg[1];
+    const edge = DP.a == null && rg && (i === rg[0] || i === rg[1]);
+    cells.push(`<button type="button" data-dpd="${i}"${out ? ' disabled' : ''} class="${sel ? 'in' : ''}${edge || (DP.a != null && i === DP.a) ? ' ed' : ''}${i === DAYS ? ' td' : ''}">${d}</button>`);
+  }
+  const ym = new Intl.DateTimeFormat('zh-CN', { timeZone: 'UTC', year: 'numeric', month: 'long' }).format(new Date(Date.UTC(y, m, 1)));
+  const canPrev = dpIdx(y, m, 1) > lo, canNext = !(y === ty && m === tm);
+  return `<div class="dp" id="dayPick" role="dialog" aria-label="选择日期">
+    <div class="dp-ps">${dpPresets().map(([l, v]) => `<button type="button" data-dpp="${v}" class="${(f.day || '') === v && DP.a == null ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <div class="dp-hd"><button type="button" class="dp-nv" data-dpm="-1" aria-label="上个月"${canPrev ? '' : ' disabled'}>‹</button><b>${ym}</b><button type="button" class="dp-nv" data-dpm="1" aria-label="下个月"${canNext ? '' : ' disabled'}>›</button></div>
+    <div class="dp-wk" aria-hidden="true"><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span><span>日</span></div>
+    <div class="dp-gd">${cells.join('')}</div>
+    <p class="dp-tip">${DP.a != null ? `起点 ${dLabel(DP.a)}，再点一下结束日期（点同一天只看这一天）` : '点一天开始，再点一天结束'}</p></div>`;
+}
+function dpSet(v) { S.tf.day = v; DP.open = false; DP.a = null; DP.m = null; trRefresh(); $('#fDayBtn')?.focus({ preventScroll: true }); }
+function dpRedraw() { const w = $('#dayPick'); if (w) w.outerHTML = dpHtml(); }
+document.addEventListener('click', e => {
+  const b = e.target.closest('#fDayBtn');
+  if (b) { DP.open = !DP.open; DP.a = null; DP.m = null; renderRecords(); return; }
+  if (!DP.open) return;
+  const p = e.target.closest('[data-dpp]'); if (p) { dpSet(p.dataset.dpp); return; }
+  const mv = e.target.closest('[data-dpm]'); if (mv) { const [y, m] = DP.m, n = m + +mv.dataset.dpm; DP.m = [y + Math.floor(n / 12), (n + 12) % 12]; dpRedraw(); return; }
+  const d = e.target.closest('[data-dpd]'); if (d) { const i = +d.dataset.dpd; if (DP.a == null) { DP.a = i; dpRedraw(); } else { const a = Math.min(DP.a, i), z = Math.max(DP.a, i); dpSet(a === z ? (a === DAYS ? 'today' : 'd' + a) : 'r' + a + '-' + z); } return; }
+  if (!e.target.closest('#dayPick')) { DP.open = false; DP.a = null; renderRecords(); }
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && DP.open) { e.stopPropagation(); DP.open = false; DP.a = null; renderRecords(); $('#fDayBtn')?.focus({ preventScroll: true }); } }, true);
 /* ---------- records: one sheet, grouped by day; a trade opens in place under its row ---------- */
 function renderRecords() {
   const box = $('#trView'); if (!box) return;
   const f = S.tf, list = tradeList(), all = S.view === 'all', dd = selDay(), open = S.tDetail && groupOf(S.tDetail);
-  const dayOpt = f.day && f.day[0] === 'd' ? `<option value="${f.day}">只看 ${dLabel(+f.day.slice(1))}</option>` : '';
-  $('#txBar').innerHTML = `<div class="seg" role="group" aria-label="方向">${[['', '全部'], ['L', '平多止盈'], ['S', '平空止盈']].map(([v, l]) => `<button type="button" data-tact="${v}" aria-pressed="${f.act === v}">${l}</button>`).join('')}</div>
+  $('#txBar').innerHTML = `<div class="seg sg2" role="group" aria-label="方向" style="--n:3;--i:${['', 'L', 'S'].indexOf(f.act)}">${[['', '全部'], ['L', '平多止盈'], ['S', '平空止盈']].map(([v, l]) => `<button type="button" data-tact="${v}" aria-pressed="${f.act === v}">${l}</button>`).join('')}</div>
     <button type="button" class="tx-ft" data-mft="txf" aria-expanded="${MF.has('txf')}">筛选${(f.day ? 1 : 0) + (f.acct ? 1 : 0) ? `<b class="num">${(f.day ? 1 : 0) + (f.acct ? 1 : 0)}</b>` : ''}<i aria-hidden="true"></i></button>
-    <span class="tx-more${mfCls('txf')}" data-mf="txf"><select class="sel" id="fDay" aria-label="日期"><option value="">全部日期</option><option value="today">只看今天</option>${dayOpt}</select>
+    <span class="tx-more${mfCls('txf')}" data-mf="txf"><span class="dpw"><button type="button" class="dpb${f.day ? ' on' : ''}" id="fDayBtn" aria-haspopup="dialog" aria-expanded="${DP.open}"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4.5" width="14" height="12.5" rx="2.5"/><path d="M3 8.5h14M7 2.8v3.4M13 2.8v3.4"/></svg><span>${esc(rngLabel(f.day))}</span><i aria-hidden="true"></i></button>${DP.open ? dpHtml() : ''}</span>
     ${all ? `<select class="sel" id="fAcct" aria-label="账号"><option value="">全部账号</option>${ACCTS.filter(a => a.live).map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select>` : ''}</span>
     ${f.coin ? `<span class="chipf">${f.coin}<button type="button" data-kc="" aria-label="取消只看 ${f.coin}">✕</button></span>` : ''}
     <span class="sp"></span><span class="cnt">${list.length} ${LIVE ? '单' : '次'} · 新的在上 · 点一行展开详情</span>`;
@@ -5194,9 +5303,9 @@ function renderRecords() {
   if (cur !== -1) html += '</div>';
   box.innerHTML = rows.length ? `<div class="tx-sheet ${all ? '' : 'na'}" id="rtBox"><div class="tx-cols" aria-hidden="true"><span>时间</span><span>币种</span><span>动作</span>${all ? '<span>账号</span>' : ''}<span class="r">成交价</span><span class="r">已实现</span><span class="r">${LIVE ? '手续费' : '转入计奖'}</span><span></span></div>${html}
       ${list.length > S.tShow ? `<div class="tx-more"><button class="btn ghost" type="button" id="moreBtn">再看 20 ${LIVE ? '单' : '次'}（还有 ${list.length - S.tShow} ${LIVE ? '单' : '次'}）</button></div>` : `<div class="tx-end">已经到底 · 共 ${list.length} ${LIVE ? '单' : '次'}</div>`}</div>`
-    : `<div class="tx-sheet"><div class="tx-empty"><b>${f.coin ? f.coin + ' ' : '这些条件'}${f.day === 'today' ? '今天' : f.day ? '这一天' : ''}还没有止盈记录</b>价格还没走到止盈线，仓位保持不动。<div style="margin-top:14px"><button class="btn ghost sm" type="button" data-treset>清除筛选</button></div></div></div>`;
+    : `<div class="tx-sheet"><div class="tx-empty"><b>${f.coin ? f.coin + ' ' : '这些条件'}${f.day === 'today' ? '今天' : f.day ? (dayRng(f.day)[0] === dayRng(f.day)[1] ? '这一天' : '这段时间') : ''}还没有止盈记录</b>价格还没走到止盈线，仓位保持不动。<div style="margin-top:14px"><button class="btn ghost sm" type="button" data-treset>清除筛选</button></div></div></div>`;
   const xb = $('#xd [data-td="back"]'); if (xb) xb.textContent = '收起 ↑';
-  const map = { fAcct: 'acct', fDay: 'day' };
+  const map = { fAcct: 'acct' };
   Object.keys(map).forEach(id => { const el = $('#' + id); if (!el) return; el.value = f[map[id]]; el.onchange = () => { f[map[id]] = el.value; S.tShow = 20; S.tDetail = null; renderTrades(); saveState(); }; });
   const mb = $('#moreBtn'); if (mb) mb.onclick = () => { const k = S.tShow; S.tShow += 20; renderRecords(); $$('#rtBox .row')[k]?.focus({ preventScroll: true }); saveState(); };
   placeK();
@@ -5588,8 +5697,7 @@ function qbRender(focus) {
 function openBind(done, carried) {
   if (DODO) setDodo(false);
   QB.done = done || null; QB.carried = !!carried;
-  openDlg(done ? '绑定结果' : '绑定币安账户', '<div id="qbw"></div>');
-  $('#modal').classList.add('wide', 'qbm');
+  openDlg(done ? '绑定结果' : '绑定币安账户', '<div id="qbw"></div>', 'wide qbm');
   qbRender(); setTimeout(() => (done ? $('[data-bxnext]') : $('#qbKey'))?.focus({ preventScroll: true }), RM ? 0 : 60);
 }
 function qbCopied(btn) { btn.classList.add('done'); clearTimeout(btn._t); btn._t = setTimeout(() => btn.classList.remove('done'), 1600); }
@@ -5948,7 +6056,7 @@ function loadState() {
       if (R.includes(o.ir)) S.ir = o.ir;
       if (Array.isArray(o.hid)) S.hid = new Set(o.hid.filter(k => STB[k]));
       if (Array.isArray(o.open)) S.open = new Set(o.open.filter(coin));
-      if (o.tf) S.tf = { coin: coin(o.tf.coin) ? o.tf.coin : '', act: ['L', 'S'].includes(o.tf.act) ? o.tf.act : '', acct: acctById(o.tf.acct) ? o.tf.acct : '', day: /^(today|d\d+)$/.test(o.tf.day || '') ? o.tf.day : '' };
+      if (o.tf) S.tf = { coin: coin(o.tf.coin) ? o.tf.coin : '', act: ['L', 'S'].includes(o.tf.act) ? o.tf.act : '', acct: acctById(o.tf.acct) ? o.tf.acct : '', day: /^(today|d\d+|r\d+-\d+)$/.test(o.tf.day || '') ? o.tf.day : '' };
       if (Number.isInteger(o.flip) && o.flip >= 0 && o.flip < DAYS) S.flip = o.flip;
       if (typeof o.rc === 'string' && /^[A-Z0-9]{2,8}$/.test(o.rc)) S.rc = o.rc;
       if (Number.isInteger(o.tShow) && o.tShow >= 20) S.tShow = o.tShow;
@@ -6276,16 +6384,33 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
     const f = base(), h = visH();
     const shrunk = vv ? f - h > Math.max(80, f * .15) : MOB.matches; /* 没有 visualViewport 的旧浏览器：手机宽度沿用只看聚焦 */
     const o = isField(document.activeElement) && shrunk;
-    if (o) { root.style.setProperty('--vvh', Math.round(h) + 'px'); root.style.setProperty('--vvt', Math.round(vv ? Math.max(0, vv.offsetTop) : 0) + 'px'); } else { root.style.removeProperty('--vvh'); root.style.removeProperty('--vvt'); }
-    if (o !== open) { open = o; body.classList.toggle('kb-open', o); }
-    if (o && CUR === 'ai') window.scrollTo(0, 0);
+    /* r63 · 只在数值真的变了才写；开合时记下顶栏、输入框在屏幕上的位置，切换后从原位置平滑移到新位置（FLIP），不会先跳一下 */
+    const vh = o ? Math.round(h) + 'px' : '', vt = o ? Math.round(vv ? Math.max(0, vv.offsetTop) : 0) + 'px' : '';
+    const flip = o !== open && CUR === 'ai' && MOB.matches ? kbSnap() : null;
+    if (vh !== lastVh) { lastVh = vh; vh ? root.style.setProperty('--vvh', vh) : root.style.removeProperty('--vvh'); }
+    if (vt !== lastVt) { lastVt = vt; vt ? root.style.setProperty('--vvt', vt) : root.style.removeProperty('--vvt'); }
+    if (o !== open) { open = o; body.classList.toggle('kb-open', o); if (o && CUR === 'ai' && scrollY) window.scrollTo(0, 0); if (flip) kbPlay(flip); }
   };
+  let lastVh = '', lastVt = '', raf = 0;
+  const sched = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; update(); }); };
+  const scrTop = el => el ? el.getBoundingClientRect().top - (vv ? vv.offsetTop : 0) : null;
+  const kbEls = () => [document.querySelector('header.top'), document.querySelector('#askForm')?.closest('.composer')];
+  function kbSnap() { return kbEls().map(scrTop); }
+  function kbPlay(before) {
+    if (document.documentElement.classList.contains('rm') || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    kbEls().forEach((el, i) => {
+      if (!el || before[i] == null || !el.animate) return; const d = before[i] - scrTop(el);
+      if (Math.abs(d) < 2 || Math.abs(d) > innerHeight) return;
+      /* 顶栏：直接留在原位（d 很小就不动）；输入框：用键盘弹出的节奏移过去 */
+      el.animate([{ translate: `0 ${d}px` }, { translate: '0 0' }], { duration: i ? 260 : 1, easing: 'cubic-bezier(.2,.8,.2,1)', composite: 'add' });
+    });
+  }
   window.__kb = { update, state: () => ({ open, full: base(), vis: Math.round(visH()) }) }; /* 供浏览器验证读取，不改行为 */
   base();
   document.addEventListener('focusin', update);
   document.addEventListener('focusout', () => setTimeout(update, 60));
-  if (vv) { vv.addEventListener('resize', update); vv.addEventListener('scroll', update); }
-  addEventListener('resize', update);
+  if (vv) { vv.addEventListener('resize', sched); vv.addEventListener('scroll', sched); }
+  addEventListener('resize', sched);
   addEventListener('hashchange', () => setTimeout(update, 0));
   addEventListener('orientationchange', () => setTimeout(update, 300));
   MOB.addEventListener('change', e => {

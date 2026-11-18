@@ -147,3 +147,6 @@ html[data-theme=day] .wlogo{filter:invert(1)}
 @media (max-width:560px){.qk form{grid-template-columns:1fr auto}.qk .kin{grid-column:1 / -1}.ips{grid-template-columns:1fr}.okf{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){.okw,.acc{animation:none}.okb .rg,.okb .tk{animation:none;stroke-dashoffset:0}.toast{transition:none}}
 @media (max-width:560px){.toast{top:calc(14px + env(safe-area-inset-top));bottom:auto;transform:translate(-50%,-12px)}.toast.on{transform:translate(-50%,0)}}
+
+/* r63 · 教程里左上角已有「退出教程」，外层这个按钮不再显示 */
+.back-app{display:none!important}

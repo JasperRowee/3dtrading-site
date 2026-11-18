@@ -269,3 +269,30 @@ html.spotting #tkKey.cue{box-shadow:none}
 .ba-ipw .ba-ipin{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}
 .ba-ipw .ba-ipin code{font:600 12.5px var(--mono,ui-monospace,monospace);color:#eaecef;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ba-ipw .ba-ipin b{color:#2fdcbc}
+
+/* ---- r63 · 随时能退出：左上角「退出教程」；底部显示「第 n / 共 m 步」；最后一步「去绑定」；手机去掉自动播放 ---- */
+.tx-exit{flex:none;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px 0 9px;border:1px solid #2b3139;border-radius:18px;background:#1e2329;color:#eaecef;font:600 13.5px var(--sans,inherit);cursor:pointer;white-space:nowrap}
+.tx-exit svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.tx-exit:hover{background:#2b3139}
+.tx-exit:focus-visible{outline:2px solid #fcd535;outline-offset:2px}
+html.intro .tx-exit{visibility:visible}
+.bnh .logo{display:none}
+#tcClose{display:none!important}
+.tc{grid-template-columns:1fr auto 1fr}
+.sc{min-width:86px;text-align:center;font-size:13px;font-weight:600;color:#b7bdc6;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tcb.pri.fin{background:#2fdcbc;color:#0b0e11}
+.tcb.pri.fin:hover{background:#5ee6cd}
+@media (min-width:761px){.tcm{grid-column:2}.ap{grid-column:3}}
+@media (max-width:760px){
+  .tx-exit{width:36px;padding:0;justify-content:center}
+  .tx-exit span{display:none}
+  .bnh{gap:10px}
+  .tc{grid-template-columns:1fr;grid-template-areas:"m";padding-top:10px}
+  .ap{display:none}
+  .dots{display:none}
+  .sc{flex:1 1 auto}
+}
+/* r63 · 退出按钮独立固定在左上角，压暗层之上（z 56 > 聚光 50/51、提示 55） */
+.tx-exit{position:fixed;z-index:56;left:max(16px,env(safe-area-inset-left));top:14px}
+html.embed .bnh,.bnh{padding-left:calc(max(16px,env(safe-area-inset-left)) + 118px)}
+@media (max-width:760px){.tx-exit{top:8px;left:max(10px,env(safe-area-inset-left))}html.embed .bnh,.bnh{padding-left:calc(max(10px,env(safe-area-inset-left)) + 44px)}}

@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="page.css?v=r49l">
 <link rel="stylesheet" href="bind-bn.css?v=r58">
 <link rel="stylesheet" href="connect-r45.css?v=r58">
-<link rel="stylesheet" href="tut.css?v=r61">
+<link rel="stylesheet" href="tut.css?v=r63">
 </head>
 <body class="tut">
 <!-- r49b · the illustrated tutorial of the 自行生成 route (from r48 connect.html), shown INSIDE the binding page (../index.html #guide)
@@ -18,6 +18,7 @@
      Always a dark Binance-style screen; our own coded illustration, never the live Binance site.
      There is no form here: 回到上方 scrolls the page back up to the API Key field (postMessage, no navigation). -->
 <header class="bnh" id="hb">
+  <button type="button" class="tx-exit" id="tcExit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span data-i18n="cx.exit">退出教程</span></button>
   <a class="logo" id="logo" href="../" data-i18n-attr="aria-label:cx.toBind"><img src="../assets/3dtrading-logo-white.svg" alt="3dtrading" width="91" height="22"></a>
   <nav class="pg" id="pg" data-i18n-attr="aria-label:cx.prog" aria-label="绑定进度">
     <ol id="big"></ol>
@@ -48,6 +49,7 @@
     <div class="tcm">
       <button type="button" class="tcb" id="tcPrev"><span aria-hidden="true">‹</span> <span data-i18n="cx.prev">上一步</span></button>
       <ol class="dots" id="dots"></ol>
+      <span class="sc" id="sc" aria-live="polite"></span>
       <button type="button" class="tcb pri" id="tcNext"><span data-i18n="cx.next">下一步</span> <span aria-hidden="true">›</span></button>
     </div>
     <label class="ap"><input type="checkbox" id="auto" role="switch"><i aria-hidden="true"></i><span data-i18n="cx.auto">自动播放</span></label>
@@ -62,6 +64,6 @@
 <script src="../../dashboard/account/vendor/qrcode.js?v=r58"></script>
 <script src="bind-bn.js?v=r61"></script>
 <script src="bn-app.js?v=r61"></script>
-<script src="tutorial.js?v=r61"></script>
+<script src="tutorial.js?v=r63"></script>
 </body>
 </html>

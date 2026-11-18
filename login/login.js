@@ -346,7 +346,7 @@
     return DASH_URL + '#' + (who ? 'who=' + who + '&' : '') + 'lang=' + lang + (s && s.fresh ? '&new=1' : '');
   }
   /* r57: a brand-new registration carries &new=1 so the dashboard shows the one-time 「绑定币安账户」 prompt */
-  function enter(s) { if (s) location.replace(dashHref(s)); }
+  function enter(s) { if (s) (window.__EMBED ? top.location : location).replace(dashHref(s)); }
   /* ?out=1 (sent by the dashboard's 退出登录) ends the local demo sign-in here too, so this page shows the form again */
   if (qs.get('out') === '1') { set('session', null); try { history.replaceState(null, '', location.pathname + (qm ? '?mode=' + qm : '')); } catch (e) {} }
   else if (session()) {

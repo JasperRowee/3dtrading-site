@@ -342,3 +342,12 @@ html.leave .top,html.leave .wrap{opacity:0;transform:translateY(6px);transition:
  .lab{margin:0 0 6px}
  .row2{margin:-4px 0 14px}
 }
+
+/* r63 · 同页衔接（嵌在官网里预载时）：场景先不显示、背景透明，官网的画面就在下面；界面由官网按镜头进度 --jp 推进（只用 opacity / translate / scale），
+   最后一帧官网把场景交过来（去掉 embed-wait），界面已经完整 */
+html.embed{color-scheme:dark}
+html.embed-wait,html.embed-wait body{background:transparent!important}
+html.embed-wait .scene,html.embed-wait body::after{visibility:hidden}
+html.jui .top,html.jui .hero,html.jui .side{animation:none!important;opacity:var(--jp,0);translate:0 calc((1 - var(--jp,0)) * 22px);scale:calc(.965 + .035 * var(--jp,0));transition:none!important}
+html.jui .top{translate:0 calc((1 - var(--jp,0)) * -10px);scale:1}
+html.embed-wait *{pointer-events:none!important}

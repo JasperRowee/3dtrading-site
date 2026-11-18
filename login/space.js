@@ -199,7 +199,7 @@ function start() {
   }
   addEventListener('pointermove', e => { if (e.pointerType === 'mouse') pmx = e.clientX / innerWidth - .5; }, { passive: true });
   D.addEventListener('mouseleave', () => { pmx = 0; });
-  function loop(now) { raf = 0; if (D.hidden || still) return; if (now - lastDraw >= 32) { lastDraw = now; render(); } raf = requestAnimationFrame(loop); }
+  function loop(now) { raf = 0; if (D.hidden || still || D.documentElement.classList.contains('embed-wait')) return; if (now - lastDraw >= 32) { lastDraw = now; render(); } raf = requestAnimationFrame(loop); }
   function kick() { if (!raf && !D.hidden && !still) raf = requestAnimationFrame(loop); }
   function stop() { if (raf) cancelAnimationFrame(raf); raf = 0; }
 
@@ -235,6 +235,7 @@ function start() {
   let rzT = 0; addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(() => maybe(), 60); });
   addEventListener('td:lang', () => setTimeout(() => maybe(true), 40));
   D.addEventListener('visibilitychange', () => { if (D.hidden) stop(); else kick(); });
+  addEventListener('td:join', () => kick());   // r63 · 预载在官网里时不画；交接那一刻开始
   addEventListener('pageshow', kick);
   if (RM && RM.addEventListener) RM.addEventListener('change', () => { still = RM.matches; if (still) { frozenT = clock(); placeCamera(0); } skyU.uStill.value = dustU.uStill.value = still ? 1 : 0; render(); kick(); });
   if (window.ResizeObserver) { const ce = D.getElementById('card'); if (ce) new ResizeObserver(() => { if (G) { spaceLayout(); if (still) render(); } }).observe(ce); }
