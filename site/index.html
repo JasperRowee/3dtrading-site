@@ -652,19 +652,23 @@ const PFX = (() => {
      随镜头后退一起变小、移动，被星球盖住（外面是星空层，圆盘里是镜头真正看到的官网）；文案块本来就挂在场景锚点上（placeCopy，转场时不夹缩放）。
      只有壳合上时（o 到 oh）才淡掉。门：照旧冲过去放大淡掉。只用 translate / scale / opacity（合成层，不重排） */
   const TXEL = '.bar,.rail,.cue,.note', TXD0 = 56; let TXP = [], CST = null;
-  function txStart() { TXP = [...document.querySelectorAll(TXEL)].map(el => { el.style.translate = ''; el.style.scale = ''; const r = el.getBoundingClientRect();
+  /* r65 · 2 · 转场分层（Jasper 2026-11-18）：文字、按钮、导航不再钉进场景跟镜头缩放，各自按时间淡出 / 淡入；
+     真正跟镜头转场的只有 3D：星球外壳、内壁、K 线竖屏、柱子、Dodo。txStart / txPin 只记下开始时间 */
+  let TX0 = 0;
+  function txStart() { TX0 = performance.now(); TXP = []; }
+  function txStartOld() { TXP = [...document.querySelectorAll(TXEL)].map(el => { el.style.translate = ''; el.style.scale = ''; const r = el.getBoundingClientRect();
       let m41 = 0, m42 = 0; try { const m = new DOMMatrix(getComputedStyle(el).transform); m41 = m.m41; m42 = m.m42; } catch (e) {}
       const x = r.left + r.width / 2, y = r.top + r.height / 2; el.style.transformOrigin = (x - (r.left - m41)).toFixed(1) + 'px ' + (y - (r.top - m42)).toFixed(1) + 'px';
       return { el, x, y, w: null }; }); }
-  function txPin() { if (!CST) return; const S = CST, D = TXD0;
+  function txPin() { return; const S = CST, D = TXD0;
     TXP.forEach(t => { if (!t.w) { const a = (t.x - S.cx) / S.F, b = (S.cy - t.y) / S.F; t.w = S.p.map((v, i) => v + D * (S.f[i] + a * S.r[i] + b * S.u[i])); }
       const v = sub3(t.w, C.p), Z = v[0] * C.f[0] + v[1] * C.f[1] + v[2] * C.f[2];
       if (Z < .5) { t.el.style.scale = '0.001'; return; }
       const X = C.cx + C.F * (v[0] * C.r[0] + v[1] * C.r[1] + v[2] * C.r[2]) / Z, Y = C.cy - C.F * (v[0] * C.u[0] + v[1] * C.u[1] + v[2] * C.u[2]) / Z, k = (C.F / Z) / (S.F / D);
       t.el.style.translate = (X - t.x).toFixed(1) + 'px ' + (Y - t.y).toFixed(1) + 'px'; t.el.style.scale = clamp(k, .001, 40).toFixed(4); }); }
   function txFollow() { const u = X.u; let f;
-    if (X.kind === 'door') f = sm(sg(u, .06, .24));
-    else f = X.out ? sm(sg(X.o, X.ox * .6, X.oh)) : 0;   // inside the planet the text is part of the scene; it goes only as the shell closes over the disc
+    if (X.kind === 'back') f = sm(sg(u, .05, .24));   // r65: coming home the UI is whole a little before the camera lands
+    else f = sm((performance.now() - TX0) / 340);     // r65: going out the UI leaves on its own, quickly, while the 3D starts to pull back
     de.style.setProperty('--txf', f.toFixed(4)); }
   function txClear() { de.style.removeProperty('--txk'); de.style.removeProperty('--txf'); TXP.forEach(t => { t.el.style.transformOrigin = ''; t.el.style.translate = ''; t.el.style.scale = ''; }); TXP = []; CST = null; }
   /* r63 · 转场时官网画面降到一半分辨率（画面在缩小、被星球盖住，看不出来），结束恢复 */
@@ -815,8 +819,17 @@ let GATE = false, PEND = null; const go = (d, why) => { if (GATE || PFX.busy()) 
   if (d > 0 && K.tgt === NS - 1) { if (K.t > NS - 1.2 && B11.a > .5) enter('signup'); return; }
   const tg = clamp(CK.tgt + d, 0, NS - 1); if (tg === CK.tgt) return; targetStep(tg);   // every swipe moves the destination one stop, however far ahead it already is
  };
-const jump = i => { if (i === CK.tgt || PFX.busy()) return; targetStep(i);
+/* r65 · 4 · 导航直达走直线（Jasper 2026-11-18）：右侧导航 / Home / End 跳到隔一站以上的地方，镜头不再把中间每一站走一遍，
+   而是从现在的位置直线飞到终点（中段略微抬高，越远抬得越高，避开柱子和卡片），时长按距离算、有上限。场景时钟直接到终点那一站，
+   飞行中文案先不出，快到时再出 */
+let DF = null, LASTP = null, LASTL = null, LASTS = [0, 0];
+const jump = i => { if (i === CK.tgt || PFX.busy()) return;
+  if (!RM && LASTP && Math.abs(i - CK.t) > 1.2) { const c = CAM()[i], d = Math.hypot(...c.p.map((v, k) => v - LASTP[k]));
+    DF = { p0: LASTP.slice(), l0: LASTL.slice(), s0: LASTS.slice(), cms0: CMS, cmy0: CMY, u: 0, dur: clamp(.85 + d / 40, 1.1, 2.3), lift: Math.min(9, d * .1) };
+    CK.t = i; CK.v = 0; CK.vs = 0; CK.uni = false; if (i === NS - 1 && B11.t === 9) B11.t = 9.0006; }
+  targetStep(i);
  };
+window.__cam = () => ({ t: CK.t, tgt: CK.tgt, df: DF ? DF.u : null, p: C.p.slice() }); window.__jump = i => jump(i);   // r65 test hooks
 /* r64 · 滑动根治（Jasper 2026-11-18）：官网改成普通网页滚动。一个看不见的全屏滚动层 #scr 里每站一段高度（NS 段），浏览器原生滚动 +
    吸附（scroll-snap-type: y mandatory · scroll-snap-stop: always：一次手势最多停一站；手何时离开由浏览器判断，网页不再猜）。
    滚动停在哪一段，那一站就是镜头的终点；镜头朝终点按自己的规律走（02–05 匀速每站 1.4 s），途中区间变了就改终点接着走。
@@ -832,7 +845,7 @@ SCL.addEventListener('scroll', () => {
   if (!('onscrollend' in window)) { clearTimeout(GT); GT = setTimeout(scrEnd, 180); }   // older Safari without scrollend
   const i = clamp(Math.round(SCL.scrollTop / secH()), 0, NS - 1);
   if (performance.now() - SCRQ < 120 && i === CK.tgt) return;
-  if (GATE || PFX.busy() || HOMING) { scrTo(CK.tgt); return; }   // the motion layer / a planet transition / going home: the scroll goes back where the camera is headed
+  if (GATE || PFX.busy() || HOMING || DF) { scrTo(CK.tgt); return; }   // the motion layer / a planet transition / going home: the scroll goes back where the camera is headed
   if (G0 == null) G0 = CK.tgt;
   const tg = clamp(i, G0 - 1, G0 + 1); if (tg !== CK.tgt) targetStep(tg, true);
 }, { passive: true });
@@ -904,7 +917,7 @@ let side = -1;
 BLK.forEach(b => b.querySelectorAll('h1,h2').forEach(h => { h.innerHTML = h.innerHTML.split(/<br\s*\/?>/i).map(l => `<span class="ln"><span>${l}</span></span>`).join(''); }));
 let inS = -1;
 function syncHTML() {
-  const s = Math.abs(CK.t - CK.tgt) < .86 ? CK.tgt : Math.round(clamp(CK.t, 0, NS - 1)), ins = Math.abs(CK.t - CK.tgt) < (CK.tgt === 5 ? .78 : .45) ? CK.tgt : -1;   // r41: copy is tied to the camera, so it is there when the camera lands
+  const s = Math.abs(CK.t - CK.tgt) < .86 ? CK.tgt : Math.round(clamp(CK.t, 0, NS - 1)), ins = DF && DF.u < .72 ? -1 : Math.abs(CK.t - CK.tgt) < (CK.tgt === 5 ? .78 : .45) ? CK.tgt : -1;   // r41: copy is tied to the camera, so it is there when the camera lands
   if (ins !== inS) { inS = ins; BLK.forEach((b, i) => b.classList.toggle('in', i === ins)); }
   if (s === side) return; side = s;
   railB.forEach((b, i) => b.classList.toggle('on', i === s)); cue.classList.toggle('off', s === NS - 1);
@@ -922,7 +935,7 @@ function anchors(only, a) {
     return { w: [0, 1, 2].map(j => C.p[j] + C.f[j] * D + C.r[j] * ux + C.u[j] * uy), e: [0, 1, 2].map(j => C.r[j] * e[0] + C.u[j] * e[1] + C.f[j] * e[2]), k: kk }; }); CMS = cms0; CMY = cmy0;
 }
 // t: the scene's clock decides when copy shows; ct: the camera's clock decides where it sits, so it is at rest the moment the camera is
-let COPYFREE = false;   // r64: during the pull-back the copy shrinks with the scene (no clamp)
+let COPYFREE = false, COPYK = 1;   // r65 · COPYK: copy held back while the camera flies straight to a far stop   // r64: during the pull-back the copy shrinks with the scene (no clamp)
 function placeCopy(t, ct = t) { const SP = SPOT();
   BLK.forEach((b, i) => { const a = ANC[i], dt = t - i, late = i >= 6; let o = late ? 1 - sm((Math.abs(dt) - .06) / .4) : dt > 0 ? 1 - sm((dt - .02) / .28) : 1 - sm((-dt - .12) / .3);   // r64 #2/#3: 01–06 in turn — the copy leaving is gone (by .3 of the way) before the next one starts (.42 out), never two at once
     if (i === 5 && dt < 0) o = 1 - sm((-dt - .1) / .5);
@@ -931,7 +944,7 @@ function placeCopy(t, ct = t) { const SP = SPOT();
     const w = a ? a.w.map((v, j) => v - a.e[j] * (ct - i) * dr) : null, q = o > .01 && w ? pr(...w) : null;
     if (!q) { if (b._v) { b.style.opacity = 0; b._v = 0; b.style.pointerEvents = 'none'; } return; }
     const sc = COPYFREE ? q.k / a.k : clamp(q.k / a.k, .55, 1.7); if (!COPYFREE) o *= clamp((1.7 - sc) / .3);
-    const c = b.classList.contains('c');
+    o *= COPYK; const c = b.classList.contains('c');
     b.style.opacity = o.toFixed(3); b.style.pointerEvents = c && o > .6 ? 'auto' : 'none';
     let y = q.y; if (!c && !mob) { const h = b._h || (b._h = b.offsetHeight); y += Math.max(0, 62 + h / 2 - H * SP[i][1]); }   // a short landscape screen: the copy rests under the header — a fixed shift, so on the way out it still moves with the space (a floor here held it under the header while the camera left)
     b.style.transform = `translate(${q.x.toFixed(1)}px,${y.toFixed(1)}px)${c ? ' translate(-50%,-50%)' : mob ? '' : ' translateY(-50%)'} scale(${sc.toFixed(3)})`; b._v = 1; });
@@ -946,7 +959,7 @@ function tex(name, w, h, sc = 2) { let t = TX[name]; if (!t) { const c = documen
 
 /* ---------- the wall: six model panels ---------- */
 const KIND = [siteText('状态空间模型'), siteText('盘口深度'), siteText('长短期记忆网络'), siteText('已实现波动率'), siteText('条件异方差'), siteText('指数加权波动')];
-const PWd = 440, PHd = 600, PSC = 1.5, LT = 196, RH = 50, HROW = 2;
+const PWd = 440, PHd = 600, PSC = 2, LT = 196, RH = 50, HROW = 2;
 const PT = [];
 let HIT = null, nextHit = 1.2, hitN = 0, LBLCL = true, LCW = 1;
 function clearHit(w = 1.5) { if (HIT && CO[HIT.ci]) { CO[HIT.ci].hit = 0; CO[HIT.ci].on = 0; } HIT = null; nextHit = T + w; }
@@ -1055,18 +1068,34 @@ function tagTex() {
   RAWC--; return t;
 }
 /* lay a texture onto the sphere: centre az/el, spans in radians, cut into tiles each drawn with its own affine map */
+/* r65 · 5 · 去锯齿：r64 每块只用三个角做仿射，相邻两块在接缝处对不上，斜线和横条一段段错开（看起来就是锯齿）。
+   现在每块拆成两个三角形，各自用自己的三个角精确映射，接缝两边严丝合缝；三角形向外扩 .45px 盖住抗锯齿边，画面外的块直接跳过 */
 function onWall(t, c, ps, az0, el0, saz, sel, a, nx = 6, ny = 3, rr = SR) {
-  if (a < .01) return; const cw = t.w, ch = t.h;
+  if (a < .01) return; const cw = t.w, ch = t.h, sw = cw / nx, sh = ch / ny, G = [];
+  for (let b = 0; b <= ny; b++) { const row = []; for (let k = 0; k <= nx; k++) row.push(pr(...onS(az0 + (k / nx - .5) * saz, el0 + (.5 - b / ny) * sel, rr))); G.push(row); }
+  g.globalAlpha = a;
   for (let b = 0; b < ny; b++) for (let k = 0; k < nx; k++) {
-    const u0 = k / nx, u1 = (k + 1) / nx, v0 = b / ny, v1 = (b + 1) / ny;
-    const P = (u, v) => pr(...onS(az0 + (u - .5) * saz, el0 + (.5 - v) * sel, rr));
-    const TL = P(u0, v0), TR = P(u1, v0), BL = P(u0, v1); if (!TL || !TR || !BL) continue;
-    const sx = u0 * cw, sy = v0 * ch, sw = cw / nx, sh = ch / ny, e = 2.5;
-    g.setTransform(DPR * (TR.x - TL.x) / sw, DPR * (TR.y - TL.y) / sw, DPR * (BL.x - TL.x) / sh, DPR * (BL.y - TL.y) / sh, DPR * TL.x, DPR * TL.y);
-    g.globalAlpha = a; g.drawImage(c, sx * ps, sy * ps, (sw + e) * ps, (sh + e) * ps, 0, 0, sw + e, sh + e);
+    const TL = G[b][k], TR = G[b][k + 1], BL = G[b + 1][k], BR = G[b + 1][k + 1]; if (!TL || !TR || !BL || !BR) continue;
+    const x0 = Math.min(TL.x, TR.x, BL.x, BR.x), x1 = Math.max(TL.x, TR.x, BL.x, BR.x), y0 = Math.min(TL.y, TR.y, BL.y, BR.y), y1 = Math.max(TL.y, TR.y, BL.y, BR.y);
+    if (x1 < -4 || y1 < -4 || x0 > W + 4 || y0 > H + 4) continue;
+    const sx = k * sw, sy = b * sh;
+    texTri(c, ps, sx, sy, sx + sw, sy, sx, sy + sh, TL, TR, BL);
+    texTri(c, ps, sx + sw, sy, sx + sw, sy + sh, sx, sy + sh, TR, BR, BL);
   }
   g.globalAlpha = 1; g.setTransform(DPR, 0, 0, DPR, 0, 0);
 }
+function texTri(c, ps, u0, v0, u1, v1, u2, v2, A, B, Cq) {
+  const du1 = u1 - u0, dv1 = v1 - v0, du2 = u2 - u0, dv2 = v2 - v0, det = du1 * dv2 - du2 * dv1; if (Math.abs(det) < 1e-9) return;
+  const ax = A.x, ay = A.y, bx = B.x - ax, by = B.y - ay, cx = Cq.x - ax, cy = Cq.y - ay;
+  const ma = (bx * dv2 - cx * dv1) / det, mb = (by * dv2 - cy * dv1) / det, mc = (cx * du1 - bx * du2) / det, md = (cy * du1 - by * du2) / det;
+  const mx = (A.x + B.x + Cq.x) / 3, my = (A.y + B.y + Cq.y) / 3, ex = q => { const dx = q.x - mx, dy = q.y - my, l = Math.hypot(dx, dy) || 1; return [q.x + dx / l * .45, q.y + dy / l * .45]; };
+  const [p0x, p0y] = ex(A), [p1x, p1y] = ex(B), [p2x, p2y] = ex(Cq);
+  g.save(); g.setTransform(DPR, 0, 0, DPR, 0, 0); g.beginPath(); g.moveTo(p0x, p0y); g.lineTo(p1x, p1y); g.lineTo(p2x, p2y); g.closePath(); g.clip();
+  g.setTransform(DPR * ma, DPR * mb, DPR * mc, DPR * md, DPR * (ax - ma * u0 - mc * v0), DPR * (ay - mb * u0 - md * v0));
+  const umin = Math.max(0, Math.min(u0, u1, u2) - 1), vmin = Math.max(0, Math.min(v0, v1, v2) - 1), umax = Math.max(u0, u1, u2) + 1, vmax = Math.max(v0, v1, v2) + 1;
+  const sw = Math.min(c.width / ps, umax) - umin, sh = Math.min(c.height / ps, vmax) - vmin;
+  if (sw > 0 && sh > 0) g.drawImage(c, umin * ps, vmin * ps, sw * ps, sh * ps, umin, vmin, sw, sh);
+  g.restore(); }
 function dome(a) {
   a *= 1 + 2.2 * TXW;   // r62: pulling back out of the planet, its inner wall reads clearly
   if (a < .01) return; g.lineWidth = 1;
@@ -1646,7 +1675,7 @@ function frame(now) {
   FN++; if (FN % 4 === 0) inkScan();
   const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
   if (RM) { CK.t = CK.tgt; CK.v = 0; CK.vs = 0; } else camStep(CK, dt);
-  scrLock(GATE || PFX.busy() || HOMING);   // r64: no page scroll under the motion layer, a planet transition or going home
+  scrLock(GATE || PFX.busy() || HOMING || !!DF);   // r64: no page scroll under the motion layer, a planet transition or going home
   K.t = CK.t; K.v = CK.v; K.tgt = CK.tgt;   // r61: the scene clock is the camera's; what it shows moves with the shot
   const t = clamp(K.t, 0, NS - 1); LBLCL = t < 5.5; LCW = LBLCL ? 1 : 1 - sm(Math.abs(t - Math.round(t)) / .12);   // 07 on: kept on screen only while at rest, let go as soon as the camera moves
   /* r61 · each step's action has one destination: done (1) once the camera is headed for this step or past it, back to the start (0)
@@ -1668,14 +1697,19 @@ function frame(now) {
   // camera between stop i and i+1, swinging out along BUL on the way. A stop can also move inside its own step
   for (let i = 6; i < NS; i++) if (Math.abs(t - i) < 1.2) anchors(i, A[i]);
   const ct = clamp(CK.t, 0, NS - 1);   // everything that frames the shot follows the camera's own clock
-  CMS = mob ? msAt(ct) : MS; CMY = msyAt(ct); if (mob) XTRA = xtraFor(CMS);
+  CMS = mob ? msAt(ct) : MS; CMY = msyAt(ct); if (DF) { const e = eio(DF.u); CMS = L(DF.cms0, CMS, e); CMY = L(DF.cmy0, CMY, e); } if (mob) XTRA = xtraFor(CMS);
   HHF = Math.atan((W / 2) / ((H / 2) / Math.tan(.42) * (mob ? CMS : 1)));   // half the view's width: from 02 on, turning stops when the middle of the scene reaches the screen edge
   const cams = CAM(), i0 = Math.min(NS - 2, Math.floor(ct)), u = ct - i0, ca = cams[i0], cb = cams[i0 + 1], idle = RM ? 0 : 1;
   const [cap, cal] = pose(ca, A[i0]), [cbp, cbl] = pose(cb, A[i0 + 1]);
   const lu = i0 ? sm(u) : eio(sg(u, .1, 1)), pu = i0 ? sm(u) : eio(sg(u, 0, .9)), bw = Math.sin(PI * pu), bv = BUL[i0 + 1] || [0, 0, 0];
   let P = cap.map((v, i) => L(v, cbp[i], pu) + bv[i] * bw * (ML ? 1.3 : 1) + (i === 0 ? Math.sin(T * .13) * .25 * idle : i === 1 ? Math.sin(T * .17) * .12 * idle : 0));
   let Lk = cal.map((v, i) => L(v, cbl[i], lu) + (i === 0 ? Math.sin(T * .1) * .8 * idle * (ct < 1 ? 1 - ct : 0) : 0));
-  setCam(P, Lk, L(ca.sx, cb.sx, pu), L(ca.sy, cb.sy, pu)); placeCopy(ct, ct);
+  let SX = L(ca.sx, cb.sx, pu), SY = L(ca.sy, cb.sy, pu);
+  if (DF) { DF.u = Math.min(1, DF.u + dt / DF.dur); const e = eio(DF.u), lf = DF.lift * Math.sin(PI * e);   // r65 · 4: one straight line from where the camera was
+    P = P.map((v, i) => L(DF.p0[i], v, e) + (i === 1 ? lf : 0)); Lk = Lk.map((v, i) => L(DF.l0[i], v, e) + (i === 1 ? lf * .55 : 0)); SX = L(DF.s0[0], SX, e); SY = L(DF.s0[1], SY, e);
+    if (DF.u >= 1) DF = null; }
+  LASTP = P.slice(); LASTL = Lk.slice(); LASTS = [SX, SY];
+  setCam(P, Lk, SX, SY); COPYK = DF ? sm(sg(DF.u, .7, 1)) : 1; placeCopy(ct, ct);
   { const wide = Math.max(1 - sm(sg(ct, 0, .7)), .5 * sm(sg(ct, 5.5, 6.2))), yw = L(.07, .3, wide), pt = (gl || LOOKY != null) && (mob || touchDev) ? L(.11, .2, wide) : L(.04, .16, wide), d = Lk.map((v, i) => v - P[i]), n = Math.hypot(...d);
     // the mouse (or the phone turning) turns the head: left and right, the same in every step
     // the wider turn is for the six models on the first page; later steps keep a modest extra so their subject stays in view
@@ -1692,11 +1726,11 @@ function frame(now) {
     const az = Math.atan2(d[0], d[2]) + turn - orb, el = clamp(Math.asin(d[1] / n) - smy * 2 * pt + Math.abs(smx) * 2 * EU * p1, -1.2, 1.3);
     Lk = [P[0] + n * Math.cos(el) * Math.sin(az), P[1] + n * Math.sin(el), P[2] + n * Math.cos(el) * Math.cos(az)]; }
   if (diveT) { const dv = eio(clamp((performance.now() - diveT) / 700)) * 14, f = nrm(sub3(Lk, P)); P = add3(P, mul3(f, dv)); Lk = add3(Lk, mul3(f, dv)); }   // going in: rush forward
-  setCam(P, Lk, L(ca.sx, cb.sx, pu), L(ca.sy, cb.sy, pu));
+  setCam(P, Lk, SX, SY);
 
   // Fit the entire trading composition together on phones; panning still moves it as one unit.
   if (mob && ct > .6 && ct < 4.5) {
-    const fit = sm(sg(ct, .6, 1)) * (1 - sm(sg(ct, 4.1, 4.5)));
+    const fit = sm(sg(ct, .6, 1)) * (1 - sm(sg(ct, 4.1, 4.5))) * (DF ? eio(DF.u) : 1);
     const pts = [[KX(0) - .45, 18.42], [KX(0) - .45 + 15.4, 18.42], [KX(0) - .45, 4.1], [KX(0) - .45 + 15.4, 4.1]].map(([x,y]) => pr(x,y,KZ));
     if (pts.every(Boolean)) {
       const left = Math.min(...pts.map(p=>p.x)), right = Math.max(...pts.map(p=>p.x));
@@ -1710,7 +1744,7 @@ function frame(now) {
     }
   }
   PFX.cam(dt);   // r62: the planet transitions move the camera itself (out of the planet, through the door, back in)
-  if (PFX.busy()) { COPYFREE = PFX.kind() !== 'door'; placeCopy(ct, ct); COPYFREE = false; }   // r64: the copy keeps its place in the scene as the camera leaves / comes back
+  // r65 · 2: the copy stays where it was on screen and only fades (--txf); it no longer rides the camera out
   if (PFX.busy()) clearHit();   // r64 #5: no stray hit tag while flying out or back
   if (PFX.hidden()) { PFX.compose(); requestAnimationFrame(frame); return; }
 
@@ -1841,7 +1875,7 @@ function frame(now) {
   }
 
   // The floor shares the shaded pillar material; distance uses the same fog as the cells.
-  if (DAY) {
+  { // r65 · 3: a solid floor under the pillars by night too, so the gaps between them no longer show the coin rings below
     RAWC++;
     const ground = g.createLinearGradient(0, 0, 0, H);
     for (let k = 0; k <= 64; k++) {

@@ -6430,6 +6430,22 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
   addEventListener('resize', sched);
   addEventListener('hashchange', () => setTimeout(update, 0));
   addEventListener('orientationchange', () => setTimeout(update, 300));
+  /* r65 · 1 · iPhone 键盘不再推页面（Jasper 2026-11-18）：iOS Safari 只在“获得焦点的输入框会被键盘挡住”时才把整页往上推。
+     手指在 Dodo 输入框上抬起的那一刻，我们自己去聚焦：聚焦前先把输入框临时挪到屏幕上方（看不见），Safari 判断挡不到，就不推；
+     键盘起来后（可见区域变矮，kb-open）立刻放回，此时整页已按可见高度排好，输入框落在键盘上方。顶栏和探头 Dodo 从头到尾不动。
+     安卓：viewport 里的 interactive-widget=resizes-content 让页面直接变矮，不走这里。 */
+  const IOS = /iP(hone|od|ad)/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  let pre = null, preT = 0;
+  const preEnd = () => { clearTimeout(preT); if (!pre) return; pre.style.transform = ''; pre.style.opacity = ''; pre = null; };
+  document.addEventListener('touchend', e => {
+    const ta = e.target.closest && e.target.closest('#askForm textarea'); if (!ta || !IOS || !MOB.matches || CUR !== 'ai' || document.activeElement === ta || open) return;
+    const r = ta.getBoundingClientRect(), dy = Math.round(r.top - (vv ? vv.offsetTop : 0) - 8); if (dy < 60) return;
+    e.preventDefault(); pre = ta; ta.style.transform = `translateY(${-dy}px)`; ta.style.opacity = '0';
+    ta.focus({ preventScroll: true }); preT = setTimeout(preEnd, 700);
+  }, { passive: false, capture: true });
+  if (vv) vv.addEventListener('resize', () => { if (!pre) return; update(); if (open) preEnd(); });
+  document.addEventListener('focusout', preEnd);
+  window.__kbPre = () => !!pre;
   MOB.addEventListener('change', e => {
     HINT = e.matches ? HINT_M : HINT_D;
     update();
