@@ -351,3 +351,6 @@ html.embed-wait .scene,html.embed-wait body::after{visibility:hidden}
 html.jui .top,html.jui .hero,html.jui .side{animation:none!important;opacity:var(--jp,0);translate:0 calc((1 - var(--jp,0)) * 22px);scale:calc(.965 + .035 * var(--jp,0));transition:none!important}
 html.jui .top{translate:0 calc((1 - var(--jp,0)) * -10px);scale:1}
 html.embed-wait *{pointer-events:none!important}
+
+/* r66 · 发送验证码按钮旁：演示验证码在本页显示（表单一打开就看得到） */
+.codeHint{margin:6px 2px 0;text-align:right;font-size:12px;line-height:1.4;color:#c99a06}

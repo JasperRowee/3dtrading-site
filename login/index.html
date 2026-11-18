@@ -16,7 +16,7 @@ addEventListener('pagereveal',function(e){var v=e.viewTransition;if(v)[v.ready,v
 <link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/dodo-180.png">
 <style>/* r62 · the website <-> log-in fade opts in here, inline, so it is known before login.css arrives (the copy in login.css stays) */@view-transition{navigation:auto}</style>
-<link rel="stylesheet" href="login.css?v=r63">
+<link rel="stylesheet" href="login.css?v=r66">
 </head>
 <body>
 <div class="scene" id="scene" aria-hidden="true"><canvas id="space"></canvas><canvas id="gx"></canvas><canvas id="orb"></canvas></div>
@@ -58,8 +58,9 @@ addEventListener('pagereveal',function(e){var v=e.viewTransition;if(v)[v.ready,v
             <div class="msg" id="mEmail"></div></div>
 
           <!-- r58 · sign-up email code (DEMO: no mail service; the code is shown in the 演示收件箱 box below, kept in page memory only) -->
-          <div class="fld" data-only="register" id="fCode"><label class="lab" for="code"><span data-i18n="auth.code">邮箱验证码</span><em data-i18n="auth.codeRule">6 位数字 · 10 分钟内有效</em></label>
+          <div class="fld" data-only="register" id="fCode"><label class="lab" for="code"><span data-i18n="auth.code">邮箱验证码</span><em data-i18n="auth.codeRule">6 位数字</em></label>
             <div class="inp has-btn"><input id="code" name="one-time-code" inputmode="numeric" enterkeyhint="next" autocomplete="one-time-code" maxlength="6" spellcheck="false" aria-describedby="mCode inbox" data-i18n-attr="placeholder:auth.codePh"><button type="button" class="sendc" id="sendc" data-i18n="auth.send">发送验证码</button></div>
+            <p class="codeHint" id="codeHint" data-i18n="auth.codeHint">演示验证码在本页显示</p>
             <div class="msg" id="mCode"></div>
             <div class="inbox" id="inbox" role="status" aria-live="polite" hidden></div></div>
 
@@ -114,8 +115,8 @@ addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) re
   try { u = new URL(e.activation && e.activation.entry && e.activation.entry.url || '', location.href).pathname; } catch (x) {}
   if (!/\/(site|login)\/(index\.html)?$/.test(u)) v.skipTransition(); });</script>
 <script src="/3dtrading-site/dashboard/account/td-auth.js?v=r58"></script>
-<script src="login.js?v=r63"></script>
-<script src="planet.js?v=r63"></script>
+<script src="login.js?v=r66"></script>
+<script src="planet.js?v=r66"></script>
 <script type="module" src="space.js?v=r63"></script>
 <script>/* r62 · 返回官网 (logo): the form fades, the camera flies straight at the planet (the website's line, its motion law) until the
    shell covers the screen; the website carries on from there, in through the shell, to the step you left (r62.site.at, else 01).
@@ -133,7 +134,7 @@ window.__join={ready:true,
    if(m){var b=document.querySelector('#tabs [data-mode="'+m+'"]');if(b&&b.getAttribute('aria-selected')!=='true')b.click()}
    if(l==='en'||l==='zh'){var lb=document.querySelector('#lang [data-lang="'+l+'"]');if(lb)lb.click()}}catch(e){}},
  ui:function(p){d.style.setProperty('--jp',Math.max(0,Math.min(1,p)).toFixed(4))},
- go:function(){d.style.setProperty('--jp','1');d.classList.remove('embed-wait','jui');if(window.__planetJoin)window.__planetJoin();dispatchEvent(new Event('td:join'))}};})();</script>
+ go:function(){d.style.setProperty('--jp','1');d.classList.add('joined');d.classList.remove('embed-wait','jui','arrive');if(window.__planetJoin)window.__planetJoin();d.classList.remove('arrive');dispatchEvent(new Event('td:join'))}};})();</script>
 <script nomodule>window.__space={mode:"2d",why:"nomodule"};document.getElementById("space").hidden=true;dispatchEvent(new CustomEvent("td:space",{detail:window.__space}))</script>
 </body>
 </html>

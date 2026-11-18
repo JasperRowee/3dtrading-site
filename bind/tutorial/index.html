@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="page.css?v=r49l">
 <link rel="stylesheet" href="bind-bn.css?v=r58">
 <link rel="stylesheet" href="connect-r45.css?v=r58">
-<link rel="stylesheet" href="tut.css?v=r63">
+<link rel="stylesheet" href="tut.css?v=r66">
 </head>
 <body class="tut">
 <!-- r49b · the illustrated tutorial of the 自行生成 route (from r48 connect.html), shown INSIDE the binding page (../index.html #guide)
@@ -46,6 +46,8 @@
   <section class="panel okp" id="panel" hidden role="dialog" aria-modal="true" aria-labelledby="tkOkT"><div class="tk-ok" id="tkOk"></div></section>
   <nav class="tc" id="tc" data-i18n-attr="aria-label:cx.tcL" aria-label="教程控制">
     <a class="tcb x" id="tcClose" href="../#key"><span aria-hidden="true">↑</span> <span data-i18n="cx.close">返回绑定页</span></a>
+    <!-- r66 · 首步和末步：演示提示在上，「用示例 Key 体验」在下，一键完成演示绑定 -->
+    <div class="tdemo" id="tdemo" hidden><p class="tdh" data-i18n-html="cx.tryH"><b>演示</b>没有真实 Key？输入 <code>1234</code> 可演示绑定</p><button type="button" class="tcb try" id="tcDemo" data-i18n="cx.try">用示例 Key 体验</button></div>
     <div class="tcm">
       <button type="button" class="tcb" id="tcPrev"><span aria-hidden="true">‹</span> <span data-i18n="cx.prev">上一步</span></button>
       <ol class="dots" id="dots"></ol>
@@ -64,6 +66,6 @@
 <script src="../../dashboard/account/vendor/qrcode.js?v=r58"></script>
 <script src="bind-bn.js?v=r61"></script>
 <script src="bn-app.js?v=r61"></script>
-<script src="tutorial.js?v=r63"></script>
+<script src="tutorial.js?v=r66"></script>
 </body>
 </html>

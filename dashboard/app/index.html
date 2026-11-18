@@ -2129,9 +2129,16 @@ html[data-theme="night"] #posMini .bf-r .bh:hover{background:var(--hov)}
 .zr-t{background:var(--sf);border-radius:var(--r,16px);box-shadow:var(--sh);padding:16px 18px;display:flex;flex-direction:column;gap:6px;min-width:0}
 .zr-t .k{font-size:13px;color:var(--ink3)}.zr-t b{font-size:26px;font-weight:700;letter-spacing:-.01em;color:var(--ink)}.zr-t b small{font-size:13px;font-weight:600;color:var(--ink3);margin-left:4px}.zr-t .n{font-size:12.5px;color:var(--ink3)}
 .zr-mid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:12px;margin:0 0 16px}
+/* r66 · 手机未绑定总览也去掉资产池和多空持仓（与已绑定分支 r64 一致） */
+@media (max-width:760px){.zr-desk{display:none!important}.zr-mid{margin-bottom:0}}
 .zr-c{padding:16px 18px;min-width:0}.zr-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}.zr-h h2{font-size:16px;margin:0;flex:1}
 .zr-g{display:block;width:100%;height:180px}.zr-g line{stroke:var(--line2);stroke-width:1;vector-effect:non-scaling-stroke}.zr-g line.z0{stroke:var(--ink3);stroke-dasharray:4 4}
 .zr-e{margin:10px 0 0;font-size:13.5px;color:var(--ink3)}
+/* r66 · 钱包未开通：先讲开通条件 */
+.qb-try{display:flex;flex-direction:column;align-items:flex-start;gap:4px;margin:0 0 6px}.qb-try .qb-h{margin:0}.qb-try .btn{height:32px;min-height:32px}
+.qb-real{margin-top:2px;font-size:12.5px}.qb-real summary{cursor:pointer;font-weight:600;color:var(--ink2)}.qb-real .qb-h{margin-top:6px}
+.wl-cond{margin:10px 0 14px;padding:12px 14px;border-radius:12px;background:var(--sf2,rgba(127,127,127,.08))}.wl-cond b{font-size:15px}.wl-cond ol{margin:6px 0 10px;padding-left:20px;font-size:13.5px;line-height:1.6;color:var(--ink2)}
+.zr-te .pend-acts{margin-top:12px}
 .zr-dn{display:flex;align-items:center;gap:18px;padding:10px 0}.zr-dn svg{width:120px;height:120px;flex:none}.zr-dn circle{fill:none;stroke:var(--soft);stroke-width:14}
 .zr-dn b{display:block;font-size:22px}.zr-dn b small{font-size:13px;color:var(--ink3)}.zr-dn div>small{color:var(--ink3);font-size:13px}
 .zr-tb{width:100%;border-collapse:collapse;font-size:14px}.zr-tb th{text-align:left;font-weight:600;font-size:12.5px;color:var(--ink3);padding:8px 10px;border-bottom:1px solid var(--line2)}
@@ -3661,7 +3668,7 @@ const pendingAcct = () => { const a = S.view === 'all' ? null : acctById(S.view)
 /* ---------- greeting ---------- */
 function renderGreet() {
   if ($('#greet')) $('#greet').textContent = (sgH < 5 ? '夜深了' : sgH < 11 ? '早上好' : sgH < 13 ? '中午好' : sgH < 18 ? '下午好' : '晚上好') + '，今天想了解什么？';
-  $$('.vsub').forEach(p => p.textContent = `${viewName()} · 数据截至今天 ${nowLabel}（新加坡时间）`);
+  $$('.vsub').forEach(p => p.textContent = (noLive() || pendingAcct()) ? `${viewName()} · 尚未同步` : `${viewName()} · 数据截至今天 ${nowLabel}（新加坡时间）`); /* r66 · 未连接时不显示具体时刻 */
   $('#askCtx').textContent = `正在查看：${viewName()}`;
   renderHello();
 }
@@ -3725,7 +3732,7 @@ function renderPending(a) {
 /* r41 · signed in with no Binance account: the full dashboard, every amount 0, charts empty, clearly "not connected".
    Nothing here is sample data; the demo account is only added if the person clicks for it */
 function renderZero() {
-  const Z = '0.00', bar = `<div class="zr-bar" role="note"><span class="zr-st">未连接</span><p>还没有添加币安账户。下面的金额和持仓都是 0（不是示例），添加账户并通过接入测试后才会有数据。</p><span class="sp"></span><a class="btn brand sm" href="${esc(bindUrl())}">添加币安账户</a><button type="button" class="lnk mut" data-adddemo>看示例账户（演示）</button></div>`;
+  const Z = '0.00', bar = `<div class="zr-bar" role="note"><span class="zr-st">未连接</span><p>这是新账户的状态：还没有添加币安账户，所以金额都是 0。添加账户并通过接入测试后才会有数据。</p><span class="sp"></span><a class="btn brand sm" href="${esc(bindUrl())}">添加币安账户</a><button type="button" class="lnk mut" data-adddemo>体验示例数据</button></div>`;
   const tile = (k, v, u, n) => `<div class="zr-t"><span class="k">${k}</span><b class="num">${v}<small>${u}</small></b><small class="n">${n}</small></div>`;
   const grid = [0, 1, 2, 3].map(i => `<line x1="0" x2="600" y1="${20 + i * 50}" y2="${20 + i * 50}"/>`).join('');
   $('#main').innerHTML = `<div class="zr" data-empty="no-account">${bar}
@@ -3734,14 +3741,15 @@ function renderZero() {
       <section class="panel zr-c" aria-label="累计净收益"><div class="zr-h"><h2>累计净收益</h2><span class="zr-st sm">未连接</span></div>
         <svg class="zr-g" viewBox="0 0 600 180" preserveAspectRatio="none" role="img" aria-label="空图表：还没有数据">${grid}<line class="z0" x1="0" x2="600" y1="170" y2="170"/></svg>
         <p class="zr-e">还没有数据。添加币安账户并通过接入测试后，从那天开始记录。</p></section>
-      <section class="panel zr-c" aria-label="底层收益资产池"><div class="zr-h"><h2>底层收益资产池</h2><span class="zr-st sm">未连接</span></div>
+      <section class="panel zr-c zr-desk" aria-label="底层收益资产池"><div class="zr-h"><h2>底层收益资产池</h2><span class="zr-st sm">未连接</span></div>
         <div class="zr-dn"><svg viewBox="0 0 120 120" aria-hidden="true"><circle cx="60" cy="60" r="46"/></svg><div><b class="num">0.00 <small>USDT</small></b><small>没有计奖资产</small></div></div></section>
     </div>
-    <section class="panel zr-c" aria-label="多空持仓"><div class="zr-h"><h2>多空持仓</h2><span class="zr-st sm">未连接</span></div>
+    <section class="panel zr-c zr-desk" aria-label="多空持仓"><div class="zr-h"><h2>多空持仓</h2><span class="zr-st sm">未连接</span></div>
       <table class="zr-tb"><thead><tr><th>币种</th><th>多仓</th><th>空仓</th><th>多空差额</th></tr></thead><tbody><tr><td colspan="4">暂无持仓 · 0 个币种</td></tr></tbody></table></section>
   </div>`;
-  $('#trBody').innerHTML = `<div class="zr">${bar}<section class="panel zr-c" aria-label="交易记录"><div class="zr-h"><h2>交易记录</h2><span class="zr-st sm">未连接</span></div>
-    <table class="zr-tb"><thead><tr><th>时间</th><th>币种</th><th>动作</th><th>结果</th></tr></thead><tbody><tr><td colspan="4">还没有交易记录 · 0 笔</td></tr></tbody></table></section></div>`;
+  /* r66 · 交易记录空态：不再说「下面的金额」，也不摆空表 */
+  $('#trBody').innerHTML = `<div class="zr" data-empty="no-trades"><section class="panel zr-c zr-te" aria-label="交易记录"><div class="zr-h"><h2>交易记录</h2><span class="zr-st sm">尚未同步</span></div>
+    <p class="zr-e">尚未连接账户，暂无交易记录。</p><p class="zr-e">添加币安账户并通过接入测试后，每一笔调仓和止盈都会记在这里。</p><div class="pend-acts"><a class="btn brand sm" href="${esc(bindUrl())}">添加币安账户</a><button type="button" class="btn ghost sm" data-adddemo>体验示例数据</button></div></section></div>`;
 }
 /* r41 · first visit right after sign-up (?welcome=1): one prompt, two choices. Shown once per account on this computer;
    a normal log-in never carries ?welcome=1, so existing accounts are not asked again */
@@ -3750,7 +3758,7 @@ function welcome() {
   u.searchParams.delete('welcome'); history.replaceState(null, '', u.pathname + u.search + u.hash);
   if (LIVE || LIVE_ERR || !signedIn() || ACCTS.length) return;
   const k = '3dt.welcomed:' + (SESS().email || ''); try { if (localStorage.getItem(k)) return; localStorage.setItem(k, String(Date.now())); } catch (e) {}
-  openDlg('尚未添加账户', `<div class="wl"><p>你还没有添加币安账户，所以后台的金额和持仓都是 0。现在就添加，或者先跳过，之后随时可以在右上角或「我的」里添加。</p>
+  openDlg('尚未添加账户', `<div class="wl"><p>你还没有添加币安账户，所以后台的金额和持仓都是 0。现在就添加，或者先跳过，之后随时可以在个人菜单或「我的」里添加。</p>
     <div class="mdl-ft wl-ft"><button type="button" class="btn ghost" data-wlskip>暂时跳过</button><a class="btn brand" data-first href="${esc(bindUrl())}">添加币安账户</a></div></div>`);
 }
 document.addEventListener('click', e => { if (e.target.closest('[data-wlskip]')) { closeDlg(); toast('已跳过：后台按 0 显示，可随时添加币安账户'); } });
@@ -3784,6 +3792,7 @@ const TPL = () => `<div class="ov">
 document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) { e.preventDefault(); goTo(g.dataset.go); } });
 /* a link names a section; go to its page, and open the drawer when the detail lives there */
 function goTo(sel) {
+  if (sel === '#bind') { openBind(); return; } /* r66 · Dodo 回复里的「绑定币安」直接打开绑定弹窗 */
   const DRAW = { '#stable': 'stable', '#pos': 'pos' };
   const PAGE = { '#kpis': 'dashboard', '#curveSec': 'dashboard', '#stable': 'dashboard', '#pos': 'dashboard', '#trades': 'trades', '#trView': 'trades', '#walBody': 'wallet' };
   const p = PAGE[sel]; if (p && p !== CUR) nav(p);
@@ -4808,7 +4817,7 @@ function answer0(q) {
   if (/下单|买入|卖出|平仓|开仓|加仓|减仓|帮我(买|卖|平)|\b(buy|sell|place an order|close (my|the) position)\b/i.test(q)) return mk('我是只读的：只能读你的账户数据并解释，不能下单，也不能改仓位。\n需要改动时，在总览顶部「说一句你想做什么」生成一张方案卡，由你确认（需要二次验证）。', null, 'I am read-only: I can read and explain your account, but I cannot place orders or change positions.\nTo change something, describe it in “Say what you want to do” at the top of the overview to get a plan card, then confirm it yourself (with a second verification).');
   if (!signedIn() && !LIVE) return mk('你还没有登录，所以我看不到任何账户数据。登录或用演示账号进入后再问我。', null, 'You are not signed in, so I cannot see any account data. Sign in or enter with the demo account, then ask me again.');
   const a = S.view === 'all' ? null : acctById(S.view);
-  if (!a && noLive()) return mk(ACCTS.length ? '已绑定的币安子账户都还没有通过接入测试，所以我还没有任何仓位和收益数据可以分析。完成接入测试后再问我。' : '你还没有添加币安账户，所以我还没有任何仓位和收益数据可以分析。先在右上角添加一个币安账户。', null, ACCTS.length ? "None of your linked Binance sub-accounts has passed the connection test yet, so there are no positions or returns to analyse. Ask me again once the test passes." : "You haven't linked a Binance sub-account yet, so there are no positions or returns to analyse. Link one from the top right first.");
+  if (!a && noLive()) return mk(ACCTS.length ? '已绑定的币安子账户都还没有通过接入测试，所以我还没有任何仓位和收益数据可以分析。完成接入测试后再问我。' : '你还没有添加币安账户，所以我还没有任何仓位和收益数据可以分析。点下面的「绑定币安」添加一个币安账户。', ACCTS.length ? null : ['#bind', '绑定币安'], ACCTS.length ? "None of your linked Binance sub-accounts has passed the connection test yet, so there are no positions or returns to analyse. Ask me again once the test passes." : "You haven't linked a Binance sub-account yet, so there are no positions or returns to analyse. Tap “Bind Binance” below to add one.");
   if (a && !a.live) return mk(`${a.name} 现在是「${stTx(a)}」，所以还没有仓位和收益数据。开始运行后我就能回答这类问题。`, null, `${enD(a.name)} is “${enD(stTx(a))}”, so there are no positions or returns yet. Once it is running I can answer this.`);
   const f = facts(), T = f.T, pos = T.pos;
   if (LIVE) { const r = liveAnswer(q, f, T); if (r) return r; }
@@ -5412,11 +5421,11 @@ function renderWallet() {
   const tag = demo ? ' <span class="demo">示例</span>' : '';
   box.innerHTML = `<div class="wg wg1">
     <section class="bal" aria-label="订阅"><span class="clip" aria-hidden="true"></span>
-      <span class="k">订阅 · ${sub ? '已开通' : '未开通'} · 本月剩余额度${tag}</span><div class="v num">${L}<small>%</small></div>
-      <div class="wbar" role="progressbar" aria-label="本月剩余额度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${L}"><i style="width:${L}%"></i></div>
-      ${sub ? '' : `<span class="d">添加币安账户后开通 · <a href="${esc(bindUrl())}">去添加</a></span>`}
-      <div class="kv"><div>订阅费率<b>1% / 月</b></div><div>${EN() ? "本月应付" : mo + "应付"}<b class="num">${LIVE_ERR ? '读取失败' : sub ? money(fee, 0) + ' USDT' : '0'}</b></div><div>下月优惠<b class="${sub && L > 0 ? '' : 'tbd'}">${sub && L > 0 ? `剩余 ${L}% 可享` : '暂无'}</b></div></div>
-      <div class="acts"><button class="btn brand" type="button" id="topBtn">Crypto 充值</button><button class="btn ghost" type="button" data-go="#bills">充值记录</button></div></section>
+      ${sub ? `<span class="k">订阅 · 已开通 · 本月剩余额度${tag}</span><div class="v num">${L}<small>%</small></div>
+      <div class="wbar" role="progressbar" aria-label="本月剩余额度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${L}"><i style="width:${L}%"></i></div>` : `<span class="k">订阅 · 未开通</span>
+      <div class="wl-cond" data-wl-cond><b>开通条件</b><ol><li>添加一个币安子账户的 API</li><li>通过接入测试后自动开通，每月按总资产的 1% 收取</li></ol><a class="btn brand sm" href="${esc(bindUrl())}">添加币安账户</a></div>`}
+      <div class="kv"><div>订阅费率<b>1% / 月</b></div><div>${EN() ? "本月应付" : mo + "应付"}<b class="num">${LIVE_ERR ? '读取失败' : sub ? money(fee, 0) + ' USDT' : '0 USDT'}</b></div><div>下月优惠<b class="${sub && L > 0 ? '' : 'tbd'}">${sub && L > 0 ? `剩余 ${L}% 可享` : '暂无'}</b></div></div>
+      <div class="acts"><button class="btn brand" type="button" id="topBtn">Crypto 充值</button><button class="btn ghost" type="button" data-go="#bills">查看记录</button></div></section>
   </div>
   <section class="tu" id="tuBox" aria-label="Crypto 充值" hidden></section>
   <section class="tlx" id="bills" aria-label="充值记录"><div class="hd"><h2 style="margin:0;font-size:17px">充值记录</h2>${demo ? '<span class="mut" style="font-size:12px">全部为示例，不是真实到账</span>' : ''}</div>
@@ -5539,7 +5548,7 @@ function setPanel(t) {
   if (t === 'pref') return `<h3>偏好</h3>
     ${row('外观', '只作用于后台；官网和登录页不变', seg('data-thm', tp, [['day', '昼'], ['night', '夜'], ['system', '跟随系统']], '外观'))}
     ${row('语言', '后台和 Dodo 使用同一种语言', `<div class="seg r56seg" role="group" aria-label="语言"><button type="button" data-lang="zh" aria-pressed="${String(lang === 'zh')}">中文</button><button type="button" data-lang="en" aria-pressed="${String(lang === 'en')}">English</button></div>`)}
-    ${row('金额小数位', `例：${esc(nf2.format(12345.678))} USDT`, seg('data-unit-dec', PREF.dec ? 2 : 0, [[2, '2 位'], [0, '取整']], '金额小数位'))}
+    ${row('金额小数位', `例：${esc(nf2.format(12345.678))} USDT`, seg('data-unit-dec', PREF.dec ? 2 : 0, [[2, '2 位小数'], [0, '取整']], '金额小数位'))}
     ${row('千分位分隔', '1,234,567 或 1234567', sw('setGroup', PREF.group, '千分位分隔'))}`;
   if (t === 'priv') return `<h3>隐私与通知</h3>
     ${row('隐藏金额', '在别人面前打开后台时，金额和收益会模糊显示', sw('setHide', PREF.hide, '隐藏金额'))}
@@ -5675,16 +5684,17 @@ function qbForm() {
       <button type="button" class="qb-key" id="qbKey" data-qbcp="pem" data-first aria-label="复制完整公钥（Ed25519 公钥，不是私钥）"><code>${esc(bnShort())}</code><span class="qb-ci">${CP_I}</span><span class="qb-ok" aria-hidden="true">已复制</span></button>
       <p class="qb-h">点击复制完整公钥，粘贴到币安「公钥」处。这是公钥，不含私钥。</p></div>
     <div class="qb-row"><div class="qb-k"><em>2</em>权限</div><ul class="qb-pms" aria-label="币安 API 权限：勾选哪些">${pm}</ul>
-      <p class="qb-h">先填好下面两个 IP，币安才允许勾选交易权限。交易币对白名单会限制可交易币对，收益可能下降（不一定），不确定就不勾；提现权限永远不要开。</p></div>
+      <p class="qb-h">先填好下面两个 IP，币安才允许勾选交易权限。「允许预测交易权限」不勾；交易币对白名单可选，会限制可交易币对，收益可能下降（不一定），不确定就不勾；提现权限永远不要开。</p></div>
     <div class="qb-row"><div class="qb-k"><em>3</em>IP 白名单</div><div class="qb-ips">${BN_IPS.map((ip, i) => `<button type="button" class="qb-ip" data-qbcp="ip${i}" aria-label="复制 IP ${ip}"><code>${ip}</code><span class="qb-ci">${CP_I}</span><span class="qb-ok" aria-hidden="true">已复制</span></button>`).join('')}<span class="stt demo2">示例</span></div>
       <p class="qb-h">IP 访问限制选「只访问受信任的IP」，两个都要添加。</p></div>
     <form class="qb-row qb-f" id="bnF" novalidate><div class="qb-k"><em>4</em>API Key</div>
+      <div class="qb-try"><p class="qb-h" id="bnDemoH"><span class="stt demo2">演示</span>还没接入币安：输入 <code>1234</code> 可模拟绑定成功（演示账户，不连接币安）。</p><button type="button" class="btn ghost sm" data-bntry>用示例 Key 体验</button></div>
       <div class="qb-in"><input id="bnKey" autocomplete="off" spellcheck="false" maxlength="64" aria-label="API Key" aria-describedby="bnErr bnDemoH">
         <input id="bnNm" maxlength="24" placeholder="账户名称（可选）" aria-label="账户名称（可选）" value="${esc(TDBind.draft())}">
         <button type="submit" class="btn brand">绑定</button></div>
       <p class="bnm-err" id="bnErr" role="alert"></p>
       <div class="bnm-res" id="bnRes" role="status" hidden></div>
-      <p class="qb-h" id="bnDemoH"><span class="stt demo2">演示</span>还没接入币安：输入 <code>1234</code> 可模拟绑定成功（演示账户，不连接币安）。网页不保存、不发送你的 API Key。</p></form>
+      <details class="qb-real" id="bnReal"><summary>绑定真实币安账户</summary><p class="qb-h">在币安复制自行生成的 API Key（64 位字母和数字），粘贴到上面再点「绑定」。目前网页还没接入币安：只检查格式，不发送、不保存你的 API Key，账户保持「未连接」。</p></details></form>
     <div class="qb-ft"><button type="button" class="btn ghost" data-qbskip>跳过</button><span class="sp"></span><a class="lnk" id="bnGuide" href="/3dtrading-site/bind/?from=app&lang=${EN() ? 'en' : 'zh'}#guide">查看完整教程</a></div></div>`;
 }
 function qbDone() {
@@ -5713,6 +5723,8 @@ function openBind(done, carried) {
   openDlg(done ? '绑定结果' : '绑定币安账户', '<div id="qbw"></div>', 'wide qbm');
   qbRender(); setTimeout(() => (done ? $('[data-bxnext]') : $('#qbKey'))?.focus({ preventScroll: true }), RM ? 0 : 60);
 }
+/* r66 · 「用示例 Key 体验」：填入 1234 并直接完成演示绑定 */
+document.addEventListener('click', e => { if (!e.target.closest('[data-bntry]')) return; const k = $('#bnKey'), f = $('#bnF'); if (!k || !f) return; k.value = '1234'; k.dispatchEvent(new Event('input', { bubbles: true })); f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', { cancelable: true })); });
 function qbCopied(btn) { btn.classList.add('done'); clearTimeout(btn._t); btn._t = setTimeout(() => btn.classList.remove('done'), 1600); }
 document.addEventListener('click', e => {
   const x = e.target.closest('#modal .qbx'); if (!x) return;
@@ -5766,7 +5778,7 @@ document.addEventListener('click', e => {
     return;
   }
   if (e.target.closest('#bnGuide')) { bnSave(); return; }
-  if (e.target.closest('[data-qbskip]')) { bnSave(); closeDlg(); toast('已跳过：可随时在右上角或「我的」里添加币安账户'); return; }
+  if (e.target.closest('[data-qbskip]')) { bnSave(); closeDlg(); toast('已跳过：可随时在个人菜单或「我的」里添加币安账户'); return; }
   if (e.target.closest('[data-bxnext]')) { QB.done = null; QB.carried = false; qbRender('key'); toast('换一个子账户，按同样四行再绑定一次'); return; }
   if (e.target.closest('[data-bxfin]')) { QB.done = null; closeDlg(); return; }
 });
@@ -5813,7 +5825,7 @@ function emptyState(a) {
   const all = ACCTS.length > 1 ? '<button class="btn ghost" type="button" data-setv="all">查看全部账户</button>' : '';
   if (DD_ERR) return { key: 'unavailable', head: head('演示数据', '演示数据没有加载'), p: '这里不显示任何数字，也不会用 0 代替。刷新页面再试一次。', tr: '演示数据没有加载，所以没有交易记录。', act: '<button class="btn brand" type="button" onclick="location.reload()">刷新</button>' };
   if (!a && !ACCTS.length) return { key: 'no-account', head: head('全部账户', '还没有账户'), p: '绑定一个币安子账户的 API 并通过接入测试后，这里会出现策略的收益、计奖和持仓。', tr: '还没有交易记录。绑定并开始运行后，监测币种、K 线上的调仓标记和每次止盈都会出现在这里。',
-    act: B(bindUrl(), '添加币安账户') + '<button type="button" class="btn ghost" data-adddemo>先看示例账户</button>', demo: '<p class="ov-note"><span class="demo">演示</span> 示例账户只有你点了才会出现，里面的数字都是演示数据，不是真实收益。</p>' };
+    act: B(bindUrl(), '添加币安账户') + '<button type="button" class="btn ghost" data-adddemo>体验示例数据</button>', demo: '<p class="ov-note"><span class="demo">演示</span> 示例数据只有你点了才会出现，都是虚构的演示数字，不是真实收益。</p>' };
   if (!a && ACCTS.length === 1) a = ACCTS[0];
   if (!a) return { key: 'none-ready', head: head('全部账户', '还没有可显示数据的账户'), p: '已绑定的账户都还没有开始运行，所以这里没有数据。点一个账户看它现在的状态：', tr: '还没有交易记录。',
     act: ACCTS.map(x => `<button type="button" class="btn ghost" data-setv="${esc(x.id)}">${esc(x.name)} · ${esc(stTx(x))}</button>`).join('') };
@@ -5832,12 +5844,12 @@ function emptyState(a) {
 }
 function renderSignedOut() {
   closeDrawer(true);
-  const x = `<section class="panel pend" data-empty="signed-out"><span class="eyebrow">3dtrading 后台</span><h2>未登录</h2><p>登录后才能看到你的账户。也可以先用演示账号进入看看：演示账号只保存在这个浏览器里，里面的数字都是演示数据。</p><div class="pend-acts"><a class="btn brand" href="${esc(loginUrl())}">登录</a><button type="button" class="btn ghost" data-demologin>用演示账号进入</button></div><p class="ov-note"><span class="demo">演示</span> 不会自动登录；选了演示账号也不会连接币安或任何真实服务。</p></section>`;
+  const x = `<section class="panel pend" data-empty="signed-out"><span class="eyebrow">3dtrading 后台</span><h2>未登录</h2><p>登录后才能看到你的账户。也可以先用演示账号看看：「体验示例数据」直接打开一份虚构的示例账户；「查看新账户状态」显示刚注册、还没绑定币安时的样子（金额都是 0）。</p><div class="pend-acts"><a class="btn brand" href="${esc(loginUrl())}">登录</a><button type="button" class="btn ghost" data-demologin="sample">体验示例数据</button><button type="button" class="btn ghost" data-demologin="new">查看新账户状态</button></div><p class="ov-note"><span class="demo">演示</span> 演示账号只保存在这个浏览器里，不会连接币安或任何真实服务。</p></section>`;
   ['#main', '#trBody', '#walBody', '#meBody', '#actBody', '#ntBody'].forEach(k => { const el = $(k); if (el) el.innerHTML = x; });
   const pb = $('#planBar'); if (pb) pb.innerHTML = '';
 }
 document.addEventListener('click', e => {
-  if (e.target.closest('[data-demologin]')) { const o = { email: 'demo@3dtrading.local', name: '3dtrading 用户' }; TDApi.login(o).catch(() => TDApi.register(o)).then(() => toast('已用演示账号进入（演示）'), err => toast(err && err.message || '没有进入')); return; }
+  { const dl = e.target.closest('[data-demologin]'); if (dl) { const o = { email: 'demo@3dtrading.local', name: '3dtrading 用户' }, sample = dl.dataset.demologin !== 'new'; /* r66 · 一步打开示例总览 */ TDApi.login(o).catch(() => TDApi.register(o)).then(() => sample ? TDApi.addDemoAccount() : null).then(() => { if (CUR !== 'dashboard') nav('dashboard'); toast(sample ? '已打开示例数据（演示）' : '这是新账户的状态（演示）'); }, err => toast(err && err.message || '没有进入')); return; } }
   if (e.target.closest('[data-adddemo]')) { TDApi.addDemoAccount().then(() => toast('已添加示例账户（演示数据）'), err => toast(err && err.message || '没有添加')); return; }
   const r = e.target.closest('[data-demorun]'); if (r) { TDApi.demoControls.setStatus(r.dataset.demorun, 'running'); toast('演示：已切换为运行中'); return; }
   const t = e.target.closest('[data-theme-set]'); if (t) setTheme(t.dataset.themeSet, e);

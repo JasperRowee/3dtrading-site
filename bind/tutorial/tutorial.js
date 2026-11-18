@@ -49,7 +49,7 @@
       'cx.cpPub': '复制公钥', 'cx.ex': '示例', 'cx.toBind': '回到绑定',
       'cx.close': '回到绑定', 'cx.exit': '退出教程', 'cx.goBind': '去绑定', 'cx.of': '第 {n} / {m} 步', 'cx.prev': '上一步', 'cx.next': '下一步', 'cx.auto': '自动播放', 'cx.tcL': '教程控制', 'cx.dot': '第 {n} 步，共 {m} 步',
       'cx.autoRm': '已开启“减少动态效果”，不会自动播放', 'cx.cpdPub': '已复制公钥', 'cx.cpdEx': '（示例）', 'cx.cpdIp': '已复制 IP：{v}',
-      'cx.cpdIps': '已复制白名单：{v}', 'cx.pasted': '已粘贴 API Key', 'cx.pasteNone': '剪贴板是空的，先在币安复制 API Key', 'cx.pasteFail': '浏览器没让读取剪贴板，请长按输入框或按 ⌘/Ctrl+V 粘贴', 'cx.spotL': '点暗处进入下一步'
+      'cx.cpdIps': '已复制白名单：{v}', 'cx.try': '用示例 Key 体验', 'cx.tryH': '<b>演示</b>没有真实 Key？输入 <code>1234</code> 可演示绑定', 'cx.pasted': '已粘贴 API Key', 'cx.pasteNone': '剪贴板是空的，先在币安复制 API Key', 'cx.pasteFail': '浏览器没让读取剪贴板，请长按输入框或按 ⌘/Ctrl+V 粘贴', 'cx.spotL': '点暗处进入下一步'
     },
     en: {
       'cx.prog': 'Binding progress', 'cx.tag': 'Demo · not the real Binance site', 'cx.stageL': 'Binance walkthrough demo (not the real Binance site)',
@@ -70,7 +70,7 @@
       'cx.cpPub': 'Copy public key', 'cx.ex': 'Example', 'cx.toBind': 'Back to binding',
       'cx.close': 'Back to binding', 'cx.exit': 'Exit tutorial', 'cx.goBind': 'Go to binding', 'cx.of': 'Step {n} / {m}', 'cx.prev': 'Back', 'cx.next': 'Next', 'cx.auto': 'Autoplay', 'cx.tcL': 'Tutorial controls', 'cx.dot': 'Step {n} of {m}',
       'cx.autoRm': 'Reduce motion is on, so autoplay is unavailable', 'cx.cpdPub': 'Public key copied', 'cx.cpdEx': ' (example)', 'cx.cpdIp': 'IP copied: {v}',
-      'cx.cpdIps': 'Whitelist copied: {v}', 'cx.pasted': 'API Key pasted', 'cx.pasteNone': 'The clipboard is empty — copy the API Key on Binance first', 'cx.pasteFail': 'The browser blocked reading the clipboard; long-press the field or press ⌘/Ctrl+V to paste', 'cx.spotL': 'Click the dark area to go on'
+      'cx.cpdIps': 'Whitelist copied: {v}', 'cx.try': 'Try with the sample key', 'cx.tryH': '<b>Demo</b>No real key? Enter <code>1234</code> to try a demo bind', 'cx.pasted': 'API Key pasted', 'cx.pasteNone': 'The clipboard is empty — copy the API Key on Binance first', 'cx.pasteFail': 'The browser blocked reading the clipboard; long-press the field or press ⌘/Ctrl+V to paste', 'cx.spotL': 'Click the dark area to go on'
     }
   });
   var t = function (k, v) { return A.t(k, v); };
@@ -171,6 +171,8 @@
       return '<li><button type="button" data-dot="' + i + '"' + (i === S.s ? ' aria-current="step" class="on"' : i < S.s ? ' class="done"' : '') + ' aria-label="' + esc(t('cx.dot', { n: i + 1, m: m })) + '"></button></li>';
     }).join('');
     $('#tcPrev').disabled = S.b === 0 && S.s === 0;
+    /* r66 · 首步与末步显示「用示例 Key 体验」 */
+    var lastB = BIG.length - 1; $('#tdemo').hidden = !((S.b === 0 && S.s === 0) || (S.b === lastB && S.s >= subs(lastB).length - 1));
     /* r63 · 全程第几步 / 共几步；最后一步「下一步」变成「去绑定」，直接回到绑定窗口并把光标放进 API Key */
     var tot = 0, at = 0; BIG.forEach(function (x, i) { var k = subs(i).length; if (i < S.b) at += k; tot += k; }); at += Math.min(S.s, m - 1) + 1;
     $('#sc').textContent = t('cx.of', { n: at, m: tot });
@@ -212,7 +214,7 @@
   function render(fresh) {
     stopAll();
     var list = subs(S.b); S.s = Math.max(0, Math.min(S.s, list.length - 1));
-    layout(); progress();
+    layout(); progress(); layout();
     document.title = '3dtrading · ' + (A.lang() === 'en' ? 'Bind Binance · Tutorial' : '绑定币安 · 图解教程');
     var st = list[S.s], ph = phone(), big3 = S.b === 2;
     panel.hidden = !(big3 && OKV);
@@ -513,6 +515,14 @@
       else if (!e.shiftKey && document.activeElement === bs[bs.length - 1]) { e.preventDefault(); bs[0].focus(); }
     });
   }
+
+  /* r66 · 一键演示绑定：跳到最后一步，填入 1234 并直接提交（已登录→加入账户；未登录→结果页请登录 / 注册） */
+  $('#tcDemo').addEventListener('click', function () {
+    if (!tkF) return; if (S.auto) setAuto(false);
+    tkReset(); S.hold = false; S.b = BIG.length - 1; S.s = subs(S.b).length - 1; render(true);
+    tkKey.value = '1234'; tkKey.dispatchEvent(new Event('input', { bubbles: true }));
+    if (tkF.requestSubmit) tkF.requestSubmit(); else tkF.dispatchEvent(new Event('submit', { cancelable: true }));
+  });
 
   /* ---------- boot: step 1, autoplay off ---------- */
   function relang() { A.apply(document); icons(); render(false); }

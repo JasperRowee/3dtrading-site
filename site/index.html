@@ -32,7 +32,7 @@ html.snap *{transition:none!important}
 
 /* each step's copy hangs at its own spot in the space and moves with the camera */
 /* r64 · 普通网页滚动：每站一段高度，原生吸附，一次手势一站；滚动条全隐藏 */
-#scr{position:fixed;inset:0;z-index:2;overflow-y:scroll;overflow-x:hidden;scroll-snap-type:y mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior:none;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
+#scr{position:fixed;inset:0;z-index:2;overflow:hidden;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior:none;touch-action:none;-webkit-tap-highlight-color:transparent}
 #scr::-webkit-scrollbar{display:none;width:0;height:0}
 #scr>i{display:block;height:25%;scroll-snap-align:start;scroll-snap-stop:always}   /* 每站一段 1/4 屏高：普通一下滑动就够到下一段，原生 snap-stop 保证最多一站 */
 #scr>b{display:block;height:75%}
@@ -68,8 +68,10 @@ h2 .l{color:var(--up)}h2 .s{color:var(--dn)}h2 .y{color:var(--bn)}
 .cue i{width:1px;height:28px;background:linear-gradient(var(--ink2),transparent);animation:cue 1.8s ease-in-out infinite}
 @keyframes cue{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
 .cue.off{opacity:0;pointer-events:none}
-.rail{position:fixed;z-index:7;right:clamp(16px,2.4vw,32px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:4px}
-.rail button{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;gap:10px;height:20px;font:500 11px var(--mono);letter-spacing:.08em;color:var(--ink3);transition:color .3s}
+.cue.in11 span{color:var(--brand);font-weight:700}.cue.in11 i{background:linear-gradient(var(--brand),transparent)}
+.rail{position:fixed;z-index:7;right:clamp(16px,2.4vw,32px);top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:0}
+.rail button{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;gap:10px;height:24px;position:relative;font:500 11px var(--mono);letter-spacing:.08em;color:var(--ink3);transition:color .3s}
+.rail button::before{content:"";position:absolute;top:0;bottom:0;left:-40px;right:-10px}   /* r66 · Emma 8: a bigger hit area, the same look */
 .rail button span{opacity:0;transform:translateX(6px);transition:opacity .3s,transform .3s}
 .rail button i{width:14px;height:2px;border-radius:1px;background:currentColor;transition:width .35s cubic-bezier(.2,.75,.2,1)}
 .rail button.on{color:#e9edf0}.rail button.on i{width:26px}.rail button.on span,.rail:hover button span{opacity:1;transform:none}
@@ -87,7 +89,20 @@ h2 .l{color:var(--up)}h2 .s{color:var(--dn)}h2 .y{color:var(--bn)}
   .acts a{position:relative}.acts a::after{content:"";position:absolute;inset:-6px -3px}
 }
 /* phones: a dark band behind the copy, a readable card for what the scene shows, and a bottom bar for moving between steps */
-.scrim{display:none;position:fixed;z-index:5;left:0;right:0;top:0;height:330px;pointer-events:none;background:linear-gradient(#06090b 0,rgba(6,9,11,.9) 150px,rgba(6,9,11,.55) 240px,transparent)}
+.scrim{display:none;position:fixed;z-index:5;left:0;right:0;top:0;height:var(--scrh,330px);pointer-events:none;transition:opacity .5s ease,height .5s ease;background:linear-gradient(rgba(6,9,11,.86) 0,rgba(6,9,11,.82) 28%,rgba(6,9,11,.7) 46%,rgba(6,9,11,.52) 60%,rgba(6,9,11,.34) 72%,rgba(6,9,11,.19) 82%,rgba(6,9,11,.08) 91%,rgba(6,9,11,.02) 97%,rgba(6,9,11,0) 100%)}   /* r66 · 4: height follows the copy, long eased tail: no hard line across the cards */
+.scrim.s0{opacity:0}
+/* r66 · Emma 5: phones — a small 「当前站 / 11」 button; tapping it lists the chapters */
+.chap{display:none;position:fixed;z-index:8;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));height:36px;padding:0 14px;border:0;border-radius:18px;align-items:center;gap:2px;background:rgba(12,18,22,.78);color:#aeb6be;font:500 13px var(--mono);letter-spacing:.04em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .3s}
+.chap b{color:#f3f5f6;font-weight:700}.chap::after{content:"";width:6px;height:6px;margin-left:8px;border:solid currentColor;border-width:0 1.5px 1.5px 0;transform:translateY(-2px) rotate(45deg)}
+.chap.off{opacity:0;pointer-events:none}
+.chs{position:fixed;inset:0;z-index:30;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s;touch-action:pan-y}
+.chs.on{opacity:1;pointer-events:auto}
+.chs ol{list-style:none;margin:0;padding:8px 0 calc(10px + env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:72vh;overflow:auto;border-radius:18px 18px 0 0;background:#10171b;box-shadow:inset 0 1px 0 rgba(255,255,255,.1);transform:translateY(24px);transition:transform .3s cubic-bezier(.2,.75,.2,1)}
+.chs.on ol{transform:none}
+.chs li button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:14px;width:100%;height:46px;padding:0 22px;color:#c7cdd3;font:500 15px var(--sans);cursor:pointer}
+.chs li button i{font:500 12px var(--mono);font-style:normal;color:#6f7a84;width:20px}
+.chs li button.on{color:#fff;background:rgba(47,220,188,.12)}.chs li button.on i{color:#5fe3c4}
+html.tx3 .chap,html.tx3o .chap{opacity:0!important;pointer-events:none!important}   /* r66 · 4: at 01 the cards behind the copy are cut away instead (as on the computer) */
 .hud{display:none;position:fixed;z-index:7;left:12px;right:12px;bottom:calc(66px + env(safe-area-inset-bottom));justify-content:center;pointer-events:none;transition:opacity .25s}
 .hc{width:100%;max-width:420px;padding:12px 14px;border-radius:16px;background:rgba(10,15,18,.82);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 12px 30px rgba(0,0,0,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:14px;line-height:1.35;color:#d9dee3}
 .hc .hh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font:600 13px var(--sans);color:#8f99a3;margin-bottom:8px}
@@ -114,7 +129,7 @@ h2 .l{color:var(--up)}h2 .s{color:var(--dn)}h2 .y{color:var(--bn)}
 .toast{position:fixed;z-index:9;left:50%;bottom:calc(76px + env(safe-area-inset-bottom));transform:translateX(-50%);max-width:calc(100vw - 32px);padding:10px 14px;border-radius:12px;background:rgba(20,26,30,.95);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);font:500 14px var(--sans);color:#e9edf0;opacity:0;pointer-events:none;transition:opacity .3s}
 .toast.on{opacity:1}
 @keyframes tp{50%{opacity:.25}}
-@media (max-width:760px){.scrim{display:block}.toast{bottom:calc(22px + env(safe-area-inset-bottom))}}
+@media (max-width:760px){.scrim{display:block}.chap{display:inline-flex}.toast{bottom:calc(62px + env(safe-area-inset-bottom))}}
 /* going in: the scene rushes forward, the screen closes to black round our logo, then the next page opens out of the same black */
 .door{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:#06090b;opacity:0;pointer-events:none;
   clip-path:circle(0% at var(--dx,50%) var(--dy,50%));transition:clip-path .62s cubic-bezier(.7,0,.3,1),opacity .2s}
@@ -312,9 +327,11 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 <div class="note">合成条件演示 · 账面余额未扣浮亏，演示数据不代表真实账户或未来收益</div>
 <div class="scrim" aria-hidden="true"></div>
 <a class="talk" id="talk" data-go="ai">和 Dodo 对话</a>
+<button class="chap" id="chap" aria-haspopup="dialog" aria-label="选择章节"><b>01</b>&nbsp;/ 11</button>
 </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
+<div class="chs" id="chs" role="dialog" aria-label="选择章节"><ol id="chsL"></ol></div>
 <i id="layTg" hidden></i>
 <div class="gate" id="gate" hidden aria-hidden="true" role="button" tabindex="0" aria-label="轻触开始体验"><b>轻触开始体验</b></div>
 <div class="hfade" id="hfade" aria-hidden="true"></div>
@@ -329,7 +346,7 @@ addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) re
 <div class="pfx" id="pfx" aria-hidden="true"><canvas id="pfxS"></canvas><canvas id="pfxP"></canvas></div>
 <script>/* r62 · back from the log-in page (?via=planet): the shell covers the screen from the first paint, the copy waits for the landing */
 try { if (/[?&]via=planet\b/.test(location.search) && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('via-planet', 'tx3'); } catch (e) {}</script>
-<script src="/3dtrading-site/login/planet.js?v=r63" data-art="1" data-gx="pfxS" data-orb="pfxP"></script>
+<script src="/3dtrading-site/login/planet.js?v=r66" data-art="1" data-gx="pfxS" data-orb="pfxP"></script>
 
 <script src="i18n/r48.js?v=r55"></script>
 <script>
@@ -382,6 +399,14 @@ const hsl = (h, s, l) => { const a = s * Math.min(l, 1 - l), f = n => { const k 
 /* ---------- camera ---------- */
 const C = { p: [0, 0, 0], f: [0, 0, 1], r: [1, 0, 0], u: [0, 1, 0], F: 800, cx: 0, cy: 0 };
 // phones: the same picture as the computer, drawn at MS of its size and lowered a little under the copy
+/* r66 · 1：画布分辨率上限。电脑 2 倍；手机按性能分档，iPhone 和强机放开到 3 倍（iPhone 是 3 倍屏），弱机 2 倍；
+   实际跑起来平均每帧超过 24 ms（约 42 帧以下）就自动降一档。?dmax=2 可强制 */
+let DCAP = (() => { const q = +(new URLSearchParams(location.search).get('dmax') || 0); if (q) return q;
+  const coarse = matchMedia('(pointer:coarse)').matches; if (!coarse) return 2;
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  return ios || ((navigator.hardwareConcurrency || 4) >= 8 && (navigator.deviceMemory || 4) >= 6) ? 3 : 2; })();
+const dprMax = () => Math.min(DCAP, devicePixelRatio || 1);
+let PERF = { n: 0, s: 0 };
 const QP = new URLSearchParams(location.search); let MS = +(QP.get('ms') || .62), MSX = +(QP.get('msx') || .75), MSY = .08;
 /* phones, per step: how large the picture is drawn (bigger = closer). 01 keeps the approved .62; from 02 the camera comes in */
 const MSS = (QP.get('mss') || '.62,.8,.8,.8,.8,.74,.55,.8,.8,.8,.62').split(',').map(Number); let CMS = MS;
@@ -591,7 +616,7 @@ const DUR = [0, 1.1, .2, 2.6, 1.4, .3, 7, 5.4, 8.5, 6, 4.2];
 // Trading actions and construction start with travel; 02 retains its introduction beat.
 const PRE = [0, .3, 0, 1.1, 1.1, 0, 0, 1.1, 1.1, 0, 0], REACT = .3, WT = new Array(NS).fill(0);
 let leaving = false;
-function routes() { const r = window.TDAccount.routes; return { signup: r.entry, login: r.login, dashboard: r.dashboard || r.entry, ai: r.dashboard || r.entry }; }   // r59: signed in → the dashboard itself   // r49: the website alone; every way in goes to the separate log-in preview
+function routes() { const r = window.TDAccount.routes; return { signup: r.entry, login: r.login, dashboard: r.dashboard || r.entry, ai: (r.dashboard || r.entry).replace(/#.*$/, '') + '#/ai' }; }   // r66 · Emma 2: 和 Dodo 对话 → Dodo itself   // r59: signed in → the dashboard itself   // r49: the website alone; every way in goes to the separate log-in preview
 const user = () => { try { return window.TDAccount && TDAccount.getSession(); } catch (e) { return null; } };
 /* going in (sign in, sign up, the dashboard): one short move, the same every time. The scene rushes forward, the screen closes to black
    round our logo from where you clicked, then the next page opens out of that black. A second click while it plays does nothing */
@@ -618,7 +643,8 @@ addEventListener('pageshow', e => { if (!e.persisted) return; leaving = false; d
               station it left (sessionStorage r62.site.at).
    All of it moves by the camera's own law (accelerate at CA, then each 60 fps frame cover 1/13 of what is left), distance in moves.
    Reduced motion: plain links. */
-let CULL = null, TXW = 0, TXD = 0, DOORG = null, FOGD = 150;   // FOGD: where the night field has faded out; on the way out it draws in a little, so the pulled-back camera does not draw the whole floor
+let CULL = null, TXW = 0, TXD = 0, DOORG = null, FOGD = 150, TXO = 0, DOORFX = 0; const DOOR_T = 1.3;   // r66 · 7: TXO the door opens wider and brighter as we come · DOORFX the logo and the Dodos leave before the camera passes
+   // FOGD: where the night field has faded out; on the way out it draws in a little, so the pulled-back camera does not draw the whole floor
    // CULL: outside the shell its near cap is not drawn (we look in through it) · TXW: the inner wall comes up · TXD: the door's own glow gives way
 const PFX = (() => {
   const box = document.getElementById('pfx'), SKY = document.getElementById('pfxS'), art = () => window.__planetArt;
@@ -673,7 +699,7 @@ const PFX = (() => {
   function txClear() { de.style.removeProperty('--txk'); de.style.removeProperty('--txf'); TXP.forEach(t => { t.el.style.transformOrigin = ''; t.el.style.translate = ''; t.el.style.scale = ''; }); TXP = []; CST = null; }
   /* r63 · 转场时官网画面降到一半分辨率（画面在缩小、被星球盖住，看不出来），结束恢复 */
   let LORES = false;
-  function setRes(lo) { LORES = lo; const d = Math.min(2, devicePixelRatio || 1) * (lo ? .5 : 1), nd = lo ? Math.max(.6, d) : d; if (nd === DPR) return; DPR = nd; cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
+  function setRes(lo) { LORES = lo; const d = dprMax() * (lo ? .5 : 1), nd = lo ? Math.max(.6, d) : d; if (nd === DPR) return; DPR = nd; cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
   const busy = () => !!X;
   // the scene is wholly under the overlay (the shell has closed over it, or we are through the door): it need not be drawn
   const hidden = () => !!X && (X.kind === 'door' ? X.past && X.u >= .22 : X.out && X.o >= X.oh - 1e-4);   // r64: no snapshot — the disc shows the live site until the shell has closed
@@ -687,22 +713,30 @@ const PFX = (() => {
     if (X || leaving || !art() || !DOORG) return false; leaving = true; remember();
     const r = routes(), go = loginURL(kind === 'login' ? r.login : r.signup, 'door'); window.__enter = { kind: 'door', url: go, at: performance.now() };
     if (RM) { location.href = go; return true; }
-    X = plan('door', go); txStart(); JOIN.prep(go); const D = DOORG; X.Dc = onS(D.da, (D.e0 + D.e1) / 2, D.rr); X.n = [Math.sin(D.da), 0, Math.cos(D.da)]; X.Pd = add3(X.Dc, mul3(X.n, 9));
+    X = plan('door', go); X.t0 = performance.now(); txStart(); JOIN.prep(go); const D = DOORG; X.Dc = onS(D.da, (D.e0 + D.e1) / 2, D.rr); X.n = [Math.sin(D.da), 0, Math.cos(D.da)]; X.Pd = add3(X.Dc, mul3(X.n, 9));
     de.classList.add('tx3'); return true;
   }
   /* each frame, after the scene's own camera is worked out (it stays the start of the path, so coming back lands exactly on it) */
   function cam(dt) {
-    if (!X) { CULL = null; TXW = 0; TXD = 0; FOGD = 150; if (LORES) setRes(false); return; }
-    if (!LORES && !RM) setRes(true);
+    if (!X) { CULL = null; TXW = 0; TXD = 0; TXO = 0; DOORFX = 0; FOGD = 150; if (LORES) setRes(false); return; }
+    // r66 · 1：只有在星球外面（官网只是圆盘里的一小块）才降分辨率；一进外壳、以及整段穿门，都是全分辨率
+    const lo = X.kind !== 'door' && X.out && !RM; if (lo !== LORES) setRes(lo);
     CST = { p: C.p.slice(), f: C.f.slice(), r: C.r.slice(), u: C.u.slice(), F: C.F, cx: C.cx, cy: C.cy };
     txFollow();
-    const m = { x: X.u, v: X.v }; chase(m, X.tgt, MV.CA / (X.kind === 'door' ? LEN_DOOR : LEN), MV.CK, dt, 1e-5); X.u = m.x; X.v = m.v;
+    if (X.kind === 'door') { X.u = Math.min(1, (performance.now() - X.t0) / 1000 / DOOR_T); X.v = 0; }   // r66 · 7: a fixed 1.3 s ease, no endless creep
+    else if (X.kind === 'back' && X.u < .08 && !X.out) { X.u = Math.max(0, X.u - dt * (.12 + 6 * X.u)); X.v = 0; }   // r66 · 1: the last few percent home are covered in ~0.25 s, not 1.2 s of crawl
+    else { const m = { x: X.u, v: X.v }; chase(m, X.tgt, MV.CA / LEN, MV.CK, dt, 1e-5); X.u = m.x; X.v = m.v; }
     const P0 = C.p.slice(), f0 = C.f.slice(), cx0 = C.cx, cy0 = C.cy, F0 = C.F, u = X.u;
     let P, f, cx, cy, F = F0;
     if (X.kind === 'door') {
-      const ch = Math.hypot(...sub3(X.Pd, P0)), s = sm(sg(u, 0, .7));
-      P = herm(P0, f0.map(v => v * ch * .5), X.Pd, X.n.map(v => v * ch), u); f = nlerp(f0, X.n, s); cx = L(cx0, W / 2, s); cy = L(cy0, H / 2, s);
-      X.past = (P[0] - X.Dc[0]) * X.n[0] + (P[2] - X.Dc[2]) * X.n[2] > -.4; TXD = sm(sg(u, 0, .22)); TXW = 0; CULL = null;
+      /* r66 · 7：先在原地转过去正对门（前 25%），再朝门直线推进、到门口顺着门的法线穿过去；门一直亮着、越近开得越大；
+         Logo 和 Dodo 在镜头经过前淡掉；整段固定 1.3 秒 */
+      const S0 = X.A || (X.A = { p: P0.slice(), f: f0.slice(), cx: cx0, cy: cy0 }), toD = nrm(sub3(X.Dc, S0.p)), ua = sm(sg(u, 0, .25)), ub = sg(u, .22, 1), wB = ub * ub * (3 - 2 * ub) * .35 + ub * ub * .65;
+      const ch = Math.hypot(...sub3(X.Pd, S0.p));
+      P = herm(S0.p, toD.map(v => v * ch), X.Pd, X.n.map(v => v * ch * .35), wB);
+      f = nlerp(nlerp(S0.f, toD, ua), X.n, sm(sg(wB, .55, .92))); cx = L(S0.cx, W / 2, ua); cy = L(S0.cy, H / 2, ua);
+      X.past = (P[0] - X.Dc[0]) * X.n[0] + (P[2] - X.Dc[2]) * X.n[2] > -.4; if (X.past && X.uPast == null) X.uPast = u;
+      TXD = 0; TXO = sm(sg(u, .08, .85)); DOORFX = sm(sg(u, .02, .26)); TXW = 0; CULL = null;
     } else {
       if (!X.fe) axis();
       if (u <= UC) {   // inside: straight back, curving onto the axis; the lens and the framing move to the log-in page's
@@ -724,13 +758,16 @@ const PFX = (() => {
   function compose() {
     if (!X) return;
     if (X.kind === 'door') {
-      noMask(); box.className = 'pfx on'; box.style.opacity = sm(sg(X.u, 0, .22)).toFixed(3); box.style.setProperty('--vg', '1');
-      let clip = 'none'; const D = DOORG;
+      // r66 · 7：门里是那颗星球和星空，有透视：门在屏幕上多大，星球就跟着多大、从门的中心移向登录页的位置，过门时正好铺满
+      noMask(); box.className = 'pfx on'; box.style.setProperty('--vg', '1');
+      let clip = 'none', k = 1, qc = null; const D = DOORG;
       if (!X.past && D) { const q = [[D.da - D.hw2, D.e1], [D.da + D.hw2, D.e1], [D.da + D.hw2, D.e0], [D.da - D.hw2, D.e0]].map(([a, e]) => pr(...onS(a, e, D.rr)));
-        if (!q.some(p => !p)) clip = 'polygon(' + q.map(p => p.x.toFixed(1) + 'px ' + p.y.toFixed(1) + 'px').join(',') + ')'; }
+        if (!q.some(p => !p)) { clip = 'polygon(' + q.map(p => p.x.toFixed(1) + 'px ' + p.y.toFixed(1) + 'px').join(',') + ')';
+          const ys = q.map(p => p.y), xs = q.map(p => p.x); k = clamp((Math.max(...ys) - Math.min(...ys)) / H); qc = [(xs[0] + xs[1] + xs[2] + xs[3]) / 4, (ys[0] + ys[1] + ys[2] + ys[3]) / 4]; } }
       box.style.clipPath = clip;
-      const z = L(.72, 1, sm(X.u)), ccx = W / 2, ccy = H / 2;   // the far planet comes up to its log-in size as we go through
-      art().frame({ cx: ccx + (X.cxe - ccx) * z, cy: ccy + (X.cye - ccy) * z, R: X.Rl * z, sky: 1, shell: 1 });
+      box.style.opacity = (sm(sg(X.u, 0, .08)) * L(.78, 1, sm(sg(k, .25, .8)))).toFixed(3);   // a little of the door's own light still shows through while it is small
+      const z = sm(k), R = X.Rl * L(.3, 1, z), ccx = qc ? qc[0] : X.cxe, ccy = qc ? qc[1] : X.cye;
+      art().frame({ cx: L(ccx, X.cxe, z), cy: L(ccy, X.cye, z), R, sky: 1, shell: 1 });
     } else if (!X.out) { noMask();
       if (box.className !== 'pfx') { box.className = 'pfx'; de.classList.remove('via-planet'); }
     } else {
@@ -747,7 +784,9 @@ const PFX = (() => {
       if (X.u === 0) { de.classList.remove('tx3'); txClear(); noMask(); X = null; clearHit(); CULL = null; TXW = 0; FOGD = 150; box.className = 'pfx'; de.classList.remove('via-planet'); }
     } else {
       // r63 · the log-in page's own topbar, headline and form come in over the late part of the pull-back and are whole on the last frame
-      JOIN.ui(X.kind === 'door' ? sm(sg(X.u, .55, .985)) : sm(sg(X.u, .66, .985)));
+      // r66 · 7：门：登录界面只在过门之后淡入（约 0.35 秒，1.3 秒时已完整），不和官网场景叠在一起
+      const up = X.kind === 'door' ? (X.uPast == null ? 0 : X.u >= 1 ? 1 : sm(sg(X.u, X.uPast, Math.min(.995, X.uPast + .35 / DOOR_T)))) : sm(sg(X.u, .66, .985));
+      JOIN.ui(up);
       if (!X.nav && X.tgt >= 1 && X.tgt - X.u < 1e-3) { X.nav = true; if (!JOIN.go(X.url)) location.href = X.url; }
     }
   }
@@ -760,13 +799,14 @@ const PFX = (() => {
     const ux = UC + (1 - UC) * X.oh; if (s && Date.now() - s.at < 20000 && s.u > UC) { X.u = Math.max(ux, s.u); X.v = Math.min(0, s.v); } else X.u = ux;
     X.out = true; X.o = (X.u - UC) / (1 - UC); X.d = SR + (X.dEnd - SR) * X.o; de.classList.add('tx3'); compose();
   }
-  function reset() { txClear(); noMask(); X = null; CULL = null; TXW = 0; TXD = 0; FOGD = 150; box.className = 'pfx'; box.style.clipPath = ''; box.style.opacity = ''; de.classList.remove('via-planet', 'tx3', 'tx3o'); }
+  function reset() { txClear(); noMask(); X = null; CULL = null; TXW = 0; TXD = 0; TXO = 0; DOORFX = 0; FOGD = 150; box.className = 'pfx'; box.style.clipPath = ''; box.style.opacity = ''; de.classList.remove('via-planet', 'tx3', 'tx3o'); }
   // 登录/注册 (and 和 Dodo 对话, which also goes to sign-up) from any step: the pull-back. Signed in, they stay plain links
   document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[data-go]'); if (!a || user() || a.dataset.go === 'dashboard') return;
+    try { if (a.dataset.go === 'ai') sessionStorage.setItem('3dt.next', 'ai'); else sessionStorage.removeItem('3dt.next'); } catch (x) {}   // r66: after signing in, 和 Dodo 对话 lands on Dodo
     if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; if (exit(a.href)) e.preventDefault(); }, true);
   // warm up: size the art and bake its sky once the page is idle, and fetch the log-in page's files so it opens at once
   const warm = () => { try { if (art()) { art().fit(); art().frame({}); } } catch (e) {}
-    ['/3dtrading-site/login/', '/3dtrading-site/login/login.css?v=r62', '/3dtrading-site/login/login.js?v=r62', '/3dtrading-site/login/space.js?v=r62', '/3dtrading-site/login/vendor/three/build/three.module.min.js', '/3dtrading-site/login/vendor/three/build/three.core.min.js', '/3dtrading-site/dashboard/account/td-auth.js?v=r58']
+    ['/3dtrading-site/login/', '/3dtrading-site/login/login.css?v=r66', '/3dtrading-site/login/login.js?v=r66', '/3dtrading-site/login/space.js?v=r62', '/3dtrading-site/login/vendor/three/build/three.module.min.js', '/3dtrading-site/login/vendor/three/build/three.core.min.js', '/3dtrading-site/dashboard/account/td-auth.js?v=r58']
       .forEach(h => { const l = document.createElement('link'); l.rel = 'prefetch'; l.href = h; document.head.appendChild(l); }); };
   if (!de.classList.contains('via-planet')) (window.requestIdleCallback || setTimeout)(warm, { timeout: 2500 });
   const hold = t => { if (X) X.tgt = t; };   // test hook: park the camera part-way
@@ -824,12 +864,12 @@ let GATE = false, PEND = null; const go = (d, why) => { if (GATE || PFX.busy()) 
    飞行中文案先不出，快到时再出 */
 let DF = null, LASTP = null, LASTL = null, LASTS = [0, 0];
 const jump = i => { if (i === CK.tgt || PFX.busy()) return;
-  if (!RM && LASTP && Math.abs(i - CK.t) > 1.2) { const c = CAM()[i], d = Math.hypot(...c.p.map((v, k) => v - LASTP[k]));
+  if (!RM && LASTP && (Math.abs(i - CK.t) > 1.2 || DF)) { const c = CAM()[i], d = Math.hypot(...c.p.map((v, k) => v - LASTP[k]));
     DF = { p0: LASTP.slice(), l0: LASTL.slice(), s0: LASTS.slice(), cms0: CMS, cmy0: CMY, u: 0, dur: clamp(.85 + d / 40, 1.1, 2.3), lift: Math.min(9, d * .1) };
     CK.t = i; CK.v = 0; CK.vs = 0; CK.uni = false; if (i === NS - 1 && B11.t === 9) B11.t = 9.0006; }
   targetStep(i);
  };
-window.__cam = () => ({ t: CK.t, tgt: CK.tgt, df: DF ? DF.u : null, p: C.p.slice() }); window.__jump = i => jump(i);   // r65 test hooks
+window.__gest = (dir, n) => gesture(dir, n, 'test'); window.__cam = () => ({ t: CK.t, tgt: CK.tgt, df: DF ? DF.u : null, p: C.p.slice() }); window.__jump = i => jump(i);   // r65 test hooks
 /* r64 · 滑动根治（Jasper 2026-11-18）：官网改成普通网页滚动。一个看不见的全屏滚动层 #scr 里每站一段高度（NS 段），浏览器原生滚动 +
    吸附（scroll-snap-type: y mandatory · scroll-snap-stop: always：一次手势最多停一站；手何时离开由浏览器判断，网页不再猜）。
    滚动停在哪一段，那一站就是镜头的终点；镜头朝终点按自己的规律走（02–05 匀速每站 1.4 s），途中区间变了就改终点接着走。
@@ -849,19 +889,41 @@ SCL.addEventListener('scroll', () => {
   if (G0 == null) G0 = CK.tgt;
   const tg = clamp(i, G0 - 1, G0 + 1); if (tg !== CK.tgt) targetStep(tg, true);
 }, { passive: true });
-// past the end of 11 (the door is open): scrolling on, like before, goes in
-let endAcc = 0, endT = 0;
-SCL.addEventListener('wheel', e => { if (CK.tgt !== NS - 1 || e.deltaY <= 0 || SCL.scrollTop < SCL.scrollHeight - SCL.clientHeight - 2) { endAcc = 0; return; }
-  const n = performance.now(); if (n - endT > 400) endAcc = 0; endT = n; endAcc += e.deltaY; if (endAcc > 60) { endAcc = -1e9; go(1); } }, { passive: true });
+/* r66 · 6 · 手势定终点（Jasper 2026-11-18）：页面不再原生滚动。每次手势开始时按力度算出要走几站（轻一下最多 1 站，越用力越多，非线性，最多 4 站），
+   镜头直接飞向终点，这次手势剩下的惯性全部吃掉；页面永远停在某一站。桌面读滚轮最初约 0.1 s 的量，手机读松手时的速度；
+   有死区（太轻不动）和冷却。11 站再往下 = 进门（手机、桌面同一个阈值，手机原来的 34 px 拉动取消） */
+const WSTEP = [260, 520, 900], TSTEP = [.9, 1.8, 2.8];
+const stepsOf = (a, th) => 1 + th.filter(x => a >= x).length;
+const busyIn = () => GATE || PFX.busy() || HOMING;
+function gesture(dir, n, why) { if (busyIn()) return; GLAST = performance.now();
+  if (dir > 0 && CK.tgt === NS - 1) { go(1); return; }   // the door
+  const tg = clamp(CK.tgt + dir * n, 0, NS - 1); if (tg !== CK.tgt) jump(tg); window.__lastG = { dir, n, why, tg }; }
+let WG = null, GLAST = 0;
+function wCommit() { const g = WG; if (!g || g.done) return; g.done = true; g.tc = performance.now(); clearTimeout(g.tm);
+  const a = Math.abs(g.sum); if (a < 6) return; gesture(g.dir, stepsOf(a, WSTEP), 'wheel:' + Math.round(a)); }
+SCL.addEventListener('wheel', e => { e.preventDefault(); if (gateOn() || chsOpen()) return;
+  let dy = e.deltaY; if (e.deltaMode === 1) dy *= 16; else if (e.deltaMode === 2) dy *= innerHeight; if (Math.abs(dy) < .5) return;
+  const n = performance.now(), dir = Math.sign(dy), ad = Math.abs(dy);
+  const fresh = !WG || n - WG.last > 160 || dir !== WG.dir || (WG.done && n - WG.tc > 200 && ad > WG.la * 1.6 + 4);   // a pause, a turn, or a new push rising out of the old one's tail
+  if (fresh) { if (WG && !WG.done) wCommit(); WG = { dir, sum: 0, last: n, la: ad, done: false }; WG.tm = setTimeout(wCommit, 100); }
+  WG.last = n; WG.la = ad;
+  if (!WG.done) { WG.sum += dy; if (Math.abs(WG.sum) >= WSTEP[2] * 1.15) wCommit(); }   // already the strongest: no need to wait
+}, { passive: false });
 addEventListener('keydown', e => { if (e.repeat) return; if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(1); } if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
   if (e.key === 'Home') jump(0); if (e.key === 'End') jump(NS - 1); });
-let ty = null, tx = 0, tDone = false, tLook = false, tmx = 0, tmy = 0; addEventListener('touchstart', e => { ty = e.touches[0].clientY; tx = e.touches[0].clientX; tDone = false; tLook = false; tmx = mx; tmy = my; }, { passive: true });
-addEventListener('touchmove', e => { if (ty == null || tDone) return;   // r64: up/down is the page's own scroll now (#scr); a sideways drag still looks round
-  const d = ty - e.touches[0].clientY, dx = e.touches[0].clientX - tx;
+let ty = null, tx = 0, tLook = false, tmx = 0, tmy = 0, TS = []; addEventListener('touchstart', e => { if (e.touches.length > 1 || chsOpen()) { ty = null; return; } ty = e.touches[0].clientY; tx = e.touches[0].clientX; tLook = false; tmx = mx; tmy = my; TS = [[performance.now(), ty]]; }, { passive: true });
+addEventListener('touchmove', e => { if (ty == null) return;   // r66: up/down is ours (no native page scroll); a sideways drag still looks round
+  const y = e.touches[0].clientY, d = ty - y, dx = e.touches[0].clientX - tx, n = performance.now();
+  TS.push([n, y]); while (TS.length > 2 && n - TS[0][0] > 120) TS.shift();
   if (!tLook && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(d) * 1.3) tLook = true;
   if (gateOn()) return;
-  if (tLook) { mx = clamp(tmx - dx / innerWidth * .9, -.5, .5); my = clamp(tmy - d / innerHeight * .5, -.5, .5); mT = performance.now(); return; }
-  if (d > 34 && CK.tgt === NS - 1 && SCL.scrollTop >= SCL.scrollHeight - SCL.clientHeight - 2) { go(1); tDone = true; } }, { passive: true });
+  if (tLook) { mx = clamp(tmx - dx / innerWidth * .9, -.5, .5); my = clamp(tmy - d / innerHeight * .5, -.5, .5); mT = performance.now(); } }, { passive: true });
+addEventListener('touchend', e => { if (ty == null || tLook || gateOn()) { ty = null; return; }
+  const t = e.changedTouches[0], y = t ? t.clientY : ty, n = performance.now(), d = ty - y; ty = null;
+  TS.push([n, y]); const r = TS.filter(s => n - s[0] <= 90), a = r[0] || TS[0], v = n - a[0] > 8 ? (a[1] - y) / (n - a[0]) : 0;   // px/ms at the release, + = finger up = forward
+  if (Math.abs(d) < 40 && Math.abs(v) < .3) return;   // a tap or a nudge
+  const dir = Math.abs(v) >= .3 ? Math.sign(v) : Math.sign(d); if (dir !== Math.sign(d) && Math.abs(d) > 40) return;
+  gesture(dir, stepsOf(Math.abs(v), TSTEP), 'touch:' + v.toFixed(2)); }, { passive: true });
 addEventListener('touchend', e => ask(e), true);   // any touch may ask for motion; iOS decides whether it counts as a tap
 document.getElementById('cue').onclick = () => go(1);
 // at the door a click anywhere in the scene goes in
@@ -912,15 +974,24 @@ const BLK = Array.from({ length: NS }, (_, i) => document.getElementById('b' + (
 const NAMES = [siteText('监测'), siteText('双向进场'), siteText('行情'), siteText('平仓'), siteText('补仓'), siteText('滚雪球'), siteText('资金安全'), siteText('密钥安全'), siteText('三样都要'), siteText('问它'), siteText('开始')];
 const rail = document.getElementById('rail'); NAMES.forEach((n, i) => { const b = document.createElement('button'); b.innerHTML = `<span>${n}</span><i></i>`; b.onclick = () => jump(i); rail.appendChild(b); });
 const railB = [...rail.children];
+const chap = document.getElementById('chap'), chs = document.getElementById('chs'), chsL = document.getElementById('chsL');
+NAMES.forEach((n, i) => { const li = document.createElement('li'), b = document.createElement('button'); b.innerHTML = `<i>${String(i + 1).padStart(2, '0')}</i>${n}`; b.onclick = e => { e.stopPropagation(); chsSet(false); jump(i); }; li.appendChild(b); chsL.appendChild(li); });
+const chsB = [...chsL.querySelectorAll('button')], chsOpen = () => chs.classList.contains('on');
+function chsSet(on) { chs.classList.toggle('on', on); if (on) chsB.forEach((b, i) => b.classList.toggle('on', i === CK.tgt)); }
+chap.onclick = e => { e.stopPropagation(); if (!GATE && !PFX.busy()) chsSet(true); };
+chs.addEventListener('click', e => { if (e.target === chs) chsSet(false); });
 let side = -1;
 /* copy coming in: each headline is cut into its lines, each line rises out of its own mask (CSS); the step's block gets .in once the camera is nearly there */
 BLK.forEach(b => b.querySelectorAll('h1,h2').forEach(h => { h.innerHTML = h.innerHTML.split(/<br\s*\/?>/i).map(l => `<span class="ln"><span>${l}</span></span>`).join(''); }));
-let inS = -1;
+let inS = -1; const SCRIM = document.querySelector('.scrim');
 function syncHTML() {
   const s = Math.abs(CK.t - CK.tgt) < .86 ? CK.tgt : Math.round(clamp(CK.t, 0, NS - 1)), ins = DF && DF.u < .72 ? -1 : Math.abs(CK.t - CK.tgt) < (CK.tgt === 5 ? .78 : .45) ? CK.tgt : -1;   // r41: copy is tied to the camera, so it is there when the camera lands
-  if (ins !== inS) { inS = ins; BLK.forEach((b, i) => b.classList.toggle('in', i === ins)); }
+  if (ins !== inS) { inS = ins; BLK.forEach((b, i) => b.classList.toggle('in', i === ins));
+    if (mob && ins >= 0 && SCRIM) { const b = BLK[ins]; SCRIM.style.setProperty('--scrh', Math.round(H * .085 + b.offsetHeight + 170) + 'px'); } }
+  if (SCRIM) SCRIM.classList.toggle('s0', s === 0 || CK.tgt === 0);
   if (s === side) return; side = s;
-  railB.forEach((b, i) => b.classList.toggle('on', i === s)); cue.classList.toggle('off', s === NS - 1);
+  railB.forEach((b, i) => b.classList.toggle('on', i === s)); chap.firstChild.textContent = String(s + 1).padStart(2, '0');
+  cue.classList.toggle('in11', s === NS - 1); cue.firstChild.textContent = siteText(s === NS - 1 ? '进门' : '向下'); cue.setAttribute('aria-label', siteText(s === NS - 1 ? '进门' : '下一步'));   // r66 · Emma new 1: at 11 the cue opens the door
 }
 /* the copy lives in the space. Each step's block hangs at a world point that sits at its spot on screen when the camera stops there;
    before its step it waits off along its own entry direction, after it leaves the opposite way */
@@ -993,6 +1064,7 @@ function panelTex(i) {
   x.strokeStyle = 'rgba(47,220,188,.22)'; x.lineWidth = 2; x.stroke();
   const on = HIT && HIT.md.includes(i) ? sm((T - HIT.at) / .35) * (1 - sm((T - HIT.at - HIT.hold) / .6)) : 0;
   if (on > .01) { x.strokeStyle = `rgba(47,220,188,${(.85 * on).toFixed(3)})`; x.lineWidth = 3; x.stroke(); }
+  if (mob) { panelPhone(t, x, i, on); RAWC--; return t; }   // r66 · Emma new 2: phones read the model, one trend line and big rows
   txt(x, 'M' + (i + 1), 30, 58, '#2fdcbc', font(18, 700, 1)); txt(x, MODELS[i], 74, 60, '#f3f5f6', font(34, 700));
   txt(x, KIND[i], 30, 94, '#6f7a84', font(16, 500));
   const pu = .5 + .5 * Math.sin(T * 3 + i); x.fillStyle = `rgba(47,220,188,${(.45 + .55 * pu).toFixed(3)})`; x.beginPath(); x.arc(PWd - 34, 52, 6, 0, PI * 2); x.fill();
@@ -1025,6 +1097,29 @@ function panelTex(i) {
     txt(x, (up ? '▲ ' : '▼ ') + Math.abs(HIT.pct).toFixed(2) + '%', PWd - 30, Y + RH / 2 + 8, up ? '#9ff0cd' : '#ffa3af', font(18, 700, 1), 'right');
     x.globalAlpha = 1; }
   RAWC--; return t;
+}
+/* r66 · Emma new 2 · phones (390 wide): the wall cards are ~70 px on screen, so the small type could not be read. The same card, but only the
+   model name, one thick trend line and four big coin rows; the selected (hit) row grows and carries its % */
+function panelPhone(t, x, i, on) {
+  const nm = MODELS[i]; let fs = 52; x.font = font(fs, 800); while (x.measureText(nm).width > PWd - 120 && fs > 34) { fs -= 2; x.font = font(fs, 800); }
+  txt(x, 'M' + (i + 1), 28, 74, '#2fdcbc', font(26, 700, 1)); txt(x, nm, 84, 78, '#ffffff', font(fs, 800));
+  const pu = .5 + .5 * Math.sin(T * 3 + i); x.fillStyle = `rgba(47,220,188,${(.45 + .55 * pu).toFixed(3)})`; x.beginPath(); x.arc(PWd - 38, 60, 11, 0, PI * 2); x.fill();
+  x.save(); x.beginPath(); x.rect(24, 104, PWd - 48, 110); x.clip(); x.strokeStyle = 'rgba(47,220,188,.85)'; x.lineWidth = 5; x.lineJoin = 'round'; x.beginPath();
+  for (let k = 0; k <= 48; k++) { const u = k / 48, tt = T * (.8 + i * .07) + u * 9, v = Math.sin(tt * 1.3 + t.ph) * .5 + Math.sin(tt * 3.1 + i) * .25 + on * Math.exp(-Math.pow((u - .9) * 9, 2)) * 1.1;
+    const X = 24 + u * (PWd - 48), Y = 159 - v * 34; k ? x.lineTo(X, Y) : x.moveTo(X, Y); } x.stroke(); x.restore();
+  const LTm = 236, RHm = 86, off = RM ? t.off : t.off + T * t.sp * .6, fr = off - Math.floor(off);
+  x.save(); x.beginPath(); x.rect(0, LTm - 4, PWd, PHd - LTm - 12); x.clip();
+  for (let r = -1; r < 5; r++) { const it = t.list[(Math.floor(off) + r + 300) % t.list.length], cy = LTm + (r - fr) * RHm + RHm / 2, im = IMGN[it.s];
+    x.globalAlpha = DAY ? .95 : .9; if (im && im.complete) x.drawImage(im, 28, cy - 22, 44, 44);
+    txt(x, it.s, 88, cy + 14, it.ch > 0 ? '#9ff0cd' : '#ffb0ba', font(40, 800)); }
+  x.globalAlpha = 1; x.restore();
+  if (on > .01) { const Y = LTm + RHm - 10, im = IMGN[HIT.s], up = HIT.pct > 0, hh = RHm + 30;
+    x.globalAlpha = on; x.fillStyle = DAY ? 'rgba(16,58,58,.99)' : 'rgba(9,44,39,.98)'; x.beginPath(); x.roundRect(12, Y, PWd - 24, hh, 16); x.fill();
+    x.strokeStyle = 'rgba(47,220,188,.95)'; x.lineWidth = 4; x.stroke();
+    if (im && im.complete) x.drawImage(im, 26, Y + hh / 2 - 27, 54, 54);
+    txt(x, HIT.s, 92, Y + hh / 2 + 17, '#ffffff', font(48, 800));
+    txt(x, (up ? '▲' : '▼') + Math.abs(HIT.pct).toFixed(1) + '%', PWd - 28, Y + hh / 2 + 14, up ? '#9ff0cd' : '#ffa3af', font(38, 800, 1), 'right');
+    x.globalAlpha = 1; }
 }
 /* phones: the same panel as a narrow card, so six fit side by side: fewer things on it, each one big enough to read */
 const PTM = [];
@@ -1084,13 +1179,14 @@ function onWall(t, c, ps, az0, el0, saz, sel, a, nx = 6, ny = 3, rr = SR) {
   }
   g.globalAlpha = 1; g.setTransform(DPR, 0, 0, DPR, 0, 0);
 }
-function texTri(c, ps, u0, v0, u1, v1, u2, v2, A, B, Cq) {
+function texTri(c, ps, u0, v0, u1, v1, u2, v2, A, B, Cq, er) {
   const du1 = u1 - u0, dv1 = v1 - v0, du2 = u2 - u0, dv2 = v2 - v0, det = du1 * dv2 - du2 * dv1; if (Math.abs(det) < 1e-9) return;
   const ax = A.x, ay = A.y, bx = B.x - ax, by = B.y - ay, cx = Cq.x - ax, cy = Cq.y - ay;
   const ma = (bx * dv2 - cx * dv1) / det, mb = (by * dv2 - cy * dv1) / det, mc = (cx * du1 - bx * du2) / det, md = (cy * du1 - by * du2) / det;
   const mx = (A.x + B.x + Cq.x) / 3, my = (A.y + B.y + Cq.y) / 3, ex = q => { const dx = q.x - mx, dy = q.y - my, l = Math.hypot(dx, dy) || 1; return [q.x + dx / l * .45, q.y + dy / l * .45]; };
   const [p0x, p0y] = ex(A), [p1x, p1y] = ex(B), [p2x, p2y] = ex(Cq);
   g.save(); g.setTransform(DPR, 0, 0, DPR, 0, 0); g.beginPath(); g.moveTo(p0x, p0y); g.lineTo(p1x, p1y); g.lineTo(p2x, p2y); g.closePath(); g.clip();
+  if (er) { g.globalCompositeOperation = 'destination-out'; g.fill(); g.globalCompositeOperation = 'source-over'; }   // r66: overlap keeps one copy
   g.setTransform(DPR * ma, DPR * mb, DPR * mc, DPR * md, DPR * (ax - ma * u0 - mc * v0), DPR * (ay - mb * u0 - md * v0));
   const umin = Math.max(0, Math.min(u0, u1, u2) - 1), vmin = Math.max(0, Math.min(v0, v1, v2) - 1), umax = Math.max(u0, u1, u2) + 1, vmax = Math.max(v0, v1, v2) + 1;
   const sw = Math.min(c.width / ps, umax) - umin, sh = Math.min(c.height / ps, vmax) - vmin;
@@ -1106,7 +1202,7 @@ function dome(a) {
     const tw = .5 + .5 * Math.sin(T * 1.7 + m * 1.3 + e * .7); g.fillStyle = `rgba(150,220,210,${(a * (.06 + .1 * tw)).toFixed(3)})`; g.fillRect(q.x - .8, q.y - .8, 1.6, 1.6); }
 }
 const WL = document.createElement('canvas'), wg = themed(WL.getContext('2d'));
-let PDIM = 1;
+let PDIM = 1, DOMEA = 1;
 function drawWall(a) {
   if (a < .01) return;
   if (WL.width !== cv.width || WL.height !== cv.height) { WL.width = cv.width; WL.height = cv.height; }
@@ -1131,7 +1227,6 @@ let MGB = 0, MTAG = null;
 function wallBody() {
   const R = RING;
   for (let i = 0; i < 6; i++) { const q = pr(...onS(paz(i), R.el, R.r)); if (q) glow(q.x, q.y, q.k * 26 * R.r / SR, '#2fdcbc', .05); }
-  dome(1);
   for (let i = 0; i < 6; i++) { const pt = ML ? panelTexM(i) : panelTex(i); onWall(pt, pt.c, PSC, paz(i), R.el, R.az, R.span, PDIM, ML ? 4 : 9, ML ? 8 : 5, R.r); }
   if (!HIT || PDIM < .9) return; const age = T - HIT.at, on = sm(age / .5) * (1 - sm((age - HIT.hold) / .6)), co = CO[HIT.ci];
   if (on < .01) { if (co && age > HIT.hold + .6) { co.hit = 0; co.on = 0; } return; }
@@ -1286,16 +1381,25 @@ function infoTexM(o) {
   row(356, -1, siteText(`${QTY} BTC · 开仓 ${fmtN(P0, 0)}`), o.sp, false, fl, o.open);
   return t;
 }
-/* a texture standing in the world: centre c, width w, turned by yaw (0 = facing −z) */
+/* a texture standing in the world: centre c, width w, turned by yaw (0 = facing −z)
+   r66 · 3：和 r65 墙面卡片一样按两个三角形精确贴图（每条的四个角都投影，相邻条上下沿对齐）；每块先擦后画、画在自己的一层上，
+   重叠的那一点点只留一份颜色，半透明底不再叠深成竖纹；整层最后按 a 一次淡入 */
+const WLY = document.createElement('canvas'), wlg = themed(WLY.getContext('2d'));
 function wall(t, c, w, yaw, a) {
-  if (a < .01 || w < .01) return; const h = w * t.h / t.w, rx = Math.cos(yaw), rz = Math.sin(yaw), N = 16;
-  // drawn as narrow strips: one flat stretch can only make a parallelogram, so seen at an angle the far side would not shrink
+  if (a < .01 || w < .01) return; const h = w * t.h / t.w, rx = Math.cos(yaw), rz = Math.sin(yaw), N = 16, ps = t.c.width / t.w;
   const at = (fx, fy) => pr(c[0] + rx * w * (fx - .5), c[1] + h * (.5 - fy), c[2] + rz * w * (fx - .5));
-  g.globalAlpha = a;
-  for (let i = 0; i < N; i++) { const f0 = i / N, f1 = (i + 1) / N, TL = at(f0, 0), TR = at(f1, 0), BL = at(f0, 1); if (!TL || !TR || !BL) continue;
-    const sw = t.w / N, ov = i < N - 1 ? .6 : 0;   // a hair of overlap so no seam shows
-    g.setTransform(DPR * (TR.x - TL.x) / sw, DPR * (TR.y - TL.y) / sw, DPR * (BL.x - TL.x) / t.h, DPR * (BL.y - TL.y) / t.h, DPR * TL.x, DPR * TL.y);
-    const k = t.c.width / t.w; g.drawImage(t.c, i * sw * k, 0, Math.min(sw + ov, t.w - i * sw) * k, t.c.height, 0, 0, Math.min(sw + ov, t.w - i * sw), t.h); }
+  const top = [], bot = []; for (let i = 0; i <= N; i++) { top.push(at(i / N, 0)); bot.push(at(i / N, 1)); }
+  const all = top.concat(bot).filter(Boolean); if (!all.length) return;
+  const bx0 = Math.max(0, Math.floor(Math.min(...all.map(q => q.x)) - 3)), by0 = Math.max(0, Math.floor(Math.min(...all.map(q => q.y)) - 3)),
+    bx1 = Math.min(W, Math.ceil(Math.max(...all.map(q => q.x)) + 3)), by1 = Math.min(H, Math.ceil(Math.max(...all.map(q => q.y)) + 3));
+  if (bx1 <= bx0 || by1 <= by0) return;
+  if (WLY.width !== cv.width || WLY.height !== cv.height) { WLY.width = cv.width; WLY.height = cv.height; }
+  const mg = g; g = wlg; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(bx0 * DPR, by0 * DPR, (bx1 - bx0) * DPR, (by1 - by0) * DPR); g.globalAlpha = 1;
+  const sw = t.w / N;
+  for (let i = 0; i < N; i++) { const TL = top[i], TR = top[i + 1], BL = bot[i], BR = bot[i + 1]; if (!TL || !TR || !BL || !BR) continue;
+    const sx = i * sw; texTri(t.c, ps, sx, 0, sx + sw, 0, sx, t.h, TL, TR, BL, true); texTri(t.c, ps, sx + sw, 0, sx + sw, t.h, sx, t.h, TR, BR, BL, true); }
+  g = mg; g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = a;
+  const X0 = bx0 * DPR, Y0 = by0 * DPR, XW = (bx1 - bx0) * DPR, YH = (by1 - by0) * DPR; g.drawImage(WLY, X0, Y0, XW, YH, X0, Y0, XW, YH);
   g.globalAlpha = 1; g.setTransform(DPR, 0, 0, DPR, 0, 0);
 }
 
@@ -1462,7 +1566,8 @@ const LIMB = '#3f4146';
 function dodo(x, y, z, o = {}) {
   const q = pr(x, y + (o.hop || 0), z); if (!q) return; const s = q.k * 1.7 / 86 * (o.s || 1); if (s < .03) return;
   const gq = pr(x, y, z), sh = clamp(1 - (o.hop || 0) / 1.2);
-  g.save(); RAWC++; if (o.a != null) g.globalAlpha = o.a;
+  const da0 = (o.a != null ? o.a : 1) * (1 - DOORFX); if (da0 < .01) return;   // r66 · 7: through the door the Dodos are gone before the camera passes
+  g.save(); RAWC++; g.globalAlpha = da0;
   if (gq) { g.fillStyle = 'rgba(0,0,0,.42)'; g.beginPath(); g.ellipse(gq.x, gq.y, 30 * s * (.6 + .4 * sh), 6 * s * (.6 + .4 * sh), 0, 0, PI * 2); g.fill(); }
   const air = (o.hop || 0) > .06, bob = air || RM ? 0 : Math.sin(T * 2.4 + (o.ph || 0)) * 1.2, sq = o.sq || 0;
   g.translate(q.x, q.y); g.scale(s * (o.face || 1), s); g.translate(0, bob); g.scale(1 + sq * .1, 1 - sq * .12);
@@ -1674,6 +1779,7 @@ function frame(now) {
   if (SITESTOP) { LOOPING = false; return; }   // r63 · joined to the log-in page: the website draws nothing until it comes back
   FN++; if (FN % 4 === 0) inkScan();
   const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
+  if (DCAP > 2 && !document.hidden && dt > 0 && !PFX.busy()) { PERF.n++; PERF.s += dt; if (PERF.n >= 90) { if (PERF.s / PERF.n > .024) { DCAP = 2; resize(); } PERF = { n: 0, s: 0 }; } }   // r66 · 1: too slow at 3×: 2×
   if (RM) { CK.t = CK.tgt; CK.v = 0; CK.vs = 0; } else camStep(CK, dt);
   scrLock(GATE || PFX.busy() || HOMING || !!DF);   // r64: no page scroll under the motion layer, a planet transition or going home
   K.t = CK.t; K.v = CK.v; K.tgt = CK.tgt;   // r61: the scene clock is the camera's; what it shows moves with the shot
@@ -1791,25 +1897,26 @@ function frame(now) {
 
   // the sphere: the market at the bottom layer, the six models over it
   if (!RM && !PFX.busy() && T > nextHit) { newHit(); nextHit = T + 3.6 + Math.random() * 1.6; }
-  const wi = Math.floor(t), wf = t - wi, wq = wi === 0 ? sm(clamp(wf / .35)) : sm(wf), wa = L(L(WA[wi], WA[Math.min(NS - 1, wi + 1)], wq), .8, TXW), coa = L(L(CAL[wi], CAL[Math.min(NS - 1, wi + 1)], wq), .7, TXW);   // r64 #2/#3: 01↔02 the cards go first and come back last, no residue under 02's copy   // r62: the inner wall comes up while the camera pulls back
+  const wi = Math.floor(t), wf = t - wi, wq = wi === 0 ? sm(sg(wf, .1, .55)) : sm(wf), wqF = sm(wf), wa = L(L(WA[wi], WA[Math.min(NS - 1, wi + 1)], wq), .8, TXW), coa = L(L(CAL[wi], CAL[Math.min(NS - 1, wi + 1)], wqF), .7, TXW);   // r66 · 5: 01↔02 cards fade over 10–55% of the way (gone before 02's copy at 42%); rings and dome light dim over the whole way
+  DOMEA = L(L(WA[wi], WA[Math.min(NS - 1, wi + 1)], wqF), .8, TXW);   // r64 #2/#3: 01↔02 the cards go first and come back last, no residue under 02's copy   // r62: the inner wall comes up while the camera pulls back
   if (!OFF.includes('c')) drawCoins(clamp(coa + .25 * wlc), wlc);
-  if (!OFF.includes('w')) drawWall(wa);
+  if (!OFF.includes('w')) { dome(DOMEA); drawWall(wa); }
   // 08: Binance's mark on the wall
   const bnA = a8 * (.35 + .65 * sm(sg(A[7], .68, .8))) * (1 - sm(sg(t, 7.3, 7.9))); if (bnA > .01 && !OFF.includes('b')) onWall(bnLogoTex(), TX.bnlogo.c, 2, BAZ, BEL, 15 * BSZ * DEG, 5.8 * BSZ * DEG, bnA, 4, 2);
   // 10: Telegram and Discord open on the wall
   // 11: a door opens in the sphere wall where the stairs end, our logo over it
   if (!(a11 > .01 && doorU > .01)) { DOORQ = null; DOORG = null; }
-  if (a11 > .01 && doorU > .01) { const da = LY.daz, rr = SR * .985, elY = y => Math.asin((y - SC[1]) / rr), yb = LY.dtop - .3, yt = LY.dtop + 8.2, e0 = elY(yb), e1 = elY(yt), hw2 = 1.5 * PS() / (rr * Math.cos(e0)) * eio(doorU);
+  if (a11 > .01 && doorU > .01) { const da = LY.daz, rr = SR * .985, elY = y => Math.asin((y - SC[1]) / rr), yb = LY.dtop - .3, yt = LY.dtop + 8.2, e0 = elY(yb), e1 = elY(yt), hw2 = 1.5 * PS() / (rr * Math.cos(e0)) * eio(doorU) * (1 + .45 * TXO);
     const q = [pr(...onS(da - hw2, e1, rr)), pr(...onS(da + hw2, e1, rr)), pr(...onS(da + hw2, e0, rr)), pr(...onS(da - hw2, e0, rr))], a = a11 * doorU * (1 - .85 * TXD); DOORG = { da, e0, e1, hw2, rr };
     DOORQ = !q.some(v => !v) && a > .5 ? q : null;
     if (!q.some(v => !v)) { const c = pr(...onS(da, (e0 + e1) / 2, rr)); if (DAY) RAWC++;   // same panel, glow and strength day and night (as 725590f); daytime only changes the colours
       const gl0 = DAY ? '#2fdcbc' : '#bff5ea', top = DAY ? [26, 150, 126] : [190, 255, 240], bot = DAY ? [47, 205, 172] : [245, 255, 252];
-      glow(c.x, c.y, c.k * 30, gl0, (.28 * a));
+      glow(c.x, c.y, c.k * 30 * (1 + .8 * TXO), gl0, (.28 * a * (1 + 1.6 * TXO)));
       const gr = g.createLinearGradient(0, q[0].y, 0, q[3].y); gr.addColorStop(0, `rgba(${top},${(.85 * a).toFixed(3)})`); gr.addColorStop(1, `rgba(${bot},${(.97 * a).toFixed(3)})`);
-      g.save(); g.shadowColor = gl0; g.shadowBlur = 60 * a; g.fillStyle = gr; g.beginPath(); q.forEach((p, i) => i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y)); g.closePath(); g.fill(); g.restore();
+      g.save(); g.shadowColor = gl0; g.shadowBlur = 60 * a * (1 + 1.2 * TXO); g.fillStyle = gr; g.beginPath(); q.forEach((p, i) => i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y)); g.closePath(); g.fill(); g.restore();
       const fl = pr(...onS(da, e0, rr * .97)); if (fl) glow(fl.x, fl.y, fl.k * 14, DAY ? '#2fdcbc' : '#ffffff', .22 * a);
       if (DAY) RAWC--; }
-    if (logU > .01) { const lt = logoTex(), LW = ML ? 17 : 30, lh = LW * lt.h / lt.w; layer(logU * a11, () => { g.imageSmoothingQuality = 'high'; onWall(lt, lt.c, LGS, da, elY(yt + 2.4 + lh / 2 + (1 - logU) * 1.5), LW / rr, lh / rr, 1, 12, 2); }); } }
+    if (logU * (1 - DOORFX) > .01) { const lt = logoTex(), LW = ML ? 17 : 30, lh = LW * lt.h / lt.w; layer(logU * a11 * (1 - DOORFX), () => { g.imageSmoothingQuality = 'high'; onWall(lt, lt.c, LGS, da, elY(yt + 2.4 + lh / 2 + (1 - logU) * 1.5), LW / rr, lh / rr, 1, 12, 2); }); } }
 
   /* cells that stand tall in a place (so they stay drawn when only their top is in view) */
   const tallAt = (ix, iz) => { if (a8 > .01) { if (ix === LY.tw[0] && iz === LY.tw[1]) return S8.H; for (const [tx, tz, th] of LY.tries) if (ix === tx && iz === tz) return th; }
@@ -2137,7 +2244,7 @@ let DK8 = +(QP.get('dk8') || .5);
 function mid8(U) { const B0 = onS(BAZ, BEL, SR * .98), a = [34.1, -29.9], b = [36, -38], e = [(34.1 + 37.75 + B0[0] + 40) / 4, (-29.9 - 46 + B0[2] - 61) / 4], u1 = sm(sg(U, .2, .32)), u2 = sm(sg(U, .5, .66));
   return [L(L(a[0], b[0], u1), e[0], u2), L(L(a[1], b[1], u1), e[1], u2)]; }
 function xtraFor(ms) { const x = Math.max(0, Math.atan(1.6 * Math.tan(.42)) - Math.atan((W / 2) / ((H / 2) / Math.tan(.42) * (mob ? ms : 1)))); return x > 0 ? x + +(QP.get('xa') || XA) : 0; }
-function resize() { BLK.forEach(b => b._h = 0); DPR = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; mob = W < 760; ringFor(); BAZ = BAZ0 + (mob ? +(QP.get('bz') || -3.8) * DEG : 0); BSZ = mob ? +(QP.get('bs') || 1) : 1; KZ = SCR[2] = ML ? 3.2 : 4.6; KH = ML ? 8.4 : mob ? 6.4 : 7.6; XTRA = xtraFor(mob ? MS : 1); LQ = LSQ(); setTimeout(() => { CPR = LQ ? Math.max(0, ...BLK.map(b => b.getBoundingClientRect().right).filter(r => r > 0 && r < W * .6)) : 0; }, 300); cv.width = W * DPR; cv.height = H * DPR; cells(); anchors(); initWall(); initCoins(); }
+function resize() { BLK.forEach(b => b._h = 0); DPR = dprMax(); W = innerWidth; H = innerHeight; mob = W < 760; ringFor(); BAZ = BAZ0 + (mob ? +(QP.get('bz') || -3.8) * DEG : 0); BSZ = mob ? +(QP.get('bs') || 1) : 1; KZ = SCR[2] = ML ? 3.2 : 4.6; KH = ML ? 8.4 : mob ? 6.4 : 7.6; XTRA = xtraFor(mob ? MS : 1); LQ = LSQ(); setTimeout(() => { CPR = LQ ? Math.max(0, ...BLK.map(b => b.getBoundingClientRect().right).filter(r => r > 0 && r < W * .6)) : 0; }, 300); cv.width = W * DPR; cv.height = H * DPR; cells(); anchors(); initWall(); initCoins(); }
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(resize, 120); });
 resize(); gyBoot();
 window.__dive = { K, CK, A, B11, go, jump, GY, prj: (x, y, z) => { const v = pr(x, y, z); return v ? [+v.x.toFixed(1), +v.y.toFixed(1)] : null; }, subj: i => pose(CAM()[i], 1)[1],  gyStart, gyFeed: (al, be, ga) => onOri({ alpha: al, beta: be, gamma: ga }), gyTurn, lookNow: () => [+smx.toFixed(3), +smy.toFixed(3)], story: () => ({...HD}), camera: () => ({ p: C.p.slice(), f: C.f.slice() }), poses: () => CAM().map(c => [0, .25, .5, .75, 1].map(a => pose(c, a))), xtra: () => XTRA, smx: () => +smx.toFixed(3),

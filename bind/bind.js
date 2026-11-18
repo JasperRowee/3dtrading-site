@@ -54,7 +54,9 @@
       'b.okT': '演示绑定成功', 'b.okS': '已加进你的账户列表。', 'b.okSo': '登录或注册后，这个账户会带进你的后台。',
       'b.okSub': '演示绑定 · 未连接币安', 'b.okNew': '新', 'b.okWait': '待带入', 'b.okL': '已演示绑定的账户',
       'b.okP': '没有连接真实币安，也没有发送或保存 API Key。', 'b.okPo': '没有连接真实币安，也没有发送或保存 API Key。只记住了账户名称，并且只在这个标签页里、只带入一次。',
-      'b.okNext': '继续绑定', 'b.okDash': '进入后台', 'b.okLogin': '登录并带入后台', 'b.okReg': '注册新账号', 'b.okToast': '演示绑定成功：{n}' },
+      'b.okNext': '继续绑定', 'b.okDash': '进入后台', 'b.okLogin': '登录并带入后台', 'b.okReg': '注册新账号', 'b.okToast': '演示绑定成功：{n}',
+      /* r66 */ 'b.try': '用示例 Key 体验', 'b.pmOn': '勾选', 'b.pmOff': '不勾', 'b.pmOpt': '可选', 'b.realQ': '绑定真实币安账户',
+      'b.realA': '在币安复制自行生成的 API Key（64 位字母和数字），粘贴到上面再点「绑定」。目前网页还没接入币安：只检查格式，不发送、不保存你的 API Key，账户保持「未连接」。' },
     en: { 'b.tut': 'Full tutorial', 'b.skip': 'Skip', 'b.lead': 'In the sub-account’s API Management → Create API, choose Self-generated and fill it in with the four lines below.',
       'b.ip': 'IP whitelist (trusted IPs only)', 'b.cpPub': 'Copy the full public key', 'b.cpIp1': 'Copy IP {v}', 'b.cpdIp': 'IP copied: {v}',
       'b.pmLock': 'Add the IPs first; trading permissions unlock after that', 'b.nmPh': 'Account name (optional)', 'b.nmBad': 'The name can’t contain < > " \' `',
@@ -62,7 +64,9 @@
       'b.okT': 'Demo bind complete', 'b.okS': 'Added to your account list.', 'b.okSo': 'Log in or sign up and this account comes into your dashboard.',
       'b.okSub': 'Demo bind · not connected to Binance', 'b.okNew': 'New', 'b.okWait': 'Waiting', 'b.okL': 'Demo-bound accounts',
       'b.okP': 'Not connected to real Binance; the API Key was not sent or saved.', 'b.okPo': 'Not connected to real Binance; the API Key was not sent or saved. Only the account name is kept, in this tab only, and carried over once.',
-      'b.okNext': 'Bind another', 'b.okDash': 'Go to dashboard', 'b.okLogin': 'Log in and bring it over', 'b.okReg': 'Sign up', 'b.okToast': 'Demo bind complete: {n}' }
+      'b.okNext': 'Bind another', 'b.okDash': 'Go to dashboard', 'b.okLogin': 'Log in and bring it over', 'b.okReg': 'Sign up', 'b.okToast': 'Demo bind complete: {n}',
+      /* r66 */ 'b.try': 'Try with the sample key', 'b.pmOn': 'tick', 'b.pmOff': 'leave unticked', 'b.pmOpt': 'optional', 'b.realQ': 'Binding a real Binance account',
+      'b.realA': 'Copy the self-generated API Key from Binance (64 letters and digits), paste it above and click Bind. The site is not connected to Binance yet: it only checks the format, never sends or stores your API Key, and the account stays “Not connected”.' }
   });
   var TB = window.TDBind, AU = window.TDAuth;
   var t = A.t, L = function () { return A.lang(); };
@@ -79,11 +83,13 @@
     $('#pem').textContent = b64.slice(0, 10) + '…' + b64.slice(-8); $('#pk').setAttribute('aria-label', t('b.cpPub'));
     var en = L() === 'en';
     $('#pms').innerHTML = K.perms.map(function (p) {
+      /* r66 · 与后台弹窗同一套说法：勾选 / 不勾 / 可选（预测交易明确「不勾」） */
       var on = p.required, cls = on ? 'on' : p.optional ? 'opt' : 'off';
-      return '<span class="pc ' + cls + '">' + (on ? '✓ ' : '') + esc(en ? p.en : p.zh) + (p.optional ? ' · ' + esc(en ? 'optional' : '可选') : '') + '</span>';
-    }).join('') + '<span class="pc no">✕ ' + esc(en ? 'Withdrawals' : '提现') + '</span>';
+      return '<span class="pc ' + cls + '" data-pm="' + cls + '">' + (on ? '✓ ' : p.optional ? '○ ' : '✕ ') + esc(en ? p.en : p.zh) + ' · ' + esc(t(on ? 'b.pmOn' : p.optional ? 'b.pmOpt' : 'b.pmOff')) + '</span>';
+    }).join('') + '<span class="pc no" data-pm="no">✕ ' + esc(en ? 'Withdrawals' : '提现') + ' · ' + esc(t('b.pmOff')) + '</span>';
     $('#ips').innerHTML = K.ips.map(function (ip) { return '<button type="button" class="ipb" data-copy="ip" data-v="' + esc(ip) + '" aria-label="' + esc(t('b.cpIp1', { v: ip })) + '"><code>' + esc(ip) + '</code><span class="ci" aria-hidden="true">' + CPI + '</span></button>'; }).join('');
     $('#demoH').innerHTML = '<b>' + esc(t('b.demoB')) + '</b>' + esc(t('b.demoH', { k: '§' })).replace('§', '<code>1234</code>');
+    $('#tryDemo').textContent = t('b.try'); $('#realH summary').textContent = t('b.realQ'); $('#realH p').textContent = t('b.realA');
     if (OKV) $('#okw').innerHTML = okHtml(OKV);
     var dm = $('.dm'); dm.hidden = !(K.pubExample || K.ipsExample); dm.title = t('b.demoT');
     $('#lang').textContent = L() === 'en' ? '中文' : 'EN';
@@ -172,6 +178,8 @@
     else if (e.target.closest('#okReg')) location.href = authUrl('register');
   });
   window.addEventListener('pagehide', wipe);
+  /* r66 · 一键演示：填入 1234 并直接完成演示绑定 */
+  $('#tryDemo').addEventListener('click', function () { if (busy) return; key.value = '1234'; count(); var f = $('#f'); if (f.requestSubmit) f.requestSubmit(); else f.dispatchEvent(new Event('submit', { cancelable: true })); });
 
   /* ---------- language / theme ---------- */
   $('#lang').addEventListener('click', function () { A.setLang(L() === 'en' ? 'zh' : 'en'); });

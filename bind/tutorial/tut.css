@@ -306,3 +306,19 @@ html.embed .bnh,.bnh{padding-left:calc(max(16px,env(safe-area-inset-left)) + 118
 .hint .cp.done{background:#d5d9de}
 .hint em.ex{font-size:12px}
 @media (max-width:760px){.hint{font-size:16.5px;padding:11px 13px}.hint code{font-size:14px}}
+
+/* r66 · 首步 / 末步：演示提示在上，「用示例 Key 体验」在下（底栏左侧；手机在按钮行上方） */
+.tdemo{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0}
+.tdemo[hidden]{display:none}
+.tdh{margin:0;font-size:12px;line-height:1.45;color:#b7bdc6}
+.tdh b{font-size:11px;padding:1px 6px;margin-right:6px;border-radius:4px;background:rgba(47,220,188,.16);color:#2fdcbc}
+.tdh code{font-family:ui-monospace,Menlo,monospace;background:#2b3139;color:#eaecef;padding:1px 6px;border-radius:4px;font-weight:700}
+.tcb.try{height:36px;padding:0 14px;background:rgba(47,220,188,.14);color:#2fdcbc;box-shadow:inset 0 0 0 1px rgba(47,220,188,.5)}
+.tcb.try:hover{background:rgba(47,220,188,.24)}
+#tkF .demoH{display:none!important}
+@media (min-width:761px){.tdemo{grid-column:1;grid-row:1;justify-self:start}}
+@media (max-width:760px){
+  .tc:has(.tdemo:not([hidden])){grid-template-areas:"d" "m"}
+  .tdemo{grid-area:d;gap:6px}
+  .tcb.try{flex:none;height:34px;padding:0 12px;font-size:13px}
+}

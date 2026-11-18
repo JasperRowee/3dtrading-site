@@ -73,8 +73,8 @@
   /* r58 · email code (demo), password check, Google Authenticator step, carried-over demo binding */
   var T58 = {
     zh: {
-      'auth.code': '邮箱验证码', 'auth.codeRule': '6 位数字 · 10 分钟内有效', 'auth.codePh': '6 位验证码', 'auth.send': '发送验证码', 'auth.resend': '重新发送', 'auth.wait': '{n} 秒后重发',
-      'auth.inbox': '<b>演示收件箱</b>没有接入邮件服务，不会真的发邮件。发给 {e} 的验证码：<code>{c}</code><small>10 分钟内有效，仅显示在这台浏览器</small>',
+      'auth.code': '邮箱验证码', 'auth.codeRule': '6 位数字', 'auth.codeHint': '演示验证码在本页显示', 'auth.codePh': '6 位验证码', 'auth.send': '发送验证码', 'auth.resend': '重新发送', 'auth.wait': '{n} 秒后重发',
+      'auth.inbox': '<b>演示收件箱</b>没有接入邮件服务，不会真的发邮件。发给 {e} 的验证码：<code>{c}</code><small>仅显示在这台浏览器</small>',
       'auth.e.code': '请输入 6 位数字验证码。', 'auth.e.codeNone': '请先点「发送验证码」。', 'auth.e.codeOther': '邮箱改过了，请重新发送验证码。',
       'auth.e.codeExp': '验证码已过期，请重新发送。', 'auth.e.codeWrong': '验证码不对，还可以再试 {n} 次。', 'auth.e.codeLock': '错误次数太多，请重新发送验证码。',
       'auth.e.emailFirst': '先填写有效的邮箱，再发送验证码。', 'auth.e.badPw': '邮箱或密码不正确。', 'auth.e.insecure': '这个地址不是安全连接（HTTPS / localhost），无法完成两步验证。请用 localhost 打开。',
@@ -86,8 +86,8 @@
       'auth.pend': '<b>演示账户「{n}」已准备好</b>登录或注册后会自动加入你的后台（演示绑定，未连接币安）。'
     },
     en: {
-      'auth.code': 'Email code', 'auth.codeRule': '6 digits · valid 10 min', 'auth.codePh': '6-digit code', 'auth.send': 'Send code', 'auth.resend': 'Resend', 'auth.wait': 'Resend in {n}s',
-      'auth.inbox': '<b>Demo inbox</b>No mail service is connected, so no email is really sent. Code for {e}: <code>{c}</code><small>Valid 10 minutes, shown only in this browser</small>',
+      'auth.code': 'Email code', 'auth.codeRule': '6 digits', 'auth.codeHint': 'Demo code is shown on this page', 'auth.codePh': '6-digit code', 'auth.send': 'Send code', 'auth.resend': 'Resend', 'auth.wait': 'Resend in {n}s',
+      'auth.inbox': '<b>Demo inbox</b>No mail service is connected, so no email is really sent. Code for {e}: <code>{c}</code><small>Shown only in this browser</small>',
       'auth.e.code': 'Enter the 6-digit code.', 'auth.e.codeNone': 'Click “Send code” first.', 'auth.e.codeOther': 'The email changed — send a new code.',
       'auth.e.codeExp': 'The code has expired. Send a new one.', 'auth.e.codeWrong': 'Wrong code. {n} tries left.', 'auth.e.codeLock': 'Too many wrong tries. Send a new code.',
       'auth.e.emailFirst': 'Enter a valid email first, then send the code.', 'auth.e.badPw': 'The email or password is not right.', 'auth.e.insecure': 'This address is not a secure connection (HTTPS / localhost), so two-step verification can’t run. Open it via localhost.',

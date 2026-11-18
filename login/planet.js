@@ -272,7 +272,8 @@
   var raf = 0;
   function loop(t) { if (!WAIT()) draw(t); raf = requestAnimationFrame(loop); }
   /* r63 · 同页衔接：官网把场景交过来的那一刻才开始「到达」（2D 天空先在，WebGL 天空随后淡入），和整页打开时一样 */
-  if (!ART) window.__planetJoin = function () { t0 = 0; mkT = 0; MK = 0; k2dT = 0; K2D = 1; ARRIVE = true; MODE = '2d'; GL.hidden = false; GL.style.opacity = '';
+  if (!ART) window.__planetJoin = function () { t0 = 0; mkT = performance.now(); MK = 0;   // r66 · 2: the form is already whole; the dimming under it starts at once, no second entrance
+    k2dT = 0; K2D = 1; ARRIVE = true; MODE = '2d'; GL.hidden = false; GL.style.opacity = '';
     if (PEND) { var m = PEND; PEND = null; setMode(m); } draw(performance.now()); };
   if (ART) {
     /* the website's transitions. frame(o): o.p = where the planet is (0 = all around us / inside, 1 = the log-in composition),

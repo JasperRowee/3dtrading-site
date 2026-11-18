@@ -157,3 +157,13 @@ html[data-theme=day]{--win:#14171a;--ink:#f2f5f4;--ink2:#b3bdba;--ink3:#7c8885;-
 .lead{margin:2px 0 18px;font-size:18px;line-height:1.3;font-weight:700;letter-spacing:-.02em;color:#fff}
 .tut{color:#fff}.tut:hover{color:#fff;opacity:.8}
 @media (max-width:560px){.lead{font-size:16.5px}}
+/* r66 · 演示提示在上、「用示例 Key 体验」在下；真实账户说明单独收起；预测交易「不勾」 */
+.tryw{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin:0 0 10px}
+.tryw .demoH{margin:0}
+.try{appearance:none;height:36px;padding:0 14px;border-radius:9px;border:1px solid var(--acc);background:rgba(47,220,188,.1);color:var(--acc);font-size:13.5px;font-weight:650;cursor:pointer}
+.try:hover{background:rgba(47,220,188,.18)}
+.try:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.pc.off{background:rgba(255,99,105,.08);color:var(--bad)}
+.realH{margin:10px 0 0;font-size:12.5px;color:var(--ink3)}
+.realH summary{cursor:pointer;color:var(--ink2,var(--ink));font-weight:600}
+.realH p{margin:6px 0 0;line-height:1.6}

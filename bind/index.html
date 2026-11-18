@@ -7,7 +7,7 @@
 <title>3dtrading · 绑定币安</title>
 <script>document.documentElement.dataset.theme='night';try{['3dt.theme','3dt.theme.app','3dt.theme.site','r49site.theme','3dt49bn.theme','3dt.r49login.theme'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}</script>
 <link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
-<link rel="stylesheet" href="bind.css?v=r63">
+<link rel="stylesheet" href="bind.css?v=r66">
 </head>
 <body>
 <!-- r49k · as r48: our Binance replica fills the screen (it is the tutorial, at its first step), dimmed, and ONE simple binding
@@ -36,6 +36,8 @@
     <li><span class="qn">2</span><div><b data-i18n="b.perm">权限</b><p class="pms" id="pms"></p></div></li>
     <li><span class="qn">3</span><div><b data-i18n="b.ip">IP 白名单（只访问受信任的 IP）</b><p class="ips" id="ips"></p></div></li>
     <li><span class="qn">4</span><div><b>API Key</b>
+      <!-- r66 · 演示提示放在「用示例 Key 体验」上方；真实账户说明单独收起 -->
+      <div class="tryw"><p class="demoH" id="demoH"></p><button type="button" class="try" id="tryDemo" data-i18n="b.try">用示例 Key 体验</button></div>
       <form id="f" novalidate autocomplete="off">
         <div class="kin" id="kin">
           <input id="key" name="bn49-k" class="mono" maxlength="80" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="mKey" data-i18n-attr="placeholder:b.keyPh;aria-label:b.key" placeholder="粘贴 API Key">
@@ -46,7 +48,7 @@
       </form>
       <p class="msg" id="mKey" role="alert"></p>
       <div class="res" id="res" role="status" aria-live="polite" hidden></div>
-      <p class="demoH" id="demoH"></p>
+      <details class="realH" id="realH"><summary data-i18n="b.realQ">绑定真实币安账户</summary><p data-i18n="b.realA"></p></details>
     </div></li>
   </ol>
 
@@ -59,8 +61,8 @@
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script src="shim.js?v=r58"></script>
-<script src="../dashboard/account/td-bind.js?v=r58"></script>
+<script src="../dashboard/account/td-bind.js?v=r66"></script>
 <script src="../dashboard/account/td-auth.js?v=r58"></script>
-<script src="bind.js?v=r58"></script>
+<script src="bind.js?v=r66"></script>
 </body>
 </html>

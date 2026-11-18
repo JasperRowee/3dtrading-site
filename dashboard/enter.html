@@ -48,7 +48,12 @@
     var r2 = A.login(d); if (!r2.ok) A.register(d);
   }
   /* r57: right after sign-up (#new=1) → ?welcome=1, the one-time bind prompt (once per account, see welcome()) */
-  location.replace('app/index.html' + (h.get('new') === '1' ? '?welcome=1' : '') + '#/dashboard');
+  /* r66: land on a given page after sign-in — #to=ai here, or sessionStorage 3dt.next='ai' set before going to log in
+     (e.g. the website's 「和 Dodo 对话」); used once, only known page names */
+  var PG = ['dashboard', 'trades', 'wallet', 'ai', 'me', 'settings'], to = h.get('to') || '';
+  try { if (!to) to = sessionStorage.getItem('3dt.next') || ''; sessionStorage.removeItem('3dt.next'); } catch (e) {}
+  if (PG.indexOf(to) < 0) to = 'dashboard';
+  location.replace('app/index.html' + (h.get('new') === '1' ? '?welcome=1' : '') + '#/' + to);
 })();
 </script>
 <noscript>Please enable JavaScript. <a href="app/index.html#/dashboard">Dashboard</a></noscript>
