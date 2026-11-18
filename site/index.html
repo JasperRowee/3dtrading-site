@@ -942,7 +942,7 @@ SCL.addEventListener('scroll', () => {
    就从当前位置、带着当前速度改成直线飞向终点，然后只减速一次。滚轮一格（单次大值）= 一站。
    手机：恢复一划一站（r65），飞行中再划同方向终点 +1、反向 −1，都接着当前速度走 */
 const WTH = { BASE: +QP.get('wth') || 196, WIN: 250, GAP: 90, MAXN: 4 };
-const wthAt = n => WTH.BASE * Math.pow(2, n - 1);   // r68 · 1: px of scrolling needed for n stops: one stop is easy, each further stop asks for double (196 · 392 · 784 · 1568)
+const wthAt = n => n <= 1 ? WTH.BASE : WTH.BASE * 8 * Math.pow(2, n - 2);   // r68b: one swipe = one stop; only a really hard fling goes further, each further stop doubles (196 · 1568 · 3136 · 6272)
 const stepsOf = est => { let n = 0; while (n < WTH.MAXN && est >= wthAt(n + 1)) n++; return n; };
 const busyIn = () => GATE || PFX.busy() || HOMING;
 function gesture(dir, n, why) { if (busyIn() || n < 1) return; GLAST = performance.now(); window.__lastG = { dir, n, why };
