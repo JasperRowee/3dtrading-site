@@ -638,7 +638,7 @@ window.I18N_EN = {
 "账号信息是演示数据": "Account details are demo data",
 "账号名称": "Account name",
 "账户": "Account",
-"账户模块没有加载（/account/td-account.js），后台暂不可用。": "The account module didn't load (/3dtrading-site/account/td-account.js), so the dashboard is unavailable.",
+"账户模块没有加载（/account/td-account.js），后台暂不可用。": "The account module didn't load (/account/td-account.js), so the dashboard is unavailable.",
 "账户类型": "Account type",
 "账户资产": "Account assets",
 "账户资产 ≥ {0} USDT": "Account assets ≥ {0} USDT",
@@ -2382,4 +2382,9 @@ window.I18N_EN = {
 "近 {0} 天 净收益": "Last {0} days net return",
 "近 {0} 天 计奖收益": "Last {0} days rewards",
 "近 {0} 天计奖收益": "Last {0} days rewards",
+"Dodo 代你操作": "Dodo acts for you",
+"指引里由 Dodo 直接打开页面、点按钮；密码和 API Key 仍由你自己输入": "In guides Dodo opens screens and taps buttons itself; you still type passwords and API Keys",
+"只指引": "Guide only",
+"提交前问我": "Ask before submitting",
+"全部代办": "Do everything",
 };

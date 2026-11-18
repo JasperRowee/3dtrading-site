@@ -10,7 +10,7 @@ try{localStorage.removeItem('3dtrading.dash.layout')}catch(e){}</script>
 <script>window.TD_ROUTES={app:location.pathname+'#/dashboard',me:location.pathname+'#/me'};</script>
 <!-- r50 (Nova): standalone dashboard copy on 8996. Website, log-in and Binance binding are the r49 previews on their own ports. -->
 <script>window.TD_ROUTES=Object.assign(window.TD_ROUTES||{},{site:'/3dtrading-site/site/',auth:'/3dtrading-site/login/',connect:'#/bind',bind:'#/bind',login:'/3dtrading-site/login/?mode=login',signup:'/3dtrading-site/login/?mode=register',entry:'/3dtrading-site/login/'});</script>
-<script src="../account/td-account.js?v=r45b" data-app="index.html#/dashboard"></script>
+<script src="../account/td-account.js?v=r70" data-app="index.html#/dashboard"></script>
 <script src="../account/api-adapter.js?v=r47"></script>
 <script src="../account/td-bind.js?v=r58"></script>
 <script src="../account/td-auth.js?v=r58"></script>
@@ -2565,6 +2565,15 @@ html.rm .r67-hl{animation:none;box-shadow:0 0 0 3px var(--brandD)}
 .gdb.paused{width:auto;max-width:calc(100vw - 24px)}.gdb.qsel{bottom:84px}
 .gdb-dd{flex:0 0 auto;width:30px;height:30px;display:grid;place-items:center}.gdb-dd svg{width:30px;height:30px}
 .gdb-t{flex:1;min-width:0}.gdb-t small{display:block;font-size:12px;color:var(--ink3);font-weight:600}.gdb-t b{display:block;font-size:14.5px;font-weight:650;line-height:1.35}
+@media (max-width:760px){.gdb.top{top:calc(8px + env(safe-area-inset-top));bottom:auto}}
+.gdb.agent .gdb-t small{color:var(--brandD)}.gdb.agent.busy .gdb-dd svg{animation:ddbob 1s ease-in-out infinite}
+@keyframes ddbob{50%{transform:translateY(-3px)}}
+.ddcur{position:fixed;left:0;top:0;z-index:120;pointer-events:none;width:0;height:0;transition:transform .6s cubic-bezier(.3,.7,.2,1)}
+.ddcur svg{position:absolute;left:-3px;top:-2px;width:26px;height:26px;fill:#12181a;stroke:#fff;stroke-width:1.6;stroke-linejoin:round;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25))}
+.ddcur i{position:absolute;left:-14px;top:-14px;width:28px;height:28px;border-radius:50%;background:rgba(47,220,188,.45);transform:scale(0);opacity:0}
+.ddcur.tap i{animation:ddtap .6s ease-out}
+@keyframes ddtap{0%{transform:scale(.3);opacity:1}100%{transform:scale(1.8);opacity:0}}
+@media (prefers-reduced-motion:reduce){.ddcur{transition:none}.ddcur.tap i,.gdb.agent.busy .gdb-dd svg{animation:none}}
 .gdb-b{display:flex;gap:6px;flex:0 0 auto}.gdb .btn.sm{height:34px;padding:0 12px;font-size:13.5px}
 .qmn{position:fixed;z-index:95;min-width:180px;max-width:260px;background:var(--sf);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh2);padding:5px}
 .qmn-h{font-size:12px;color:var(--ink3);padding:6px 10px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -3344,7 +3353,7 @@ html[data-theme="night"] .qb-lead{background:#0a0d10;box-shadow:0 0 0 1px rgba(2
     </button>
     <div class="menu" id="acctMenu" role="menu"></div>
   </div>
-  <nav class="fnav" id="fnav" aria-label="页面导航"><div class="fn-g fn-l"><a class="fn-a" href="#/dashboard" data-nav="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="8" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.8"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.8"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.8"/></svg><span>总览</span></a><a class="fn-a" href="#/trades" data-nav="trades"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M17 4v16"/><rect x="4.5" y="7" width="5" height="8" rx="1"/><rect x="14.5" y="9" width="5" height="6" rx="1"/></svg><span>交易记录</span></a></div><a class="fn-logo" href="../site/index.html" data-site-link aria-label="3dtrading，返回官网"><img src="assets/3dtrading-logo.svg" width="108" height="26" alt="3dtrading"></a><div class="fn-g fn-r"><a class="fn-a" href="#/wallet" data-nav="wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="6" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M16 14.5h1.5M6.5 6l9-2.5"/></svg><span>钱包</span></a><a class="fn-a" href="#/ai" data-nav="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17H6.5A2.5 2.5 0 0 1 4 14.5z"/></svg><span>Dodo</span></a></div></nav>
+  <nav class="fnav" id="fnav" aria-label="页面导航"><div class="fn-g fn-l"><a class="fn-a" href="#/dashboard" data-nav="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="8" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.8"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.8"/><rect x="3.5" y="14.5" width="7" height="6" rx="1.8"/></svg><span>总览</span></a><a class="fn-a" href="#/trades" data-nav="trades"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 4v16M17 4v16"/><rect x="4.5" y="7" width="5" height="8" rx="1"/><rect x="14.5" y="9" width="5" height="6" rx="1"/></svg><span>交易记录</span></a></div><a class="fn-logo" href="../../site/index.html" data-site-link aria-label="3dtrading，返回官网"><img src="assets/3dtrading-logo.svg" width="108" height="26" alt="3dtrading"></a><div class="fn-g fn-r"><a class="fn-a" href="#/wallet" data-nav="wallet"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="6" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M16 14.5h1.5M6.5 6l9-2.5"/></svg><span>钱包</span></a><a class="fn-a" href="#/ai" data-nav="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V17H6.5A2.5 2.5 0 0 1 4 14.5z"/></svg><span>Dodo</span></a></div></nav>
   <i id="layTg" hidden></i>
   <div class="me-m" id="meM">
     <button class="av-btn" id="avBtn" type="button" aria-haspopup="menu" aria-expanded="false" aria-label="我的：账号与偏好"><span class="av" id="avIni" aria-hidden="true">J</span><span class="car">▼</span></button>
@@ -3456,7 +3465,7 @@ html[data-theme="night"] .qb-lead{background:#0a0d10;box-shadow:0 0 0 1px rgba(2
 
 <div class="tip" id="tip"></div>
 <div class="toast" id="toast" role="status"></div>
-<script src="i18n-en.js?v=r63"></script>
+<script src="i18n-en.js?v=r70"></script>
 <script id="i18n-engine">
 /* i18n · zh ⇄ en。源码文案保持中文；英文来自 i18n-en.js（window.I18N_EN）。
    键规则：去掉首尾空白、合并空白；日期与数字替换成 {0}{1}…，按出现顺序。查不到整句时按 · ，；。： 分段再查。 */
@@ -3593,7 +3602,7 @@ const FIRST = () => LIVE ? LIVE.first : 0, HIST_OK = () => !LIVE || LIVE.snapCou
 const dv = (a, b) => a == null || b == null ? null : a - b;
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 /* r56 · 设置 → 单位：金额小数位、千分位分隔（本机偏好） */
-const PREF_KEY = '3dt.dash.prefs', PREF = Object.assign({ dec: 2, group: true, hide: false, enter: true }, (() => { try { return JSON.parse(localStorage.getItem(PREF_KEY) || '{}') || {}; } catch (e) { return {}; } })());
+const PREF_KEY = '3dt.dash.prefs', PREF = Object.assign({ dec: 2, group: true, hide: false, enter: true, act: 'ask' }, (() => { try { return JSON.parse(localStorage.getItem(PREF_KEY) || '{}') || {}; } catch (e) { return {}; } })());
 const savePref = () => { try { localStorage.setItem(PREF_KEY, JSON.stringify(PREF)); } catch (e) {} };
 let nf0, nf2;
 const mkNf = () => { nf0 = new Intl.NumberFormat('zh-CN', { maximumFractionDigits: 0, useGrouping: PREF.group }); nf2 = PREF.dec ? new Intl.NumberFormat('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2, useGrouping: PREF.group }) : nf0; };
@@ -5691,6 +5700,7 @@ function setPanel(t) {
     ${row('清除本机数据', '会话、偏好和 Dodo 历史只保存在这个浏览器', '<button class="btn ghost sm" type="button" data-wipe>清除</button>')}`;
   /* r61：设置里的 Dodo 页只留「绑定 Bot API」；语言跟随全局（偏好页）。探头的 Dodo 直接打开这一页。 */
   return `<h3>Dodo</h3>
+    ${row('Dodo 代你操作', '指引里由 Dodo 直接打开页面、点按钮；密码和 API Key 仍由你自己输入', seg('data-ddact', PREF.act || 'ask', [['show', '只指引'], ['ask', '提交前问我'], ['auto', '全部代办']], 'Dodo 代你操作'))}
     <div class="stg-r stg-bot"><div><b>绑定 Bot API</b><small>把 Dodo 绑定到你自己的 Bot API；只认本站后台的真实回应</small></div></div>
     <div id="dsbBot" class="stg-botb"></div>`;
 }
@@ -5856,6 +5866,8 @@ document.addEventListener('click', e => {
   if (t) { __dashTheme.set(t.dataset.thm); $$('[data-thm]').forEach(b => b.setAttribute('aria-pressed', String(b === t))); toast('已保存外观'); return; }
   const d = e.target.closest('[data-unit-dec]');
   if (d) { PREF.dec = +d.dataset.unitDec; mkNf(); savePref(); renderAll(); showPage(CUR); renderSettings(); $('#stg [data-unit-dec="' + PREF.dec + '"]')?.focus(); toast('已保存金额小数位'); return; }
+  const da = e.target.closest('[data-ddact]');   // r70 · Dodo 代你操作
+  if (da) { PREF.act = da.dataset.ddact; savePref(); $$('[data-ddact]').forEach(b => b.setAttribute('aria-pressed', String(b === da))); gdcSync(); if (GD.f) guideRender(); toast(PREF.act === 'show' ? '已改为：Dodo 只指引，由你来点' : PREF.act === 'auto' ? '已改为：Dodo 全部代办' : '已改为：Dodo 代你操作，提交前先问你'); return; }
   if (e.target.closest('#setGroup')) { PREF.group = !PREF.group; mkNf(); savePref(); renderAll(); showPage(CUR); renderSettings(); $('#setGroup')?.focus(); toast('已保存千分位设置'); return; }
   if (e.target.closest('#setHide')) { PREF.hide = !PREF.hide; savePref(); document.documentElement.classList.toggle('pv-hide', PREF.hide); $('#setHide').setAttribute('aria-checked', String(PREF.hide)); toast(PREF.hide ? '金额已隐藏' : '金额已显示'); return; }
   if (e.target.closest('[data-bind-open]')) { e.preventDefault(); openBind(); return; }
@@ -6690,9 +6702,9 @@ const CMDS = [
 const PORTALS = [
   { id: 'bind', zh: '绑定币安', en: 'Bind Binance', kw: 'bangding binance api key 绑定 账户', run: () => openBind(), el: () => $('#bnF [type="submit"]') },
   { id: 'export', zh: '导出交易', en: 'Export trades', kw: 'daochu export csv 下载 导出', run: () => nav('trades'), el: () => $('[data-texport]') },
-  { id: 'password', zh: '修改密码', en: 'Change password', kw: 'mima password 密码 改密码', run: () => openSettings('acct'), el: () => $('#stg [data-sec="pw"]') },
-  { id: 'email', zh: '修改邮箱', en: 'Change email', kw: 'youxiang email mail 邮箱', run: () => openSettings('acct'), el: () => $('#stg [data-sec="mail"]') },
-  { id: 'devices', zh: '登录设备', en: 'Signed-in devices', kw: 'shebei devices device 设备', run: () => openSettings('acct'), el: () => $('#stg [data-sec="dev"]') },
+  { id: 'password', tap: 1, zh: '修改密码', en: 'Change password', kw: 'mima password 密码 改密码', run: () => openSettings('acct'), el: () => $('#stg [data-sec="pw"]') },
+  { id: 'email', tap: 1, zh: '修改邮箱', en: 'Change email', kw: 'youxiang email mail 邮箱', run: () => openSettings('acct'), el: () => $('#stg [data-sec="mail"]') },
+  { id: 'devices', tap: 1, zh: '登录设备', en: 'Signed-in devices', kw: 'shebei devices device 设备', run: () => openSettings('acct'), el: () => $('#stg [data-sec="dev"]') },
   { id: 'theme', zh: '昼夜外观', en: 'Day / night', kw: 'waiguan theme dark night 夜间 外观 主题', run: () => openSettings('pref'), el: () => $('#stg [data-thm]')?.closest('.seg') },
   { id: 'lang', zh: '切换语言', en: 'Language', kw: 'yuyan language english 中文 语言', run: () => openSettings('pref'), el: () => $('#stg [data-lang]')?.closest('.seg') },
   { id: 'range', zh: '收益曲线范围', en: 'Curve range', kw: 'fanwei range curve 30 60 曲线', run: () => nav('dashboard'), el: () => $('#rangeSeg') },
@@ -6719,6 +6731,25 @@ const FLOWS = [
     { zh: '点「导出 CSV」', en: 'Tap “Export CSV”', run: () => { if (CUR !== 'trades') nav('trades'); }, el: () => $('[data-texport]') },
   ] },
 ];
+/* r70 · Dodo 代你操作：act = Dodo 自己点 / 填；you = 要你在币安那边做，做完点「好了」；need = 只有你能输入的（密码、API Key），填好后 Dodo 接着做；
+   submit = 最后那一下提交（设置里「提交前问我」时先问一句）。 */
+(function () {
+  const F = id => FLOWS.find(f => f.id === id).steps, val = q => ($(q)?.value || '').trim();
+  const b = F('bind');
+  b[0].act = () => { const i = $('#bnNm'); if (i && !i.value.trim()) dodoType(i, LL('主账户', 'Main account')); };
+  b[1].act = () => $('#qbKey')?.click(); b[1].you = ['公钥已复制。到币安「创建 API」粘贴进去，回来点「好了」', 'Public key copied. Paste it into Binance “Create API”, then tap “Done”'];
+  b[2].act = () => { const v = BN_IPS.join(' '); (navigator.clipboard?.writeText(v) || Promise.reject()).then(() => { $$('.qb-ip').forEach(c => qbCopied(c)); toast(LL('两个 IP 已一起复制', 'Both IPs copied')); }, () => $('.qb-ip')?.click()); };
+  b[2].you = ['两个 IP 已复制。在币安 IP 白名单里粘贴，回来点「好了」', 'Both IPs copied. Paste them into the Binance IP whitelist, then tap “Done”'];
+  b[3].you = ['在币安照这里勾选权限，好了点「好了」', 'Tick these permissions in Binance, then tap “Done”'];
+  b[4].need = () => val('#bnKey').length > 0; b[4].needT = ['把 API Key 粘贴进来，Dodo 接着点「绑定」', 'Paste the API Key; Dodo will tap “Bind” next'];
+  b[4].submit = () => $('#bnF [type="submit"]'); b[4].sub = ['绑定', 'Bind']; b[4].err = () => $('#bnErr')?.textContent.trim();
+  const p = F('password');
+  p[1].act = () => { if (!$('#secPwF')) $('#stg [data-sec="pw"]')?.click(); };
+  p[2].need = () => !!(val('#secPw0') && val('#secPw1') && val('#secPw2')); p[2].needT = ['输入当前密码和两次新密码，Dodo 接着保存', 'Type your current and new password; Dodo saves it next'];
+  p[3].submit = () => $('#secPwF [type="submit"]'); p[3].sub = ['保存新密码', 'Save new password']; p[3].err = () => $('#secPwF .bnm-err')?.textContent.trim();
+  const x = F('export');
+  x[2].act = () => $('[data-texport]')?.click();
+})();
 FLOWS.forEach(f => { VZT['t_r67g_' + f.id] = ['指引 · ' + f.zh, 'Guide · ' + f.en]; });
 const shown = q => { const e = $(q); return !!(e && e.getBoundingClientRect().width > 0); };
 const nameOf = c => EN() ? c.en : c.zh;
@@ -6819,10 +6850,10 @@ function gdcInner(id) {
   const ck = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg>';
   const st = f.steps.map((x, k) => { const cl = k < cur ? 'done' : k === cur ? 'now' : '';
     return `<li class="${cl}"${cl === 'now' ? ' aria-current="step"' : ''}><i class="gdc-d" aria-hidden="true">${k < cur ? ck : k + 1}</i><span>${esc(en ? x.en : x.zh)}${cl === 'now' && !GD.on ? `<small>${en ? 'Paused here' : '停在这一步'}</small>` : ''}</span></li>`; }).join('');
-  const info = fin ? (en ? 'All done' : '已全部完成') : act ? (en ? `Step ${cur + 1} of ${n}${GD.on ? '' : ' · paused'}` : `第 ${cur + 1} / ${n} 步${GD.on ? '' : ' · 已暂停'}`) : (en ? `${n} steps` : `共 ${n} 步`);
+  const info = fin ? (en ? 'All done' : '已全部完成') : !act && ACTM() !== 'show' ? (en ? `${n} steps · Dodo taps for you` : `共 ${n} 步 · Dodo 代你点`) : act ? (en ? `Step ${cur + 1} of ${n}${GD.on ? '' : ' · paused'}` : `第 ${cur + 1} / ${n} 步${GD.on ? '' : ' · 已暂停'}`) : (en ? `${n} steps` : `共 ${n} 步`);
   const btn = act && GD.on ? `<button type="button" class="btn ghost sm" data-gdc="stop">${en ? 'Stop' : '停止'}</button>`
     : act ? `<button type="button" class="btn ghost sm" data-gdc="end">${en ? 'End' : '结束'}</button><button type="button" class="btn brand sm" data-gdc="resume">${en ? 'Resume guide' : '继续指引'}</button>`
-    : `<button type="button" class="btn brand sm" data-gdc="start">${fin ? (en ? 'Start again' : '重新开始') : (en ? 'Start guide' : '开始指引')}</button>`;
+    : `<button type="button" class="btn brand sm" data-gdc="start">${fin ? (en ? 'Start again' : '重新开始') : ACTM() !== 'show' ? (en ? 'Let Dodo do it' : '让 Dodo 来做') : (en ? 'Start guide' : '开始指引')}</button>`;
   return `<ol class="gdc-st">${st}</ol><div class="gdc-f"><span class="gdc-n">${info}</span>${btn}</div>`;
 }
 function gdcSync() { document.querySelectorAll('.gdc[data-gdf]').forEach(el => { el.innerHTML = gdcInner(el.dataset.gdf); }); }
@@ -6960,6 +6991,9 @@ function buildGuide(arg) {
   const f = arg ? matchList(FLOWS, arg)[0] : null;
   if (!f) return { a: R(arg ? `没找到「${esc(arg)}」的指引，可以选这些：` : '选一个要做的事，我一步步带你：', arg ? `No guide for “${esc(arg)}”. Pick one of these:` : 'Pick a task and I’ll walk you through it:',
     [cmdGoList('guide'), { t: 'r7prog', ti: 't_r67g_' + FLOWS[0].id, f: FLOWS[0].id, i: 0 }], [['指引中随时可以「停止」，自己操作', 'Stop any time and do things your own way'], ['回来时点「继续指引」，从停下的那一步接着走', 'Tap “Resume guide” to pick up where you stopped']], null) };
+  if (ACTM() !== 'show') return { f, a: R(`我来帮你「${f.zh}」，一共 ${f.steps.length} 步：页面和按钮我直接替你点，只有密码、API Key 这类要你输入的地方会停下来等你。`, `I’ll do “${f.en}” for you: ${f.steps.length} steps. I open the screens and tap the buttons, and only stop where you need to type something like a password or API Key.`,
+    [{ t: 'r7prog', ti: 't_r67g_' + f.id, f: f.id, i: 0 }],
+    [['随时点「停止」接手，自己操作', 'Tap “Stop” any time to take over'], ['设置 → Dodo 里可以改成「只指引」或「全部代办」', 'Settings → Dodo can switch this to “Guide only” or “Do everything”']], ['guide:' + f.id, '重新来一次']) };
   return { f, a: R(`开始「${f.zh}」指引，一共 ${f.steps.length} 步，程序会替你打开页面、点亮下一步。`, `Starting the “${f.en}” guide: ${f.steps.length} steps. I’ll open each screen and light up the next step.`,
     [{ t: 'r7prog', ti: 't_r67g_' + f.id, f: f.id, i: 0 }],
     [['随时点「停止」，你可以自由操作', 'Tap “Stop” any time and do things freely'], ['之后点「继续指引」，回到停下的那一步', 'Then tap “Resume guide” to return to that step']], ['guide:' + f.id, '重新开始指引']) };
@@ -7074,7 +7108,8 @@ function portal(id) {
   if ($('#modal.on') && !/^(password|email|devices|theme|lang)$/.test(id)) closeDlg();
   if (id === 'password' || id === 'email' || id === 'devices') { SEC.open = ''; }
   p.run();
-  waitEl(p.el, el => { if (!glow(el)) toast(LL('那个按钮现在不在页面上', 'That button is not on screen right now')); });
+  waitEl(p.el, el => { if (!glow(el)) { toast(LL('那个按钮现在不在页面上', 'That button is not on screen right now')); return; }
+    if (p.tap && ACTM() !== 'show') dodoTap(el, () => el.click()); });   // r70 · 代你操作：安全的入口 Dodo 直接点开
 }
 /* 跳转按钮：portal:x、guide:x、回到引用的日子 / 订单，其余交给原来的 goTo */
 const _goTo = goTo;
@@ -7088,7 +7123,7 @@ goTo = function (sel) {
 };
 
 /* ---------- 程序指引：浮动条，可停止、可继续 ---------- */
-const GD = { f: null, i: 0, on: false, fin: null };
+const GD = { f: null, i: 0, on: false, fin: null, tok: 0, wait: '' };
 const gbar = document.createElement('div'); gbar.className = 'gdb'; gbar.id = 'guideBar'; gbar.hidden = true; gbar.setAttribute('role', 'region'); gbar.setAttribute('data-i18n-skip', ''); document.body.appendChild(gbar);
 const guideOn = () => GD.on;
 function guideRender() {
@@ -7096,6 +7131,17 @@ function guideRender() {
   const en = EN(), s = f.steps[GD.i], last = GD.i === f.steps.length - 1;
   gbar.setAttribute('aria-label', en ? 'Dodo guide' : 'Dodo 指引');
   gbar.className = 'gdb' + (GD.on ? '' : ' paused');
+  const W = GD.wait, A = GD.on && ACTM() !== 'show' && W;
+  if (A) {
+    const msg = W === 'you' ? (en ? s.you[1] : s.you[0]) : W === 'need' ? (en ? s.needT[1] : s.needT[0]) : W === 'ask' ? (en ? `Dodo is ready to tap “${s.sub[1]}”` : `Dodo 准备点「${s.sub[0]}」`) : (en ? s.en : s.zh);
+    const lab = W === 'busy' ? (en ? 'Dodo is doing it' : 'Dodo 正在操作') : W === 'ask' ? (en ? 'Your OK first' : '先问你一句') : (en ? 'Your turn' : '轮到你');
+    const btn = W === 'you' ? `<button type="button" class="btn brand sm" data-gd="done">${en ? 'Done' : '好了'}</button>`
+      : W === 'ask' ? `<button type="button" class="btn brand sm" data-gd="go">${en ? 'Go ahead' : '好，点吧'}</button>` : '';
+    gbar.className = 'gdb agent' + (W === 'busy' ? ' busy' : '') + (innerWidth <= 760 && !$('#modal').hidden ? ' top' : '');   // r70 · 手机弹窗打开时提示条放到顶部，不挡输入框
+    gbar.innerHTML = `<span class="gdb-dd" aria-hidden="true">${ddMini()}</span><div class="gdb-t"><small>${lab} · ${esc(en ? f.en : f.zh)} · ${GD.i + 1}/${f.steps.length}</small><b>${esc(msg)}</b></div>
+       <div class="gdb-b"><button type="button" class="btn ghost sm" data-gd="stop">${en ? 'Stop' : '停止'}</button>${btn}</div>`;
+    gbar.hidden = false; gdcSync(); return;
+  }
   gbar.innerHTML = GD.on
     ? `<span class="gdb-dd" aria-hidden="true">${ddMini()}</span><div class="gdb-t"><small>${esc(en ? f.en : f.zh)} · ${GD.i + 1}/${f.steps.length}</small><b>${esc(en ? s.en : s.zh)}</b></div>
        <div class="gdb-b"><button type="button" class="btn ghost sm" data-gd="stop">${en ? 'Stop' : '停止'}</button>${GD.i > 0 ? `<button type="button" class="btn ghost sm" data-gd="prev">${en ? 'Back' : '上一步'}</button>` : ''}<button type="button" class="btn brand sm" data-gd="next">${last ? (en ? 'Done' : '完成') : (en ? 'Next' : '下一步')}</button></div>`
@@ -7104,24 +7150,69 @@ function guideRender() {
   gbar.hidden = false; gdcSync();
 }
 function guideShow() {
-  const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i];
-  guideRender(); s.run();
-  waitEl(s.el, el => { if (!GD.on) return; glow(el); if (el) { clearTimeout(el._hl); } });
+  const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i], tok = ++GD.tok;
+  GD.wait = ACTM() !== 'show' ? 'busy' : ''; guideRender(); s.run();
+  waitEl(s.el, el => { if (!GD.on || tok !== GD.tok) return; glow(el); if (el) { clearTimeout(el._hl); } if (ACTM() !== 'show') agentStep(f, s, el, tok); });
+}
+/* r70 · Dodo 代你操作：Dodo 的小手移到按钮上，点一下；轮到你时停下来等你 */
+const dcur = document.createElement('div'); dcur.className = 'ddcur'; dcur.hidden = true; dcur.setAttribute('aria-hidden', 'true');
+dcur.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 3l14 7.5-6.2 1.6L10 18z"/></svg><i></i>'; document.body.appendChild(dcur);
+let DCX = innerWidth / 2, DCY = innerHeight - 90;
+function dodoTap(el, cb) {
+  if (!el) { cb(); return; }
+  el.scrollIntoView({ block: 'center', behavior: 'auto' });
+  const r = el.getBoundingClientRect(), x = r.left + Math.min(r.width / 2, 60), y = r.top + r.height / 2;
+  dcur.hidden = false; dcur.classList.remove('tap'); dcur.style.transition = 'none'; dcur.style.transform = `translate(${DCX}px,${DCY}px)`;
+  void dcur.offsetWidth; dcur.style.transition = RM ? 'none' : ''; dcur.style.transform = `translate(${x}px,${y}px)`; DCX = x; DCY = y;
+  setTimeout(() => { dcur.classList.add('tap'); cb(); setTimeout(() => { dcur.hidden = true; dcur.classList.remove('tap'); }, 700); }, RM ? 60 : 620);
+}
+function ACTM() { return PREF.act === 'show' ? 'show' : PREF.act === 'auto' ? 'auto' : 'ask'; }
+function dodoType(el, v) { el.focus({ preventScroll: true }); el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); }
+function agentNext(f, tok, ms) {
+  setTimeout(() => { if (!GD.on || tok !== GD.tok) return;
+    if (GD.i >= f.steps.length - 1) { guideEnd(true); toast(LL(`「${f.zh}」已完成`, `“${f.en}” done`)); return; }
+    GD.i++; guideShow(); }, ms == null ? 520 : ms);
+}
+function agentStep(f, s, el, tok) {
+  const live = () => GD.on && tok === GD.tok;
+  if (s.need && !s.need()) {           // 只有你能输入：等你填好
+    GD.wait = 'need'; guideRender();
+    const t = el && el.querySelector ? (el.matches('input') ? el : el.querySelector('input')) : null; if (t) t.focus({ preventScroll: true });
+    const poll = () => { if (!live()) return; if (s.need()) { GD.wait = 'busy'; guideRender(); setTimeout(() => live() && agentSubmit(f, s, tok), 450); } else setTimeout(poll, 300); };
+    poll(); return;
+  }
+  if (s.submit) { agentSubmit(f, s, tok); return; }
+  if (s.act) { dodoTap(el, () => { if (!live()) return; s.act(); if (s.you) { GD.wait = 'you'; guideRender(); } else agentNext(f, tok); }); return; }
+  if (s.you) { GD.wait = 'you'; guideRender(); return; }
+  agentNext(f, tok, 700);
+}
+function agentSubmit(f, s, tok) {
+  const live = () => GD.on && tok === GD.tok, b = s.submit && s.submit();
+  if (!b) { agentNext(f, tok); return; }
+  glow(b);
+  if (ACTM() === 'ask' && GD.wait !== 'go') { GD.wait = 'ask'; guideRender(); return; }
+  GD.wait = 'busy'; guideRender();
+  dodoTap(b, () => { if (!live()) return; b.click();
+    setTimeout(() => { if (!live()) return; if (s.err && s.err()) { GD.wait = 'need'; guideRender(); toast(LL('有一项没通过，改好后 Dodo 再提交', 'Something needs fixing; Dodo will submit again after')); const again = () => { if (!live()) return; if (s.err && s.err()) setTimeout(again, 400); else agentStep(f, s, b, tok); }; setTimeout(again, 600); return; }
+      guideEnd(true); toast(LL(`「${f.zh}」已完成`, `“${f.en}” done`)); }, 450); });
 }
 function guideStart(id) { if (!FLOWS.some(x => x.id === id)) return; GD.f = id; GD.i = 0; GD.on = true; GD.fin = null; guideShow(); }
-function guideStop() { GD.on = false; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); guideRender(); }
-function guideEnd(done) { GD.fin = done ? GD.f : null; GD.on = false; GD.f = null; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); gbar.hidden = true; gdcSync(); }
+function guideStop() { GD.on = false; GD.tok++; GD.wait = ''; dcur.hidden = true; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); guideRender(); }
+function guideEnd(done) { GD.fin = done ? GD.f : null; GD.on = false; GD.tok++; GD.wait = ''; dcur.hidden = true; GD.f = null; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); gbar.hidden = true; gdcSync(); }
 gbar.addEventListener('click', e => {
   const b = e.target.closest('[data-gd]'); if (!b) return; const k = b.dataset.gd, f = FLOWS.find(x => x.id === GD.f);
   if (k === 'stop') { guideStop(); toast(LL('指引已暂停：自由操作吧，随时点「继续指引」', 'Guide paused — do your thing, then tap “Resume guide”')); return; }
   if (k === 'end') { guideEnd(); return; }
   if (k === 'resume') { GD.on = true; guideShow(); return; }
+  if (k === 'done') { GD.wait = 'busy'; agentNext(f, GD.tok, 0); return; }
+  if (k === 'go') { const s = f.steps[GD.i]; GD.wait = 'go'; agentSubmit(f, s, GD.tok); return; }
   if (k === 'prev') { GD.i = Math.max(0, GD.i - 1); guideShow(); return; }
   if (k === 'next') { if (GD.i >= f.steps.length - 1) { guideEnd(true); toast(LL(`「${f.zh}」指引完成`, `“${f.en}” guide finished`)); return; } GD.i++; guideShow(); }
 });
 /* 用户点了被点亮的按钮，就自动走到下一步 */
 document.addEventListener('click', e => {
-  if (!GD.on || gbar.contains(e.target)) return; const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i], el = s.el();
+  if (!GD.on || gbar.contains(e.target) || !e.isTrusted) return; const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i], el = s.el();
+  if (ACTM() !== 'show') { const sb = s.submit && s.submit(); if (sb && sb.contains(e.target) && GD.wait === 'ask') { const tk = GD.tok; GD.wait = 'busy'; guideRender(); setTimeout(() => { if (!GD.on || tk !== GD.tok) return; if (s.err && s.err()) { GD.wait = 'need'; guideRender(); } else { guideEnd(true); toast(LL(`「${f.zh}」已完成`, `“${f.en}” done`)); } }, 450); } return; }
   if (el && el.matches('button,[type=submit]') && el.contains(e.target) && GD.i < f.steps.length - 1) setTimeout(() => { if (GD.on) { GD.i++; guideShow(); } }, 260);
 });
 window.addEventListener('langchange', () => { if (GD.f) guideRender(); });
@@ -7219,7 +7310,7 @@ answerCtx = function (ctx) {
     `You quoted “${esc(ctx.label)}”, as currently shown on the page. Ask how it is made up, or use /pnl or /profit for a chart.`);
   return _answerCtx(ctx);
 };
-window.__r67 = { CMDS, PORTALS, FLOWS, runCmd: (id, arg) => runCmd(CMDS.find(c => c.id === id), arg || ''), portal, guideStart, guideStop, GD, PS, backTo, addRefs };
+window.__r67 = { CMDS, PORTALS, FLOWS, runCmd: (id, arg) => runCmd(CMDS.find(c => c.id === id), arg || ''), portal, guideStart, guideStop, GD, PS, backTo, addRefs, openSettings, PREF, ACTM };
 
 /* ---------- 交易页：导出 CSV（传送门 / 指引的目标） ---------- */
 document.addEventListener('click', e => {

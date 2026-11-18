@@ -51,6 +51,9 @@
   var PM = { r: .78, x: .97, y: 24 };
   var LX = -.55, LY = .6, LZ = .58; (function () { var l = Math.hypot(LX, LY, LZ); LX /= l; LY /= l; LZ /= l; })();
 
+  /* r70 · Jasper: the phone showed two nebulas (this file's first 2D sky, then the WebGL one fading in over it). With WebGL the
+     2D sky is only a stand-in for the first frames, so it keeps just plain stars: no hazes, Milky Way, galaxy, nebula or moon. */
+  var GLOK = (function () { try { var c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; } })() && !/[?&]nogl\b/.test(location.search);
   var LITE = false; // r63 · 转场时星球还很大（远大于登录页尺寸）只画一半的点；到登录页尺寸前恢复全部，最后一帧和登录页一致
   var FIELD = [], MOON = null, boxes = [], SKY = null, GM = null;
 
@@ -60,6 +63,7 @@
     c.width = Math.ceil(w * q); c.height = Math.ceil(h * q);
     var x = c.getContext('2d'); x.scale(q, q);
     var s, n, b, sx, sy, sz, a, A = w * h;
+    if (!GLOK) { // r70 · full r56 sky only when there is no WebGL sky to follow
     // two very faint wide hazes: depth, not cloud
     [[.82, .14, '52,96,140', .05], [.12, .9, '30,120,112', .035]].forEach(function (hz) {
       var gr = x.createRadialGradient(hz[0] * w, hz[1] * h, 0, hz[0] * w, hz[1] * h, Math.max(w, h) * .55);
@@ -92,6 +96,7 @@
     var gg = x.createRadialGradient(0, 0, 0, 0, 0, gr0 * 2.2);
     gg.addColorStop(0, 'rgba(236,230,214,.5)'); gg.addColorStop(.18, 'rgba(200,210,226,.2)'); gg.addColorStop(.55, 'rgba(140,170,210,.06)'); gg.addColorStop(1, 'rgba(140,170,210,0)');
     x.fillStyle = gg; x.beginPath(); x.arc(0, 0, gr0 * 2.2, 0, 7); x.fill(); x.restore();
+    }
     n = Math.round(A / (mob ? 1300 : 1500)); // fine dust over the whole sky
     for (s = 0; s < n; s++) { b = rnd(s + 901); sx = rnd(s + 907) * w; sy = rnd(s + 913) * h; sz = .45 + b * .5; a = .07 + b * b * .3;
       x.fillStyle = 'rgba(' + (b > .9 ? '196,226,236' : '214,222,232') + ',' + a.toFixed(3) + ')'; x.fillRect(sx - sz / 2, sy - sz / 2, sz, sz); }
@@ -163,7 +168,7 @@
     }
   }
   function moon() {
-    if (!MOON) return; g.save(); g.globalAlpha *= K2D * MK; var x = MOON.x - mx * 6, y = MOON.y - my * 4, r = MOON.r;
+    if (!MOON || GLOK) return; g.save(); g.globalAlpha *= K2D * MK; var x = MOON.x - mx * 6, y = MOON.y - my * 4, r = MOON.r;
     var h = g.createRadialGradient(x, y, r * .8, x, y, r * 3.2);
     h.addColorStop(0, 'rgba(47,220,188,.07)'); h.addColorStop(1, 'rgba(47,220,188,0)');
     g.fillStyle = h; g.beginPath(); g.arc(x, y, r * 3.2, 0, 7); g.fill();
@@ -182,7 +187,7 @@
   }
   function planet(a, px, py, t, o) {
     var X = cx + px, Y = cy + py;
-    if (MODE === '2d') nebula(X, Y, t);
+    if (MODE === '2d' && !GLOK) nebula(X, Y, t);
     haloOut(X, Y);
     if (o && o.inner) o.inner(g, X, Y, R);           // r61 · the website seen from inside, before the shell closes over it
     if (o && o.shell < 1) { if (o.shell <= 0) return; g.save(); g.globalAlpha *= o.shell; }
