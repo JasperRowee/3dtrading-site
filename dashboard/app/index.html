@@ -32,7 +32,7 @@ addEventListener('storage',function(e){if(e.key===K){v=e.newValue||'day';apply()
 try{var P=JSON.parse(localStorage.getItem('3dt.dash.prefs')||'{}');if(P&&P.hide)de.classList.add('pv-hide')}catch(e){}})();
 if(!window.TDAccount||!window.TDApi){document.documentElement.classList.add('td-gate');document.addEventListener('DOMContentLoaded',function(){document.body.innerHTML='<p style="font:15px system-ui;padding:40px">账户模块没有加载，后台暂不可用。</p>'})}</script>
 <style>html.td-gate body{visibility:hidden}</style>
-<script>try{var d=new URLSearchParams(location.search).get('density')||localStorage.getItem('3dtrading.dash.density');if(d==='compact')document.documentElement.classList.add('cp')}catch(e){}</script>
+<!-- r64 · 「简约 / 紧凑」密度已删除，只留一种布局 -->
 <style>
 :root{--bg:#ffffff;--top:64px;--sh:0 1px 2px rgba(18,24,26,.05),0 6px 20px -4px rgba(18,24,26,.07);--sh2:0 2px 6px rgba(15,23,42,.06),0 18px 44px -14px rgba(15,23,42,.2);--sf:#ffffff;--sf-hi:#ffffff;--hov:#e9e8e6;--onb:#04261f;--ink:#21201c;--ink2:#52524d;--ink3:#63635e;--line:#dad9d6;--line2:#e4e3df;--soft:#e9e8e6;
   --brand:#2fdcbc;--brandD:#087568;--brandL:#dfefea;--cyan:#56cfe1;--blk:#12181a;--blk2:#1b2326;
@@ -408,9 +408,6 @@ html.rm .ptc.flip{animation:none}
 .pt2:hover .ar,.pt2:focus-visible .ar{opacity:1;transform:none}.pt2:hover .n span:last-child,.pt2:focus-visible .n span:last-child{opacity:0}
 .posp .more{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--line2);font-size:13px;color:var(--ink3)}
 .ov-note{font-size:12.5px;color:var(--ink3);margin:0}
-html.cp .ov{gap:12px}html.cp .ov-top,html.cp .ov-mid{gap:12px}html.cp .tiles{gap:10px}
-html.cp .hero{min-height:220px;padding:18px 20px}html.cp .hero .v{font-size:40.5px}html.cp .tile{padding:12px 14px}html.cp .tile .v{font-size:22.5px}
-html.cp .cv-flip{height:270px}html.cp .pt2{padding:9px 12px}
 
 /* ledger on the back of the curve */
 .lg-hd{display:flex;align-items:center;gap:10px;padding:2px 0 10px;border-bottom:1px solid var(--line2)}
@@ -758,10 +755,6 @@ html[data-lang=en] .uc-k em{display:none}
   .uc-bar{margin-top:10px}
   .uc-v{font-size:26px}
 }
-.dens{display:inline-flex;background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:2px;gap:2px}
-.dens button{appearance:none;border:0;background:none;border-radius:8px;height:28px;padding:0 10px;font-size:13.5px;font-weight:600;color:var(--ink2);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
-.dens button svg{width:12px;height:12px}
-.dens button[aria-pressed="true"]{background:var(--sf-hi);color:var(--ink);box-shadow:0 1px 2px rgba(15,23,42,.12)}
 
 /* ---------- misc ---------- */
 .tip{position:fixed;z-index:80;pointer-events:none;opacity:0;background:var(--blk);color:#fff;border-radius:10px;padding:8px 11px;font-size:13px;line-height:1.55;transition:opacity .12s;max-width:280px}
@@ -949,7 +942,6 @@ body.binding{background:#0b0e11}
 .lg .lx b{font-weight:650;color:var(--ink)}.lg .lx b.up{color:var(--long)}.lg .lx b.dn{color:var(--short)}
 .lg .lx .go3{margin-left:auto;appearance:none;border:0;background:var(--blk);color:#fff;font:inherit;font-size:13px;font-weight:650;border-radius:8px;padding:6px 10px;cursor:pointer}
 .lg .lx .go3:hover{background:#262b33}
-html.cp .lg .lh{padding-top:10px;padding-bottom:10px}html.cp .lg .v{font-size:21px}
 
 .posx{padding:6px 0 0;border-top:2px solid var(--ink)}
 .posx .hd{display:flex;align-items:baseline;gap:14px;padding:14px 0 12px}
@@ -986,7 +978,6 @@ html.cp .lg .lh{padding-top:10px;padding-bottom:10px}html.cp .lg .v{font-size:21
 .bf-r .bx .acts{display:flex;gap:8px}
 .bf-r .bx .acts button{appearance:none;border:0;font:inherit;font-size:13px;font-weight:650;border-radius:8px;padding:6px 10px;cursor:pointer;background:var(--sf);box-shadow:var(--sh);color:var(--ink)}
 .bf-r .bx .acts button.k{background:var(--blk);color:#fff;box-shadow:none}
-html.cp .bf-r .bh{padding:6px 8px}
 
 .tu{margin-top:18px;background:#0e1115;color:#fff;border-radius:22px;display:grid;grid-template-columns:220px minmax(0,1fr);overflow:hidden;position:relative}
 .tu[hidden]{display:none}
@@ -1249,7 +1240,6 @@ html[data-lang="en"] .acc-li li.on .tx b::after{content:"Viewing"}
 .panel.pend{padding:30px 32px;display:grid;gap:12px;justify-items:start;max-width:820px}
 .panel.pend h2{margin:0;font-size:22px}.panel.pend p{margin:0;font-size:15px;line-height:1.6;color:var(--ink2)}.panel.pend .ov-note{font-size:12.5px;color:var(--ink3)}
 @media (max-width:760px){.panel.pend{padding:22px 20px}.panel.pend h2{font-size:19px}}
-.dens button[lang="zh-CN"]{font-family:inherit}
 /* ===================== 左侧竖排导航（实验 · 8797） =====================
    默认只露图标；鼠标靠近 / 键盘聚焦 / 点底部按钮时向右覆盖式展开文字，正文不左右移动。 */
 :root{--rw:72px;--rwx:212px}
@@ -2950,24 +2940,22 @@ html[data-theme="night"] .ddm{box-shadow:0 40px 100px -30px rgba(0,0,0,.8),0 0 0
 }
 
 /* ---------- r60 · 手机总览单独适配：结论卡 + 保证金一行，下面分「收益 / 持仓 / 资产池」三组切换，不再把电脑版模块从上到下堆成 3000px ---------- */
-.ovseg{display:none}
+.ovflt{display:none}
 @media (max-width:760px){
-  .ovseg{order:2;display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:var(--soft,#eef1f3);position:sticky;top:calc(var(--top) + 6px);z-index:6;box-shadow:0 6px 16px -10px rgba(15,23,42,.25)}
-  .ovseg button{appearance:none;border:0;background:none;height:40px;border-radius:10px;font:inherit;font-size:14.5px;font-weight:650;color:var(--ink2);cursor:pointer}
-  .ovseg button[aria-selected="true"]{background:var(--sf);color:var(--ink);box-shadow:0 1px 3px rgba(15,23,42,.12)}
-  .ovseg button:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+  /* r64 · 手机总览只剩：时间筛选 → 结论卡 → 保证金率 → 收益曲线 → 收益构成；持仓、资产池、策略执行明细、三段切换都删掉 */
+  .ovflt{order:0;display:flex;align-items:center;gap:10px}
+  .ovflt>span.k{font-size:13px;font-weight:600;color:var(--ink3);flex:none}
+  .ovflt .dpw{flex:1}
+  .ovflt .dpb{height:40px;border-radius:12px;background:var(--sf);font-size:14.5px}
   .ov{gap:14px}
-  #curveSec{order:3}.ov-sh{order:4}.ldg{order:5}.ovx{order:6}#posMini{order:3}#yld{order:3}.ov-note{order:9}
+  #curveSec{order:3}.ov-sh{order:4}.ldg{order:5}.ov-note{order:9}
   .ldg{margin-top:-6px}
-  .ov[data-ovt="rv"] #posMini,.ov[data-ovt="rv"] #yld,
-  .ov[data-ovt="ps"] #curveSec,.ov[data-ovt="ps"] .ov-sh,.ov[data-ovt="ps"] .ldg,.ov[data-ovt="ps"] .ovx,.ov[data-ovt="ps"] #yld,
-  .ov[data-ovt="yd"] #curveSec,.ov[data-ovt="yd"] .ov-sh,.ov[data-ovt="yd"] .ldg,.ov[data-ovt="yd"] .ovx,.ov[data-ovt="yd"] #posMini{display:none!important}
+  .ov #posMini,.ov #yld,.ov .ovx,#rangeSeg,.ov [data-gopos],.ov .lg[data-lg="mix"],.ov .go3[data-dw="stable"]{display:none!important}
   /* 保证金率压成一张窄卡，跟在结论卡下面 */
   .umrc{padding:10px 14px 8px}
   .umrc .uc-v{font-size:22px}
   .umrc .uc-bar{margin-top:6px}
   .hero .nsp{height:96px}
-  html[data-theme="night"] .ovseg{background:color-mix(in srgb,var(--sf) 70%,#000)}
 }
 @media (max-width:360px){.tnav a{font-size:11px}.acct-btn b{max-width:60px}}
 @media (max-width:760px) and (max-height:500px){
@@ -3056,7 +3044,7 @@ html.rm .mdl.qbm,html.rm body[data-page="ai"] .box .bar{transition:none}html.rm 
 html[data-theme="night"] .sg2{background:color-mix(in srgb,#fff 6%,var(--bg))!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)!important}
 html[data-theme="night"] .sg2::before{background:color-mix(in srgb,#fff 14%,var(--sf));box-shadow:0 1px 3px rgba(0,0,0,.4)}
 .tx-bar .sg2 button{height:32px}
-@media (max-width:760px){.tx-bar .sg2{flex:1 1 auto}.tx-bar .sg2 button{height:40px;padding:0 6px!important}.ovseg.sg2{display:grid!important;position:sticky}.ovseg.sg2 button{height:40px}}
+@media (max-width:760px){.tx-bar .sg2{flex:1 1 auto}.tx-bar .sg2 button{height:40px;padding:0 6px!important}}
 @media (prefers-reduced-motion:reduce){.sg2::before{transition:none}}
 html.rm .sg2::before{transition:none}
 /* r63 · 日期筛选：按钮显示所选范围，点开是推荐选项 + 日历 */
@@ -3124,7 +3112,6 @@ html.rm .sg2::before{transition:none}
   .demo-acct{margin:0 0 12px!important;row-gap:2px!important}
   .demo-acct p{flex:1 1 100%!important}
   .ov{gap:12px}
-  .ovseg{top:calc(var(--top) + 4px)}
   /* 结论卡：一列，从上到下 = 标题 / 数字 / 今天 / 走势 / 7 天 30 天 收益率 / 公式小字 / 账户状况 */
   .hero{display:flex!important;flex-direction:column;gap:0;padding:16px 16px 4px}
   .hero .l{display:contents}
@@ -3197,6 +3184,26 @@ html.rm .sg2::before{transition:none}
   @keyframes cmpGrow{from{clip-path:inset(calc(100% - 84px) 0 0 0 round 22px 22px 0 0)}to{clip-path:inset(0 0 0 0 round 22px 22px 0 0)}}
   html[data-theme="night"] body[data-page="ai"] .composer{box-shadow:0 0 0 1px var(--line),0 -16px 34px -22px rgba(0,0,0,.7)}
   html[data-theme="night"] body[data-page="ai"] .send:disabled{background:var(--hov)}
+}
+
+/* r64 · 7 · 绑定币安弹窗的提示文字：不用主题绿；白字、更大，字重 / 字距跟官网标题（700 · -.02em）。弹窗在浅色主题下是白底，
+   所以提示做成一块深色底，白字才看得清；「查看完整教程」也改成中性色 */
+.qb-lead{padding:14px 16px;border-radius:14px;background:#0f1419;color:#fff;font-size:18px;font-weight:700;line-height:1.3;letter-spacing:-.02em}
+.qb-lead b{color:#fff;font-weight:800}
+html[data-theme="night"] .qb-lead{background:#0a0d10;box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.mdl.qbm .qb-ft .lnk{color:var(--ink)}
+@media (max-width:760px){
+  .qb-lead{padding:12px 13px;font-size:16.5px;line-height:1.3}
+  .mdl.qbm .qbx.r,html[data-theme="night"] .mdl.qbm .qbx.r{color:var(--ink)}
+}
+/* r64 · 8 · 手机 Dodo 软键盘：顶部导航和探头的 Dodo 完全固定（按可见区域偏移 --vvt 补回，和顶栏同一个偏移），
+   不再隐藏 Dodo；整页不滚动，只有对话区高度跟着可见区域变矮、输入框贴在键盘上方 */
+@media (max-width:760px){
+  body.kb-open[data-page="ai"] .ddp{display:block;transform:translate3d(0,var(--vvt,0px),0);will-change:transform}
+  /* r63 的 .topcov 同时写了 top 和 transform，偏移算了两次，盖住了探头的 Dodo；这里只留 transform */
+  body.kb-open[data-page="ai"] .topcov{top:0!important;transform:translate3d(0,var(--vvt,0px),0)}
+  html:has(body.kb-open[data-page="ai"]),body.kb-open[data-page="ai"]{overflow:hidden;overscroll-behavior:none}
+  body.kb-open[data-page="ai"] header.top,body.kb-open[data-page="ai"] .ddp{touch-action:none}
 }
 </style>
 </head>
@@ -3583,7 +3590,11 @@ function aggregate(ids) {
 }
 
 /* ---------- state ---------- */
-const S = { view: 'all', range: 30, tf: { coin: '', act: '', acct: '', day: '' }, tShow: 20, flip: null, tDetail: null };
+const S = { view: 'all', range: 30, tf: { coin: '', act: '', acct: '', day: '' }, tShow: 20, flip: null, tDetail: null, ovd: null };
+/* r64 · 手机总览：一个时间筛选管住整页（默认近 30 天；'' = 全部，格式同交易记录 dayRng） */
+const OVD = () => S.ovd == null ? 'r' + (DAYS - 29) + '-' + DAYS : S.ovd;
+const OVR = () => dayRng(OVD()) || [FIRST(), DAYS];
+const OVON = () => PHONE() && !!V;
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&]motion=reduce/.test(location.search);
 if (RM) document.documentElement.classList.add('rm');
 let V = null;
@@ -3666,7 +3677,7 @@ function renderAll() {
   if (a || noLive()) { V = null; renderPending(a); renderWallet(); renderMe(); renderSugg(); renderHello(); return; }
   computeView();
   $('#main').innerHTML = (LIVE ? LIVE_BAR() : hasDemo() ? DEMO_BAR() : hasTestLive() ? TEST_BAR() : '') + TPL();
-  renderMetrics(); renderTotal(); renderYield(); renderPosMini();
+  renderMetrics(); renderOvFlt(); renderTotal(); renderYield(); renderPosMini();
   renderTrades(); renderWallet(); renderMe(); renderSugg(); renderHello();
   if (DW.kind === 'stable' || DW.kind === 'pos') fillDrawer(DW.kind);
   markDemo();
@@ -3746,10 +3757,16 @@ document.addEventListener('click', e => { if (e.target.closest('[data-wlskip]'))
 
 const HAS_CMP = () => !LIVE && !!V && V.days[DAYS].cmpSave != null;
 const CMP_LG = () => HAS_CMP() ? `<div class="cmp-lg" id="cmpLg" role="list" aria-label="对比线图例"><span role="listitem"><i class="ln main"></i>策略累计净收益</span><span role="listitem"><i class="ln save"></i>直接存理财</span><span role="listitem"><i class="ln nr"></i>不做平补</span><span class="cmp-n" role="listitem">对比线为演示，口径待业务确认</span></div>` : '';
-let OVT = 'rv';
-const TPL = () => `<div class="ov" data-ovt="${OVT}">
+function ovLabel() { const v = OVD(), p = dpPresets().find(x => x[1] === v); return p ? p[0] : rngLabel(v); }
+function renderOvFlt() {
+  const el = $('#ovFlt'); if (!el) return; const on = DP.open && DP.t === 'ov';
+  el.innerHTML = `<span class="k">时间</span><span class="dpw"><button type="button" class="dpb" id="ovDayBtn" aria-haspopup="dialog" aria-expanded="${on}"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4.5" width="14" height="12.5" rx="2.5"/><path d="M3 8.5h14M7 2.8v3.4M13 2.8v3.4"/></svg><span>${esc(ovLabel())}</span><i aria-hidden="true"></i></button>${on ? dpHtml() : ''}</span>`;
+}
+function ovRefresh() { if (!V || !$('#kpis')) return; renderMetrics(); renderOvFlt(); drawCurve(); }
+matchMedia('(max-width:760px)').addEventListener('change', () => { if (V && $('#kpis')) { DP.open = false; ovRefresh(); } });
+const TPL = () => `<div class="ov">
 <section class="ov-top" id="kpis" aria-label="核心财务摘要"></section>
-<div class="ovseg sg2" role="tablist" aria-label="总览分组" style="--n:3;--i:${['rv','ps','yd'].indexOf(OVT)}">${[['rv','收益'],['ps','持仓'],['yd','资产池']].map(([k,t])=>`<button type="button" role="tab" data-ovt="${k}" aria-selected="${OVT===k}">${t}</button>`).join('')}</div>
+<div class="ovflt" id="ovFlt" aria-label="时间筛选"></div>
 <div class="ov-mid">
   <section class="panel cvp" id="curveSec" aria-label="收益与账本">
     <div class="hd2"><div><h2>累计净收益</h2><p id="cvNote"></p>${CMP_LG()}</div><span class="sp"></span>
@@ -3764,7 +3781,6 @@ const TPL = () => `<div class="ov" data-ovt="${OVT}">
 <p class="ov-note">${LIVE ? LIVE_NOTE() : `示例数据，未连接币安，不代表真实收益。`}</p>
 </div>`;
 
-document.addEventListener('click', e => { const t = e.target.closest('.ovseg [data-ovt]'); if (!t) return; OVT = t.dataset.ovt; const ov = t.closest('.ov'); ov.dataset.ovt = OVT; ov.querySelector('.ovseg')?.style.setProperty('--i', ['rv', 'ps', 'yd'].indexOf(OVT)); ov.querySelectorAll('.ovseg [data-ovt]').forEach(b => b.setAttribute('aria-selected', b === t)); const sg = ov.querySelector('.ovseg'); const y = sg.getBoundingClientRect().top; const top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top')) || 70; if (y < top) window.scrollBy({ top: y - top - 4, behavior: 'instant' }); });
 document.addEventListener('click', e => { const g = e.target.closest('[data-go]'); if (g) { e.preventDefault(); goTo(g.dataset.go); } });
 /* a link names a section; go to its page, and open the drawer when the detail lives there */
 function goTo(sel) {
@@ -3896,7 +3912,7 @@ function renderMetrics() {
   /* live: today is equity-based only when yesterday has a real snapshot; otherwise realized basis (no unrealized change) */
   const eqDay = LIVE && T.eqNet != null, dd = LIVE ? (eqDay ? T.eqNet : T.net) : T.cum - Y.cum, ddBase = LIVE ? (eqDay ? Y.eqReal : Y.recEq) : Y.equity;
   const win = n => V.days.slice(DAYS - n + 1, DAYS + 1), ch = n => T.cum - V.days[Math.max(DAYS - n, FIRST())].cum, sum = (n, k) => win(n).reduce((t, d) => t + d[k], 0);
-  const eq = V.days.slice(Math.max(DAYS - 45, FIRST())).map(d => LIVE ? d.recEq : d.equity), lo = Math.min(...eq), hi = Math.max(...eq);
+  const eqR = OVON() ? OVR() : [DAYS - 45, DAYS], eq = V.days.slice(Math.max(Math.min(eqR[0], eqR[1] - 1), FIRST()), eqR[1] + 1).map(d => LIVE ? d.recEq : d.equity), lo = Math.min(...eq), hi = Math.max(...eq);
   const sp = eq.map((v, i) => `${i ? 'L' : 'M'}${(i / (eq.length - 1) * 100).toFixed(2)},${(36 - (v - lo) / (hi - lo || 1) * 30).toFixed(2)}`).join('');
   const tp = f.tradesToday.reduce((t, x) => t + (x.pnl || 0), 0), top3 = f.coinsToday.slice(0, 3).join('、');
   const lg = (id, k, v, d, viz, hx, act) => `<div class="lg ${OVK === id ? 'open' : ''}" data-lg="${id}" role="listitem"><button type="button" class="lh" aria-expanded="${OVK === id}" aria-controls="lx-${id}"><span><span class="k">${k}</span><span class="vv"><span class="v num">${v}</span><span class="d">${d}</span></span></span><span class="viz">${viz}</span><span class="pm" aria-hidden="true"></span></button><div class="lx" id="lx-${id}"><div><div class="in num"><span class="hx">${hx.split(' · ').map(x => `<span class="it">${x}</span>`).join(' · ')}</span>${act}</div></div></div></div>`;
@@ -3914,13 +3930,17 @@ function renderMetrics() {
   rem.push({ w: UMR() != null && UMR() <= 1.5 ? 1 : 0, t: `统一维持保证金率 uniMMR ${UMRS()}：${UMR() == null ? '本次没有取到' : UMR() > 1.5 ? '高于 150% 自由交易线' : UMR() > 1.05 ? '低于 150% 自由交易线，接近强平' : '已触及强平线'}，≤105% 触发强平` });
   if (LIVE && !HIST_OK()) rem.push({ w: 0, t: `“距最高净权益”和“最大回撤”需要每日账户快照，本机从今天开始积累（已有 ${LIVE.snapCount} 天）` });
   if (U / T.equity >= -.02) rem.push({ w: 0, t: `浮盈亏 ${csgn(U)}，占净资产不到 2%` });
+  /* r64 · 手机：所选时间段的数字（区间 = 第 ra 天到第 rb 天，含两端） */
+  const PH = OVON(), [ra, rb] = OVR(), rB = V.days[Math.max(ra - 1, FIRST())], rE = V.days[rb], rDs = V.days.slice(Math.max(ra, FIRST()), rb + 1);
+  const rsum = k => rDs.reduce((t, d) => t + (d[k] || 0), 0), rn = rE.cum - (ra <= FIRST() ? 0 : rB.cum), ri = rsum('interest'), rq = rn / ((LIVE ? rB.recEq ?? rB.equity : rB.equity) || D0), rL = ovLabel();
+  const rib = rDs.slice(-14).map(d => d.interest || 0), rimx = Math.max(...rib, 0) || 1;
   $('#kpis').innerHTML = `<div class="hero" tabindex="0"><span class="geo" aria-hidden="true"></span><span class="geo2" aria-hidden="true"></span>
       <svg class="nsp" viewBox="0 0 100 36" preserveAspectRatio="none" aria-hidden="true"><path d="${sp}L100,36L0,36Z" fill="rgba(47,220,188,.13)"/><path d="${sp}" fill="none" stroke="var(--brand)" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>
       <div class="l"><div class="k">账户净权益 (NAV) · ${esc(viewName())}<span class="run"><i></i>${LIVE ? '币安只读 · 实时' : '策略配对 · 示例走势'}</span></div>
         <div class="v num">${money(T.equity, 0)}<small>USDT</small></div>
         <div class="d">今天 <b class="num">${sgn(dd, 0)}</b>（${pct(dd / ddBase, 3)}）· ${LIVE ? '净转入' : '本金'} ${money(D0, 0)}${LIVE ? ` · <small>${eqDay ? '净权益变化 − 当日净转入（昨日有快照）' : '今天按已实现口径，不含浮盈亏变化（缺昨日快照）'}</small>` : ''}</div>
         <div class="d gnn num">账面资产余额 ${money(gross, 0)} ${U <= 0 ? '−' : '+'} 未实现${U <= 0 ? '浮亏' : '浮盈'} ${money(Math.abs(U), 0)} = 账户净权益 ${money(T.equity, 0)} USDT</div>
-        <div class="chips num"><span>7 天<b class="${cls(ch(7))}">${sgn(ch(7), 0)}</b></span><span>30 天<b class="${cls(ch(30))}">${sgn(ch(30), 0)}</b></span><span>${LIVE ? '总收益率（含浮盈亏）' : '收益率'}<b class="${cls(cum)}">${pct(cum / D0)}</b></span></div>${LIVE ? '<div class="d" style="font-size:11px;opacity:.75">7 天 / 30 天 / 本月按已实现口径；总收益率 = (净权益 − 净转入) ÷ 净转入</div>' : ''}</div>
+        <div class="chips num">${PH ? `<span>${esc(rL)} 收益<b class="${cls(rn)}">${sgn(rn, 0)}</b></span><span>计奖收益<b class="${cls(ri)}">${sgn(ri, 0)}</b></span><span>收益率<b class="${cls(rn)}">${pct(rq)}</b></span>` : `<span>7 天<b class="${cls(ch(7))}">${sgn(ch(7), 0)}</b></span><span>30 天<b class="${cls(ch(30))}">${sgn(ch(30), 0)}</b></span><span>${LIVE ? '总收益率（含浮盈亏）' : '收益率'}<b class="${cls(cum)}">${pct(cum / D0)}</b></span>`}</div>${LIVE ? '<div class="d" style="font-size:11px;opacity:.75">7 天 / 30 天 / 本月按已实现口径；总收益率 = (净权益 − 净转入) ÷ 净转入</div>' : ''}</div>
       <div class="brief${mfCls('brief')}" data-mf="brief" aria-label="账户状况">${mfBtn('brief', '账户状况', `本月 <b class="${cls(mg)}">${sgn(mg, 0)}</b> · ${rem.some(r => r.w) ? `<em>${rem.filter(r => r.w).length} 条需要留意</em>` : '暂无异常'}`)}<h3>账户状况<span>截至 ${nowLabel}</span></h3>
         <div class="r">本月收益 <small>${monthName(now)} 1 日起</small><b class="num ${cls(mg)}">${sgn(mg, 0)}</b></div>
         ${UMR_ROWS()}
@@ -3930,12 +3950,18 @@ function renderMetrics() {
         <div class="rm" aria-label="提醒"><span>需要留意</span>${rem.map(r => `<p class="${r.w ? 'w' : ''}"><i aria-hidden="true"></i><span>${r.t}</span></p>`).join('')}</div>
         <div class="acts"><button type="button" class="go1" data-go="#curveSec">看收益曲线 →</button></div></div></div>
     <h2 class="ov-sh">收益构成<small>点一行展开</small></h2><div class="ovr">${UMR_CARD()}<div class="ldg" role="list" aria-label="核心指标，点一行展开">` +
+    (PH ? lg('cum', rL + ' 净收益', sgn(rn, 0), `收益率 <b class="${cls(rn)}">${pct(rq)}</b> · ${rDs.length} 天`,
+      `<div class="split" aria-hidden="true"><i style="width:100%;background:${rn >= 0 ? 'var(--long)' : 'var(--short)'}"></i></div>`,
+      `已实现 <b>${csgn(rsum('realized'))}</b> · 计奖收益 <b class="up">${csgn(ri)}</b> · 手续费 <b>−${money(rsum('fees'), 0)}</b>`, `<button type="button" class="go3" data-go="#curveSec">看曲线 →</button>`) :
     lg('cum', '累计净收益', sgn(cum, 0), `收益率 <b class="${cls(cum)}">${pct(cum / D0)}</b> · ${DAYS} 天`,
       `<div class="split" title="收益来源与扣减" aria-hidden="true"><i style="width:${(Math.max(0, T.cumR) / tot * 100).toFixed(1)}%;background:var(--long)"></i><i style="width:${(T.cumI / tot * 100).toFixed(1)}%;background:var(--brand)"></i><i style="width:${(T.cumF / tot * 100).toFixed(1)}%;background:#c3c9d2"></i><i style="width:${(Math.max(0, -U) / tot * 100).toFixed(1)}%;background:var(--short)"></i></div>`,
-      `已实现 <b>${csgn(T.cumR)}</b> · 计奖收益 <b class="up">${csgn(T.cumI)}</b> · 手续费 <b>−${money(T.cumF, 0)}</b> · 浮盈亏 <b class="${cls(U)}">${csgn(U)}</b>`, `<button type="button" class="go3" data-go="#curveSec">看曲线 →</button>`) +
+      `已实现 <b>${csgn(T.cumR)}</b> · 计奖收益 <b class="up">${csgn(T.cumI)}</b> · 手续费 <b>−${money(T.cumF, 0)}</b> · 浮盈亏 <b class="${cls(U)}">${csgn(U)}</b>`, `<button type="button" class="go3" data-go="#curveSec">看曲线 →</button>`)) +
+    (PH ? lg('int', rL + ' 计奖收益', sgn(ri, LIVE ? 2 : 0), `日均 ${sgn(ri / (rDs.length || 1), LIVE ? 2 : 0)} · ${rDs.length} 天`,
+      `<div class="minib" aria-hidden="true">${rib.map(v => `<i style="height:${(v / rimx * 100).toFixed(0)}%"></i>`).join('')}</div>`,
+      `${esc(rL)}计奖收益 <b class="up">${sgn(ri, LIVE ? 2 : 0)}</b> · 计奖资产 <b>${money(T.stable, 0)}</b>（今日）`, '') :
     lg('int', '累计计奖收益', sgn(T.cumI, LIVE ? 2 : 0), LIVE ? `今日入账 ${sgn(T.interest)} · ${APY_TXT()}` : `今日预估 ${sgn(T.interest)} · 参考年化 ${(T.apy * 100).toFixed(2)}%`,
       `<div class="minib" aria-hidden="true">${ib.map(v => `<i style="height:${(v / imx * 100).toFixed(0)}%"></i>`).join('')}</div>`,
-      `7 天 <b class="up">${sgn(sum(7, 'interest'), LIVE ? 2 : 0)}</b> · 30 天 <b class="up">${sgn(sum(30, 'interest'), LIVE ? 2 : 0)}</b> · 计奖资产 <b>${money(T.stable, 0)}</b>`, `<button type="button" class="go3" data-dw="stable">资产池 →</button>`) +
+      `7 天 <b class="up">${sgn(sum(7, 'interest'), LIVE ? 2 : 0)}</b> · 30 天 <b class="up">${sgn(sum(30, 'interest'), LIVE ? 2 : 0)}</b> · 计奖资产 <b>${money(T.stable, 0)}</b>`, `<button type="button" class="go3" data-dw="stable">资产池 →</button>`)) +
     lg('unr', '未实现盈亏', sgn(U, 0), `多 <span class="${cls(T.uL)}">${csgn(T.uL)}</span> · 空 <span class="${cls(T.uS)}">${csgn(T.uS)}</span>`,
       `<div class="lsbar" aria-hidden="true"><i class="l" style="width:${(Math.abs(T.uL) / uTot * 100).toFixed(1)}%"></i><i class="s" style="width:${(Math.abs(T.uS) / uTot * 100).toFixed(1)}%"></i></div>`,
       `比昨天 <b class="${clx(f.dU)}">${f.dU == null ? '需历史积累' : sgn(f.dU, 0)}</b> · 净敞口${f.net >= 0 ? '偏多' : '偏空'} ${(Math.abs(f.net) / T.equity * 100).toFixed(1)}%`, `<button type="button" class="go3" data-gopos>看多空持仓 ↓</button>`) +
@@ -4154,15 +4180,17 @@ function drawCurve() {
   const W = $('#cvCard').clientWidth || svg.clientWidth; if (!W) return; /* page hidden: drawn when it is shown */
   CV = null;
   const H = Math.max(180, $('#cvCard').clientHeight || 300), m = { l: MOB.matches ? 46 : 56, r: 16, t: 26, b: 28 };
-  const from = Math.min(DAYS - 2, Math.max(DAYS - S.range, FIRST())), idx = []; for (let i = from; i < DAYS; i++) idx.push(i);
-  const pts = idx.map(i => V.days[i].cum), today = V.days[DAYS].cum;
-  const CMP = HAS_CMP(), cs = CMP ? idx.map(i => V.days[i].cmpSave).concat([V.days[DAYS].cmpSave]) : [], cn = CMP ? idx.map(i => V.days[i].cmpNoRebal).concat([V.days[DAYS].cmpNoRebal]) : [];
+  /* r64 · 手机：曲线跟着总览的时间筛选；区间不到今天时，只画已结算的日子 */
+  const PR = OVON() ? OVR() : null, END = PR ? PR[1] : DAYS, PAST = END < DAYS;
+  const from = PR ? Math.max(FIRST(), Math.min(PR[0], END - (PAST ? 1 : 2))) : Math.min(DAYS - 2, Math.max(DAYS - S.range, FIRST())), idx = []; for (let i = from; i < (PAST ? END + 1 : DAYS); i++) idx.push(i);
+  const pts = idx.map(i => V.days[i].cum), today = PAST ? pts[pts.length - 1] : V.days[DAYS].cum;
+  const CMP = HAS_CMP(), cs = CMP ? idx.map(i => V.days[i].cmpSave).concat(PAST ? [] : [V.days[DAYS].cmpSave]) : [], cn = CMP ? idx.map(i => V.days[i].cmpNoRebal).concat(PAST ? [] : [V.days[DAYS].cmpNoRebal]) : [];
   const all = pts.concat([today, 0], cs, cn); let lo = Math.min(...all), hi = Math.max(...all); const pad = (hi - lo) * .12 || 1; lo -= pad; hi += pad;
-  const n = idx.length + 1, x = k => m.l + k / (n - 1) * (W - m.l - m.r), y = v => m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);
+  const n = idx.length + (PAST ? 0 : 1), x = k => m.l + k / (n - 1) * (W - m.l - m.r), y = v => m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);
   const ticks = niceTicks(lo, hi, 4);
   /* r62 · 纵轴文字按实际长度留边，手机上 “+100万” 的加号不再被裁掉 */
   m.l = Math.max(m.l, 14 + Math.max(...ticks.map(t => [...(t === 0 ? '0' : csgn(t))].reduce((w, c) => w + (c.charCodeAt(0) > 255 ? 11 : 6.6), 0))));
-  const dotR = S.range > 60 ? 2.4 : S.range > 30 ? 3 : 3.6;
+  const dotR = idx.length > 60 ? 2.4 : idx.length > 30 ? 3 : 3.6;
   const line = pts.map((v, k) => `${k ? 'L' : 'M'}${x(k).toFixed(1)},${y(v).toFixed(1)}`).join('');
   const area = line + `L${x(pts.length - 1).toFixed(1)},${y(lo)}L${x(0)},${y(lo)}Z`;
   const pk = pts.indexOf(Math.max(...pts));
@@ -4172,15 +4200,15 @@ function drawCurve() {
   svg.innerHTML = `<defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2fdcbc" stop-opacity=".22"/><stop offset="1" stop-color="#2fdcbc" stop-opacity="0"/></linearGradient></defs>
     ${ticks.map(t => `<line x1="${m.l}" x2="${W - m.r}" y1="${y(t)}" y2="${y(t)}" stroke="${t === 0 ? '#bcc6d1' : '#e2e7ed'}" ${t === 0 ? 'stroke-dasharray="4 4"' : ''}/><text class="ax" x="${m.l - 10}" y="${y(t) + 4}" text-anchor="end" font-size="11" fill="#7c8798">${t === 0 ? '0' : csgn(t)}</text>`).join('')}
     ${xl.map(k => `<text class="ax" x="${x(k)}" y="${H - 8}" text-anchor="middle" font-size="11" fill="#7c8798">${dLabel(idx[k])}</text>`).join('')}
-    <text class="ax" x="${x(n - 1)}" y="${H - 8}" text-anchor="end" font-size="11" fill="#7c8798">今日暂计</text>
+    <text class="ax" x="${x(n - 1)}" y="${H - 8}" text-anchor="end" font-size="11" fill="#7c8798">${PAST ? dLabel(END) : '今日暂计'}</text>
     <path d="${area}" fill="url(#ga)"/>
     ${CMP ? `<path class="cmp cmp-save" d="${cs.map((v, k) => `${k ? 'L' : 'M'}${x(k).toFixed(1)},${y(v).toFixed(1)}`).join('')}" fill="none" stroke="#c98500" stroke-width="1.6" stroke-dasharray="6 4"><title>直接存理财（演示，口径待业务确认）</title></path><path class="cmp cmp-nr" d="${cn.map((v, k) => `${k ? 'L' : 'M'}${x(k).toFixed(1)},${y(v).toFixed(1)}`).join('')}" fill="none" stroke="#7c8798" stroke-width="1.6" stroke-dasharray="2 3"><title>不做平补（演示，口径待业务确认）</title></path>` : ''}
     <path d="${line}" fill="none" stroke="#0c8f78" stroke-width="2" stroke-linejoin="round"/>
-    <path d="M${x(n - 2)},${y(pts[pts.length - 1])}L${x(n - 1)},${y(today)}" stroke="#0c8f78" stroke-width="1.5" stroke-dasharray="3 4" fill="none"/>
+    ${PAST ? '' : `<path d="M${x(n - 2)},${y(pts[pts.length - 1])}L${x(n - 1)},${y(today)}" stroke="#0c8f78" stroke-width="1.5" stroke-dasharray="3 4" fill="none"/>`}
     <text x="${Math.max(m.l + 40, Math.min(x(pk), W - m.r - 92))}" y="${y(pts[pk]) - 11}" text-anchor="middle" font-size="11" font-weight="600" fill="#0c8f78">已结算最高 ${csgn(pts[pk])}</text>
     <line id="cvG" y1="${m.t}" y2="${H - m.b}" stroke="#94a3b8" stroke-dasharray="3 3" opacity="0"/><line id="cvLk" opacity="0"/>
     ${pts.map((v, k) => `<circle class="pt${S.flip === idx[k] ? ' sel' : ''}" data-i="${idx[k]}" cx="${x(k).toFixed(1)}" cy="${y(v).toFixed(1)}" r="${dotR}"/>`).join('')}
-    <circle cx="${x(n - 1)}" cy="${y(today)}" r="${dotR + .6}" fill="#fff" stroke="#0c8f78" stroke-width="1.5" stroke-dasharray="2 2"><title>今日暂计 ${sgn(today, 0)}，未结算，不计入已结算最高</title></circle>
+    ${PAST ? '' : `<circle cx="${x(n - 1)}" cy="${y(today)}" r="${dotR + .6}" fill="#fff" stroke="#0c8f78" stroke-width="1.5" stroke-dasharray="2 2"><title>今日暂计 ${sgn(today, 0)}，未结算，不计入已结算最高</title></circle>`}
     <rect id="cvHit" x="${m.l - 10}" y="0" width="${W - m.l - m.r + 20}" height="${H}" fill="transparent" style="cursor:pointer"/>`;
   CV = { idx, x, y, pts, n, m, H };
   const hit = $('#cvHit');
@@ -5046,25 +5074,9 @@ function vizCtx(ctx) {
 }
 
 function toast(t) { const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), 3200); }
-/* ===================== density: 简约 / 紧凑 ===================== */
-/* one page, one state: the mode only changes layout and default density, so accounts, filters, legend, chat, the flipped ledger and trade detail all survive */
+/* r64 · 密度切换已删除：只保留一种布局（原默认「简约」）。DENS_KEY 仅用于清除旧的本机记录 */
 const DENS_KEY = '3dtrading.dash.density';
-const CP = () => document.documentElement.classList.contains('cp');
-const DENS_BTNS = `<button type="button" data-dens="simple" aria-pressed="true" title="简约：舒展留白"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="2" y="3" width="10" height="2.4" rx="1.2" fill="currentColor"/><rect x="2" y="8.6" width="10" height="2.4" rx="1.2" fill="currentColor" opacity=".55"/></svg>简约</button><button type="button" data-dens="compact" aria-pressed="false" title="紧凑：信息更密"><svg viewBox="0 0 14 14" aria-hidden="true"><rect x="1.5" y="1.5" width="5" height="5" rx="1.2" fill="currentColor"/><rect x="7.5" y="1.5" width="5" height="5" rx="1.2" fill="currentColor" opacity=".55"/><rect x="1.5" y="7.5" width="5" height="5" rx="1.2" fill="currentColor" opacity=".55"/><rect x="7.5" y="7.5" width="5" height="5" rx="1.2" fill="currentColor"/></svg>紧凑</button>`;
-const syncDens = (d = CP() ? 'compact' : 'simple') => $$('[data-dens]').forEach(b => b.setAttribute('aria-pressed', b.dataset.dens === d));
-/* the mode only changes density on 总览 and 交易记录; the chat page keeps its own layout */
-function setDensity(d, save = true) {
-  const cp = d === 'compact';
-  if (save) try { localStorage.setItem(DENS_KEY, d); } catch (e) {}
-  syncDens(d);
-  if (CP() === cp) return;
-  $('#tip').style.opacity = 0;
-  document.documentElement.classList.toggle('cp', cp);
-  if (V && CUR === 'dashboard' && !pendingAcct()) { drawCurve(); drawApy(); }
-  if (!RM && CUR && CUR !== 'ai') $(`#pg-${CUR}`).animate([{ opacity: .55 }, { opacity: 1 }], { duration: 240, easing: 'ease-out' });
-}
-document.addEventListener('click', e => { const b = e.target.closest('[data-dens]'); if (b) setDensity(b.dataset.dens); });
-syncDens();
+const CP = () => false;
 
 
 /* ===================== 交易: monitored coins → K line → records ===================== */
@@ -5240,7 +5252,8 @@ document.addEventListener('keydown', e => {
 
 
 /* ---------- r63 · 日期筛选：推荐选项 + 日历自由选起止日期（替代「全部日期 / 只看今天」下拉） ---------- */
-const DP = { open: false, a: null, m: null };   /* a = 已点的起点（等第二下）；m = 正在看的月份 [年, 月0-11] */
+const DP = { open: false, a: null, m: null, t: 'tf' };   /* r64 · t：'tf' 交易记录 / 'ov' 手机总览 */
+const dpVal = () => DP.t === 'ov' ? OVD() : S.tf.day;   /* a = 已点的起点（等第二下）；m = 正在看的月份 [年, 月0-11] */
 const dpYMD = i => { const s = new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(dayDate(i)).split('-'); return [+s[0], +s[1] - 1, +s[2]]; };
 const dpIdx = (y, mo, d) => { const [ty, tm, td] = dpYMD(DAYS); return DAYS - Math.round((Date.UTC(ty, tm, td) - Date.UTC(y, mo, d)) / 864e5); };
 function dpPresets() {
@@ -5248,7 +5261,7 @@ function dpPresets() {
   return [['今天', 'today'], ['昨天', 'd' + (DAYS - 1)], ['近 7 天', 'r' + (DAYS - 6) + '-' + DAYS], ['近 30 天', 'r' + (DAYS - 29) + '-' + DAYS], ['本月', 'r' + Math.max(0, DAYS - td + 1) + '-' + DAYS], ['全部', '']];
 }
 function dpHtml() {
-  const f = S.tf, rg = dayRng(f.day), [ty, tm] = dpYMD(DAYS);
+  const f = { day: dpVal() }, rg = dayRng(f.day), [ty, tm] = dpYMD(DAYS);
   if (!DP.m) { const [y, m] = rg ? dpYMD(rg[1]) : [ty, tm]; DP.m = [y, m]; }
   const [y, m] = DP.m, first = new Date(Date.UTC(y, m, 1)).getUTCDay(), nd = new Date(Date.UTC(y, m + 1, 0)).getUTCDate();
   const lo = 0, cells = [];
@@ -5267,25 +5280,28 @@ function dpHtml() {
     <div class="dp-gd">${cells.join('')}</div>
     <p class="dp-tip">${DP.a != null ? `起点 ${dLabel(DP.a)}，再点一下结束日期（点同一天只看这一天）` : '点一天开始，再点一天结束'}</p></div>`;
 }
-function dpSet(v) { S.tf.day = v; DP.open = false; DP.a = null; DP.m = null; trRefresh(); $('#fDayBtn')?.focus({ preventScroll: true }); }
+function dpSet(v) { DP.open = false; DP.a = null; DP.m = null; if (DP.t === 'ov') { S.ovd = v; ovRefresh(); saveState(); $('#ovDayBtn')?.focus({ preventScroll: true }); return; } S.tf.day = v; trRefresh(); $('#fDayBtn')?.focus({ preventScroll: true }); }
+const dpRe = () => DP.t === 'ov' ? renderOvFlt() : renderRecords();
 function dpRedraw() { const w = $('#dayPick'); if (w) w.outerHTML = dpHtml(); }
 document.addEventListener('click', e => {
   const b = e.target.closest('#fDayBtn');
-  if (b) { DP.open = !DP.open; DP.a = null; DP.m = null; renderRecords(); return; }
+  if (b) { const was = DP.open && DP.t === 'tf'; DP.t = 'tf'; DP.open = !was; DP.a = null; DP.m = null; renderRecords(); return; }
+  const ob = e.target.closest('#ovDayBtn');
+  if (ob) { const was = DP.open && DP.t === 'ov'; DP.t = 'ov'; DP.open = !was; DP.a = null; DP.m = null; renderOvFlt(); return; }
   if (!DP.open) return;
   const p = e.target.closest('[data-dpp]'); if (p) { dpSet(p.dataset.dpp); return; }
   const mv = e.target.closest('[data-dpm]'); if (mv) { const [y, m] = DP.m, n = m + +mv.dataset.dpm; DP.m = [y + Math.floor(n / 12), (n + 12) % 12]; dpRedraw(); return; }
   const d = e.target.closest('[data-dpd]'); if (d) { const i = +d.dataset.dpd; if (DP.a == null) { DP.a = i; dpRedraw(); } else { const a = Math.min(DP.a, i), z = Math.max(DP.a, i); dpSet(a === z ? (a === DAYS ? 'today' : 'd' + a) : 'r' + a + '-' + z); } return; }
-  if (!e.target.closest('#dayPick')) { DP.open = false; DP.a = null; renderRecords(); }
+  if (!e.target.closest('#dayPick')) { DP.open = false; DP.a = null; dpRe(); }
 });
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && DP.open) { e.stopPropagation(); DP.open = false; DP.a = null; renderRecords(); $('#fDayBtn')?.focus({ preventScroll: true }); } }, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && DP.open) { e.stopPropagation(); DP.open = false; DP.a = null; dpRe(); $(DP.t === 'ov' ? '#ovDayBtn' : '#fDayBtn')?.focus({ preventScroll: true }); } }, true);
 /* ---------- records: one sheet, grouped by day; a trade opens in place under its row ---------- */
 function renderRecords() {
   const box = $('#trView'); if (!box) return;
   const f = S.tf, list = tradeList(), all = S.view === 'all', dd = selDay(), open = S.tDetail && groupOf(S.tDetail);
   $('#txBar').innerHTML = `<div class="seg sg2" role="group" aria-label="方向" style="--n:3;--i:${['', 'L', 'S'].indexOf(f.act)}">${[['', '全部'], ['L', '平多止盈'], ['S', '平空止盈']].map(([v, l]) => `<button type="button" data-tact="${v}" aria-pressed="${f.act === v}">${l}</button>`).join('')}</div>
     <button type="button" class="tx-ft" data-mft="txf" aria-expanded="${MF.has('txf')}">筛选${(f.day ? 1 : 0) + (f.acct ? 1 : 0) ? `<b class="num">${(f.day ? 1 : 0) + (f.acct ? 1 : 0)}</b>` : ''}<i aria-hidden="true"></i></button>
-    <span class="tx-more${mfCls('txf')}" data-mf="txf"><span class="dpw"><button type="button" class="dpb${f.day ? ' on' : ''}" id="fDayBtn" aria-haspopup="dialog" aria-expanded="${DP.open}"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4.5" width="14" height="12.5" rx="2.5"/><path d="M3 8.5h14M7 2.8v3.4M13 2.8v3.4"/></svg><span>${esc(rngLabel(f.day))}</span><i aria-hidden="true"></i></button>${DP.open ? dpHtml() : ''}</span>
+    <span class="tx-more${mfCls('txf')}" data-mf="txf"><span class="dpw"><button type="button" class="dpb${f.day ? ' on' : ''}" id="fDayBtn" aria-haspopup="dialog" aria-expanded="${DP.open}"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="3" y="4.5" width="14" height="12.5" rx="2.5"/><path d="M3 8.5h14M7 2.8v3.4M13 2.8v3.4"/></svg><span>${esc(rngLabel(f.day))}</span><i aria-hidden="true"></i></button>${DP.open && DP.t === 'tf' ? dpHtml() : ''}</span>
     ${all ? `<select class="sel" id="fAcct" aria-label="账号"><option value="">全部账号</option>${ACCTS.filter(a => a.live).map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('')}</select>` : ''}</span>
     ${f.coin ? `<span class="chipf">${f.coin}<button type="button" data-kc="" aria-label="取消只看 ${f.coin}">✕</button></span>` : ''}
     <span class="sp"></span><span class="cnt">${list.length} ${LIVE ? '单' : '次'} · 新的在上 · 点一行展开详情</span>`;
@@ -5480,10 +5496,9 @@ function renderMe() {
       <div class="me-row"><div><b>本机数据</b><small>会话、偏好和 Dodo 历史只保存在这个浏览器</small></div><button class="btn ghost sm" type="button" id="wipeBtn" data-wipe>清除</button></div>
       <div class="me-row"><div><b>退出登录</b><small>${esc(SESS().email || '')}</small></div><button class="btn ghost sm" type="button" data-meout>退出</button></div></section>
     <section class="set"><h2>设置</h2>
-      <div class="me-row"><div><b>个性化、单位、隐私、语言</b><small>页面密度、操作记录和通知也在设置里</small></div><a class="btn ghost sm" href="#/settings">设置 →</a></div>
+      <div class="me-row"><div><b>个性化、单位、隐私、语言</b><small>操作记录和通知也在设置里</small></div><a class="btn ghost sm" href="#/settings">设置 →</a></div>
       <div class="me-row"><div><b>连接状态</b><small>${LIVE_ERR ? '币安只读读取失败' : LIVE ? '币安只读已连接 · 不会下单' : (anyDemo() ? '未连接币安 · 数字为示例' : '未连接币安 · 金额为 0')} · 支付未接入</small></div></div></section>
   </div></div>`;
-  syncDens();
 }
 /* r56 · 清除本机数据：「个人资料」和「设置 → 隐私」共用 */
 document.addEventListener('click', e => {
@@ -5525,8 +5540,7 @@ function setPanel(t) {
     ${row('外观', '只作用于后台；官网和登录页不变', seg('data-thm', tp, [['day', '昼'], ['night', '夜'], ['system', '跟随系统']], '外观'))}
     ${row('语言', '后台和 Dodo 使用同一种语言', `<div class="seg r56seg" role="group" aria-label="语言"><button type="button" data-lang="zh" aria-pressed="${String(lang === 'zh')}">中文</button><button type="button" data-lang="en" aria-pressed="${String(lang === 'en')}">English</button></div>`)}
     ${row('金额小数位', `例：${esc(nf2.format(12345.678))} USDT`, seg('data-unit-dec', PREF.dec ? 2 : 0, [[2, '2 位'], [0, '取整']], '金额小数位'))}
-    ${row('千分位分隔', '1,234,567 或 1234567', sw('setGroup', PREF.group, '千分位分隔'))}
-    ${row('页面密度', '总览和交易记录的信息密度', `<div class="dens" role="group" aria-label="页面密度">${DENS_BTNS}</div>`)}`;
+    ${row('千分位分隔', '1,234,567 或 1234567', sw('setGroup', PREF.group, '千分位分隔'))}`;
   if (t === 'priv') return `<h3>隐私与通知</h3>
     ${row('隐藏金额', '在别人面前打开后台时，金额和收益会模糊显示', sw('setHide', PREF.hide, '隐藏金额'))}
     ${row('通知', '强平风险、日报和到期提醒', '<a class="btn ghost sm" href="#/notify" data-stgo>打开 →</a>')}
@@ -5566,7 +5580,6 @@ function renderSettings() {
     <div class="stg-p" id="stgP" role="tabpanel" aria-labelledby="stab-${t}">${setPanel(t)}</div>`;
   if (t === 'acct' && SET.tfa) tfaQr();
   if (t === 'dodo' && window.__dodo) { __dodo.botRender(); if (__dodo.bot().st === 'idle') __dodo.check(); }
-  syncDens();
 }
 function tfaQr() {
   const el = $('#tfaQr'); if (!el || !SET.tfa || typeof qrcode !== 'function') return;
@@ -6044,7 +6057,7 @@ function saveState() {
   if (NOSAVE) return;
   try {
     localStorage.setItem(VIEW_KEY, S.view);
-    sessionStorage.setItem(SS_KEY, JSON.stringify({ range: S.range, ir: S.ir, rc: S.rc, hid: [...S.hid], open: [...S.open], tf: S.tf, flip: S.flip, tShow: S.tShow, kc: S.kc, kp: S.kp, kOpen: S.kOpen === 'top' ? 'top' : '' }));
+    sessionStorage.setItem(SS_KEY, JSON.stringify({ range: S.range, ir: S.ir, rc: S.rc, hid: [...S.hid], open: [...S.open], tf: S.tf, flip: S.flip, tShow: S.tShow, kc: S.kc, kp: S.kp, kOpen: S.kOpen === 'top' ? 'top' : '', ovd: S.ovd }));
   } catch (e) {}
 }
 function loadState() {
@@ -6053,6 +6066,7 @@ function loadState() {
     const o = JSON.parse(sessionStorage.getItem(SS_KEY) || 'null'), R = [30, 60, DAYS], coin = c => COINS.some(x => x[0] === c);
     if (o) {
       if (R.includes(o.range)) S.range = o.range;
+      if (typeof o.ovd === 'string' && (o.ovd === '' || dayRng(o.ovd))) S.ovd = o.ovd;
       if (R.includes(o.ir)) S.ir = o.ir;
       if (Array.isArray(o.hid)) S.hid = new Set(o.hid.filter(k => STB[k]));
       if (Array.isArray(o.open)) S.open = new Set(o.open.filter(coin));
@@ -6128,7 +6142,7 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
 (() => {
   const wrap = $('#ddPeek'), head = $('#ddHead'), pu = $('.ddp-pu', head); if (!wrap) return; /* r47：两边的预设问题去掉，只留 Dodo 头和眼睛；可以问的问题在右侧栏 */
   let on = null;
-  const sync = () => { const v = CUR === 'ai' && !document.body.classList.contains('kb-open'); if (v === on) return; on = v;
+  const sync = () => { const v = CUR === 'ai'; /* r64 · 8 · 键盘打开时 Dodo 也留在原位，不再缩回 */ if (v === on) return; on = v;
     wrap.classList.toggle('in', v); wrap.inert = !v; };
   /* r48 · 情绪：think = 在想（眼珠转、头探出一点）；listen = 录音时侧耳听；joy = 回答完轻跳一下。只换 class，减少动态效果时只保留静态姿态 */
   let mt = 0;
@@ -6409,7 +6423,10 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
   base();
   document.addEventListener('focusin', update);
   document.addEventListener('focusout', () => setTimeout(update, 60));
-  if (vv) { vv.addEventListener('resize', sched); vv.addEventListener('scroll', sched); }
+  /* r64 · 8 · 可见区域一移动就同步写偏移（不等下一帧），顶栏和 Dodo 跟可见区域同一帧对齐，不会先被带上去再弹回 */
+  if (vv) { vv.addEventListener('resize', sched); vv.addEventListener('scroll', update); }
+  /* r64 · 8 · Dodo 页键盘打开时整页不允许滚动：iOS 把页面往上推时立刻推回去，只有对话区和输入框跟着键盘上移 */
+  addEventListener('scroll', () => { if (open && CUR === 'ai' && MOB.matches && scrollY) { window.scrollTo(0, 0); update(); } }, { passive: true });
   addEventListener('resize', sched);
   addEventListener('hashchange', () => setTimeout(update, 0));
   addEventListener('orientationchange', () => setTimeout(update, 300));

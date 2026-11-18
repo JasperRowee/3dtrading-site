@@ -31,6 +31,15 @@ html.snap *{transition:none!important}
 .acts .pr{background:var(--brand);color:#04211c;box-shadow:0 8px 26px rgba(47,220,188,.25)}
 
 /* each step's copy hangs at its own spot in the space and moves with the camera */
+/* r64 · 普通网页滚动：每站一段高度，原生吸附，一次手势一站；滚动条全隐藏 */
+#scr{position:fixed;inset:0;z-index:2;overflow-y:scroll;overflow-x:hidden;scroll-snap-type:y mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior:none;touch-action:pan-y;-webkit-tap-highlight-color:transparent}
+#scr::-webkit-scrollbar{display:none;width:0;height:0}
+#scr>i{display:block;height:25%;scroll-snap-align:start;scroll-snap-stop:always}   /* 每站一段 1/4 屏高：普通一下滑动就够到下一段，原生 snap-stop 保证最多一站 */
+#scr>b{display:block;height:75%}
+#scr.lock{overflow:hidden}
+#scr{container-type:size}
+#scr>.lay{position:sticky;bottom:0;height:100cqh;margin-top:-100cqh;z-index:1}   /* 顶栏、文案、导航点放在滚动层里一块始终盖满屏幕的层上：在它们上面滚动/滑动也是这一个原生滚动 */
+#scr>.lay>*{position:absolute}
 .copy{position:fixed;inset:0;z-index:6;pointer-events:none;overflow:hidden}
 .blk{position:absolute;left:0;top:0;width:min(440px,34vw);opacity:0;transform-origin:0 50%;will-change:transform,opacity}
 .blk h1,.blk h2{text-shadow:0 0 28px #06090b,0 0 6px #06090b}
@@ -123,7 +132,8 @@ h2 .l{color:var(--up)}h2 .s{color:var(--dn)}h2 .y{color:var(--bn)}
 .pfx.on{will-change:opacity,clip-path}
 /* r62 · while the camera leaves (or comes back), the page's own copy, bar and controls step aside; they come back as it lands */
 /* r63 · 转场时文字跟着场景走（--txk 缩放、--txf 淡出，由镜头每帧给出），不再自己淡出 */
-html.tx3 :is(.bar,.copy,.rail,.cue,.note,.talk){scale:calc(1 - var(--txk,0));opacity:calc(1 - var(--txf,1))!important;pointer-events:none!important;transition:none!important}
+html.tx3 :is(.bar,.copy,.rail,.cue,.note,.talk){opacity:calc(1 - var(--txf,1))!important;pointer-events:none!important;transition:none!important}
+html.tx3 .talk:not(.on),html.tx3o .talk:not(.on){opacity:0!important;visibility:hidden}   /* r64 #1: the tx3 rule above forced the hidden pill to show, parked at 0,0 over the Logo */
 html.tx3 .scrim,html.tx3 .toast,html.tx3 .gate{opacity:0!important;pointer-events:none!important;transition:opacity .38s ease!important}
 html.tx3o .bar,html.tx3o .copy,html.tx3o .rail,html.tx3o .cue,html.tx3o .note,html.tx3o .talk,html.tx3o .scrim{transition:opacity .7s ease!important}
 html.via-planet .pfx{display:block}
@@ -199,6 +209,8 @@ html[data-theme=day] .tm{background:transparent;color:#0c1f2e;box-shadow:inset 0
 .blk.in .ln>span{transform:none}.blk.in .ln:nth-child(2)>span{transition-delay:.11s}.blk.in .ln:nth-child(3)>span{transition-delay:.22s}
 .blk.in .ey{opacity:1;transform:none}.blk.in .ey::after{transform:none}
 .blk.in p,.blk.in .hint,.blk.in .go{opacity:1;transform:none;filter:none}
+html[data-theme=day] .blk p,html[data-theme=day] .blk .hint,html[data-theme=day] .blk .go{transition:color .35s ease,opacity .8s .42s,transform 1s .42s cubic-bezier(.2,.75,.2,1),filter .8s .42s}   /* r64 #2: the title first, then the text, in both themes */
+.blk:not(.in) p,.blk:not(.in) .hint,.blk:not(.in) .go{transition-delay:0s!important}
 @media (prefers-reduced-motion:reduce){.blk .ln>span,.blk .ey,.blk p,.blk .hint,.blk .go{transform:none!important;filter:none!important;transition:opacity .4s!important}.blk .ln>span{opacity:0}.blk.in .ln>span{opacity:1}.blk .ey::after{transform:none}}
 /* 10: one small real way into the chat, pinned near the Dodo who answers */
 .talk{position:fixed;z-index:7;left:0;top:0;height:44px;padding:0 20px;border-radius:22px;display:inline-flex;align-items:center;gap:8px;background:var(--brand);color:#04211c;font:700 15px var(--sans);text-decoration:none;cursor:pointer;box-shadow:0 10px 30px rgba(47,220,188,.3);opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap}
@@ -231,6 +243,9 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 <div class="vign"></div>
 <div class="grain"></div>
 
+<!-- r64 · 官网就是一张普通的滚动网页：#scr 每站一段高度（原生吸附），顶栏、文案、导航点等都放在里面（仍是 fixed），在它们上面滚动也是同一个原生滚动 -->
+<div id="scr"><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><i aria-hidden="true"></i><b aria-hidden="true"></b>
+<div class="lay">
 <header class="bar">
   <a class="home" id="home" href="#" aria-label="3dtrading，回到首页" title="回到首页"><img class="logo" src="assets/3dtrading-logo-white.svg" alt="3dtrading"></a>
   <div class="acts" id="acts"><a class="pr" data-go="signup">登录/注册</a></div>
@@ -296,8 +311,10 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 <button class="cue" id="cue" aria-label="下一步"><span>向下</span><i></i></button>
 <div class="note">合成条件演示 · 账面余额未扣浮亏，演示数据不代表真实账户或未来收益</div>
 <div class="scrim" aria-hidden="true"></div>
-<div class="toast" id="toast" role="status"></div>
 <a class="talk" id="talk" data-go="ai">和 Dodo 对话</a>
+</div>
+</div>
+<div class="toast" id="toast" role="status"></div>
 <i id="layTg" hidden></i>
 <div class="gate" id="gate" hidden aria-hidden="true" role="button" tabindex="0" aria-label="轻触开始体验"><b>轻触开始体验</b></div>
 <div class="hfade" id="hfade" aria-hidden="true"></div>
@@ -604,7 +621,8 @@ addEventListener('pageshow', e => { if (!e.persisted) return; leaving = false; d
 let CULL = null, TXW = 0, TXD = 0, DOORG = null, FOGD = 150;   // FOGD: where the night field has faded out; on the way out it draws in a little, so the pulled-back camera does not draw the whole floor
    // CULL: outside the shell its near cap is not drawn (we look in through it) · TXW: the inner wall comes up · TXD: the door's own glow gives way
 const PFX = (() => {
-  const box = document.getElementById('pfx'), art = () => window.__planetArt;
+  const box = document.getElementById('pfx'), SKY = document.getElementById('pfxS'), art = () => window.__planetArt;
+  const noMask = () => { if (SKY.style.maskImage || SKY.style.webkitMaskImage) SKY.style.webkitMaskImage = SKY.style.maskImage = ''; };
   const UC = .5, LEN = 1.5, LEN_DOOR = 1.25, FM = .62, OH = 2.4;   // the way out is 1.5 moves, its first half inside the planet · FM: the log-in page's phone lens
   // OH: the shell stays see-through until its outline is well inside the screen (o = OH·ox), so the website is seen inside the planet
   // it came out of; from there on it is opaque, the log-in page's own planet, and the two pages hand over there (planet.js path3)
@@ -630,19 +648,31 @@ const PFX = (() => {
     X.fe = [cp * Math.sin(yaw), -sp, cp * Math.cos(yaw)]; X.Pc = X.fe.map((v, i) => SC[i] - v * SR); }
   /* r63 · 文字跟着场景走：标题、导航、文案不自己淡出，而是以屏幕中心为原点随镜头后退一起缩小（门：一起冲过去放大），
      缩到很小（或冲出画面）时才淡掉；只用 scale / opacity（合成层，不重排） */
-  const TXEL = '.bar,.copy,.rail,.cue,.note,.talk';
-  function txStart() { document.querySelectorAll(TXEL).forEach(el => { const r = el.getBoundingClientRect(); el.style.transformOrigin = (W / 2 - r.left).toFixed(0) + 'px ' + (H / 2 - r.top).toFixed(0) + 'px'; }); }
-  function txFollow() { const u = X.u; let k, f;
-    if (X.kind === 'door') { k = -1.4 * sm(sg(u, 0, .3)); f = sm(sg(u, .06, .24)); }
-    else { k = .8 * sm(sg(u, 0, UC * .9)); f = sm(sg(u, UC * .35, UC * .8)); }
-    de.style.setProperty('--txk', k.toFixed(4)); de.style.setProperty('--txf', f.toFixed(4)); }
-  function txClear() { de.style.removeProperty('--txk'); de.style.removeProperty('--txf'); document.querySelectorAll(TXEL).forEach(el => { el.style.transformOrigin = ''; }); }
+  /* r64 · 整个官网就在星球里：顶栏、导航点、提示、角注各自钉在场景里一个点上（静止时屏幕位置、深度 TXD0 处），每帧用镜头重新投影，
+     随镜头后退一起变小、移动，被星球盖住（外面是星空层，圆盘里是镜头真正看到的官网）；文案块本来就挂在场景锚点上（placeCopy，转场时不夹缩放）。
+     只有壳合上时（o 到 oh）才淡掉。门：照旧冲过去放大淡掉。只用 translate / scale / opacity（合成层，不重排） */
+  const TXEL = '.bar,.rail,.cue,.note', TXD0 = 56; let TXP = [], CST = null;
+  function txStart() { TXP = [...document.querySelectorAll(TXEL)].map(el => { el.style.translate = ''; el.style.scale = ''; const r = el.getBoundingClientRect();
+      let m41 = 0, m42 = 0; try { const m = new DOMMatrix(getComputedStyle(el).transform); m41 = m.m41; m42 = m.m42; } catch (e) {}
+      const x = r.left + r.width / 2, y = r.top + r.height / 2; el.style.transformOrigin = (x - (r.left - m41)).toFixed(1) + 'px ' + (y - (r.top - m42)).toFixed(1) + 'px';
+      return { el, x, y, w: null }; }); }
+  function txPin() { if (!CST) return; const S = CST, D = TXD0;
+    TXP.forEach(t => { if (!t.w) { const a = (t.x - S.cx) / S.F, b = (S.cy - t.y) / S.F; t.w = S.p.map((v, i) => v + D * (S.f[i] + a * S.r[i] + b * S.u[i])); }
+      const v = sub3(t.w, C.p), Z = v[0] * C.f[0] + v[1] * C.f[1] + v[2] * C.f[2];
+      if (Z < .5) { t.el.style.scale = '0.001'; return; }
+      const X = C.cx + C.F * (v[0] * C.r[0] + v[1] * C.r[1] + v[2] * C.r[2]) / Z, Y = C.cy - C.F * (v[0] * C.u[0] + v[1] * C.u[1] + v[2] * C.u[2]) / Z, k = (C.F / Z) / (S.F / D);
+      t.el.style.translate = (X - t.x).toFixed(1) + 'px ' + (Y - t.y).toFixed(1) + 'px'; t.el.style.scale = clamp(k, .001, 40).toFixed(4); }); }
+  function txFollow() { const u = X.u; let f;
+    if (X.kind === 'door') f = sm(sg(u, .06, .24));
+    else f = X.out ? sm(sg(X.o, X.ox * .6, X.oh)) : 0;   // inside the planet the text is part of the scene; it goes only as the shell closes over the disc
+    de.style.setProperty('--txf', f.toFixed(4)); }
+  function txClear() { de.style.removeProperty('--txk'); de.style.removeProperty('--txf'); TXP.forEach(t => { t.el.style.transformOrigin = ''; t.el.style.translate = ''; t.el.style.scale = ''; }); TXP = []; CST = null; }
   /* r63 · 转场时官网画面降到一半分辨率（画面在缩小、被星球盖住，看不出来），结束恢复 */
   let LORES = false;
   function setRes(lo) { LORES = lo; const d = Math.min(2, devicePixelRatio || 1) * (lo ? .5 : 1), nd = lo ? Math.max(.6, d) : d; if (nd === DPR) return; DPR = nd; cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
   const busy = () => !!X;
   // the scene is wholly under the overlay (the shell has closed over it, or we are through the door): it need not be drawn
-  const hidden = () => !!X && (X.kind === 'door' ? X.past && X.u >= .22 : X.out && (X.o >= X.oh || !!X.snap));
+  const hidden = () => !!X && (X.kind === 'door' ? X.past && X.u >= .22 : X.out && X.o >= X.oh - 1e-4);   // r64: no snapshot — the disc shows the live site until the shell has closed
   function exit(url) {
     if (X || leaving || !art()) return false; leaving = true; remember();
     const go = loginURL(url, 'exit'); window.__enter = { kind: 'exit', url: go, at: performance.now() };
@@ -660,6 +690,7 @@ const PFX = (() => {
   function cam(dt) {
     if (!X) { CULL = null; TXW = 0; TXD = 0; FOGD = 150; if (LORES) setRes(false); return; }
     if (!LORES && !RM) setRes(true);
+    CST = { p: C.p.slice(), f: C.f.slice(), r: C.r.slice(), u: C.u.slice(), F: C.F, cx: C.cx, cy: C.cy };
     txFollow();
     const m = { x: X.u, v: X.v }; chase(m, X.tgt, MV.CA / (X.kind === 'door' ? LEN_DOOR : LEN), MV.CK, dt, 1e-5); X.u = m.x; X.v = m.v;
     const P0 = C.p.slice(), f0 = C.f.slice(), cx0 = C.cx, cy0 = C.cy, F0 = C.F, u = X.u;
@@ -683,33 +714,33 @@ const PFX = (() => {
       }
       TXW = sm(sg(u, .03, .3)); TXD = 0; FOGD = 150 - 32 * TXW;
     }
-    setCam(P, add3(P, f), 0, 0); C.F = F; C.cx = cx; C.cy = cy;
+    setCam(P, add3(P, f), 0, 0); C.F = F; C.cx = cx; C.cy = cy; txPin();
   }
   /* each frame, after the scene is drawn: outside the shell, the log-in page's picture with the website inside the disc */
   function compose() {
     if (!X) return;
     if (X.kind === 'door') {
-      box.className = 'pfx on'; box.style.opacity = sm(sg(X.u, 0, .22)).toFixed(3); box.style.setProperty('--vg', '1');
+      noMask(); box.className = 'pfx on'; box.style.opacity = sm(sg(X.u, 0, .22)).toFixed(3); box.style.setProperty('--vg', '1');
       let clip = 'none'; const D = DOORG;
       if (!X.past && D) { const q = [[D.da - D.hw2, D.e1], [D.da + D.hw2, D.e1], [D.da + D.hw2, D.e0], [D.da - D.hw2, D.e0]].map(([a, e]) => pr(...onS(a, e, D.rr)));
         if (!q.some(p => !p)) clip = 'polygon(' + q.map(p => p.x.toFixed(1) + 'px ' + p.y.toFixed(1) + 'px').join(',') + ')'; }
       box.style.clipPath = clip;
       const z = L(.72, 1, sm(X.u)), ccx = W / 2, ccy = H / 2;   // the far planet comes up to its log-in size as we go through
       art().frame({ cx: ccx + (X.cxe - ccx) * z, cy: ccy + (X.cye - ccy) * z, R: X.Rl * z, sky: 1, shell: 1 });
-    } else if (!X.out) {
+    } else if (!X.out) { noMask();
       if (box.className !== 'pfx') { box.className = 'pfx'; de.classList.remove('via-planet'); }
     } else {
       box.className = 'pfx on'; box.style.opacity = ''; box.style.clipPath = '';
       const o = X.o, r = Math.min(1e5, X.Fe * SR / Math.sqrt(Math.max(1e-6, X.d * X.d - SR * SR))), dim = .35 * sm(sg(o, 0, X.oh));
       box.style.setProperty('--vg', sg(o, 0, X.ox).toFixed(3));
-      /* r63 · 减负：穿出星球后，官网场景只画最后一次，存成一张图贴在内壁上（跟着圆盘一起缩小），之后不再画整套场景 */
-      if (!X.snap && X.kind !== 'back') { try { const s = document.createElement('canvas'); s.width = cv.width; s.height = cv.height; s.getContext('2d').drawImage(cv, 0, 0); X.snap = { c: s, r, x: X.pcx, y: X.pcy }; } catch (e) {} }
-      art().frame({ cx: X.pcx, cy: X.pcy, R: r, sky: 1, lite: 1, shell: .4 * sm(sg(o, 0, X.ox)) + .6 * sm(sg(o, X.ox, X.oh)), inner: (c, x, y, R) => { c.save(); c.beginPath(); c.arc(x, y, R, 0, 7); c.clip();
-        try { if (X.snap) { const k = R / X.snap.r; c.save(); c.translate(x, y); c.scale(k, k); c.drawImage(X.snap.c, -X.snap.x, -X.snap.y, W, H); c.restore(); } else c.drawImage(cv, 0, 0, W, H); } catch (e) {}
-        if (dim > .005) { c.fillStyle = `rgba(2,5,9,${dim.toFixed(3)})`; c.fillRect(0, 0, W, H); } c.restore(); } });
+      /* r64 · 不再贴截图：星空层在圆盘处挖空（CSS 遮罩），星球层在圆盘里擦掉，透出下面正在画的官网本身（同一个场景、同一个镜头）；壳的点和本体按 shell 透明度盖上 */
+      const rm = Math.max(0, r - .75); SKY.style.webkitMaskImage = SKY.style.maskImage = `radial-gradient(circle at ${X.pcx.toFixed(1)}px ${X.pcy.toFixed(1)}px, transparent ${rm.toFixed(1)}px, #000 ${(rm + 1).toFixed(1)}px)`;
+      art().frame({ cx: X.pcx, cy: X.pcy, R: r, sky: 1, lite: 1, shell: .4 * sm(sg(o, 0, X.ox)) + .6 * sm(sg(o, X.ox, X.oh)), inner: (c, x, y, R) => { c.save(); c.beginPath(); c.arc(x, y, R, 0, 7);
+        c.globalCompositeOperation = 'destination-out'; c.fillStyle = '#000'; c.fill(); c.globalCompositeOperation = 'source-over';
+        if (dim > .005) { c.fillStyle = `rgba(2,5,9,${dim.toFixed(3)})`; c.fill(); } c.restore(); } });
     }
     if (X.kind === 'back') {
-      if (X.u === 0) { de.classList.remove('tx3'); txClear(); X = null; CULL = null; TXW = 0; FOGD = 150; box.className = 'pfx'; de.classList.remove('via-planet'); }
+      if (X.u === 0) { de.classList.remove('tx3'); txClear(); noMask(); X = null; clearHit(); CULL = null; TXW = 0; FOGD = 150; box.className = 'pfx'; de.classList.remove('via-planet'); }
     } else {
       // r63 · the log-in page's own topbar, headline and form come in over the late part of the pull-back and are whole on the last frame
       JOIN.ui(X.kind === 'door' ? sm(sg(X.u, .55, .985)) : sm(sg(X.u, .66, .985)));
@@ -725,7 +756,7 @@ const PFX = (() => {
     const ux = UC + (1 - UC) * X.oh; if (s && Date.now() - s.at < 20000 && s.u > UC) { X.u = Math.max(ux, s.u); X.v = Math.min(0, s.v); } else X.u = ux;
     X.out = true; X.o = (X.u - UC) / (1 - UC); X.d = SR + (X.dEnd - SR) * X.o; de.classList.add('tx3'); compose();
   }
-  function reset() { txClear(); X = null; CULL = null; TXW = 0; TXD = 0; FOGD = 150; box.className = 'pfx'; box.style.clipPath = ''; box.style.opacity = ''; de.classList.remove('via-planet', 'tx3', 'tx3o'); }
+  function reset() { txClear(); noMask(); X = null; CULL = null; TXW = 0; TXD = 0; FOGD = 150; box.className = 'pfx'; box.style.clipPath = ''; box.style.opacity = ''; de.classList.remove('via-planet', 'tx3', 'tx3o'); }
   // 登录/注册 (and 和 Dodo 对话, which also goes to sign-up) from any step: the pull-back. Signed in, they stay plain links
   document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[data-go]'); if (!a || user() || a.dataset.go === 'dashboard') return;
     if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; if (exit(a.href)) e.preventDefault(); }, true);
@@ -735,7 +766,7 @@ const PFX = (() => {
       .forEach(h => { const l = document.createElement('link'); l.rel = 'prefetch'; l.href = h; document.head.appendChild(l); }); };
   if (!de.classList.contains('via-planet')) (window.requestIdleCallback || setTimeout)(warm, { timeout: 2500 });
   const hold = t => { if (X) X.tgt = t; };   // test hook: park the camera part-way
-  return { exit, door, back, reset, warm, cam, compose, busy, hidden, hold, state: () => X && { kind: X.kind, u: +X.u.toFixed(4), v: +X.v.toFixed(3), out: X.out, o: +X.o.toFixed(4), d: +X.d.toFixed(2), ox: +X.ox.toFixed(4), oh: +X.oh.toFixed(4), dEnd: +X.dEnd.toFixed(2), past: !!X.past } };
+  return { exit, door, back, reset, warm, cam, compose, busy, hidden, hold, kind: () => X && X.kind, state: () => X && { kind: X.kind, u: +X.u.toFixed(4), v: +X.v.toFixed(3), out: X.out, o: +X.o.toFixed(4), d: +X.d.toFixed(2), ox: +X.ox.toFixed(4), oh: +X.oh.toFixed(4), dEnd: +X.dEnd.toFixed(2), past: !!X.past } };
 })();
 /* r63 · 同页衔接（官网 → 登录 / 注册，含 11 的门）：官网空闲时把登录页预载进一个看不见的全屏 iframe（它的文件、字体、星空着色器
    都在这时准备好）。镜头后退的后段，登录页自己的顶栏、标题、表单按镜头进度进场；最后一帧把场景交给登录页（同一幅画面），
@@ -779,90 +810,55 @@ const JOIN = (() => {
 (window.requestIdleCallback || setTimeout)(() => setTimeout(JOIN.make, 600), { timeout: 3500 });
 setTimeout(PFX.back, 0); window.__pfx = { join: () => JOIN.state(), enter: k => enter(k), exit: u => PFX.exit(u || routes().login), state: () => PFX.state(), hold: t => PFX.hold(t) };   // test hooks
 // r61: a new destination only; camera, scene and actions keep the speed they have (from rest that is 0)
-function targetStep(tg) { if (tg === CK.tgt) return; CK.tgt = K.tgt = tg; }
+function targetStep(tg, fromScroll) { if (tg === CK.tgt) return; CK.tgt = K.tgt = tg; if (!fromScroll) scrTo(tg); }   // r64: keys, rail, cue move the page scroll too
 let GATE = false, PEND = null; const go = (d, why) => { if (GATE || PFX.busy()) return;   // the motion layer over 01 is up: nothing moves under it
   if (d > 0 && K.tgt === NS - 1) { if (K.t > NS - 1.2 && B11.a > .5) enter('signup'); return; }
   const tg = clamp(CK.tgt + d, 0, NS - 1); if (tg === CK.tgt) return; targetStep(tg);   // every swipe moves the destination one stop, however far ahead it already is
  };
 const jump = i => { if (i === CK.tgt || PFX.busy()) return; targetStep(i);
  };
-/* r62 · one push = one step, read from the shape of the wheel stream, never from a clock (Jasper 2026-11-18: no time limits):
-   PUSH   the hand is on the pad / Magic Mouse / wheel: everything until it lets go is that one step, however long it pushes.
-   GLIDE  it let go: the stream turns into the pad's inertia, a steady decay (or it winds down to almost nothing without inertia).
-          While it glides, the stream rising again is a new push: one more step at once, and the camera keeps its speed (no braking).
-   IDLE   the stream has gone quiet (no events for a while): the next input is a new push, a new step. A glide's tail of 1 px
-          events is still that glide.
-   The other direction is a new push at once. A mouse wheel's notches (line / page mode, or the same big tick again after a pause)
-   are one step each. Speeds are read as a median of 3, so one bumpy Magic Mouse frame is neither a release nor a new push.
-   Every step only moves the destination (no queue, no limit how far ahead); the camera plays it at its own pace. */
-const WH = { TRIG: 6, DEC: .72, DEC_N: 3, WIND: .35, RISE: 1.6, RISE_ABS: 4, RISE_N: 3, RISE_MIN: 10, STOP: 1.5, NOTCH: 50, HUSH: 4, GQ: 180, AFTER: 600, BIG: 14, TICKGAP: 60 };
-// r63 (Jasper: a Magic Mouse / mouse still made false second steps) — tighter: GQ ms of real quiet before a glide counts as over ·
-// AFTER ms after a glide a new push must come as one event of BIG px (a late inertia burst is not a hand) · RISE_N rising readings, each
-// over RISE_MIN px, to call a new push out of a glide · a tick again only after TICKGAP ms (equal values 16 ms apart are the pad, not notches)
-// TRIG px to start a push · DEC/DEC_N: a release = DEC_N falling readings in a row, ending under DEC of the push's peak · WIND: or under
-// WIND of the peak at all (wound down, no inertia) · RISE×, +RISE_ABS, RISE_N readings in a row: a new push out of a glide · STOP px: a push must have
-// peaked above twice this before it can be let go (the glide itself only ends when the stream goes quiet) · NOTCH px: a wheel tick · HUSH: the stream counts as quiet after HUSH of its own typical event gaps (only to tell ticks apart)
-const WS = { ph: 0, dir: 0, acc: 0, pk: 0, lo: 0, prev: 0, dn: 0, rn: 0, b: [], last: -1e9, gap: 16, tick: 0, tk: false, fired: false, cnt: 0 }; const WLOG = [];
-function wheelStep(n, d, fire, mode = 0) { const s = Math.sign(d), ad = Math.abs(d), gap = n - WS.last; WS.last = n; if (!s) return 0;
-  const quiet = gap > Math.max(40, WS.gap * WH.HUSH); if (!quiet) WS.gap = L(WS.gap, clamp(gap, 4, 40), .2);
-  let why = '';
-  // a mouse wheel's tick: one step each — line / page mode; or a big tick out of quiet; or, right after a tick, the same tick again
-  const tick = mode > 0 || (ad >= WH.NOTCH && Number.isInteger(ad) && gap >= WH.TICKGAP && ((quiet && (WS.ph !== 1 || WS.tk)) || (WS.tk && s === WS.dir && ad === WS.tick)));
-  if (tick) { why = 'tick'; Object.assign(WS, { ph: 1, dir: s, acc: ad, pk: ad, lo: ad, prev: ad, dn: 0, rn: 0, b: [ad], fired: true, tick: ad, tk: true, cnt: 1 }); }
-  else {
-    WS.tk = false;
-    if (WS.ph === 2 && gap > WH.GQ || quiet && WS.ph === 1 && WS.cnt <= 2) { if (WS.ph === 2) WS.gEnd = n; WS.ph = 0; }   // a glide is over only after GQ ms of real quiet                             // a glide that went quiet is over, and so is a lone small tick (a push that pauses is still that push)
-    if (s !== WS.dir && WS.ph) WS.ph = 0;                                             // the other way: a new push
-    WS.b.push(ad); if (WS.b.length > 3) WS.b.shift(); const v = WS.ph ? WS.b.slice().sort((x, y) => x - y)[WS.b.length >> 1] : ad;
-    if (!WS.ph) Object.assign(WS, { ph: 1, dir: s, acc: 0, pk: 0, lo: v, prev: v, dn: 0, rn: 0, b: [ad], fired: false, cnt: 0 });
-    WS.cnt++;
-    if (WS.ph === 1) {                                                                // pushing
-      if (!WS.fired) { WS.acc += ad; const late = n - (WS.gEnd || -1e9) < WH.AFTER; if (late ? ad >= WH.BIG : WS.acc > WH.TRIG) { WS.fired = true; why = 'push'; } }
-      WS.dn = v < WS.prev ? WS.dn + 1 : v > WS.prev ? 0 : WS.dn; WS.pk = Math.max(WS.pk, v);
-      if (WS.fired && WS.pk > WH.STOP * 2 && ((WS.dn >= WH.DEC_N && v < WS.pk * WH.DEC) || v < WS.pk * WH.WIND)) { WS.ph = 2; WS.lo = v; WS.rn = 0; }   // let go
-    } else {                                                                          // gliding: a rise is a new push; dying out is the end
-      if (v > Math.max(WS.lo * WH.RISE, WS.lo + WH.RISE_ABS) && ad >= WH.RISE_MIN && v >= WS.prev) { if (++WS.rn >= WH.RISE_N) { why = 'again'; Object.assign(WS, { ph: 1, pk: v, dn: 0, rn: 0, fired: true, b: [ad], cnt: 3 }); } }
-      else { WS.rn = 0; WS.lo = Math.min(WS.lo, v); }   // a tail of 1 px events is still this glide (r62 self-test: a long heavy swipe made a 2nd step out of its own tail); only quiet ends it
-    }
-    WS.prev = v;
-  }
-  if (!why) return 0;
-  WLOG.push([Math.round(n), s, why]); if (WLOG.length > 200) WLOG.shift(); if (fire) fire(s, why); return s; }
-/* r63 · ?wlog=1: recording mode. Every wheel event (time, deltaY, deltaMode, deltaX) and every step it made is kept; the panel at
-   the bottom left exports it as a file, so the rules can be tuned on Jasper's real Magic Mouse / mouse / trackpad data */
-const WREC = /[?&]wlog=1/.test(location.search) ? { raw: [], t0: performance.now() } : null;
-if (WREC) { const pn = document.createElement('div'); pn.id = 'wrec';
-  pn.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:9999;font:12px/1.4 -apple-system,system-ui,sans-serif;color:#fff;background:rgba(10,14,20,.86);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:8px 10px;display:flex;gap:8px;align-items:center;backdrop-filter:blur(8px)';
-  pn.innerHTML = '<span>● 记录中 <b id="wrN">0</b> 事件 · <b id="wrS">0</b> 步</span><button id="wrX" style="all:unset;cursor:pointer;background:#2fdcbc;color:#04241d;font-weight:700;border-radius:8px;padding:4px 10px">导出</button><button id="wrC" style="all:unset;cursor:pointer;opacity:.75;padding:4px 6px">清空</button>';
-  addEventListener('DOMContentLoaded', () => document.body.appendChild(pn)); if (document.body) document.body.appendChild(pn);
-  pn.addEventListener('wheel', e => e.stopPropagation());
-  pn.querySelector('#wrX').onclick = () => { const blob = new Blob([JSON.stringify({ ua: navigator.userAgent, dpr: devicePixelRatio, at: new Date().toISOString(), rules: WH, events: WREC.raw }, null, 0)], { type: 'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'wheel-' + Date.now() + '.json'; document.body.appendChild(a); a.click(); a.remove(); };
-  pn.querySelector('#wrC').onclick = () => { WREC.raw.length = 0; WREC.steps = 0; pn.querySelector('#wrN').textContent = 0; pn.querySelector('#wrS').textContent = 0; };
-  window.__wrec = WREC; }
-addEventListener('wheel', e => { if (WREC) { const r = [Math.round((e.timeStamp || performance.now()) * 10) / 10, +e.deltaY.toFixed(2), e.deltaMode, +e.deltaX.toFixed(2)]; WREC.raw.push(r);
-    const s = wheelStep(e.timeStamp || performance.now(), e.deltaMode === 1 ? e.deltaY * 30 : e.deltaMode === 2 ? e.deltaY * H : e.deltaY, go, e.deltaMode); e.preventDefault(); if (s) { r.push(WLOG[WLOG.length - 1][2]); WREC.steps = (WREC.steps || 0) + 1; }
-    const q = document.getElementById('wrN'); if (q) { q.textContent = WREC.raw.length; document.getElementById('wrS').textContent = WREC.steps || 0; } return; }
-  e.preventDefault(); const d = e.deltaMode === 1 ? e.deltaY * 30 : e.deltaMode === 2 ? e.deltaY * H : e.deltaY; wheelStep(e.timeStamp || performance.now(), d, go, e.deltaMode); }, { passive: false });   // the event's own time: a slow frame that holds events back is not a pause in the hand
+/* r64 · 滑动根治（Jasper 2026-11-18）：官网改成普通网页滚动。一个看不见的全屏滚动层 #scr 里每站一段高度（NS 段），浏览器原生滚动 +
+   吸附（scroll-snap-type: y mandatory · scroll-snap-stop: always：一次手势最多停一站；手何时离开由浏览器判断，网页不再猜）。
+   滚动停在哪一段，那一站就是镜头的终点；镜头朝终点按自己的规律走（02–05 匀速每站 1.4 s），途中区间变了就改终点接着走。
+   滚动条隐藏。r62/r63 自写的滚轮判定和滚轮记录模式删除 */
+const SCL = document.getElementById('scr'); let SCRQ = 0;   // SCRQ: our own scrollTo in flight, its scroll events are not the hand
+const BANDS = SCL.querySelectorAll(':scope>i'), secH = () => (BANDS[1].offsetTop - BANDS[0].offsetTop) || 1;
+function scrTo(i) { const y = Math.round(i * secH()); if (Math.abs(SCL.scrollTop - y) < 2) return; SCRQ = performance.now(); SCL.scrollTo({ top: y, behavior: 'instant' }); }
+let SLK = null; const scrLock = on => { on = !!on; if (on !== SLK) { SLK = on; SCL.classList.toggle('lock', on); } };
+let G0 = null, GT = 0;   // G0: the stop this gesture started from. A gesture moves the destination at most one stop from it (Chrome lets a long drag run past snap-stop:always)
+function scrEnd() { clearTimeout(GT); G0 = null; if (Math.abs(SCL.scrollTop - CK.tgt * secH()) > 2) scrTo(CK.tgt); }   // the browser says the scroll is over: settle the page on the destination
+SCL.addEventListener('scrollend', scrEnd);
+SCL.addEventListener('scroll', () => {
+  if (!('onscrollend' in window)) { clearTimeout(GT); GT = setTimeout(scrEnd, 180); }   // older Safari without scrollend
+  const i = clamp(Math.round(SCL.scrollTop / secH()), 0, NS - 1);
+  if (performance.now() - SCRQ < 120 && i === CK.tgt) return;
+  if (GATE || PFX.busy() || HOMING) { scrTo(CK.tgt); return; }   // the motion layer / a planet transition / going home: the scroll goes back where the camera is headed
+  if (G0 == null) G0 = CK.tgt;
+  const tg = clamp(i, G0 - 1, G0 + 1); if (tg !== CK.tgt) targetStep(tg, true);
+}, { passive: true });
+// past the end of 11 (the door is open): scrolling on, like before, goes in
+let endAcc = 0, endT = 0;
+SCL.addEventListener('wheel', e => { if (CK.tgt !== NS - 1 || e.deltaY <= 0 || SCL.scrollTop < SCL.scrollHeight - SCL.clientHeight - 2) { endAcc = 0; return; }
+  const n = performance.now(); if (n - endT > 400) endAcc = 0; endT = n; endAcc += e.deltaY; if (endAcc > 60) { endAcc = -1e9; go(1); } }, { passive: true });
 addEventListener('keydown', e => { if (e.repeat) return; if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(1); } if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
   if (e.key === 'Home') jump(0); if (e.key === 'End') jump(NS - 1); });
 let ty = null, tx = 0, tDone = false, tLook = false, tmx = 0, tmy = 0; addEventListener('touchstart', e => { ty = e.touches[0].clientY; tx = e.touches[0].clientX; tDone = false; tLook = false; tmx = mx; tmy = my; }, { passive: true });
-addEventListener('touchmove', e => { if (e.target.closest && e.target.closest('a,button')) return; e.preventDefault(); if (ty == null || tDone) return;
+addEventListener('touchmove', e => { if (ty == null || tDone) return;   // r64: up/down is the page's own scroll now (#scr); a sideways drag still looks round
   const d = ty - e.touches[0].clientY, dx = e.touches[0].clientX - tx;
-  // sideways drag looks round the scene (the fallback when there is no motion control); an upward/downward swipe moves a step
   if (!tLook && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(d) * 1.3) tLook = true;
-  if (gateOn()) return;   // the motion layer over 01 is up: it takes the touch, no step moves under it
+  if (gateOn()) return;
   if (tLook) { mx = clamp(tmx - dx / innerWidth * .9, -.5, .5); my = clamp(tmy - d / innerHeight * .5, -.5, .5); mT = performance.now(); return; }
-  if (Math.abs(d) > 34) { go(Math.sign(d)); tDone = true; } }, { passive: false });
+  if (d > 34 && CK.tgt === NS - 1 && SCL.scrollTop >= SCL.scrollHeight - SCL.clientHeight - 2) { go(1); tDone = true; } }, { passive: true });
 addEventListener('touchend', e => ask(e), true);   // any touch may ask for motion; iOS decides whether it counts as a tap
 document.getElementById('cue').onclick = () => go(1);
 // at the door a click anywhere in the scene goes in
 let DOORQ = null, pDown = null;
 addEventListener('pointerdown', e => { pDown = [e.clientX, e.clientY, performance.now()]; });
 const inQuad = (q, X, Y, pad) => { const xs = q.map(p => p.x), ys = q.map(p => p.y); return X > Math.min(...xs) - pad && X < Math.max(...xs) + pad && Y > Math.min(...ys) - pad && Y < Math.max(...ys) + pad; };
-cv.addEventListener('click', e => { if (!(K.tgt === NS - 1 && K.t > NS - 1.2 && B11.a > .5) || !DOORQ) return;
+const doorClick = e => { if (e.target.closest && e.target.closest('a,button')) return; if (!(K.tgt === NS - 1 && K.t > NS - 1.2 && B11.a > .5) || !DOORQ) return;
   if (pDown && (Math.hypot(e.clientX - pDown[0], e.clientY - pDown[1]) > 10 || performance.now() - pDown[2] > 700)) return;
-  if (inQuad(DOORQ, e.clientX, e.clientY, mob ? 18 : 10)) enter('signup', e); });
+  if (inQuad(DOORQ, e.clientX, e.clientY, mob ? 18 : 10)) enter('signup', e); };
+cv.addEventListener('click', doorClick); SCL.addEventListener('click', doorClick);
 window.__door = () => DOORQ && DOORQ.map(p => [Math.round(p.x), Math.round(p.y)]);
 /* r41 · only the door (clicking it, or scrolling past the last scene) plays the dive. Every ordinary link here is a plain link:
    no dive, no black overlay, no wait, and no 'r49site.door' mark, so the next page opens directly */
@@ -896,7 +892,7 @@ const dyeTheme = (day, src) => { if (window.TDAccount && TDAccount.reveal && !RM
 let mx = 0, my = 0, smx = 0, smy = 0, mT = -9;
 addEventListener('pointermove', e => { if (e.pointerType !== 'mouse') return; mx = e.clientX / innerWidth - .5; my = e.clientY / innerHeight - .5; mT = performance.now(); });
 document.addEventListener('mouseleave', () => { mx = my = 0; });
-{ const m = location.search.match(/[?&]at=(\w+)/); if (m) { const n = m[1] === 'end' ? NS : clamp(parseInt(m[1]) || 1, 1, NS); CK.t = CK.tgt = K.t = K.tgt = n - 1; for (let s = 1; s < n; s++) A[s] = 1; de.classList.add('snap'); setTimeout(() => de.classList.remove('snap'), 400); } }
+{ const m = location.search.match(/[?&]at=(\w+)/); if (m) { const n = m[1] === 'end' ? NS : clamp(parseInt(m[1]) || 1, 1, NS); CK.t = CK.tgt = K.t = K.tgt = n - 1; for (let s = 1; s < n; s++) A[s] = 1; de.classList.add('snap'); setTimeout(() => de.classList.remove('snap'), 400); requestAnimationFrame(() => scrTo(n - 1)); } }
 
 /* ---------- HTML bits ---------- */
 const BLK = Array.from({ length: NS }, (_, i) => document.getElementById('b' + (i + 1))), cue = document.getElementById('cue');
@@ -926,14 +922,15 @@ function anchors(only, a) {
     return { w: [0, 1, 2].map(j => C.p[j] + C.f[j] * D + C.r[j] * ux + C.u[j] * uy), e: [0, 1, 2].map(j => C.r[j] * e[0] + C.u[j] * e[1] + C.f[j] * e[2]), k: kk }; }); CMS = cms0; CMY = cmy0;
 }
 // t: the scene's clock decides when copy shows; ct: the camera's clock decides where it sits, so it is at rest the moment the camera is
+let COPYFREE = false;   // r64: during the pull-back the copy shrinks with the scene (no clamp)
 function placeCopy(t, ct = t) { const SP = SPOT();
-  BLK.forEach((b, i) => { const a = ANC[i], dt = t - i, late = i >= 6; let o = late ? 1 - sm((Math.abs(dt) - .06) / .4) : 1 - sm((Math.abs(dt) - .1) / .5);
-    if (i === 5 && dt < 0) o = 1 - sm((Math.abs(dt) - .15) / .75);
+  BLK.forEach((b, i) => { const a = ANC[i], dt = t - i, late = i >= 6; let o = late ? 1 - sm((Math.abs(dt) - .06) / .4) : dt > 0 ? 1 - sm((dt - .02) / .28) : 1 - sm((-dt - .12) / .3);   // r64 #2/#3: 01–06 in turn — the copy leaving is gone (by .3 of the way) before the next one starts (.42 out), never two at once
+    if (i === 5 && dt < 0) o = 1 - sm((-dt - .1) / .5);
     if (i === 9 && dt > 0) o *= 1 - sm(sg(t, 9.01, 9.16));
     const dr = late && ct - i > 0 ? 0 : 3.2;   // 07 on: leaving, the copy stays put in the space and the camera leaves it behind (cut by the screen edge), it never drifts along with the move
     const w = a ? a.w.map((v, j) => v - a.e[j] * (ct - i) * dr) : null, q = o > .01 && w ? pr(...w) : null;
     if (!q) { if (b._v) { b.style.opacity = 0; b._v = 0; b.style.pointerEvents = 'none'; } return; }
-    const sc = clamp(q.k / a.k, .55, 1.7); o *= clamp((1.7 - sc) / .3);
+    const sc = COPYFREE ? q.k / a.k : clamp(q.k / a.k, .55, 1.7); if (!COPYFREE) o *= clamp((1.7 - sc) / .3);
     const c = b.classList.contains('c');
     b.style.opacity = o.toFixed(3); b.style.pointerEvents = c && o > .6 ? 'auto' : 'none';
     let y = q.y; if (!c && !mob) { const h = b._h || (b._h = b.offsetHeight); y += Math.max(0, 62 + h / 2 - H * SP[i][1]); }   // a short landscape screen: the copy rests under the header — a fixed shift, so on the way out it still moves with the space (a floor here held it under the header while the camera left)
@@ -952,10 +949,11 @@ const KIND = [siteText('状态空间模型'), siteText('盘口深度'), siteText
 const PWd = 440, PHd = 600, PSC = 1.5, LT = 196, RH = 50, HROW = 2;
 const PT = [];
 let HIT = null, nextHit = 1.2, hitN = 0, LBLCL = true, LCW = 1;
+function clearHit(w = 1.5) { if (HIT && CO[HIT.ci]) { CO[HIT.ci].hit = 0; CO[HIT.ci].on = 0; } HIT = null; nextHit = T + w; }
 /* the logo goes home: a short fade to the page colour hides the jump, then everything is put back as on a fresh load of 01 */
 const homeEl = document.getElementById('home'), hfadeEl = document.getElementById('hfade'); let HOMING = false;
 function homeReset() { Object.assign(CK, {t:0,v:0,vs:0,tgt:0,speed:1}); K.t = K.tgt = 0; K.v = 0; Object.assign(B11, { on: false, t: 9, v: 0, a: 0 }); A.fill(0); A[0] = 1; AV.fill(0); WT.fill(0); PEND = null; HOLDU = null; GOLD.clear();
-  HIT = null; nextHit = T + 1.2; WS.fired = false; WS.acc = 0; WS.dir = 0; WS.t = -1e9; side = -1; inS = -1; smx = smy = 0;
+  HIT = null; nextHit = T + 1.2; scrTo(0); side = -1; inS = -1; smx = smy = 0;
   BLK.forEach(b => b.classList.remove('in')); de.classList.add('snap'); setTimeout(() => de.classList.remove('snap'), 400); }
 function goHome(e) { if (e) e.preventDefault(); if (GATE || HOMING) return; doorEl.classList.remove('on', 'rm');
   if (K.tgt === 0 && Math.abs(K.t) < .02) { homeReset(); return; }
@@ -1086,8 +1084,9 @@ function drawWall(a) {
   const mg = g; g = wg; g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, WL.width, WL.height); g.setTransform(DPR, 0, 0, DPR, 0, 0);
   wallBody();
   // r50 day: the screens give way behind the 01 headline, so the copy sits on clean teal instead of over a screen
-  if (DAY && BLK[0] && !ML) { const op = +getComputedStyle(BLK[0]).opacity; if (op > .01) { const r = BLK[0].getBoundingClientRect(), px = 46;
-    g.save(); g.globalCompositeOperation = 'destination-out'; g.filter = 'blur(' + Math.round(px * DPR * .9) + 'px)'; g.globalAlpha = .97 * op; g.fillStyle = '#000';
+  if (BLK[0] && !ML) {   // r64 #6: night too — the 01 headline and body no longer sit over the cards
+  const op = +getComputedStyle(BLK[0]).opacity; if (op > .01) { const r = BLK[0].getBoundingClientRect(), px = 46;
+    g.save(); g.globalCompositeOperation = 'destination-out'; g.filter = 'blur(' + Math.round(px * DPR * .9) + 'px)'; g.globalAlpha = (DAY ? .97 : .93) * op; g.fillStyle = '#000';
     g.beginPath(); g.roundRect(-200, r.top - px, r.right + px * 1.2 + 200, r.height + px * 2, px); g.fill(); g.restore(); } }
   g = mg; g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = a; g.drawImage(WL, 0, 0); g.globalAlpha = 1; g.setTransform(DPR, 0, 0, DPR, 0, 0);
 }
@@ -1626,7 +1625,7 @@ const hopOf = a => { const hu = sg(a, 0, .42), ls = sg(a, .42, .54);
 let HOLDU = QP.has('u') ? clamp(+QP.get('u'), 0, 1) : null;
 let LOOKQ = QP.has('look') ? clamp(+QP.get('look'), -.5, .5) : null;   // test hook: hold the look at a value
 let LOOKY = QP.has('looky') ? clamp(+QP.get('looky'), -.5, .5) : null;   // test hook: and up/down
-const WA = [1, .11, .09, .09, .09, .2, .3, .3, .3, .3, .25], CAL = [1, .16, .14, .14, .14, .25, .5, .45, .4, .45, .4];
+const WA = [1, .03, .03, .03, .03, .2, .3, .3, .3, .3, .25], CAL = [1, .16, .14, .14, .14, .25, .5, .45, .4, .45, .4];
 const vis = (t, c, a = .32, b = .72) => 1 - sm(sg(Math.abs(t - c), a, b));
 /* r49 · inkScan: by day, a 64-px-wide copy of the frame just drawn tells each text element whether the scene under it is the
    flat teal (dark ink) or the dark-blue field (light ink). Hysteresis keeps a line from flickering at the edge */
@@ -1647,6 +1646,7 @@ function frame(now) {
   FN++; if (FN % 4 === 0) inkScan();
   const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
   if (RM) { CK.t = CK.tgt; CK.v = 0; CK.vs = 0; } else camStep(CK, dt);
+  scrLock(GATE || PFX.busy() || HOMING);   // r64: no page scroll under the motion layer, a planet transition or going home
   K.t = CK.t; K.v = CK.v; K.tgt = CK.tgt;   // r61: the scene clock is the camera's; what it shows moves with the shot
   const t = clamp(K.t, 0, NS - 1); LBLCL = t < 5.5; LCW = LBLCL ? 1 : 1 - sm(Math.abs(t - Math.round(t)) / .12);   // 07 on: kept on screen only while at rest, let go as soon as the camera moves
   /* r61 · each step's action has one destination: done (1) once the camera is headed for this step or past it, back to the start (0)
@@ -1710,6 +1710,8 @@ function frame(now) {
     }
   }
   PFX.cam(dt);   // r62: the planet transitions move the camera itself (out of the planet, through the door, back in)
+  if (PFX.busy()) { COPYFREE = PFX.kind() !== 'door'; placeCopy(ct, ct); COPYFREE = false; }   // r64: the copy keeps its place in the scene as the camera leaves / comes back
+  if (PFX.busy()) clearHit();   // r64 #5: no stray hit tag while flying out or back
   if (PFX.hidden()) { PFX.compose(); requestAnimationFrame(frame); return; }
 
   g.setTransform(DPR, 0, 0, DPR, 0, 0);
@@ -1754,8 +1756,8 @@ function frame(now) {
   const w11 = Math.max(0, B11.t - 9.05) * 1.1 + B11.a * .9, doorU = sm(sg(w11, .85, 1.3)), logU = sm(sg(w11, 1.05, 1.5));
 
   // the sphere: the market at the bottom layer, the six models over it
-  if (!RM && T > nextHit) { newHit(); nextHit = T + 3.6 + Math.random() * 1.6; }
-  const wi = Math.floor(t), wf = t - wi, wa = L(L(WA[wi], WA[Math.min(NS - 1, wi + 1)], sm(wf)), .8, TXW), coa = L(L(CAL[wi], CAL[Math.min(NS - 1, wi + 1)], sm(wf)), .7, TXW);   // r62: the inner wall comes up while the camera pulls back
+  if (!RM && !PFX.busy() && T > nextHit) { newHit(); nextHit = T + 3.6 + Math.random() * 1.6; }
+  const wi = Math.floor(t), wf = t - wi, wq = wi === 0 ? sm(clamp(wf / .35)) : sm(wf), wa = L(L(WA[wi], WA[Math.min(NS - 1, wi + 1)], wq), .8, TXW), coa = L(L(CAL[wi], CAL[Math.min(NS - 1, wi + 1)], wq), .7, TXW);   // r64 #2/#3: 01↔02 the cards go first and come back last, no residue under 02's copy   // r62: the inner wall comes up while the camera pulls back
   if (!OFF.includes('c')) drawCoins(clamp(coa + .25 * wlc), wlc);
   if (!OFF.includes('w')) drawWall(wa);
   // 08: Binance's mark on the wall
@@ -2105,7 +2107,7 @@ function resize() { BLK.forEach(b => b._h = 0); DPR = Math.min(2, devicePixelRat
 let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(resize, 120); });
 resize(); gyBoot();
 window.__dive = { K, CK, A, B11, go, jump, GY, prj: (x, y, z) => { const v = pr(x, y, z); return v ? [+v.x.toFixed(1), +v.y.toFixed(1)] : null; }, subj: i => pose(CAM()[i], 1)[1],  gyStart, gyFeed: (al, be, ga) => onOri({ alpha: al, beta: be, gamma: ga }), gyTurn, lookNow: () => [+smx.toFixed(3), +smy.toFixed(3)], story: () => ({...HD}), camera: () => ({ p: C.p.slice(), f: C.f.slice() }), poses: () => CAM().map(c => [0, .25, .5, .75, 1].map(a => pose(c, a))), xtra: () => XTRA, smx: () => +smx.toFixed(3),
-  look: v => { LOOKQ = v == null ? null : clamp(v, -.5, .5); }, lookY: v => { LOOKY = v == null ? null : clamp(v, -.5, .5); }, smy: () => +smy.toFixed(3), wlog: WLOG, WH, WS, wsim: seq => { const keep = JSON.stringify(WS), lg = WLOG.length, out = []; Object.assign(WS, { ph: 0, dir: 0, acc: 0, pk: 0, lo: 0, prev: 0, dn: 0, rn: 0, b: [], last: -1e9, gap: 16, tick: 0, tk: false, fired: false, cnt: 0 }); seq.forEach(([t, d, md]) => { const r = wheelStep(t, d, null, md || 0); if (r) out.push([Math.round(t), r, WLOG[WLOG.length - 1][2]]); }); WLOG.length = lg; Object.assign(WS, JSON.parse(keep)); return out; }, gate: () => GATE, o9: O9, o10: O10, home: () => goHome(), theme: d => setTheme(d), day: () => DAY, lbx: LBX, hbx: () => HBX, kbx: () => KBX, hold: v => { HOLDU = v; },   // test: hold the look like ?look= does
+  look: v => { LOOKQ = v == null ? null : clamp(v, -.5, .5); }, lookY: v => { LOOKY = v == null ? null : clamp(v, -.5, .5); }, smy: () => +smy.toFixed(3), hitNow: () => !!HIT, scl: () => ({ top: SCL.scrollTop, h: secH(), max: SCL.scrollHeight - SCL.clientHeight, tgt: CK.tgt }), gate: () => GATE, o9: O9, o10: O10, home: () => goHome(), theme: d => setTheme(d), day: () => DAY, lbx: LBX, hbx: () => HBX, kbx: () => KBX, hold: v => { HOLDU = v; },   // test: hold the look like ?look= does
   // test: where 08's Binance logo lands on screen [left, right, top, bottom]
   dk8: v => { DK8 = v; }, bs: v => { BSZ = v; }, M8, snap: v => { LOOKQ = v; smx = v; },
   k8: () => { const r = BLK[7].getBoundingClientRect(); return { f: FN, W, H, o: O8, l: LBX, bn: __dive.bn(), cp: [r.left, r.right, r.top, r.bottom].map(Math.round), op: +getComputedStyle(BLK[7]).opacity }; },

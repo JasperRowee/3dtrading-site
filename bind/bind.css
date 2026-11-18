@@ -150,3 +150,10 @@ html[data-theme=day] .wlogo{filter:invert(1)}
 
 /* r63 · 教程里左上角已有「退出教程」，外层这个按钮不再显示 */
 .back-app{display:none!important}
+
+/* r64 · 7 · 绑定窗口的提示文字：白色、更大，字重跟官网标题；窗口固定深色（浅色主题下也不变白），「查看完整教程」不再用主题绿 */
+html[data-theme=day]{--win:#14171a;--ink:#f2f5f4;--ink2:#b3bdba;--ink3:#7c8885;--line:rgba(255,255,255,.08);--field:rgba(255,255,255,.05);--fieldL:rgba(255,255,255,.14);
+  --acc:#2fdcbc;--accH:#5fe8cf;--ex:#e9b44c;--bad:#ff6369;--ok:#2fdcbc;color-scheme:dark}
+.lead{margin:2px 0 18px;font-size:18px;line-height:1.3;font-weight:700;letter-spacing:-.02em;color:#fff}
+.tut{color:#fff}.tut:hover{color:#fff;opacity:.8}
+@media (max-width:560px){.lead{font-size:16.5px}}

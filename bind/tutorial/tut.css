@@ -296,3 +296,13 @@ html.intro .tx-exit{visibility:visible}
 .tx-exit{position:fixed;z-index:56;left:max(16px,env(safe-area-inset-left));top:14px}
 html.embed .bnh,.bnh{padding-left:calc(max(16px,env(safe-area-inset-left)) + 118px)}
 @media (max-width:760px){.tx-exit{top:8px;left:max(10px,env(safe-area-inset-left))}html.embed .bnh,.bnh{padding-left:calc(max(10px,env(safe-area-inset-left)) + 44px)}}
+
+/* r64 · 7 · 提示文字不用主题绿：白字、更大，字重 / 字距跟官网标题（700 · -.02em），深色底，边框改中性。
+   官网标题行高 1.14 是单行大字用的；提示常折两行，这里取 1.3 保持同样紧凑但不压字 */
+.hint{max-width:min(380px,calc(100vw - 24px));gap:12px;padding:12px 15px;border-radius:12px;background:rgba(10,12,15,.96);color:#fff;
+  font:700 18px/1.3 var(--sans);letter-spacing:-.02em;box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.16)}
+.hint code{font:700 15px var(--mono);color:#fff;letter-spacing:0}
+.hint .cp{height:32px;padding:0 12px;background:#fff;color:#0b0e11;font:700 13.5px var(--sans);letter-spacing:0}
+.hint .cp.done{background:#d5d9de}
+.hint em.ex{font-size:12px}
+@media (max-width:760px){.hint{font-size:16.5px;padding:11px 13px}.hint code{font-size:14px}}
