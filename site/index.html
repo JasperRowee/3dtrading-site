@@ -51,6 +51,7 @@ h2{font-size:clamp(30px,3.1vw,44px)}
 h1 em,h2 em{font-style:normal;color:var(--brand)}
 h2 .l{color:var(--up)}h2 .s{color:var(--dn)}h2 .y{color:var(--bn)}
 .blk p{margin-top:20px;font-size:16px;line-height:1.75;color:#b4bbc2;max-width:410px;text-shadow:0 0 18px #06090b,0 0 4px #06090b}
+@media(min-width:761px){#b1 h1,#b1 h2,#b1 p{text-shadow:none}}   /* r68 · 2: desktop 01 copy without the dark halo */
 .blk p b{color:#fff;font-weight:600}
 /* the last step: centred over the door */
 .blk.c{width:min(620px,80vw);transform-origin:50% 0;text-align:center}
@@ -940,8 +941,8 @@ SCL.addEventListener('scroll', () => {
    之后每站 STEP[1]、STEP[2]……越来越少（下限 STEP 末项），最多 4 站。累计过了第一站门槛时镜头就朝下一站起步（只加速），锁定后若要走更远，
    就从当前位置、带着当前速度改成直线飞向终点，然后只减速一次。滚轮一格（单次大值）= 一站。
    手机：恢复一划一站（r65），飞行中再划同方向终点 +1、反向 −1，都接着当前速度走 */
-const WTH = { STEP: (QP.get('wth') || '14,12,10,8').split(',').map(Number), WIN: 250, GAP: 90, MAXN: 4 };
-const wthAt = n => { let a = 0; for (let k = 0; k < n; k++) a += WTH.STEP[Math.min(k, WTH.STEP.length - 1)]; return a * a; };   // px of scrolling needed for n stops
+const WTH = { BASE: +QP.get('wth') || 196, WIN: 250, GAP: 90, MAXN: 4 };
+const wthAt = n => WTH.BASE * Math.pow(2, n - 1);   // r68 · 1: px of scrolling needed for n stops: one stop is easy, each further stop asks for double (196 · 392 · 784 · 1568)
 const stepsOf = est => { let n = 0; while (n < WTH.MAXN && est >= wthAt(n + 1)) n++; return n; };
 const busyIn = () => GATE || PFX.busy() || HOMING;
 function gesture(dir, n, why) { if (busyIn() || n < 1) return; GLAST = performance.now(); window.__lastG = { dir, n, why };
@@ -1816,10 +1817,13 @@ gateEl.addEventListener('touchmove', e => e.preventDefault(), { passive: false }
 function gyBoot() { if (!touchDev || !window.DeviceOrientationEvent) return; let kept = null; try { kept = sessionStorage.getItem('r49site.gy'); } catch (e) {}
   if (kept === 'skip' || kept === 'denied') { GY.skip = true; GY.state = kept; return; }
   if (!kept && K.tgt === 0 && !QP.has('nogate') && !gateSeen() && !BACKVISIT) { gateShow(); GY.state = 'ask'; return; }
+  if (kept === 'on' && needAsk()) { GY.state = 'ask'; let p = null; try { p = DeviceOrientationEvent.requestPermission(); } catch (e) {}   // r68 · 3: allowed earlier this visit: on again with no tap (an allowed page gets 'granted' without one); else the next touch asks
+    if (p && p.then) { GY.asked = true; p.then(r => { GY.asked = false; if (r === 'granted') gyStart(); }).catch(() => { GY.asked = false; }); } return; }
   if (needAsk()) { GY.state = 'ask'; setTimeout(() => { if (!GY.on && !GY.asked && GY.state === 'ask' && !QP.has('nogate') && !BACKVISIT && !gateSeen()) toast(siteText('轻点屏幕，开启体感')); }, 1400); } else gyStart(); }   // a later visit in the same session: the first touch asks again, said once
 addEventListener('orientationchange', recal); if (screen.orientation) screen.orientation.addEventListener('change', recal);
 document.addEventListener('visibilitychange', () => { if (!GY.on) return; if (document.hidden) gyListen(false); else { gyListen(true); recal(); } });
 addEventListener('pagehide', () => gyListen(false));
+window.__gyOn = () => { if (touchDev && !GY.on && !GY.skip && GY.state !== 'denied') gyStart(); };   // r68 · 3: the log-in page's 返回官网 tap allowed motion: on as the site comes back
 // r41: turning the phone between portrait and landscape moves the reference edge; take the new hold as straight ahead
 const gyTurn = () => { if (GY.on) recal(); };
 addEventListener('orientationchange', gyTurn); if (screen.orientation && screen.orientation.addEventListener) screen.orientation.addEventListener('change', gyTurn);
@@ -1864,6 +1868,7 @@ function frame(now) {
   for (let s = 1; s < NS; s++) {
     const at = s === NS - 1 ? B11.t : K.t, go1 = K.tgt >= s && (A[s] > 0 || at > s - (PRE[s] || .03)), tg = go1 ? 1 : 0;
     if (RM) { A[s] = tg; AV[s] = 0; continue; }
+    if (s === 1 && !go1 && K.tgt < 1) { A[1] = Math.min(A[1], clamp(K.t)); AV[1] = 0; continue; }   // r68 · 4: 02→01 plays 01's entrance backwards with the camera, reaching its start as 01 arrives
     const D = DUR[s], m = { x: A[s], v: AV[s] }; chase(m, tg, MV.AA / (D * D), MV.AK / D, dt, 1e-3); A[s] = clamp(m.x, 0, 1); AV[s] = m.v;
   }
   if (HOLDU != null) A[K.tgt] = HOLDU;   // test hook: hold the step's progress
@@ -1972,7 +1977,7 @@ function frame(now) {
 
   // the sphere: the market at the bottom layer, the six models over it
   if (!RM && !PFX.busy() && T > nextHit) { newHit(); nextHit = T + 3.6 + Math.random() * 1.6; }
-  const wi = Math.floor(t), wf = t - wi, wq = wi === 0 ? sm(sg(wf, .1, .55)) : sm(wf), wqF = sm(wf), wa = L(L(WA[wi], WA[Math.min(NS - 1, wi + 1)], wq), .8, TXW), coa = L(L(CAL[wi], CAL[Math.min(NS - 1, wi + 1)], wqF), .7, TXW);   // r66 · 5: 01↔02 cards fade over 10–55% of the way (gone before 02's copy at 42%); rings and dome light dim over the whole way
+  const wi = Math.floor(t), wf = t - wi, wq = wi === 0 ? 1 - Math.pow(1 - sg(wf, 0, .62), 2.2) : sm(wf), wqF = sm(wf), wa = L(L(WA[wi], WA[Math.min(NS - 1, wi + 1)], wq), .8, TXW), coa = L(L(CAL[wi], CAL[Math.min(NS - 1, wi + 1)], wqF), .7, TXW);   // r68 · 5: 01↔02 the wall eases out from the first move, like falling back into the distance (was 10–55% smoothstep: a sudden dip); r66 · 5: 01↔02 cards fade over 10–55% of the way (gone before 02's copy at 42%); rings and dome light dim over the whole way
   DOMEA = L(L(WA[wi], WA[Math.min(NS - 1, wi + 1)], wqF), .8, TXW);   // r64 #2/#3: 01↔02 the cards go first and come back last, no residue under 02's copy   // r62: the inner wall comes up while the camera pulls back
   if (!OFF.includes('c')) drawCoins(clamp(coa + .25 * wlc), wlc);
   if (!OFF.includes('w')) { dome(DOMEA); drawWall(wa); }

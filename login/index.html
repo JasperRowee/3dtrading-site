@@ -16,7 +16,7 @@ addEventListener('pagereveal',function(e){var v=e.viewTransition;if(v)[v.ready,v
 <link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/dodo-180.png">
 <style>/* r62 · the website <-> log-in fade opts in here, inline, so it is known before login.css arrives (the copy in login.css stays) */@view-transition{navigation:auto}</style>
-<link rel="stylesheet" href="login.css?v=r66">
+<link rel="stylesheet" href="login.css?v=r68">
 </head>
 <body>
 <div class="scene" id="scene" aria-hidden="true"><canvas id="space"></canvas><canvas id="gx"></canvas><canvas id="orb"></canvas></div>
@@ -123,6 +123,8 @@ addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) re
    Arrival (?via=…) is dropped from the address so a reload is plain. */
 (function(){var a=document.getElementById('home');try{var u=new URL(location.href);if(u.searchParams.has('via')){u.searchParams.delete('via');history.replaceState(history.state,'',u.pathname+u.search+u.hash)}}catch(e){}
 if(!a)return;a.addEventListener('click',function(e){if(e.button||e.metaKey||e.ctrlKey||e.shiftKey||e.altKey)return;var P=window.__planet;if(!P||!P.fly||P.still)return;e.preventDefault();
+try{var G=window.DeviceOrientationEvent,k=sessionStorage.getItem('r49site.gy');if(G&&typeof G.requestPermission==='function'&&k!=='skip'&&k!=='denied')G.requestPermission().then(function(r){try{sessionStorage.setItem('r49site.gy',r==='granted'?'on':'denied')}catch(x){}if(r==='granted'&&window.__EMBED&&parent.__gyOn)parent.__gyOn()}).catch(function(){})}catch(x){}/* r68 · 3: this tap counts as the person's go-ahead for motion back on the website */
+
 var n=1;try{n=Math.max(1,parseInt(sessionStorage.getItem('r62.site.at'))||1)}catch(x){}var to=a.getAttribute('href')+'?at='+n+'&via=planet',d=document.documentElement;
 d.classList.remove('arrive');d.classList.add('leave');setTimeout(function(){P.fly(0,function(){if(window.__EMBED&&parent.__siteJoin)parent.__siteJoin.back();else location.href=to})},60)});
 window.__joinBack=function(){a.click()};

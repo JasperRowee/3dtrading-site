@@ -5828,7 +5828,7 @@ const bnSave = () => { try { TDBind.saveDraft($('#bnNm')?.value || ''); } catch 
 const CP_I = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>';
 function qbForm() {
   const pm = BN_PERMS.map(([id, t, k]) => `<li class="qb-pm ${k}" data-pm="${id}"><i aria-hidden="true">${k === 'on' ? '✓' : k === 'off' ? '✕' : '○'}</i><span>${t}</span><small>${k === 'on' ? '勾选' : k === 'off' ? '不勾' : '可选'}</small></li>`).join('');
-  /* r67 · 只留五行：账户名称 → 公钥 → IP 白名单 → 权限配置 → API Key + 绑定。说明、长提示、演示提示、跳过、教程链接都去掉；1234 演示照样可用 */
+  /* r67 · 只留五行：账户名称 → 公钥 → IP 白名单 → 权限配置 → API Key + 绑定。说明、长提示、演示提示、跳过都去掉；1234 演示照样可用。r68：「查看完整教程」入口恢复（电脑在底部右侧，手机在顶部右侧） */
   return `<div class="qb qb5" id="qb">
     <div class="qb-row"><label class="qb-k" for="bnNm"><em>1</em>账户名称</label>
       <div class="qb-in"><input id="bnNm" maxlength="24" placeholder="例如：主账户" value="${esc(TDBind.draft())}" data-first></div></div>
@@ -5840,7 +5840,8 @@ function qbForm() {
       <div class="qb-in"><input id="bnKey" autocomplete="off" spellcheck="false" maxlength="64" placeholder="粘贴 API Key" aria-describedby="bnErr">
         <button type="submit" class="btn brand">绑定</button></div>
       <p class="bnm-err" id="bnErr" role="alert"></p>
-      <div class="bnm-res" id="bnRes" role="status" hidden></div></form></div>`;
+      <div class="bnm-res" id="bnRes" role="status" hidden></div></form>
+    <div class="qb-ft"><span class="sp"></span><a class="lnk" id="bnGuide" href="/3dtrading-site/bind/?from=app&lang=${EN() ? 'en' : 'zh'}#guide">查看完整教程</a></div></div>`;
 }
 function qbDone() {
   const d = QB.done, all = (() => { try { return TDBind.demoList(); } catch (e) { return []; } })();
@@ -5859,6 +5860,7 @@ function qbRender(focus) {
   /* r61 · 手机底部面板：顶部左「取消」、右「查看完整教程」 */
   const hd = $('#modal .mdl-hd'); $$('.qbx', hd).forEach(x => x.remove());
   hd.insertAdjacentHTML('afterbegin', `<button type="button" class="qbx l" data-qbx>${QB.done ? '关闭' : '取消'}</button>`);
+  if (!QB.done) hd.insertAdjacentHTML('beforeend', `<a class="qbx r" id="bnGuide2" href="/3dtrading-site/bind/?from=app&lang=${EN() ? 'en' : 'zh'}#guide">查看完整教程</a>`);   // r68 · 卡片简约但教程入口保留（Jasper 2026-11-18）
   if (focus) (QB.done ? $('[data-bxnext]') : focus === 'key' ? $('#bnKey') : $('#bnNm'))?.focus({ preventScroll: true });
 }
 function openBind(done, carried) {
