@@ -273,7 +273,8 @@
   function loop(t) { if (!WAIT()) draw(t); raf = requestAnimationFrame(loop); }
   /* r63 · 同页衔接：官网把场景交过来的那一刻才开始「到达」（2D 天空先在，WebGL 天空随后淡入），和整页打开时一样 */
   if (!ART) window.__planetJoin = function () { t0 = 0; mkT = performance.now(); MK = 0;   // r66 · 2: the form is already whole; the dimming under it starts at once, no second entrance
-    k2dT = 0; K2D = 1; ARRIVE = true; MODE = '2d'; GL.hidden = false; GL.style.opacity = '';
+    // r67 · 2: the website already showed this page's WebGL sky (taken from it); if it is drawing, keep it, no 2D sky and no cross-fade
+    var glr = !!(window.__space && window.__space.mode === 'webgl'); k2dT = 0; K2D = 1; ARRIVE = true; MODE = glr ? 'gl' : '2d'; GL.hidden = glr; GL.style.opacity = '';
     if (PEND) { var m = PEND; PEND = null; setMode(m); } draw(performance.now()); };
   if (ART) {
     /* the website's transitions. frame(o): o.p = where the planet is (0 = all around us / inside, 1 = the log-in composition),
@@ -288,9 +289,13 @@
         LITE = !!o.lite && o.R != null && o.R > F.R * 1.6;
         if (o.cx != null) { cx = o.cx; cy = o.cy; R = o.R; }
         g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, W, H);
-        GL.style.opacity = o.sky == null ? 1 : o.sky; sky(now);
-        g.save(); g.globalAlpha = o.sky == null ? 1 : o.sky; field(now); g.restore();
-        planet(spin(), 0, 0, now, o);
+        GL.style.opacity = o.sky == null ? 1 : o.sky;
+        /* r67 · 2: o.gl = the log-in page's own WebGL sky, taken from the preloaded page at 10 / 11: drawn as it is (no 2D sky, no 2D
+           stars, no 2D nebula), so the frame handed over is the frame that page shows with its WebGL sky */
+        var gls = o.gl && o.gl.width ? o.gl : null, M0 = MODE;
+        if (gls) { var l = GL.getContext('2d'); l.setTransform(1, 0, 0, 1, 0, 0); l.globalCompositeOperation = 'source-over'; l.clearRect(0, 0, GL.width, GL.height); l.drawImage(gls, 0, 0, GL.width, GL.height); MODE = 'gl'; }
+        else { sky(now); g.save(); g.globalAlpha = o.sky == null ? 1 : o.sky; field(now); g.restore(); }
+        planet(spin(), 0, 0, now, o); MODE = M0;
         cx = F.cx; cy = F.cy; R = F.R; LITE = false; frames++;
       }
     };
@@ -304,7 +309,7 @@
   if (window.ResizeObserver) { var ro = new ResizeObserver(function () { measure(); }); ['.card', '.hero'].forEach(function (q) { var e = document.querySelector(q); if (e) ro.observe(e); }); }
   document.addEventListener('visibilitychange', function () { if (still) return; cancelAnimationFrame(raf); if (!document.hidden) raf = requestAnimationFrame(loop); });
   window.__planet = {
-    fly: function (ms, done) { if (still) { if (done) done(); return; } if (FLY) return; if (MODE === 'gl') { MODE = '2d'; GL.hidden = false; GL.style.opacity = 1; } FLY = { m: { x: 1, v: 0 }, last: performance.now(), done: done }; },
+    fly: function (ms, done) { if (still) { if (done) done(); return; } if (FLY) return; if (MODE === 'gl' && !(window.__space && window.__space.mode === 'webgl')) { MODE = '2d'; GL.hidden = false; GL.style.opacity = 1; } /* r67 · 2: the WebGL sky stays on the way back too */ FLY = { m: { x: 1, v: 0 }, last: performance.now(), done: done }; },
     fl: function () { return FLY && { u: +FLY.m.x.toFixed(4), v: +FLY.m.v.toFixed(3) }; }, path: function () { place(); var p = path3(); return { ox: p.ox, r0: p.r(1), rx: p.r(p.ox) }; },
     version: 'r62', arrive: function () { return { via: VIA, k2d: K2D, mk: MK, mode: MODE }; }, mode: function () { return MODE; }, source: 'r42–r47 night planet (28d0e36)', webgl: false, still: still, frames: function () { return frames; },
     planet: function () { return { R: Math.round(R), cx: Math.round(cx), cy: Math.round(cy), mob: mob, W: W, H: H, dots: N, pillars: GOLD.length }; },

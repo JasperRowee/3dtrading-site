@@ -32,16 +32,13 @@
   /* r58: an account with Google Authenticator 2FA on gets in only with the one-time ticket the log-in page issues after
      the code was checked (same tab, 2 minutes). A bare #who= link cannot skip the second step. */
   var AU = window.TDAuth;
-  if (email && AU && AU.tfaOn(email)) {
-    if (!AU.takeTicket(email)) { location.replace('/3dtrading-site/login/?mode=login&tfa=1'); return; }
-    AU.markOk(email);
-  }
+  /* r67: log in lets anyone in, so the 2FA ticket gate is gone */
   if (email) {
     if (!cur || cur.email !== email) {
       /* a different person was signed in on this browser: end that local session first, then sign in or create this one */
       if (cur) { try { A.logout({ redirect: false }); } catch (e) {} }
-      var r = A.login({ email: email }); if (!r.ok) A.register({ email: email, name: name });
-    }
+      var r = A.login({ email: email, name: name }); if (!r.ok) A.register({ email: email, name: name });
+    } else if (name && cur.name !== name) { A.login({ email: email, name: name }); }
   } else if (!cur) {
     /* opened without a log-in behind it (e.g. the binding preview on its own): a local demo user */
     var d = { email: 'demo@3dtrading.local', name: lang === 'en' ? 'Demo user' : '演示用户' };

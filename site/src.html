@@ -77,6 +77,7 @@ h2 .l{color:var(--up)}h2 .s{color:var(--dn)}h2 .y{color:var(--bn)}
 .rail button.on{color:#e9edf0}.rail button.on i{width:26px}.rail button.on span,.rail:hover button span{opacity:1;transform:none}
 @media (max-height:520px) and (pointer:coarse){.cue,.note{display:none}}
 .note{position:fixed;z-index:6;left:clamp(24px,6vw,96px);bottom:24px;font:500 11px var(--mono);letter-spacing:.06em;color:var(--ink3)}
+.note .nbl{color:var(--ink2,#c9d1d6);text-decoration:none;margin-left:14px;pointer-events:auto}.note .nbl::before{content:"· ";color:var(--ink3)}.note .nbl:hover{color:var(--brand)}   /* r67: the blog, in the corner line too */
 
 @media (max-width:760px){
   .bar{height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 16px 0}.bar .logo{height:21px}.acts a{height:32px;padding:0 13px;font-size:13px}.acts .gh{display:inline-flex}
@@ -144,6 +145,7 @@ html.tx3 .chap,html.tx3o .chap{opacity:0!important;pointer-events:none!important
 #pfxS{background:#05070a}   /* the log-in page's sky colour (its body background); the canvas carries only stars and haze */
 .pfx::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(95% 85% at 50% 42%,transparent 62%,rgba(0,0,0,.28));opacity:var(--vg,1)}
 .pfx.on{display:block;pointer-events:auto}
+.pfxg{position:fixed;left:-20%;top:-20%;width:140%;height:140%;z-index:22;display:none;pointer-events:none;opacity:0;background:radial-gradient(closest-side,rgba(240,255,251,.95),rgba(191,245,234,.5) 40%,rgba(47,220,188,.12) 72%,rgba(47,220,188,0));will-change:opacity,transform,filter}   /* r67 · 7: the door's light, full screen as we pass */
 .pfx.on{will-change:opacity,clip-path}
 /* r62 · while the camera leaves (or comes back), the page's own copy, bar and controls step aside; they come back as it lands */
 /* r63 · 转场时文字跟着场景走（--txk 缩放、--txf 淡出，由镜头每帧给出），不再自己淡出 */
@@ -217,14 +219,14 @@ html[data-theme=day] .tm{background:transparent;color:#0c1f2e;box-shadow:inset 0
 .hfade.on{opacity:1}
 /* copy coming in: the eyebrow first with its rule drawing out, then each headline line rising out of its own mask, then the paragraph settling */
 .blk .ln{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
-.blk .ln>span{display:block;transform:translateY(105%);transition:transform .9s cubic-bezier(.16,.84,.24,1)}
-.blk .ey{opacity:0;transform:translateX(-10px);transition:opacity .6s,transform .7s cubic-bezier(.2,.75,.2,1)}
-.blk .ey::after{transform:scaleX(0);transform-origin:0 50%;transition:transform .9s .25s cubic-bezier(.2,.75,.2,1)}
-.blk p,.blk .hint,.blk .go{opacity:0;transform:translateY(12px);filter:blur(4px);transition:opacity .8s .42s,transform 1s .42s cubic-bezier(.2,.75,.2,1),filter .8s .42s}
-.blk.in .ln>span{transform:none}.blk.in .ln:nth-child(2)>span{transition-delay:.11s}.blk.in .ln:nth-child(3)>span{transition-delay:.22s}
+.blk .ln>span{display:block;transform:translateY(105%);transition:transform .6s cubic-bezier(.16,.84,.24,1)}
+.blk .ey{opacity:0;transform:translateX(-10px);transition:opacity .4s,transform .5s cubic-bezier(.2,.75,.2,1)}
+.blk .ey::after{transform:scaleX(0);transform-origin:0 50%;transition:transform .6s .12s cubic-bezier(.2,.75,.2,1)}
+.blk p,.blk .hint,.blk .go{opacity:0;transform:translateY(12px);filter:blur(4px);transition:opacity .5s .18s,transform .6s .18s cubic-bezier(.2,.75,.2,1),filter .5s .18s}   /* r67 · 14: the copy is in place when the camera stops, not a second later */
+.blk.in .ln>span{transform:none}.blk.in .ln:nth-child(2)>span{transition-delay:.07s}.blk.in .ln:nth-child(3)>span{transition-delay:.14s}
 .blk.in .ey{opacity:1;transform:none}.blk.in .ey::after{transform:none}
 .blk.in p,.blk.in .hint,.blk.in .go{opacity:1;transform:none;filter:none}
-html[data-theme=day] .blk p,html[data-theme=day] .blk .hint,html[data-theme=day] .blk .go{transition:color .35s ease,opacity .8s .42s,transform 1s .42s cubic-bezier(.2,.75,.2,1),filter .8s .42s}   /* r64 #2: the title first, then the text, in both themes */
+html[data-theme=day] .blk p,html[data-theme=day] .blk .hint,html[data-theme=day] .blk .go{transition:color .35s ease,opacity .5s .18s,transform .6s .18s cubic-bezier(.2,.75,.2,1),filter .5s .18s}   /* r64 #2: the title first, then the text, in both themes */
 .blk:not(.in) p,.blk:not(.in) .hint,.blk:not(.in) .go{transition-delay:0s!important}
 @media (prefers-reduced-motion:reduce){.blk .ln>span,.blk .ey,.blk p,.blk .hint,.blk .go{transform:none!important;filter:none!important;transition:opacity .4s!important}.blk .ln>span{opacity:0}.blk.in .ln>span{opacity:1}.blk .ey::after{transform:none}}
 /* 10: one small real way into the chat, pinned near the Dodo who answers */
@@ -263,7 +265,7 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 <div class="lay">
 <header class="bar">
   <a class="home" id="home" href="#" aria-label="3dtrading，回到首页" title="回到首页"><img class="logo" src="assets/3dtrading-logo-white.svg" alt="3dtrading"></a>
-  <div class="acts" id="acts"><a class="pr" data-go="signup">登录/注册</a></div>
+  <div class="acts" id="acts"><a class="gh bl" id="blogT" href="../blog/">博客</a><a class="pr" data-go="signup">登录/注册</a></div>
 </header>
 
 <section class="copy" id="copy" aria-live="polite">
@@ -324,7 +326,7 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 
 <nav class="rail" id="rail" aria-label="步骤"></nav>
 <button class="cue" id="cue" aria-label="下一步"><span>向下</span><i></i></button>
-<div class="note">合成条件演示 · 账面余额未扣浮亏，演示数据不代表真实账户或未来收益</div>
+<div class="note">合成条件演示 · 账面余额未扣浮亏，演示数据不代表真实账户或未来收益<a class="nbl" id="blogF" href="../blog/">博客</a></div>
 <div class="scrim" aria-hidden="true"></div>
 <a class="talk" id="talk" data-go="ai">和 Dodo 对话</a>
 <button class="chap" id="chap" aria-haspopup="dialog" aria-label="选择章节"><b>01</b>&nbsp;/ 11</button>
@@ -343,10 +345,10 @@ html[lang=en] .note{max-width:42vw;font-size:10px}
 addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) return; var u = ''; [v.ready, v.finished, v.updateCallbackDone].forEach(function (q) { q && q.catch(function () {}); });   // r62: the browser may still give it up (it is only a fade); that is no error
   try { u = new URL(e.activation && e.activation.entry && e.activation.entry.url || '', location.href).pathname; } catch (x) {}
   if (!/\/(site|login)\/(index\.html)?$/.test(u)) v.skipTransition(); });</script>
-<div class="pfx" id="pfx" aria-hidden="true"><canvas id="pfxS"></canvas><canvas id="pfxP"></canvas></div>
+<div class="pfx" id="pfx" aria-hidden="true"><canvas id="pfxS"></canvas><canvas id="pfxP"></canvas></div><div class="pfxg" id="pfxG" aria-hidden="true"></div>
 <script>/* r62 · back from the log-in page (?via=planet): the shell covers the screen from the first paint, the copy waits for the landing */
 try { if (/[?&]via=planet\b/.test(location.search) && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('via-planet', 'tx3'); } catch (e) {}</script>
-<script src="/3dtrading-site/login/planet.js?v=r66" data-art="1" data-gx="pfxS" data-orb="pfxP"></script>
+<script src="/3dtrading-site/login/planet.js?v=r67" data-art="1" data-gx="pfxS" data-orb="pfxP"></script>
 
 <script src="i18n/r48.js?v=r55"></script>
 <script>
@@ -420,6 +422,10 @@ function setCam(p, l, sx, sy) {
   const u = [f[1] * r[2] - f[2] * r[1], f[2] * r[0] - f[0] * r[2], f[0] * r[1] - f[1] * r[0]];
   Object.assign(C, { p, f, r, u, F: (H / 2) / Math.tan(.42) * (mob ? CMS : 1), cx: mob ? W * .5 + sx * H * 1.6 * MS * MSX * (MS / CMS) : W * (.5 + sx), cy: H * (.5 + (mob ? CMY : sy)) });
 }
+// r67 · 7: a polygon cut at the near plane, then projected: a door corner behind the camera no longer drops the whole door
+const prPoly = P3 => { const zn = .35, Q = P3.map(p => { const v = [p[0] - C.p[0], p[1] - C.p[1], p[2] - C.p[2]]; return [v[0] * C.r[0] + v[2] * C.r[2], v[0] * C.u[0] + v[1] * C.u[1] + v[2] * C.u[2], v[0] * C.f[0] + v[1] * C.f[1] + v[2] * C.f[2]]; }), o = [];
+  for (let i = 0; i < Q.length; i++) { const a = Q[i], b = Q[(i + 1) % Q.length], ia = a[2] >= zn, ib = b[2] >= zn; if (ia) o.push(a); if (ia !== ib) { const t = (zn - a[2]) / (b[2] - a[2]); o.push(a.map((v, k) => v + (b[k] - v) * t)); } }
+  return o.map(([x, y, z]) => ({ x: clamp(C.cx + x * C.F / z, -2e4, 2e4), y: clamp(C.cy - y * C.F / z, -2e4, 2e4) })); };
 const pr = (x, y, z) => { const vx = x - C.p[0], vy = y - C.p[1], vz = z - C.p[2], Z = vx * C.f[0] + vy * C.f[1] + vz * C.f[2];
   if (Z < .3) return null;
   if (CULL) { const ax = x - SC[0], ay = y - SC[1], az = z - SC[2], rr = ax * ax + ay * ay + az * az; if (rr > CULL.r2 && ax * CULL.n[0] + ay * CULL.n[1] + az * CULL.n[2] > Math.sqrt(rr) * CULL.c) return null; }   // r62: outside the shell, its near cap is open
@@ -604,7 +610,7 @@ function camLaw(m, dt) { const R = arc(), cs = { x: sOf(m.t), v: m.vs || 0 }, t0
   chase(cs, R.S[clamp(m.tgt, 0, NS - 1)], MV.CA * R.med, MV.CK, dt, R.med * 1e-4); m.vs = cs.v; m.t = cs.x === R.S[m.tgt] ? m.tgt : tOf(cs.x); m.v = dt > 0 ? (m.t - t0) / dt : 0; }
 /* 11 builds on its own clock (B11.t 9→10: the stairs rise, the door, the logo). It sets off the moment the destination becomes 11, i.e. as the
    camera leaves 10, with the same law; going back it winds down the same way. B11.a is 11's action (A[10]) */
-const B11 = { on: false, t: 9, v: 0, a: 0 };
+const B11 = { on: false, t: 9, v: 0, a: 0 }; let LOGA = 0;
 function b11Step(dt) {
   if (RM || HOLDU != null) { Object.assign(B11, { on: K.t > 9.2, t: Math.min(K.t, 10), v: 0, a: A[NS - 1] }); return; }   // reduced motion / test hook: exactly the scene clock, as before
   if (!B11.on && B11.t === 9 && K.t > 9.2) { B11.t = Math.min(K.t, 10); }   // opened already on 11 (?at=end)
@@ -657,7 +663,10 @@ const PFX = (() => {
   const loginURL = (url, via) => url + (url.indexOf('?') < 0 ? '?' : '&') + 'via=' + via;
   const herm = (a, ma, b, mb, w) => { const w2 = w * w, w3 = w2 * w, h0 = 2 * w3 - 3 * w2 + 1, h1 = w3 - 2 * w2 + w, h2 = -2 * w3 + 3 * w2, h3 = w3 - w2; return a.map((v, i) => h0 * v + h1 * ma[i] + h2 * b[i] + h3 * mb[i]); };
   const nlerp = (a, b, t) => nrm(a.map((v, i) => L(v, b[i], t)));
-  let X = null;
+  let X = null; const GLO = document.getElementById('pfxG');
+  let MK0 = '';   // r67 · 7: the feathered door mask over the planet picture (an SVG polygon, Gaussian-blurred)
+  function doorMask(pts, f) { const v = pts ? `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='${W}' height='${H}' viewBox='0 0 ${W} ${H}'><filter id='f' filterUnits='userSpaceOnUse' x='${-W}' y='${-H}' width='${3 * W}' height='${3 * H}'><feGaussianBlur stdDeviation='${f.toFixed(1)}'/></filter><polygon points='${pts}' fill='white' filter='url(#f)'/></svg>`)}")` : '';
+    if (v === MK0) return; MK0 = v; box.style.webkitMaskImage = box.style.maskImage = v; box.style.webkitMaskSize = box.style.maskSize = v ? '100% 100%' : ''; box.style.webkitMaskRepeat = box.style.maskRepeat = v ? 'no-repeat' : ''; }
   /* the log-in composition for this window, and the straight line out to it: looking at the planet's centre along fe, the shell's
      outline is a circle of radius F·SR/√(d²−SR²) round the log-in page's planet centre; it has the log-in radius at dEnd.
      cyi: inside, the lens keeps its centre a little below the middle of the screen (on phones the log-in planet is up in the corner,
@@ -713,7 +722,7 @@ const PFX = (() => {
     if (X || leaving || !art() || !DOORG) return false; leaving = true; remember();
     const r = routes(), go = loginURL(kind === 'login' ? r.login : r.signup, 'door'); window.__enter = { kind: 'door', url: go, at: performance.now() };
     if (RM) { location.href = go; return true; }
-    X = plan('door', go); X.t0 = performance.now(); txStart(); JOIN.prep(go); const D = DOORG; X.Dc = onS(D.da, (D.e0 + D.e1) / 2, D.rr); X.n = [Math.sin(D.da), 0, Math.cos(D.da)]; X.Pd = add3(X.Dc, mul3(X.n, 9));
+    X = plan('door', go); X.t0 = performance.now(); X.v = Math.min(.9, Math.abs(CK.vs || 0) / arc().med / LEN_DOOR); /* r67 · 11: carries the camera's speed */ txStart(); JOIN.prep(go); const D = DOORG; X.Dc = onS(D.da, (D.e0 + D.e1) / 2, D.rr); X.n = [Math.sin(D.da), 0, Math.cos(D.da)]; X.Pd = add3(X.Dc, mul3(X.n, 9));
     de.classList.add('tx3'); return true;
   }
   /* each frame, after the scene's own camera is worked out (it stays the start of the path, so coming back lands exactly on it) */
@@ -723,9 +732,8 @@ const PFX = (() => {
     const lo = X.kind !== 'door' && X.out && !RM; if (lo !== LORES) setRes(lo);
     CST = { p: C.p.slice(), f: C.f.slice(), r: C.r.slice(), u: C.u.slice(), F: C.F, cx: C.cx, cy: C.cy };
     txFollow();
-    if (X.kind === 'door') { X.u = Math.min(1, (performance.now() - X.t0) / 1000 / DOOR_T); X.v = 0; }   // r66 · 7: a fixed 1.3 s ease, no endless creep
-    else if (X.kind === 'back' && X.u < .08 && !X.out) { X.u = Math.max(0, X.u - dt * (.12 + 6 * X.u)); X.v = 0; }   // r66 · 1: the last few percent home are covered in ~0.25 s, not 1.2 s of crawl
-    else { const m = { x: X.u, v: X.v }; chase(m, X.tgt, MV.CA / LEN, MV.CK, dt, 1e-5); X.u = m.x; X.v = m.v; }
+    // r67 · 11: door → log-in and log-in → website both run on the camera's own law (accelerate at CA, glide by FACTOR) from the speed they come in with
+    { const m = { x: X.u, v: X.v }; chase(m, X.tgt, MV.CA / (X.kind === 'door' ? LEN_DOOR : LEN), MV.CK, dt, X.kind === 'back' ? 1e-3 : 1e-4); X.u = m.x; X.v = m.v; }
     const P0 = C.p.slice(), f0 = C.f.slice(), cx0 = C.cx, cy0 = C.cy, F0 = C.F, u = X.u;
     let P, f, cx, cy, F = F0;
     if (X.kind === 'door') {
@@ -735,7 +743,7 @@ const PFX = (() => {
       const ch = Math.hypot(...sub3(X.Pd, S0.p));
       P = herm(S0.p, toD.map(v => v * ch), X.Pd, X.n.map(v => v * ch * .35), wB);
       f = nlerp(nlerp(S0.f, toD, ua), X.n, sm(sg(wB, .55, .92))); cx = L(S0.cx, W / 2, ua); cy = L(S0.cy, H / 2, ua);
-      X.past = (P[0] - X.Dc[0]) * X.n[0] + (P[2] - X.Dc[2]) * X.n[2] > -.4; if (X.past && X.uPast == null) X.uPast = u;
+      X.past = (P[0] - X.Dc[0]) * X.n[0] + (P[2] - X.Dc[2]) * X.n[2] > -.4; if (X.past && X.uPast == null) { X.uPast = u; X.tPast = performance.now(); }
       TXD = 0; TXO = sm(sg(u, .08, .85)); DOORFX = sm(sg(u, .02, .26)); TXW = 0; CULL = null;
     } else {
       if (!X.fe) axis();
@@ -760,32 +768,42 @@ const PFX = (() => {
     if (X.kind === 'door') {
       // r66 · 7：门里是那颗星球和星空，有透视：门在屏幕上多大，星球就跟着多大、从门的中心移向登录页的位置，过门时正好铺满
       noMask(); box.className = 'pfx on'; box.style.setProperty('--vg', '1');
-      let clip = 'none', k = 1, qc = null; const D = DOORG;
-      if (!X.past && D) { const q = [[D.da - D.hw2, D.e1], [D.da + D.hw2, D.e1], [D.da + D.hw2, D.e0], [D.da - D.hw2, D.e0]].map(([a, e]) => pr(...onS(a, e, D.rr)));
-        if (!q.some(p => !p)) { clip = 'polygon(' + q.map(p => p.x.toFixed(1) + 'px ' + p.y.toFixed(1) + 'px').join(',') + ')';
-          const ys = q.map(p => p.y), xs = q.map(p => p.x); k = clamp((Math.max(...ys) - Math.min(...ys)) / H); qc = [(xs[0] + xs[1] + xs[2] + xs[3]) / 4, (ys[0] + ys[1] + ys[2] + ys[3]) / 4]; } }
-      box.style.clipPath = clip;
+      /* r67 · 7：门：多边形先在近平面裁开再投影（角点到镜头后面也不会整块消失）；星球画面用羽化遮罩（SVG 高斯模糊的门形），不再硬裁；
+         门光是一层全屏辉光：门越近越亮，穿过门后约 0.35 秒里越来越大、越来越虚，再淡掉 */
+      let k = 1, qc = null; const D = DOORG, now = performance.now();
+      if (!X.past && D) { const poly = prPoly([[D.da - D.hw2, D.e1], [D.da + D.hw2, D.e1], [D.da + D.hw2, D.e0], [D.da - D.hw2, D.e0]].map(([a, e]) => onS(a, e, D.rr)));
+        if (poly.length >= 3) { const ys = poly.map(p => p.y), xs = poly.map(p => p.x), x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+          k = clamp((y1 - y0) / H); qc = [clamp((x0 + x1) / 2, -W, 2 * W), clamp((y0 + y1) / 2, -H, 2 * H)];
+          const cover = x0 < -40 && x1 > W + 40 && y0 < -40 && y1 > H + 40, f = clamp(.05 * Math.min(x1 - x0, y1 - y0), 2, 26);
+          if (cover) doorMask(''); else doorMask(poly.map(p => p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' '), f); }
+        else doorMask(''); } else doorMask('');
+      { const e = 1 - Math.exp(-Math.min(.1, (now - (X.tC || now)) / 1000) / .07); X.tC = now; X.kS = X.kS == null ? k : X.kS + (k - X.kS) * e; X.ee = e; k = X.kS; }   // r67 · 7: no one-frame jump when the door's outline leaves the screen
       box.style.opacity = (sm(sg(X.u, 0, .08)) * L(.78, 1, sm(sg(k, .25, .8)))).toFixed(3);   // a little of the door's own light still shows through while it is small
       const z = sm(k), R = X.Rl * L(.3, 1, z), ccx = qc ? qc[0] : X.cxe, ccy = qc ? qc[1] : X.cye;
-      art().frame({ cx: L(ccx, X.cxe, z), cy: L(ccy, X.cye, z), R, sky: 1, shell: 1 });
+      art().frame({ cx: L(ccx, X.cxe, z), cy: L(ccy, X.cye, z), R, sky: 1, shell: 1, gl: JOIN.sky() });
+      if (GLO) { let op, sc, bl, gx = qc ? qc[0] - W / 2 : 0, gy = qc ? qc[1] - H / 2 : 0;
+        if (X.tPast == null) { const gk = sm(sg(k, .3, 1)); op = .5 * gk; sc = L(.3, 1, gk); bl = 6; gx *= 1 - gk; gy *= 1 - gk; }
+        else { const gt = clamp((now - X.tPast) / 350); op = .5 * (1 - sm(gt)); sc = 1 + 1.4 * gt; bl = 6 + 54 * gt; gx = gy = 0; }
+        X.gS = X.gS == null ? op : X.gS + (op - X.gS) * (X.ee || 1); op = X.gS;
+        GLO.style.display = op > .003 ? 'block' : 'none'; GLO.style.opacity = op.toFixed(3); GLO.style.transform = `translate(${gx.toFixed(1)}px,${gy.toFixed(1)}px) scale(${sc.toFixed(3)})`; GLO.style.filter = `blur(${bl.toFixed(1)}px)`; }
     } else if (!X.out) { noMask();
       if (box.className !== 'pfx') { box.className = 'pfx'; de.classList.remove('via-planet'); }
     } else {
-      box.className = 'pfx on'; box.style.opacity = ''; box.style.clipPath = '';
+      box.className = 'pfx on'; box.style.opacity = ''; box.style.clipPath = ''; doorMask('');
       const o = X.o, r = Math.min(1e5, X.Fe * SR / Math.sqrt(Math.max(1e-6, X.d * X.d - SR * SR))), dim = .35 * sm(sg(o, 0, X.oh));
       box.style.setProperty('--vg', sg(o, 0, X.ox).toFixed(3));
       /* r64 · 不再贴截图：星空层在圆盘处挖空（CSS 遮罩），星球层在圆盘里擦掉，透出下面正在画的官网本身（同一个场景、同一个镜头）；壳的点和本体按 shell 透明度盖上 */
       const rm = Math.max(0, r - .75); SKY.style.webkitMaskImage = SKY.style.maskImage = `radial-gradient(circle at ${X.pcx.toFixed(1)}px ${X.pcy.toFixed(1)}px, transparent ${rm.toFixed(1)}px, #000 ${(rm + 1).toFixed(1)}px)`;
-      art().frame({ cx: X.pcx, cy: X.pcy, R: r, sky: 1, lite: 1, shell: .4 * sm(sg(o, 0, X.ox)) + .6 * sm(sg(o, X.ox, X.oh)), inner: (c, x, y, R) => { c.save(); c.beginPath(); c.arc(x, y, R, 0, 7);
+      art().frame({ cx: X.pcx, cy: X.pcy, R: r, sky: 1, lite: 1, gl: JOIN.sky(), shell: .4 * sm(sg(o, 0, X.ox)) + .6 * sm(sg(o, X.ox, X.oh)), inner: (c, x, y, R) => { c.save(); c.beginPath(); c.arc(x, y, R, 0, 7);
         c.globalCompositeOperation = 'destination-out'; c.fillStyle = '#000'; c.fill(); c.globalCompositeOperation = 'source-over';
         if (dim > .005) { c.fillStyle = `rgba(2,5,9,${dim.toFixed(3)})`; c.fill(); } c.restore(); } });
     }
     if (X.kind === 'back') {
-      if (X.u === 0) { de.classList.remove('tx3'); txClear(); noMask(); X = null; clearHit(); CULL = null; TXW = 0; FOGD = 150; box.className = 'pfx'; de.classList.remove('via-planet'); }
+      if (X.u === 0) { doorMask(''); de.classList.remove('tx3'); txClear(); noMask(); X = null; clearHit(); CULL = null; TXW = 0; FOGD = 150; box.className = 'pfx'; de.classList.remove('via-planet'); }
     } else {
       // r63 · the log-in page's own topbar, headline and form come in over the late part of the pull-back and are whole on the last frame
       // r66 · 7：门：登录界面只在过门之后淡入（约 0.35 秒，1.3 秒时已完整），不和官网场景叠在一起
-      const up = X.kind === 'door' ? (X.uPast == null ? 0 : X.u >= 1 ? 1 : sm(sg(X.u, X.uPast, Math.min(.995, X.uPast + .35 / DOOR_T)))) : sm(sg(X.u, .66, .985));
+      const up = X.kind === 'door' ? (X.uPast == null ? 0 : X.u >= 1 ? 1 : sm((performance.now() - X.tPast) / 350)) : sm(sg(X.u, .66, .985));
       JOIN.ui(up);
       if (!X.nav && X.tgt >= 1 && X.tgt - X.u < 1e-3) { X.nav = true; if (!JOIN.go(X.url)) location.href = X.url; }
     }
@@ -799,7 +817,7 @@ const PFX = (() => {
     const ux = UC + (1 - UC) * X.oh; if (s && Date.now() - s.at < 20000 && s.u > UC) { X.u = Math.max(ux, s.u); X.v = Math.min(0, s.v); } else X.u = ux;
     X.out = true; X.o = (X.u - UC) / (1 - UC); X.d = SR + (X.dEnd - SR) * X.o; de.classList.add('tx3'); compose();
   }
-  function reset() { txClear(); noMask(); X = null; CULL = null; TXW = 0; TXD = 0; TXO = 0; DOORFX = 0; FOGD = 150; box.className = 'pfx'; box.style.clipPath = ''; box.style.opacity = ''; de.classList.remove('via-planet', 'tx3', 'tx3o'); }
+  function reset() { txClear(); noMask(); doorMask(''); if (GLO) GLO.style.display = 'none'; X = null; CULL = null; TXW = 0; TXD = 0; TXO = 0; DOORFX = 0; FOGD = 150; box.className = 'pfx'; box.style.clipPath = ''; box.style.opacity = ''; de.classList.remove('via-planet', 'tx3', 'tx3o'); }
   // 登录/注册 (and 和 Dodo 对话, which also goes to sign-up) from any step: the pull-back. Signed in, they stay plain links
   document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[data-go]'); if (!a || user() || a.dataset.go === 'dashboard') return;
     try { if (a.dataset.go === 'ai') sessionStorage.setItem('3dt.next', 'ai'); else sessionStorage.removeItem('3dt.next'); } catch (x) {}   // r66: after signing in, 和 Dodo 对话 lands on Dodo
@@ -835,8 +853,17 @@ const JOIN = (() => {
     history.pushState({ join: 1 }, '', clean); try { document.title = fr.contentDocument.title; } catch (e) {}
     try { fr.focus(); fr.contentWindow.focus(); } catch (e) {}
     SITESTOP = true; window.__joined = { at: performance.now(), url: clean }; return true; }
+  /* r67 · 2：正式的登录页星空（space.js 的 WebGL 天空）在 10 / 11 站就从预载的登录页里取一帧，门里、过门、着陆都画它，
+     交接时登录页直接用自己的 WebGL 天空（同一幅画），不再先出 2D 天空再淡换 */
+  let SKYC = null, SKYK = '';
+  function sky(fresh) { if (!fr || !ok) return SKYC; const key = innerWidth + 'x' + innerHeight; if (SKYC && !fresh && SKYK === key) return SKYC;
+    try { const s = fr.contentDocument.getElementById('space'), w = fr.contentWindow; if (!s || !s.width || !w.__space || w.__space.mode !== 'webgl') return null;
+      const c = document.createElement('canvas'); c.width = s.width; c.height = s.height; c.getContext('2d').drawImage(s, 0, 0);
+      const t = document.createElement('canvas'); t.width = 24; t.height = 16; const tx = t.getContext('2d'); tx.drawImage(c, 0, 0, 24, 16); const d = tx.getImageData(0, 0, 24, 16).data; let m = 0;
+      for (let i = 0; i < d.length; i += 4) m = Math.max(m, d[i] + d[i + 1] + d[i + 2]); if (m < 8) return null;   // a browser that hands back a blank WebGL frame: keep the 2D sky
+      SKYC = c; SKYK = key; window.__glsky = { at: performance.now(), w: c.width, h: c.height, m }; return c; } catch (e) { return null; } }
   function back() {   // the joined page has flown its planet back to the shell (its 返回官网, or the browser's back button)
-    if (!joined) return; joined = false; shown = false;
+    if (!joined) return; sky(true); joined = false; shown = false;
     fr.style.visibility = 'hidden'; fr.style.pointerEvents = 'none'; fr.setAttribute('aria-hidden', 'true'); fr.tabIndex = -1;
     if (location.href !== from) history.pushState(null, '', from);
     document.title = TITLE0; leaving = false; PFX.reset(); de.classList.add('via-planet', 'tx3'); PFX.back();
@@ -849,7 +876,7 @@ const JOIN = (() => {
     else if (/\/login\/?$/.test(location.pathname)) location.reload();
   });
   window.__siteJoin = { back };
-  return { make, prep, ui, go, back, state: () => ({ ok, joined, shown }) };
+  return { make, prep, ui, go, back, sky, state: () => ({ ok, joined, shown, sky: !!SKYC }) };
 })();
 (window.requestIdleCallback || setTimeout)(() => setTimeout(JOIN.make, 600), { timeout: 3500 });
 setTimeout(PFX.back, 0); window.__pfx = { join: () => JOIN.state(), enter: k => enter(k), exit: u => PFX.exit(u || routes().login), state: () => PFX.state(), hold: t => PFX.hold(t) };   // test hooks
@@ -857,19 +884,35 @@ setTimeout(PFX.back, 0); window.__pfx = { join: () => JOIN.state(), enter: k => 
 function targetStep(tg, fromScroll) { if (tg === CK.tgt) return; CK.tgt = K.tgt = tg; if (!fromScroll) scrTo(tg); }   // r64: keys, rail, cue move the page scroll too
 let GATE = false, PEND = null; const go = (d, why) => { if (GATE || PFX.busy()) return;   // the motion layer over 01 is up: nothing moves under it
   if (d > 0 && K.tgt === NS - 1) { if (K.t > NS - 1.2 && B11.a > .5) enter('signup'); return; }
-  const tg = clamp(CK.tgt + d, 0, NS - 1); if (tg === CK.tgt) return; targetStep(tg);   // every swipe moves the destination one stop, however far ahead it already is
+  const tg = clamp(CK.tgt + d, 0, NS - 1); if (tg === CK.tgt) return; if (DF) flyTo(tg); else targetStep(tg);   // every swipe moves the destination one stop, however far ahead it already is
  };
 /* r65 · 4 · 导航直达走直线（Jasper 2026-11-18）：右侧导航 / Home / End 跳到隔一站以上的地方，镜头不再把中间每一站走一遍，
    而是从现在的位置直线飞到终点（中段略微抬高，越远抬得越高，避开柱子和卡片），时长按距离算、有上限。场景时钟直接到终点那一站，
    飞行中文案先不出，快到时再出 */
+/* r67 · 8 / 9 / 10 · one flight law (Jasper 2026-11-18): a far stop is still one straight line, but
+   · it runs on the site's own acceleration + factor law (chase, MV.CA / FACTOR), so it accelerates once and glides in once;
+   · a new destination while it flies re-aims it from where the camera is, carrying the speed it has (never from 0 again);
+   · the scene clock moves along with the flight (t0 → to by the share of the way flown), so what belongs to the stop we leave
+     fades as the camera leaves it, the far stop's things come as it gets near, and framing (01's wide lens, the head turn, 01's
+     ring light) changes with the flight instead of snapping to the destination's in the first frame */
 let DF = null, LASTP = null, LASTL = null, LASTS = [0, 0];
+const dfLen = (p0, l0, p1, l1) => Math.hypot(p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]) + MV.LW * Math.hypot(l1[0] - l0[0], l1[1] - l0[1], l1[2] - l0[2]);
+function shotAt(i) { const cams = CAM(), i0 = Math.min(NS - 2, i), c = i0 === i ? cams[i] : cams[i0 + 1], [p, l] = pose(c, A[i]), idle = RM ? 0 : 1;   // + the same idle drift frame() adds, so landing hands over without a step
+  return { P: [p[0] + Math.sin(T * .13) * .25 * idle, p[1] + Math.sin(T * .17) * .12 * idle, p[2]], Lk: [l[0] + (i < 1 ? Math.sin(T * .1) * .8 * idle : 0), l[1], l[2]], SX: c.sx, SY: c.sy }; }
+function flyTo(i) { const S0 = shotAt(i), p0 = LASTP.slice(), l0 = LASTL.slice(), D = Math.max(1e-3, dfLen(p0, l0, S0.P, S0.Lk)), dp = Math.hypot(...sub3(S0.P, p0)), dir = nrm(sub3(S0.P, p0));
+  let v0 = 0;
+  if (DF) { const cs = DF.dir[0] * dir[0] + DF.dir[1] * dir[1] + DF.dir[2] * dir[2]; v0 = cs > .3 ? DF.v : DF.v * cs; }   // the speed it has, kept whole when the new line goes on the same way (r67 · 13: a third swipe no longer dips), projected (backwards) if it turns round
+  else if (CK.v) v0 = Math.abs(CK.vs || 0) * (Math.sign(CK.v) === Math.sign(i - CK.t) ? 1 : -1);
+  DF = { p0, l0, s0: LASTS.slice(), cms0: CMS, cmy0: CMY, t0: CK.t, from: DF ? DF.from : Math.round(CK.t), to: i, D, x: 0, v: v0, e: 0, dir, lift: Math.min(9, dp * .1) };
+  CK.uni = false; if (i === NS - 1 && B11.t === 9) B11.t = 9.0006;
+  if (i !== CK.tgt) { CK.tgt = K.tgt = i; scrTo(i); } }
+function dfStep(dt) { const R = arc(), m = { x: DF.x, v: DF.v }; chase(m, DF.D, MV.CA * R.med, MV.CK, dt, R.med * 1e-4); DF.x = m.x; DF.v = m.v;
+  DF.e = Math.max(-.3, DF.x / DF.D); const t0 = CK.t; CK.t = L(DF.t0, DF.to, clamp(DF.e)); CK.v = dt > 0 ? (CK.t - t0) / dt : 0; CK.vs = DF.v;
+  if (DF.x === DF.D && !DF.v) { CK.t = DF.to; CK.v = 0; CK.vs = 0; DF.end = true; } }
 const jump = i => { if (i === CK.tgt || PFX.busy()) return;
-  if (!RM && LASTP && (Math.abs(i - CK.t) > 1.2 || DF)) { const c = CAM()[i], d = Math.hypot(...c.p.map((v, k) => v - LASTP[k]));
-    DF = { p0: LASTP.slice(), l0: LASTL.slice(), s0: LASTS.slice(), cms0: CMS, cmy0: CMY, u: 0, dur: clamp(.85 + d / 40, 1.1, 2.3), lift: Math.min(9, d * .1) };
-    CK.t = i; CK.v = 0; CK.vs = 0; CK.uni = false; if (i === NS - 1 && B11.t === 9) B11.t = 9.0006; }
-  targetStep(i);
+  if (!RM && LASTP && (Math.abs(i - CK.t) > 1.2 || DF)) flyTo(i); else targetStep(i);
  };
-window.__gest = (dir, n) => gesture(dir, n, 'test'); window.__cam = () => ({ t: CK.t, tgt: CK.tgt, df: DF ? DF.u : null, p: C.p.slice() }); window.__jump = i => jump(i);   // r65 test hooks
+window.__gest = (dir, n) => gesture(dir, n, 'test'); window.__cam = () => ({ t: CK.t, tgt: CK.tgt, df: DF ? DF.e : null, v: DF ? DF.v : CK.vs, p: C.p.slice() }); window.__jump = i => jump(i);   // r65 test hooks
 /* r64 · 滑动根治（Jasper 2026-11-18）：官网改成普通网页滚动。一个看不见的全屏滚动层 #scr 里每站一段高度（NS 段），浏览器原生滚动 +
    吸附（scroll-snap-type: y mandatory · scroll-snap-stop: always：一次手势最多停一站；手何时离开由浏览器判断，网页不再猜）。
    滚动停在哪一段，那一站就是镜头的终点；镜头朝终点按自己的规律走（02–05 匀速每站 1.4 s），途中区间变了就改终点接着走。
@@ -892,38 +935,60 @@ SCL.addEventListener('scroll', () => {
 /* r66 · 6 · 手势定终点（Jasper 2026-11-18）：页面不再原生滚动。每次手势开始时按力度算出要走几站（轻一下最多 1 站，越用力越多，非线性，最多 4 站），
    镜头直接飞向终点，这次手势剩下的惯性全部吃掉；页面永远停在某一站。桌面读滚轮最初约 0.1 s 的量，手机读松手时的速度；
    有死区（太轻不动）和冷却。11 站再往下 = 进门（手机、桌面同一个阈值，手机原来的 34 px 拉动取消） */
-const WSTEP = [260, 520, 900], TSTEP = [.9, 1.8, 2.8];
-const stepsOf = (a, th) => 1 + th.filter(x => a >= x).length;
+/* r67 · 13 · 电脑：判定窗口 + 递减门槛（Jasper 2026-11-18）。一次手势只在开头一小段（到力度过峰回落，最长 WIN ms，或停顿 GAP ms）里累计滑动量，
+   加上按回落速度估出的惯性尾巴，一次算定站数并锁定终点，之后这次手势的惯性全部吃掉。站数按 √(滑动量) 计，门槛递减：第一站要 STEP[0]，
+   之后每站 STEP[1]、STEP[2]……越来越少（下限 STEP 末项），最多 4 站。累计过了第一站门槛时镜头就朝下一站起步（只加速），锁定后若要走更远，
+   就从当前位置、带着当前速度改成直线飞向终点，然后只减速一次。滚轮一格（单次大值）= 一站。
+   手机：恢复一划一站（r65），飞行中再划同方向终点 +1、反向 −1，都接着当前速度走 */
+const WTH = { STEP: (QP.get('wth') || '14,12,10,8').split(',').map(Number), WIN: 250, GAP: 90, MAXN: 4 };
+const wthAt = n => { let a = 0; for (let k = 0; k < n; k++) a += WTH.STEP[Math.min(k, WTH.STEP.length - 1)]; return a * a; };   // px of scrolling needed for n stops
+const stepsOf = est => { let n = 0; while (n < WTH.MAXN && est >= wthAt(n + 1)) n++; return n; };
 const busyIn = () => GATE || PFX.busy() || HOMING;
-function gesture(dir, n, why) { if (busyIn()) return; GLAST = performance.now();
+function gesture(dir, n, why) { if (busyIn() || n < 1) return; GLAST = performance.now(); window.__lastG = { dir, n, why };
   if (dir > 0 && CK.tgt === NS - 1) { go(1); return; }   // the door
-  const tg = clamp(CK.tgt + dir * n, 0, NS - 1); if (tg !== CK.tgt) jump(tg); window.__lastG = { dir, n, why, tg }; }
+  if (n === 1) { go(dir); return; }
+  const tg = clamp(CK.tgt + dir * n, 0, NS - 1); if (tg !== CK.tgt) jump(tg); window.__lastG.tg = tg; }
 let WG = null, GLAST = 0;
-function wCommit() { const g = WG; if (!g || g.done) return; g.done = true; g.tc = performance.now(); clearTimeout(g.tm);
-  const a = Math.abs(g.sum); if (a < 6) return; gesture(g.dir, stepsOf(a, WSTEP), 'wheel:' + Math.round(a)); }
+function wLock(why) { const g = WG; if (!g || g.locked) return; g.locked = true; g.tl = performance.now(); clearTimeout(g.tm); g.minL = 1e9;
+  const d = g.ds, k = d.length, a3 = d[k - 1] || 0, a2 = d[k - 2] || 0; let tail = 0;
+  if (k >= 3 && a3 < a2) { const r = clamp(a3 / a2, .5, .94); tail = Math.min(a3 * r / (1 - r), g.sum * 4); }   // decaying: the rest of the geometric tail
+  else if (why === 'win' && k >= 3) tail = Math.min(a3 * 10, g.sum * 4);                                       // still pushing at the window's end
+  const notch = k <= 2 && g.peak >= 40, est = g.sum + tail, n = notch ? 1 : Math.max(stepsOf(est), g.started ? 1 : 0);
+  window.__lastW = { sum: Math.round(g.sum), tail: Math.round(tail), est: Math.round(est), n, why, k };
+  if (n < 1) return;
+  if (g.dir > 0 && g.base === NS - 1) { go(1); return; }   // the door
+  const tg = clamp(g.base + g.dir * n, 0, NS - 1); if (tg === CK.tgt) return;
+  if (busyIn()) return; GLAST = performance.now(); window.__lastG = { dir: g.dir, n, why: 'wheel:' + Math.round(est), tg }; jump(tg); }
 SCL.addEventListener('wheel', e => { e.preventDefault(); if (gateOn() || chsOpen()) return;
   let dy = e.deltaY; if (e.deltaMode === 1) dy *= 16; else if (e.deltaMode === 2) dy *= innerHeight; if (Math.abs(dy) < .5) return;
-  const n = performance.now(), dir = Math.sign(dy), ad = Math.abs(dy);
-  const fresh = !WG || n - WG.last > 160 || dir !== WG.dir || (WG.done && n - WG.tc > 200 && ad > WG.la * 1.6 + 4);   // a pause, a turn, or a new push rising out of the old one's tail
-  if (fresh) { if (WG && !WG.done) wCommit(); WG = { dir, sum: 0, last: n, la: ad, done: false }; WG.tm = setTimeout(wCommit, 100); }
-  WG.last = n; WG.la = ad;
-  if (!WG.done) { WG.sum += dy; if (Math.abs(WG.sum) >= WSTEP[2] * 1.15) wCommit(); }   // already the strongest: no need to wait
+  const n = performance.now(), dir = Math.sign(dy), ad = Math.abs(dy), W0 = WG;
+  let fresh = !W0 || n - W0.last > 160 || (dir !== W0.dir && ad > 2);
+  if (!fresh && W0.locked) { W0.minL = Math.min(W0.minL, ad); W0.rise = ad > W0.la ? W0.rise + 1 : 0;
+    if (n - W0.tl > 220 && W0.rise >= 3 && ad > Math.max(12, W0.minL * 2.2 + 8)) fresh = true; }   // a real new push rising out of the old one's tail
+  if (fresh) { if (W0 && !W0.locked) wLock('next'); WG = { dir, sum: 0, ds: [], peak: 0, t0: n, last: n, la: ad, rise: 0, locked: false, started: false, base: CK.tgt }; }
+  const g = WG; g.last = n; g.la = ad; if (g.locked) return;   // locked: the rest of this gesture's inertia is eaten
+  g.sum += ad; g.ds.push(ad); g.peak = Math.max(g.peak, ad);
+  clearTimeout(g.tm); g.tm = setTimeout(() => wLock('gap'), WTH.GAP);
+  if (!g.started && g.sum >= wthAt(1) && !busyIn() && !(dir > 0 && g.base === NS - 1)) { const tg = clamp(g.base + dir, 0, NS - 1);
+    if (tg !== CK.tgt || DF) { g.started = true; GLAST = n; go(tg - CK.tgt); } }   // past the first stop's bar: the camera sets off now (speeding up only)
+  if (g.ds.length >= 3 && ad < g.peak * .7) wLock('peak'); else if (n - g.t0 >= WTH.WIN) wLock('win');
 }, { passive: false });
 addEventListener('keydown', e => { if (e.repeat) return; if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(1); } if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
   if (e.key === 'Home') jump(0); if (e.key === 'End') jump(NS - 1); });
-let ty = null, tx = 0, tLook = false, tmx = 0, tmy = 0, TS = []; addEventListener('touchstart', e => { if (e.touches.length > 1 || chsOpen()) { ty = null; return; } ty = e.touches[0].clientY; tx = e.touches[0].clientX; tLook = false; tmx = mx; tmy = my; TS = [[performance.now(), ty]]; }, { passive: true });
+let tDone = 0, ty = null, tx = 0, tLook = false, tmx = 0, tmy = 0, TS = []; addEventListener('touchstart', e => { if (e.touches.length > 1 || chsOpen()) { ty = null; return; } ty = e.touches[0].clientY; tx = e.touches[0].clientX; tLook = false; tDone = 0; tmx = mx; tmy = my; TS = [[performance.now(), ty]]; }, { passive: true });
 addEventListener('touchmove', e => { if (ty == null) return;   // r66: up/down is ours (no native page scroll); a sideways drag still looks round
   const y = e.touches[0].clientY, d = ty - y, dx = e.touches[0].clientX - tx, n = performance.now();
   TS.push([n, y]); while (TS.length > 2 && n - TS[0][0] > 120) TS.shift();
   if (!tLook && Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(d) * 1.3) tLook = true;
   if (gateOn()) return;
-  if (tLook) { mx = clamp(tmx - dx / innerWidth * .9, -.5, .5); my = clamp(tmy - d / innerHeight * .5, -.5, .5); mT = performance.now(); } }, { passive: true });
+  if (tLook) { mx = clamp(tmx - dx / innerWidth * .9, -.5, .5); my = clamp(tmy - d / innerHeight * .5, -.5, .5); mT = performance.now(); }
+  else if (!tDone && Math.abs(d) >= 64) { tDone = Math.sign(d); gesture(tDone, 1, 'touchmove'); } }, { passive: true });   // r67 · 13: the swipe counts as soon as the finger has gone far enough one way (no wait for the release), so a quick run of swipes lands before the camera starts braking
 addEventListener('touchend', e => { if (ty == null || tLook || gateOn()) { ty = null; return; }
-  const t = e.changedTouches[0], y = t ? t.clientY : ty, n = performance.now(), d = ty - y; ty = null;
+  const t = e.changedTouches[0], y = t ? t.clientY : ty, n = performance.now(), d = ty - y; ty = null; if (tDone) return;   // already counted while moving: still one swipe, one stop
   TS.push([n, y]); const r = TS.filter(s => n - s[0] <= 90), a = r[0] || TS[0], v = n - a[0] > 8 ? (a[1] - y) / (n - a[0]) : 0;   // px/ms at the release, + = finger up = forward
   if (Math.abs(d) < 40 && Math.abs(v) < .3) return;   // a tap or a nudge
   const dir = Math.abs(v) >= .3 ? Math.sign(v) : Math.sign(d); if (dir !== Math.sign(d) && Math.abs(d) > 40) return;
-  gesture(dir, stepsOf(Math.abs(v), TSTEP), 'touch:' + v.toFixed(2)); }, { passive: true });
+  gesture(dir, 1, 'touch:' + v.toFixed(2)); }, { passive: true });   // r67 · 13: one swipe = one stop (r65), swipes add up while it flies
 addEventListener('touchend', e => ask(e), true);   // any touch may ask for motion; iOS decides whether it counts as a tap
 document.getElementById('cue').onclick = () => go(1);
 // at the door a click anywhere in the scene goes in
@@ -942,7 +1007,8 @@ const wire = root => root.querySelectorAll('[data-go]').forEach(a => { a.href = 
 wire(document);
 function syncAuth() { const u = user(), r = routes();
   const acts = document.getElementById('acts'); const en = (() => { try { return localStorage.getItem('r49site.lang') === 'en'; } catch (e) { return false; } })();
-  acts.innerHTML = u ? siteText(`<a class="pr" data-go="dashboard">${en ? 'Dashboard' : '进入后台'}</a>`) : siteText(`<a class="pr" data-go="signup">${en ? 'Log in / Sign up' : '登录/注册'}</a>`); wire(document);
+  const blog = `<a class="gh bl" id="blogT" href="../blog/">${en ? 'Blog' : '博客'}</a>`;   // r67: the blog stays in the top bar, signed in or not
+  acts.innerHTML = blog + (u ? siteText(`<a class="pr" data-go="dashboard">${en ? 'Dashboard' : '进入后台'}</a>`) : siteText(`<a class="pr" data-go="signup">${en ? 'Log in / Sign up' : '登录/注册'}</a>`)); wire(document);
   document.getElementById('hint').textContent = u ? siteText('点击门，或继续下滑进入后台') : siteText('点击门，或继续下滑进入'); }
 syncAuth(); addEventListener('storage', e => { if (!e.key || e.key === '3dt.session') syncAuth(); });
 /* r59 · back/forward (bfcache) and returning to this tab after signing in or out elsewhere: re-read the session */
@@ -985,7 +1051,7 @@ let side = -1;
 BLK.forEach(b => b.querySelectorAll('h1,h2').forEach(h => { h.innerHTML = h.innerHTML.split(/<br\s*\/?>/i).map(l => `<span class="ln"><span>${l}</span></span>`).join(''); }));
 let inS = -1; const SCRIM = document.querySelector('.scrim');
 function syncHTML() {
-  const s = Math.abs(CK.t - CK.tgt) < .86 ? CK.tgt : Math.round(clamp(CK.t, 0, NS - 1)), ins = DF && DF.u < .72 ? -1 : Math.abs(CK.t - CK.tgt) < (CK.tgt === 5 ? .78 : .45) ? CK.tgt : -1;   // r41: copy is tied to the camera, so it is there when the camera lands
+  const s = Math.abs(CK.t - CK.tgt) < .86 ? CK.tgt : Math.round(clamp(CK.t, 0, NS - 1)), ins = Math.abs(CK.t - CK.tgt) < (CK.tgt === 5 ? .85 : .6) ? CK.tgt : -1;   // r67 · 14: a little earlier, so it is in place when the camera stops   // r41: copy is tied to the camera, so it is there when the camera lands
   if (ins !== inS) { inS = ins; BLK.forEach((b, i) => b.classList.toggle('in', i === ins));
     if (mob && ins >= 0 && SCRIM) { const b = BLK[ins]; SCRIM.style.setProperty('--scrh', Math.round(H * .085 + b.offsetHeight + 170) + 'px'); } }
   if (SCRIM) SCRIM.classList.toggle('s0', s === 0 || CK.tgt === 0);
@@ -998,7 +1064,7 @@ function syncHTML() {
 let ANC = [];
 const SPOT = () => mob ? [[.05, .085], [.05, .085], [.05, .085], [.05, .085], [.05, .085], [.05, .085], [.05, .085], [.05, .085], [.05, .085], [.05, .085], [.5, .9]]
   : [[.075, .5], [.07, .34], [.06, .3], [.07, .68], [.07, .32], [.33, .2], [.06, .2], [.06, .23], [.045, .25], [.62, .3], [.5, .92]];
-const ENT = [[0, 0, 1], [.7, 0, 1], [-1.2, 0, .5], [0, -1, .4], [.8, .8, .4], [0, -1.2, .3], [-.6, -.8, .6], [0, -1.2, .4], [0, .8, .6], [1.2, 0, .3], [0, -.4, .6]];
+const ENT = [[0, 0, 1], [.7, 0, 1], [-1.2, 0, .5], [0, -1, .4], [.8, .8, .4], [0, -1.2, .3], [-.6, -.8, .6], [0, -1.2, .4], [0, .8, .6], [0, 0, .3], [0, -.4, .6]];   // r67 · 15: 10 no longer slides in from the right
 const CPA = [1, 1, 1, 1, 1, 1, .5, .5, .6, .3, 1];   // where in its step the copy is pinned: from there it rides with the camera
 function anchors(only, a) {
   const cams = CAM(), sp = SPOT(), D = mob ? 9 : 8;
@@ -1007,12 +1073,19 @@ function anchors(only, a) {
 }
 // t: the scene's clock decides when copy shows; ct: the camera's clock decides where it sits, so it is at rest the moment the camera is
 let COPYFREE = false, COPYK = 1;   // r65 · COPYK: copy held back while the camera flies straight to a far stop   // r64: during the pull-back the copy shrinks with the scene (no clamp)
+// r67 · 15: where 10's copy rests: its anchor seen from 10's own shot (camera put there for a moment, then put back), per layout
+let R9 = null;
+function rest9(a) { const key = W + 'x' + H + (mob ? 'm' : '') + (ML ? 'l' : ''); if (R9 && R9.key === key) return R9;
+  const C0 = { p: C.p, f: C.f, r: C.r, u: C.u, F: C.F, cx: C.cx, cy: C.cy }, c0 = CULL; CULL = null; let q = null;
+  try { const S = shotAt(9); setCam(S.P, S.Lk, S.SX, S.SY); q = pr(...a.w); } catch (e) {}
+  Object.assign(C, C0); CULL = c0; if (!q) return null; return R9 = { key, x: q.x, y: q.y, k: q.k }; }
 function placeCopy(t, ct = t) { const SP = SPOT();
-  BLK.forEach((b, i) => { const a = ANC[i], dt = t - i, late = i >= 6; let o = late ? 1 - sm((Math.abs(dt) - .06) / .4) : dt > 0 ? 1 - sm((dt - .02) / .28) : 1 - sm((-dt - .12) / .3);   // r64 #2/#3: 01–06 in turn — the copy leaving is gone (by .3 of the way) before the next one starts (.42 out), never two at once
+  BLK.forEach((b, i) => { const a = ANC[i], dt = t - i, late = i >= 6; let o = DF && i !== DF.from && i !== DF.to ? 0 : late ? 1 - sm((Math.abs(dt) - .06) / .4) : dt > 0 ? 1 - sm((dt - .02) / .28) : 1 - sm((-dt - .12) / .3);   // r64 #2/#3: 01–06 in turn — the copy leaving is gone (by .3 of the way) before the next one starts (.42 out), never two at once
     if (i === 5 && dt < 0) o = 1 - sm((-dt - .1) / .5);
     if (i === 9 && dt > 0) o *= 1 - sm(sg(t, 9.01, 9.16));
     const dr = late && ct - i > 0 ? 0 : 3.2;   // 07 on: leaving, the copy stays put in the space and the camera leaves it behind (cut by the screen edge), it never drifts along with the move
-    const w = a ? a.w.map((v, j) => v - a.e[j] * (ct - i) * dr) : null, q = o > .01 && w ? pr(...w) : null;
+    const w = a ? a.w.map((v, j) => v - a.e[j] * (ct - i) * dr) : null; let q = o > .01 && w ? pr(...w) : null;
+    if (i === 9 && dt < 0 && q && !RM) { const r9 = rest9(a); if (r9) { const u = sm(clamp(1 + dt / .05)); q = { x: L(r9.x, q.x, u), y: L(r9.y, q.y, u), k: L(r9.k, q.k, u) }; } }   // r67 · 15: 10's copy comes in where it will rest, no slide
     if (!q) { if (b._v) { b.style.opacity = 0; b._v = 0; b.style.pointerEvents = 'none'; } return; }
     const sc = COPYFREE ? q.k / a.k : clamp(q.k / a.k, .55, 1.7); if (!COPYFREE) o *= clamp((1.7 - sc) / .3);
     o *= COPYK; const c = b.classList.contains('c');
@@ -1064,7 +1137,7 @@ function panelTex(i) {
   x.strokeStyle = 'rgba(47,220,188,.22)'; x.lineWidth = 2; x.stroke();
   const on = HIT && HIT.md.includes(i) ? sm((T - HIT.at) / .35) * (1 - sm((T - HIT.at - HIT.hold) / .6)) : 0;
   if (on > .01) { x.strokeStyle = `rgba(47,220,188,${(.85 * on).toFixed(3)})`; x.lineWidth = 3; x.stroke(); }
-  if (mob) { panelPhone(t, x, i, on); RAWC--; return t; }   // r66 · Emma new 2: phones read the model, one trend line and big rows
+  // r67 · 1: phones back to the r65 card (Jasper 2026-11-18: 墙上卡片回退); panelPhone kept but unused
   txt(x, 'M' + (i + 1), 30, 58, '#2fdcbc', font(18, 700, 1)); txt(x, MODELS[i], 74, 60, '#f3f5f6', font(34, 700));
   txt(x, KIND[i], 30, 94, '#6f7a84', font(16, 500));
   const pu = .5 + .5 * Math.sin(T * 3 + i); x.fillStyle = `rgba(47,220,188,${(.45 + .55 * pu).toFixed(3)})`; x.beginPath(); x.arc(PWd - 34, 52, 6, 0, PI * 2); x.fill();
@@ -1780,7 +1853,7 @@ function frame(now) {
   FN++; if (FN % 4 === 0) inkScan();
   const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
   if (DCAP > 2 && !document.hidden && dt > 0 && !PFX.busy()) { PERF.n++; PERF.s += dt; if (PERF.n >= 90) { if (PERF.s / PERF.n > .024) { DCAP = 2; resize(); } PERF = { n: 0, s: 0 }; } }   // r66 · 1: too slow at 3×: 2×
-  if (RM) { CK.t = CK.tgt; CK.v = 0; CK.vs = 0; } else camStep(CK, dt);
+  if (RM) { DF = null; CK.t = CK.tgt; CK.v = 0; CK.vs = 0; } else if (DF) dfStep(dt); else camStep(CK, dt);
   scrLock(GATE || PFX.busy() || HOMING || !!DF);   // r64: no page scroll under the motion layer, a planet transition or going home
   K.t = CK.t; K.v = CK.v; K.tgt = CK.tgt;   // r61: the scene clock is the camera's; what it shows moves with the shot
   const t = clamp(K.t, 0, NS - 1); LBLCL = t < 5.5; LCW = LBLCL ? 1 : 1 - sm(Math.abs(t - Math.round(t)) / .12);   // 07 on: kept on screen only while at rest, let go as soon as the camera moves
@@ -1803,7 +1876,7 @@ function frame(now) {
   // camera between stop i and i+1, swinging out along BUL on the way. A stop can also move inside its own step
   for (let i = 6; i < NS; i++) if (Math.abs(t - i) < 1.2) anchors(i, A[i]);
   const ct = clamp(CK.t, 0, NS - 1);   // everything that frames the shot follows the camera's own clock
-  CMS = mob ? msAt(ct) : MS; CMY = msyAt(ct); if (DF) { const e = eio(DF.u); CMS = L(DF.cms0, CMS, e); CMY = L(DF.cmy0, CMY, e); } if (mob) XTRA = xtraFor(CMS);
+  CMS = mob ? msAt(ct) : MS; CMY = msyAt(ct); if (DF) { const e = clamp(DF.e); CMS = L(DF.cms0, mob ? msAt(DF.to) : MS, e); CMY = L(DF.cmy0, msyAt(DF.to), e); } if (mob) XTRA = xtraFor(CMS);
   HHF = Math.atan((W / 2) / ((H / 2) / Math.tan(.42) * (mob ? CMS : 1)));   // half the view's width: from 02 on, turning stops when the middle of the scene reaches the screen edge
   const cams = CAM(), i0 = Math.min(NS - 2, Math.floor(ct)), u = ct - i0, ca = cams[i0], cb = cams[i0 + 1], idle = RM ? 0 : 1;
   const [cap, cal] = pose(ca, A[i0]), [cbp, cbl] = pose(cb, A[i0 + 1]);
@@ -1811,11 +1884,11 @@ function frame(now) {
   let P = cap.map((v, i) => L(v, cbp[i], pu) + bv[i] * bw * (ML ? 1.3 : 1) + (i === 0 ? Math.sin(T * .13) * .25 * idle : i === 1 ? Math.sin(T * .17) * .12 * idle : 0));
   let Lk = cal.map((v, i) => L(v, cbl[i], lu) + (i === 0 ? Math.sin(T * .1) * .8 * idle * (ct < 1 ? 1 - ct : 0) : 0));
   let SX = L(ca.sx, cb.sx, pu), SY = L(ca.sy, cb.sy, pu);
-  if (DF) { DF.u = Math.min(1, DF.u + dt / DF.dur); const e = eio(DF.u), lf = DF.lift * Math.sin(PI * e);   // r65 · 4: one straight line from where the camera was
-    P = P.map((v, i) => L(DF.p0[i], v, e) + (i === 1 ? lf : 0)); Lk = Lk.map((v, i) => L(DF.l0[i], v, e) + (i === 1 ? lf * .55 : 0)); SX = L(DF.s0[0], SX, e); SY = L(DF.s0[1], SY, e);
-    if (DF.u >= 1) DF = null; }
+  if (DF) { const e = DF.e, ec = clamp(e), lf = DF.lift * Math.sin(PI * ec), S1 = shotAt(DF.to);   // r67: the straight line, flown on the camera law
+    P = S1.P.map((v, i) => L(DF.p0[i], v, e) + (i === 1 ? lf : 0)); Lk = S1.Lk.map((v, i) => L(DF.l0[i], v, e) + (i === 1 ? lf * .55 : 0)); SX = L(DF.s0[0], S1.SX, ec); SY = L(DF.s0[1], S1.SY, ec);
+    if (DF.end) DF = null; }
   LASTP = P.slice(); LASTL = Lk.slice(); LASTS = [SX, SY];
-  setCam(P, Lk, SX, SY); COPYK = DF ? sm(sg(DF.u, .7, 1)) : 1; placeCopy(ct, ct);
+  setCam(P, Lk, SX, SY); COPYK = 1; placeCopy(ct, ct);
   { const wide = Math.max(1 - sm(sg(ct, 0, .7)), .5 * sm(sg(ct, 5.5, 6.2))), yw = L(.07, .3, wide), pt = (gl || LOOKY != null) && (mob || touchDev) ? L(.11, .2, wide) : L(.04, .16, wide), d = Lk.map((v, i) => v - P[i]), n = Math.hypot(...d);
     // the mouse (or the phone turning) turns the head: left and right, the same in every step
     // the wider turn is for the six models on the first page; later steps keep a modest extra so their subject stays in view
@@ -1836,7 +1909,7 @@ function frame(now) {
 
   // Fit the entire trading composition together on phones; panning still moves it as one unit.
   if (mob && ct > .6 && ct < 4.5) {
-    const fit = sm(sg(ct, .6, 1)) * (1 - sm(sg(ct, 4.1, 4.5))) * (DF ? eio(DF.u) : 1);
+    const fit = sm(sg(ct, .6, 1)) * (1 - sm(sg(ct, 4.1, 4.5)));
     const pts = [[KX(0) - .45, 18.42], [KX(0) - .45 + 15.4, 18.42], [KX(0) - .45, 4.1], [KX(0) - .45 + 15.4, 4.1]].map(([x,y]) => pr(x,y,KZ));
     if (pts.every(Boolean)) {
       const left = Math.min(...pts.map(p=>p.x)), right = Math.max(...pts.map(p=>p.x));
@@ -1849,6 +1922,7 @@ function frame(now) {
       C.cx += (W / 2 - mid - smx * W * PANF) * fit;
     }
   }
+  if (CK.tgt >= NS - 2 && !PFX.busy() && !RM) JOIN.sky();   // r67 · 2: at 10 / 11 the log-in page's own sky is taken once, ahead of the door
   PFX.cam(dt);   // r62: the planet transitions move the camera itself (out of the planet, through the door, back in)
   // r65 · 2: the copy stays where it was on screen and only fades (--txf); it no longer rides the camera out
   if (PFX.busy()) clearHit();   // r64 #5: no stray hit tag while flying out or back
@@ -1876,7 +1950,7 @@ function frame(now) {
   const alarm = closed && A[3] > .3;
   // how far each place round the sphere is built
   const a7 = sm(sg(t, 5.2, 6)) * (1 - sm(sg(t, 7.2, 8))), a8 = sm(sg(t, 6.2, 7)), a9 = sm(sg(t, 7.2, 8)) * (1 - sm(sg(t, 9.6, 10.4))), a10 = sm(sg(t, 8.2, 9)), a11 = sm(sg(B11.t, 9.2, 10));   // 11 on its build clock (B11)
-  const wl = sm(sg(A[6], .45, .62)) * a7;                                  // 07: the optional whitelist
+  const wl = 0;   // r67 · 12: the 07 whitelist demo is gone (Jasper 2026-11-18: 拿掉) — no gold, no dimming, no slowing
   // the gold area holds the account: its area follows the money and keeps creeping out one pillar at a time
   const wlc = wl * vis(t, 6, .3, .7), gA = 1;   // the gold stays gold all the way round
   if (t > .9 && !RM) Aext = Math.min(Aext + dt * 2.2 * (1 - .8 * wlc), 1400);
@@ -1893,7 +1967,8 @@ function frame(now) {
   const mg9 = sm(sg(u9, .72, .95)), gr9 = sm(sg(u9, .1, .95)); HD.set9 = set9; HD.u9 = u9;
   // 11: the stairs start rising during the move there, from our feet out to the wall; then the wall opens
   // (same formula as before, on B11 instead of K / A[10]: same pieces, durations and order, only started earlier)
-  const w11 = Math.max(0, B11.t - 9.05) * 1.1 + B11.a * .9, doorU = sm(sg(w11, .85, 1.3)), logU = sm(sg(w11, 1.05, 1.5));
+  const w11 = Math.max(0, B11.t - 9.05) * 1.1 + B11.a * .9, doorU = sm(sg(w11, .85, 1.3));
+  LOGA = RM ? +(w11 >= 1.05) : clamp(LOGA + (w11 >= 1.05 ? dt : -dt) / .6); const logU = sm(LOGA);   // r67 · 16: once the door is up the logo comes in on its own .6 s, not stretched over 11's 4 s build
 
   // the sphere: the market at the bottom layer, the six models over it
   if (!RM && !PFX.busy() && T > nextHit) { newHit(); nextHit = T + 3.6 + Math.random() * 1.6; }
@@ -1909,11 +1984,12 @@ function frame(now) {
   if (a11 > .01 && doorU > .01) { const da = LY.daz, rr = SR * .985, elY = y => Math.asin((y - SC[1]) / rr), yb = LY.dtop - .3, yt = LY.dtop + 8.2, e0 = elY(yb), e1 = elY(yt), hw2 = 1.5 * PS() / (rr * Math.cos(e0)) * eio(doorU) * (1 + .45 * TXO);
     const q = [pr(...onS(da - hw2, e1, rr)), pr(...onS(da + hw2, e1, rr)), pr(...onS(da + hw2, e0, rr)), pr(...onS(da - hw2, e0, rr))], a = a11 * doorU * (1 - .85 * TXD); DOORG = { da, e0, e1, hw2, rr };
     DOORQ = !q.some(v => !v) && a > .5 ? q : null;
-    if (!q.some(v => !v)) { const c = pr(...onS(da, (e0 + e1) / 2, rr)); if (DAY) RAWC++;   // same panel, glow and strength day and night (as 725590f); daytime only changes the colours
+    const qp = prPoly([onS(da - hw2, e1, rr), onS(da + hw2, e1, rr), onS(da + hw2, e0, rr), onS(da - hw2, e0, rr)]);   // r67 · 7: cut at the near plane, never dropped whole
+    if (qp.length >= 3) { const c = pr(...onS(da, (e0 + e1) / 2, rr)), qy0 = Math.min(...qp.map(p => p.y)), qy1 = Math.max(...qp.map(p => p.y)); if (DAY) RAWC++;   // same panel, glow and strength day and night (as 725590f); daytime only changes the colours
       const gl0 = DAY ? '#2fdcbc' : '#bff5ea', top = DAY ? [26, 150, 126] : [190, 255, 240], bot = DAY ? [47, 205, 172] : [245, 255, 252];
-      glow(c.x, c.y, c.k * 30 * (1 + .8 * TXO), gl0, (.28 * a * (1 + 1.6 * TXO)));
-      const gr = g.createLinearGradient(0, q[0].y, 0, q[3].y); gr.addColorStop(0, `rgba(${top},${(.85 * a).toFixed(3)})`); gr.addColorStop(1, `rgba(${bot},${(.97 * a).toFixed(3)})`);
-      g.save(); g.shadowColor = gl0; g.shadowBlur = 60 * a * (1 + 1.2 * TXO); g.fillStyle = gr; g.beginPath(); q.forEach((p, i) => i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y)); g.closePath(); g.fill(); g.restore();
+      if (c) glow(c.x, c.y, Math.min(4 * Math.max(W, H), c.k * 30 * (1 + .8 * TXO)), gl0, (.28 * a * (1 + 1.6 * TXO)));
+      const gr = g.createLinearGradient(0, qy0, 0, Math.max(qy0 + 1, qy1)); gr.addColorStop(0, `rgba(${top},${(.85 * a).toFixed(3)})`); gr.addColorStop(1, `rgba(${bot},${(.97 * a).toFixed(3)})`);
+      g.save(); g.shadowColor = gl0; g.shadowBlur = 60 * a * (1 + 1.2 * TXO); g.fillStyle = gr; g.beginPath(); qp.forEach((p, i) => i ? g.lineTo(p.x, p.y) : g.moveTo(p.x, p.y)); g.closePath(); g.fill(); g.restore();
       const fl = pr(...onS(da, e0, rr * .97)); if (fl) glow(fl.x, fl.y, fl.k * 14, DAY ? '#2fdcbc' : '#ffffff', .22 * a);
       if (DAY) RAWC--; }
     if (logU * (1 - DOORFX) > .01) { const lt = logoTex(), LW = ML ? 17 : 30, lh = LW * lt.h / lt.w; layer(logU * a11 * (1 - DOORFX), () => { g.imageSmoothingQuality = 'high'; onWall(lt, lt.c, LGS, da, elY(yt + 2.4 + lh / 2 + (1 - logU) * 1.5), LW / rr, lh / rr, 1, 12, 2); }); } }

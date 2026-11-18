@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#06090b">
+<title>资源中心 · 3dtrading</title>
+<meta name="description" content="3dtrading 资源中心：文章、公告与教程。">
+<link rel="icon" href="assets/3dtrading-logo-white.svg">
+<link rel="stylesheet" href="blog.css">
+<script>/* r67 · language follows the website (r49site.lang), then the log-in page; default Chinese */
+(function(){var l='zh';try{var s=localStorage.getItem('r49site.lang')||localStorage.getItem('3dt.r49login.lang');if(s==='en')l='en'}catch(e){}try{var q=new URLSearchParams(location.search).get('lang');if(q==='en'||q==='zh')l=q}catch(e){}document.documentElement.dataset.lang=l;document.documentElement.lang=l==='en'?'en':'zh-CN'})();</script>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+<header class="top">
+  <div class="bar">
+    <a class="logo" href="../site/" aria-label="3dtrading"><img src="assets/3dtrading-logo-white.svg" alt="3dtrading" width="122" height="29"></a>
+    <a class="hub" href="#/" data-i="hub">资源中心</a>
+    <span class="sp"></span>
+    <button class="lang" id="lang" type="button" aria-label="Language"><span data-l="zh">中</span><span data-l="en">EN</span></button>
+    <a class="login" href="../login/" data-i="login">登录</a>
+  </div>
+</header>
+<main id="main" tabindex="-1"></main>
+<footer class="foot">
+  <div class="fi">
+    <img src="assets/3dtrading-logo-white.svg" alt="3dtrading" width="96" height="23">
+    <p data-i="foot">资产留在你本人的币安子账户 · 提现永远关闭</p>
+    <nav><a href="../site/" data-i="site">官网</a><a href="../login/" data-i="login">登录</a><a href="#/" data-i="hub">资源中心</a></nav>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="posts.js"></script>
+<script src="blog.js"></script>
+</body>
+</html>

@@ -31,7 +31,32 @@ window.__dashTheme={key:K,get:function(){return v},effective:eff,set:function(n)
 addEventListener('storage',function(e){if(e.key===K){v=e.newValue||'day';apply()}});
 try{var P=JSON.parse(localStorage.getItem('3dt.dash.prefs')||'{}');if(P&&P.hide)de.classList.add('pv-hide')}catch(e){}})();
 if(!window.TDAccount||!window.TDApi){document.documentElement.classList.add('td-gate');document.addEventListener('DOMContentLoaded',function(){document.body.innerHTML='<p style="font:15px system-ui;padding:40px">账户模块没有加载，后台暂不可用。</p>'})}</script>
-<style>html.td-gate body{visibility:hidden}</style>
+<style>html.td-gate body{visibility:hidden}
+/* r67 · 绑定弹窗五行 */
+.qb5 .qb-row{align-items:center}
+.qb5 .qb-f{align-items:start}
+.qb5 .qb-in #bnNm{flex:1 1 100%}
+.qb5 .qb-pms{margin:0}
+.qb5 .bnm-err:empty{display:none}
+
+/* r67 · 账号安全 */
+.sec{margin:14px 0 6px;border-top:1px solid var(--line);padding-top:10px}
+.sec-h{margin:0 0 4px;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--ink3,var(--ink2));text-transform:uppercase}
+.sec-f{display:flex;flex-direction:column;gap:6px;margin:4px 0 10px}
+.sec-f label{font-size:12.5px;color:var(--ink2)}
+.sec-f input{height:40px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--sf);color:var(--ink);font:inherit}
+.sec-f input:focus{outline:2px solid var(--brandD);outline-offset:1px}
+.sec-f .tfa-in{display:flex;gap:8px}.sec-f .tfa-in input{flex:1;min-width:0}
+.sec-inbox code{font-weight:700;letter-spacing:.1em}
+.sec-dev{margin:4px 0 10px}
+.sec-dl{list-style:none;margin:0 0 8px;padding:0;display:flex;flex-direction:column;gap:6px}
+.sec-dl li{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:12px}
+.sec-dl li>div{flex:1;min-width:0}.sec-dl b{display:block;font-size:13.5px}.sec-dl small{color:var(--ink2);font-size:12px}
+.sec-di{font-size:18px}
+.btn.sec-dz{color:#d64545;border-color:rgba(214,69,69,.4)}
+.sec-del b{color:#d64545}
+html[data-theme="night"] .btn.sec-dz,html[data-theme="night"] .sec-del b{color:#ff7a7a}
+</style>
 <!-- r64 · 「简约 / 紧凑」密度已删除，只留一种布局 -->
 <style>
 :root{--bg:#ffffff;--top:64px;--sh:0 1px 2px rgba(18,24,26,.05),0 6px 20px -4px rgba(18,24,26,.07);--sh2:0 2px 6px rgba(15,23,42,.06),0 18px 44px -14px rgba(15,23,42,.2);--sf:#ffffff;--sf-hi:#ffffff;--hov:#e9e8e6;--onb:#04261f;--ink:#21201c;--ink2:#52524d;--ink3:#63635e;--line:#dad9d6;--line2:#e4e3df;--soft:#e9e8e6;
@@ -2496,6 +2521,59 @@ html[data-theme="night"] .dsb-q:hover{background:var(--brandL)}
 }
 html.rm .qa.new .vz-c,html.rm .qa.new .vz-cv svg,html.rm .qa.new .vz-dot,html.rm .qa.new .vz-bar,html.rm .qa.new .vz-sb,html.rm .qa.new .vz-bs .tr i,
 html.rm .ddp.in.think .ddp-pu,html.rm .ddp.in.think .ddp-head svg,html.rm .ddp.in.joy .ddp-head svg{animation:none!important}
+/* ===== r67 · 斜杠命令弹层 / 图表 / 传送门高亮 / 指引条 / 引用菜单 ===== */
+#askForm{position:relative}
+.slp{position:absolute;left:0;right:0;bottom:calc(100% + 8px);z-index:30;max-height:min(360px,52vh);overflow:auto;background:var(--sf);border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh2);padding:6px}
+.slp-h{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:650;color:var(--ink3);padding:6px 10px 6px}.slp-h span{font-weight:500}
+.slp-i{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:baseline;gap:10px;width:100%;appearance:none;border:0;background:none;text-align:left;font:inherit;color:var(--ink);padding:9px 10px;border-radius:9px;cursor:pointer;min-height:40px}
+.slp-i b{font-weight:700;font-size:14.5px;white-space:nowrap}.slp-i small{font-size:13px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.slp-i em{font-style:normal;font-size:12px;color:var(--ink3)}
+.slp-i.on,.slp-i:hover{background:var(--hov)}.slp-i.on b{color:var(--brandD)}
+.slp-e{margin:0;padding:12px 10px;font-size:13.5px;color:var(--ink3)}
+.vz-c.vz-r7ln,.vz-c.vz-r7vb,.vz-c.vz-r7st,.vz-c.vz-r7cmp,.vz-c.vz-r7prog{overflow:visible}
+.sc{position:relative;margin-top:4px;max-width:600px}.sc-svg{display:block;width:100%;height:auto;overflow:visible;touch-action:pan-y;cursor:crosshair}
+.sc-gr{stroke:var(--line2);stroke-width:1}.sc-gr.z{stroke:var(--line);stroke-dasharray:3 3}
+.sc-x,.sc-y,.sc-n{font-size:10.5px;fill:var(--ink3);font-variant-numeric:tabular-nums}.sc-n{font-size:12px;font-weight:650;fill:var(--ink)}
+.sc-a0{stop-color:var(--brand);stop-opacity:.26}.sc-a1{stop-color:var(--brand);stop-opacity:0}
+.sc-l{fill:none;stroke:var(--brandD);stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.sc-p{fill:var(--sf);stroke:var(--brandD);stroke-width:1.5}.sc-p.last{fill:var(--brandD)}.sc-p.hl{fill:var(--gold);stroke:var(--sf);stroke-width:2}
+.sc-hv{fill:var(--brandD);stroke:var(--sf);stroke-width:2;pointer-events:none}.sc-g{stroke:var(--ink3);stroke-dasharray:3 3;pointer-events:none}
+.sc-col{fill:var(--ink);opacity:.05;pointer-events:none}
+.sc-b.pos,.sc-b.int,.sc-b.sL{fill:var(--long)}.sc-b.neg,.sc-b.fee,.sc-b.sS{fill:var(--short)}.sc-b.real{fill:#4f7ff0}.sc-b.upl{fill:var(--gold)}
+.sc-t{fill:var(--ink);stroke:var(--sf);stroke-width:1.5}
+.sc-rh{fill:transparent}.sc-row.on .sc-rh{fill:var(--ink);opacity:.05}
+.sc-pg{fill:var(--line)}.sc-pg.done{fill:var(--brand);opacity:.55}.sc-pg.cur{fill:var(--brandD)}
+.sc-lg{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink2)}.sc-lg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--brandD)}
+.sc-lg i.pos,.sc-lg i.int,.sc-lg i.sL{background:var(--long)}.sc-lg i.fee,.sc-lg i.neg,.sc-lg i.sS{background:var(--short)}.sc-lg i.upl{background:var(--gold)}.sc-lg i.real{background:#4f7ff0}.sc-lg i.tot{background:var(--ink);border-radius:50%}
+.sc-tl{margin:4px 0 0;font-size:11.5px;color:var(--ink3)}
+.sc-steps{margin:2px 0 0;padding-left:20px;font-size:13px;color:var(--ink2);line-height:1.7}.sc-steps li.cur{color:var(--ink);font-weight:650}.sc-steps li.done{color:var(--ink3);text-decoration:line-through}
+.sc-tip{position:fixed;z-index:90;pointer-events:none;min-width:130px;max-width:240px;background:var(--sf);color:var(--ink);border:1px solid var(--line);border-radius:10px;box-shadow:var(--sh2);padding:8px 10px;font-size:12.5px;line-height:1.5}
+.sc-tip b{display:block;font-weight:700;margin-bottom:2px}.sc-tip span{display:flex;justify-content:space-between;gap:12px}.sc-tip span.tt{border-top:1px solid var(--line2);margin-top:3px;padding-top:3px;font-weight:650}
+.sc-tip em{font-style:normal;color:var(--ink2)}.sc-tip i{font-style:normal;font-weight:650}.sc-tip .up{color:var(--long)}.sc-tip .dn{color:var(--short)}
+.r67-pts{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:5px;font-size:13.5px;color:var(--ink2);line-height:1.55}
+.r67-pts li{position:relative;padding-left:14px}.r67-pts li::before{content:"";position:absolute;left:2px;top:.62em;width:5px;height:5px;border-radius:50%;background:var(--brand)}
+.r67-pts b{color:var(--ink);font-weight:650}.r67-pts code,.qa code{font:inherit;font-weight:650;color:var(--brandD)}
+.r67-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
+.r67-chip{appearance:none;font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--sf-hi);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;min-height:34px}.r67-chip:hover{border-color:var(--brandD);color:var(--brandD)}
+@keyframes r67hl{0%,100%{box-shadow:0 0 0 2px var(--brandD),0 0 0 6px rgba(47,220,188,.28)}50%{box-shadow:0 0 0 2px var(--brandD),0 0 0 12px rgba(47,220,188,0)}}
+.r67-hl{position:relative;z-index:2;animation:r67hl 1.2s ease-in-out infinite;border-radius:10px;outline:none}
+.r67-sel{outline:2px dashed var(--brandD)!important;outline-offset:2px;background-color:rgba(47,220,188,.1)}
+html.rm .r67-hl{animation:none;box-shadow:0 0 0 3px var(--brandD)}
+@media (prefers-reduced-motion:reduce){.r67-hl{animation:none;box-shadow:0 0 0 3px var(--brandD)}}
+.gdb{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:12px;width:min(560px,calc(100vw - 24px));background:var(--sf);color:var(--ink);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh2);padding:10px 12px}
+.gdb.paused{width:auto;max-width:calc(100vw - 24px)}.gdb.qsel{bottom:84px}
+.gdb-dd{flex:0 0 auto;width:30px;height:30px;display:grid;place-items:center}.gdb-dd svg{width:30px;height:30px}
+.gdb-t{flex:1;min-width:0}.gdb-t small{display:block;font-size:12px;color:var(--ink3);font-weight:600}.gdb-t b{display:block;font-size:14.5px;font-weight:650;line-height:1.35}
+.gdb-b{display:flex;gap:6px;flex:0 0 auto}.gdb .btn.sm{height:34px;padding:0 12px;font-size:13.5px}
+.qmn{position:fixed;z-index:95;min-width:180px;max-width:260px;background:var(--sf);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh2);padding:5px}
+.qmn-h{font-size:12px;color:var(--ink3);padding:6px 10px 4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qmn button{display:block;width:100%;text-align:left;appearance:none;border:0;background:none;font:inherit;font-size:14px;color:var(--ink);padding:9px 10px;border-radius:8px;cursor:pointer;min-height:38px}.qmn button:hover,.qmn button:focus-visible{background:var(--hov);outline:none}
+#attRow .ach.ref .l{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+@media (max-width:760px){
+  .gdb{bottom:calc(76px + env(safe-area-inset-bottom));padding:9px 10px;gap:8px}.gdb.qsel{bottom:calc(140px + env(safe-area-inset-bottom))}
+  .gdb-t b{font-size:13.5px}.gdb .btn.sm{height:36px;padding:0 10px}
+  .slp-i{grid-template-columns:auto minmax(0,1fr)}.slp-i em{display:none}
+  .sc-x,.sc-y{font-size:11.5px}
+}
 </style>
 <link rel="icon" type="image/svg+xml" href="../icons/dodo.svg?v=20261112">
 <link rel="apple-touch-icon" sizes="180x180" href="../icons/dodo-180.png?v=20261112">
@@ -5160,7 +5238,8 @@ function renderWatch() {
       <div class="d"><b class="num">${list.length}</b> ${LIVE ? '单成交' : '次调仓'} · 手续费 <b class="num">${sgn(-fee, LIVE ? 2 : 0)}</b> · ${LIVE ? `成交名义 <b class="num">${money(list.reduce((a, g) => a + g.items.reduce((b, t) => b + (t.notional || 0), 0), 0), 0)}</b>` : `配置计奖 <b class="num">${money(gi, 0)}</b>`}</div>
       <div class="d2">${LIVE ? `币安 userTrades 逐笔成交，按订单合并；${LIVE.tradeFromI <= 0 ? `每个交易对从第一笔成交起全部读取，最早一笔 ${LIVE.trades.length ? dLabel(LIVE.trades[LIVE.trades.length - 1].d) : '—'}` : `只能取到 ${dLabel(LIVE.tradeFromI)} 起的记录，更早的日子标为超出逐笔范围`} · <span class="demo">币安只读</span>` : '单次循环 = 盈利侧平仓兑现 + 现价同量补回恢复配对 + 核对保证金余量后转配计奖资产'}</div>
       <div class="acts">${any ? `<button class="btn brand" type="button" data-treset>清除筛选</button>` : `<button class="btn brand" type="button" data-tday="today">看今天的 ${todayN} ${LIVE ? '单' : '次'}</button>`}
-        <button class="btn ghost" type="button" data-kopen="top" aria-expanded="${S.kOpen === 'top'}">${S.kOpen === 'top' ? '收起' : '展开'} ${S.kc} 行情</button></div></div>
+        <button class="btn ghost" type="button" data-kopen="top" aria-expanded="${S.kOpen === 'top'}">${S.kOpen === 'top' ? '收起' : '展开'} ${S.kc} 行情</button>
+        <button class="btn ghost" type="button" data-texport>导出 CSV</button></div></div>
     <div class="tx-r"><div class="hh">${LIVE ? '近 30 天每天成交' : '近 30 天每天调仓'}<small>点柱子只看那天，再点一次取消</small></div>
       <div class="bars" role="group" aria-label="近 30 天每天调仓次数">${cnt.map((c, i) => { const d = d0 + i, v = d === DAYS ? 'today' : 'd' + d;
         return `<button type="button" class="b ${dd === d ? 'on' : ''} ${c ? '' : 'z'}" data-tday="${v}" style="--h:${(c / mx * 100).toFixed(1)}%" aria-pressed="${dd === d}" aria-label="${dayName(d)}，${LIVE && OUTR(d) ? '超出逐笔范围' : `${c} ${LIVE ? '单' : '次'}${c ? '，' + (LIVE ? '已实现 ' : '止盈 ') + sgn(pn[i], 0) : ''}`}"><i></i><em class="num">${dLabel(d)} · ${LIVE && OUTR(d) ? '超出逐笔范围' : `${c} ${LIVE ? '单' : '次'}${c ? ' · ' + sgn(pn[i], 0) : ''}`}</em></button>`; }).join('')}</div>
@@ -5544,6 +5623,7 @@ function setPanel(t) {
   const row = (b, s, r) => `<div class="stg-r"><div><b>${b}</b>${s ? `<small>${s}</small>` : ''}</div>${r || ''}</div>`;
   if (t === 'acct') return `<h3>账号</h3>
     <div class="stg-prof"><span class="av" aria-hidden="true">${esc(meIni())}</span><div><b>${esc(meName())}</b><small>${esc(SESS().email || '')}</small></div></div>
+    ${secPanel(row)}
     ${tfaPanel()}`;
   if (t === 'pref') return `<h3>偏好</h3>
     ${row('外观', '只作用于后台；官网和登录页不变', seg('data-thm', tp, [['day', '昼'], ['night', '夜'], ['system', '跟随系统']], '外观'))}
@@ -5559,6 +5639,76 @@ function setPanel(t) {
     <div class="stg-r stg-bot"><div><b>绑定 Bot API</b><small>把 Dodo 绑定到你自己的 Bot API；只认本站后台的真实回应</small></div></div>
     <div id="dsbBot" class="stg-botb"></div>`;
 }
+/* r67 · 账号安全：修改密码、修改邮箱、登录设备、注销账户（演示：只在本浏览器校验，不连服务器） */
+const SEC = { open: '', err: '', code: '', mail: '', devs: null };
+function secDevs() {
+  if (SEC.devs) return SEC.devs;
+  const ua = navigator.userAgent, mob = /iPhone|Android|Mobile/i.test(ua);
+  const me = (/Mac/.test(ua) && !mob ? 'Mac' : /iPhone/.test(ua) ? 'iPhone' : /Android/.test(ua) ? 'Android' : 'Windows') + ' · ' + (/Edg\//.test(ua) ? 'Edge' : /Chrome\//.test(ua) ? 'Chrome' : /Safari\//.test(ua) ? 'Safari' : 'Firefox');
+  const now = Date.now();
+  return (SEC.devs = [{ id: 'me', n: me, w: '新加坡', at: now, me: true }, { id: 'd2', n: 'iPhone 16 Pro Max · Safari', w: '新加坡', at: now - 3 * 3600e3 }, { id: 'd3', n: 'Windows · Chrome', w: '吉隆坡', at: now - 2 * 864e5 }]);
+}
+function secPanel(row) {
+  const o = SEC.open, err = `<p class="bnm-err" role="alert">${SEC.err ? esc(SEC.err) : ''}</p>`;
+  const btn = (k, x, cls) => `<button type="button" class="btn ${cls || 'ghost'} sm" data-sec="${k}" aria-expanded="${String(o === k)}">${o === k ? '收起' : x}</button>`;
+  const ago = t => { const m = Math.round((Date.now() - t) / 6e4); return m < 2 ? '刚刚' : m < 60 ? `${m} 分钟前` : m < 1440 ? `${Math.round(m / 60)} 小时前` : `${Math.round(m / 1440)} 天前`; };
+  let h = `<div class="sec" id="secBox"><h4 class="sec-h">账号安全</h4>`;
+  h += row('修改密码', '至少 8 位，建议包含字母和数字', btn('pw', '修改'));
+  if (o === 'pw') h += `<form class="tfa-box sec-f" id="secPwF" novalidate><label for="secPw0">当前密码</label><input id="secPw0" type="password" autocomplete="current-password" data-first>
+    <label for="secPw1">新密码</label><input id="secPw1" type="password" autocomplete="new-password"><label for="secPw2">确认新密码</label><input id="secPw2" type="password" autocomplete="new-password">${err}
+    <div class="tfa-ft"><button type="button" class="btn ghost sm" data-sec="x">取消</button><button type="submit" class="btn brand sm">保存新密码</button></div></form>`;
+  h += row('修改邮箱', esc(SESS().email || '—'), btn('mail', '修改'));
+  if (o === 'mail') h += `<form class="tfa-box sec-f" id="secMailF" novalidate><label for="secMail">新邮箱</label><div class="tfa-in"><input id="secMail" type="email" autocomplete="email" value="${esc(SEC.mail)}" data-first><button type="button" class="btn ghost sm" data-sec="send">${SEC.code ? '重新发送' : '发送验证码'}</button></div>
+    ${SEC.code ? `<p class="tfa-p sec-inbox"><span class="stt demo2">演示</span><span>验证码已发到</span> <span data-i18n-skip>${esc(SEC.mail)}</span><span>：</span><code>${SEC.code}</code></p>` : ''}
+    <label for="secCode">6 位验证码</label><input id="secCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code">${err}
+    <div class="tfa-ft"><button type="button" class="btn ghost sm" data-sec="x">取消</button><button type="submit" class="btn brand sm">确认修改</button></div></form>`;
+  const ds = secDevs();
+  h += row('登录设备', `${ds.length} 台设备在登录状态`, btn('dev', '查看'));
+  if (o === 'dev') h += `<div class="tfa-box sec-dev"><ul class="sec-dl">${ds.map(d => `<li><span class="sec-di" aria-hidden="true">${/iPhone|Android/.test(d.n) ? '📱' : '💻'}</span><div><b>${esc(d.n)}</b><small>${esc(d.w)} · ${d.me ? '正在使用' : ago(d.at)}</small></div>${d.me ? '<span class="stt ok">当前设备</span>' : `<button type="button" class="btn ghost sm" data-sec="out:${d.id}">退出</button>`}</li>`).join('')}</ul>
+    <div class="tfa-ft"><button type="button" class="btn ghost sm" data-sec="outall"${ds.length < 2 ? ' disabled' : ''}>退出所有其他设备</button></div></div>`;
+  h += row('注销账户', '删除账户和本机保存的全部数据，无法恢复', btn('del', '注销', 'ghost sec-dz'));
+  if (o === 'del') h += `<form class="tfa-box sec-f sec-del" id="secDelF" novalidate><b>确定注销账户？</b><p class="tfa-p">注销后，账户、已绑定的币安子账户记录、偏好和 Dodo 历史都会删除，且无法恢复。请输入「注销」确认。</p>
+    <input id="secDelIn" autocomplete="off" placeholder="注销" data-first>${err}
+    <div class="tfa-ft"><button type="button" class="btn ghost sm" data-sec="x">取消</button><button type="submit" class="btn sm tfa-danger">永久注销</button></div></form>`;
+  return h + '</div>';
+}
+function secRender(focus) { renderSettings(); const f = focus && $(focus); if (f) f.focus({ preventScroll: true }); else $('#secBox [data-first]')?.focus({ preventScroll: true }); }
+document.addEventListener('click', e => {
+  const b = e.target.closest('#stg [data-sec]'); if (!b) return;
+  const k = b.dataset.sec; SEC.err = '';
+  if (k === 'x') { const was = SEC.open; SEC.open = ''; secRender(`[data-sec="${was}"]`); return; }
+  if (k === 'pw' || k === 'mail' || k === 'dev' || k === 'del') { SEC.open = SEC.open === k ? '' : k; if (k !== 'mail') SEC.code = ''; secRender(SEC.open ? null : `[data-sec="${k}"]`); return; }
+  if (k === 'send') {
+    const m = ($('#secMail')?.value || '').trim().toLowerCase(); SEC.mail = m;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)) { SEC.err = '请输入正确的邮箱'; secRender('#secMail'); return; }
+    if (m === (SESS().email || '')) { SEC.err = '新邮箱和当前邮箱相同'; secRender('#secMail'); return; }
+    SEC.code = String(Math.floor(100000 + Math.random() * 900000)); secRender('#secCode'); toast('验证码已发送（演示）'); return;
+  }
+  if (k.startsWith('out:')) { const id = k.slice(4); SEC.devs = secDevs().filter(d => d.id !== id); secRender('[data-sec="outall"]'); toast('已退出该设备'); return; }
+  if (k === 'outall') { SEC.devs = secDevs().filter(d => d.me); secRender('[data-sec="dev"]'); toast('已退出所有其他设备'); return; }
+});
+document.addEventListener('submit', e => {
+  const id = e.target.id; if (!['secPwF', 'secMailF', 'secDelF'].includes(id)) return; e.preventDefault(); SEC.err = '';
+  if (id === 'secPwF') {
+    const a = $('#secPw0').value, b = $('#secPw1').value, c = $('#secPw2').value;
+    if (!a) { SEC.err = '请输入当前密码'; return secRender('#secPw0'); }
+    if (b.length < 8 || !/[A-Za-z]/.test(b) || !/\d/.test(b)) { SEC.err = '新密码至少 8 位，且包含字母和数字'; return secRender('#secPw1'); }
+    if (b === a) { SEC.err = '新密码不能和当前密码相同'; return secRender('#secPw1'); }
+    if (b !== c) { SEC.err = '两次输入的新密码不一致'; return secRender('#secPw2'); }
+    SEC.open = ''; secRender('[data-sec="pw"]'); toast('密码已修改（演示）'); return;
+  }
+  if (id === 'secMailF') {
+    const c = ($('#secCode').value || '').trim();
+    if (!SEC.code) { SEC.err = '请先发送验证码'; return secRender('#secMail'); }
+    if (c !== SEC.code) { SEC.err = '验证码不对'; return secRender('#secCode'); }
+    try { const s0 = SESS(); const raw = JSON.parse(localStorage.getItem('3dt.session') || 'null'); if (raw && raw.email === s0.email) { raw.email = SEC.mail; localStorage.setItem('3dt.session', JSON.stringify(raw)); } } catch (x) {}
+    const m = SEC.mail; SEC.open = ''; SEC.code = ''; SEC.mail = ''; secRender('[data-sec="mail"]'); toast(EN() ? `Email changed to ${m} (demo)` : `邮箱已改为 ${m}（演示）`); return;
+  }
+  if (($('#secDelIn').value || '').trim() !== '注销' && ($('#secDelIn').value || '').trim().toLowerCase() !== 'delete') { SEC.err = '请输入「注销」确认'; return secRender('#secDelIn'); }
+  toast('账户已注销（演示）');
+  try { Object.keys(localStorage).filter(x => /^3dt|^td/.test(x)).forEach(x => localStorage.removeItem(x)); } catch (x) {}
+  setTimeout(() => { try { TDAccount.logout(); } catch (x) { location.href = '../../site/'; } }, 700);
+});
 function tfaPanel() {
   const e = tfaEmail(), A = window.TDAuth, acc = A && A.account(e), on = !!(acc && acc.tfa && acc.tfa.on), err = SET.err ? `<p class="bnm-err" role="alert">${esc(SET.err)}</p>` : '<p class="bnm-err" role="alert"></p>';
   const demo = '<p class="tfa-demo"><span class="stt demo2">演示</span>验证在这个浏览器里完成，未接入服务器；真实上线需要服务端保存与校验。</p>';
@@ -5678,24 +5828,19 @@ const bnSave = () => { try { TDBind.saveDraft($('#bnNm')?.value || ''); } catch 
 const CP_I = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>';
 function qbForm() {
   const pm = BN_PERMS.map(([id, t, k]) => `<li class="qb-pm ${k}" data-pm="${id}"><i aria-hidden="true">${k === 'on' ? '✓' : k === 'off' ? '✕' : '○'}</i><span>${t}</span><small>${k === 'on' ? '勾选' : k === 'off' ? '不勾' : '可选'}</small></li>`).join('');
-  return `<div class="qb" id="qb">
-    <p class="qb-lead">在币安子账户「API 管理」里选<b>自行生成</b>，按下面四行填好即可。</p>
-    <div class="qb-row"><div class="qb-k"><em>1</em>公钥<span class="stt demo2">示例</span></div>
-      <button type="button" class="qb-key" id="qbKey" data-qbcp="pem" data-first aria-label="复制完整公钥（Ed25519 公钥，不是私钥）"><code>${esc(bnShort())}</code><span class="qb-ci">${CP_I}</span><span class="qb-ok" aria-hidden="true">已复制</span></button>
-      <p class="qb-h">点击复制完整公钥，粘贴到币安「公钥」处。这是公钥，不含私钥。</p></div>
-    <div class="qb-row"><div class="qb-k"><em>2</em>权限</div><ul class="qb-pms" aria-label="币安 API 权限：勾选哪些">${pm}</ul>
-      <p class="qb-h">先填好下面两个 IP，币安才允许勾选交易权限。「允许预测交易权限」不勾；交易币对白名单可选，会限制可交易币对，收益可能下降（不一定），不确定就不勾；提现权限永远不要开。</p></div>
-    <div class="qb-row"><div class="qb-k"><em>3</em>IP 白名单</div><div class="qb-ips">${BN_IPS.map((ip, i) => `<button type="button" class="qb-ip" data-qbcp="ip${i}" aria-label="复制 IP ${ip}"><code>${ip}</code><span class="qb-ci">${CP_I}</span><span class="qb-ok" aria-hidden="true">已复制</span></button>`).join('')}<span class="stt demo2">示例</span></div>
-      <p class="qb-h">IP 访问限制选「只访问受信任的IP」，两个都要添加。</p></div>
-    <form class="qb-row qb-f" id="bnF" novalidate><div class="qb-k"><em>4</em>API Key</div>
-      <div class="qb-try"><p class="qb-h" id="bnDemoH"><span class="stt demo2">演示</span>还没接入币安：输入 <code>1234</code> 可模拟绑定成功（演示账户，不连接币安）。</p><button type="button" class="btn ghost sm" data-bntry>用示例 Key 体验</button></div>
-      <div class="qb-in"><input id="bnKey" autocomplete="off" spellcheck="false" maxlength="64" aria-label="API Key" aria-describedby="bnErr bnDemoH">
-        <input id="bnNm" maxlength="24" placeholder="账户名称（可选）" aria-label="账户名称（可选）" value="${esc(TDBind.draft())}">
+  /* r67 · 只留五行：账户名称 → 公钥 → IP 白名单 → 权限配置 → API Key + 绑定。说明、长提示、演示提示、跳过、教程链接都去掉；1234 演示照样可用 */
+  return `<div class="qb qb5" id="qb">
+    <div class="qb-row"><label class="qb-k" for="bnNm"><em>1</em>账户名称</label>
+      <div class="qb-in"><input id="bnNm" maxlength="24" placeholder="例如：主账户" value="${esc(TDBind.draft())}" data-first></div></div>
+    <div class="qb-row"><div class="qb-k"><em>2</em>公钥</div>
+      <button type="button" class="qb-key" id="qbKey" data-qbcp="pem" aria-label="复制完整公钥"><code>${esc(bnShort())}</code><span class="qb-ci">${CP_I}</span><span class="qb-ok" aria-hidden="true">已复制</span></button></div>
+    <div class="qb-row"><div class="qb-k"><em>3</em>IP 白名单</div><div class="qb-ips">${BN_IPS.map((ip, i) => `<button type="button" class="qb-ip" data-qbcp="ip${i}" aria-label="复制 IP ${ip}"><code>${ip}</code><span class="qb-ci">${CP_I}</span><span class="qb-ok" aria-hidden="true">已复制</span></button>`).join('')}</div></div>
+    <div class="qb-row"><div class="qb-k"><em>4</em>权限配置</div><ul class="qb-pms" aria-label="币安 API 权限">${pm}</ul></div>
+    <form class="qb-row qb-f" id="bnF" novalidate><label class="qb-k" for="bnKey"><em>5</em>API Key</label>
+      <div class="qb-in"><input id="bnKey" autocomplete="off" spellcheck="false" maxlength="64" placeholder="粘贴 API Key" aria-describedby="bnErr">
         <button type="submit" class="btn brand">绑定</button></div>
       <p class="bnm-err" id="bnErr" role="alert"></p>
-      <div class="bnm-res" id="bnRes" role="status" hidden></div>
-      <details class="qb-real" id="bnReal"><summary>绑定真实币安账户</summary><p class="qb-h">在币安复制自行生成的 API Key（64 位字母和数字），粘贴到上面再点「绑定」。目前网页还没接入币安：只检查格式，不发送、不保存你的 API Key，账户保持「未连接」。</p></details></form>
-    <div class="qb-ft"><button type="button" class="btn ghost" data-qbskip>跳过</button><span class="sp"></span><a class="lnk" id="bnGuide" href="/3dtrading-site/bind/?from=app&lang=${EN() ? 'en' : 'zh'}#guide">查看完整教程</a></div></div>`;
+      <div class="bnm-res" id="bnRes" role="status" hidden></div></form></div>`;
 }
 function qbDone() {
   const d = QB.done, all = (() => { try { return TDBind.demoList(); } catch (e) { return []; } })();
@@ -5714,14 +5859,13 @@ function qbRender(focus) {
   /* r61 · 手机底部面板：顶部左「取消」、右「查看完整教程」 */
   const hd = $('#modal .mdl-hd'); $$('.qbx', hd).forEach(x => x.remove());
   hd.insertAdjacentHTML('afterbegin', `<button type="button" class="qbx l" data-qbx>${QB.done ? '关闭' : '取消'}</button>`);
-  if (!QB.done) hd.insertAdjacentHTML('beforeend', `<a class="qbx r" id="bnGuide2" href="/3dtrading-site/bind/?from=app&lang=${EN() ? 'en' : 'zh'}#guide">查看完整教程</a>`);
-  if (focus) (QB.done ? $('[data-bxnext]') : focus === 'key' ? $('#bnKey') : $('#qbKey'))?.focus({ preventScroll: true });
+  if (focus) (QB.done ? $('[data-bxnext]') : focus === 'key' ? $('#bnKey') : $('#bnNm'))?.focus({ preventScroll: true });
 }
 function openBind(done, carried) {
   if (DODO) setDodo(false);
   QB.done = done || null; QB.carried = !!carried;
   openDlg(done ? '绑定结果' : '绑定币安账户', '<div id="qbw"></div>', 'wide qbm');
-  qbRender(); setTimeout(() => (done ? $('[data-bxnext]') : $('#qbKey'))?.focus({ preventScroll: true }), RM ? 0 : 60);
+  qbRender(); setTimeout(() => (done ? $('[data-bxnext]') : $('#bnNm'))?.focus({ preventScroll: true }), RM ? 0 : 60);
 }
 /* r66 · 「用示例 Key 体验」：填入 1234 并直接完成演示绑定 */
 document.addEventListener('click', e => { if (!e.target.closest('[data-bntry]')) return; const k = $('#bnKey'), f = $('#bnF'); if (!k || !f) return; k.value = '1234'; k.dispatchEvent(new Event('input', { bubbles: true })); f.requestSubmit ? f.requestSubmit() : f.dispatchEvent(new Event('submit', { cancelable: true })); });
@@ -5779,7 +5923,7 @@ document.addEventListener('click', e => {
   }
   if (e.target.closest('#bnGuide')) { bnSave(); return; }
   if (e.target.closest('[data-qbskip]')) { bnSave(); closeDlg(); toast('已跳过：可随时在个人菜单或「我的」里添加币安账户'); return; }
-  if (e.target.closest('[data-bxnext]')) { QB.done = null; QB.carried = false; qbRender('key'); toast('换一个子账户，按同样四行再绑定一次'); return; }
+  if (e.target.closest('[data-bxnext]')) { QB.done = null; QB.carried = false; qbRender('key'); toast('换一个子账户，按同样五行再绑定一次'); return; }
   if (e.target.closest('[data-bxfin]')) { QB.done = null; closeDlg(); return; }
 });
 document.addEventListener('input', e => {
@@ -5790,7 +5934,7 @@ document.addEventListener('submit', e => {
   if (e.target.id !== 'bnF') return; e.preventDefault();
   const k = $('#bnKey'), nm = $('#bnNm'), r = $('#bnRes'), err = $('#bnErr'), c = TDBind.check(k.value);
   r.hidden = true; err.textContent = '';
-  if (c === 'empty' || c === 'bad') { err.textContent = c === 'empty' ? '请填写 API Key' : 'API Key 应为 64 位字母和数字（演示可填 1234）'; k.focus(); return; }
+  if (c === 'empty' || c === 'bad') { err.textContent = c === 'empty' ? '请填写 API Key' : 'API Key 应为 64 位字母和数字'; k.focus(); return; }
   if (c === 'format') {
     k.value = '';
     r.hidden = false; r.innerHTML = '<b>账户未连接</b><span>格式正确，但后台还没接入币安：这次没有发送、没有保存你的 API Key。</span>'; return;
@@ -6043,7 +6187,7 @@ function mountAccount() {
   /* 顶部 3dtrading Logo 回同源官网（语言和登录状态由账户模块共享） */
   document.querySelectorAll('[data-site-link]').forEach(a => { a.href = TDAccount.routes.site; });
   const IC = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
-  TDAccount.mountMenu($('#avBtn'), { context: 'app', layout: 'r56', profile: '#/me', settings: '#/settings', logoutTo: OUT_URL, theme: () => document.documentElement.dataset.theme === 'day' ? 'light' : 'dark', items: [
+  TDAccount.mountMenu($('#avBtn'), { context: 'app', layout: 'r56', profile: '#/me', settings: '#/settings', blog: '../../blog/?from=app', logoutTo: OUT_URL, theme: () => document.documentElement.dataset.theme === 'day' ? 'light' : 'dark', items: [
     { label: { zh: '我的', en: 'Me' }, sub: { zh: '账号、币安账户、偏好和连接状态', en: 'Account, Binance accounts, preferences and connections' }, href: '#/me', icon: IC('<circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c1.2-3.6 4-5.2 7.5-5.2s6.3 1.6 7.5 5.2"/>') },
     { label: { zh: '通知设置', en: 'Notifications' }, sub: { zh: 'Telegram · Discord · 邮箱（演示）', en: 'Telegram · Discord · Email (demo)' }, href: '#/notify', icon: IC('<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5h4"/>') },
     { label: { zh: '钱包', en: 'Wallet' }, sub: { zh: '每月按总资产 1% · Crypto 充值', en: '1% of total assets per month · Crypto top-up' }, href: '#/wallet', icon: IC('<rect x="3.5" y="6" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M16 14.5h1.5"/>') }
@@ -6464,6 +6608,549 @@ try { if (sessionStorage.getItem(WIPED_KEY)) { sessionStorage.removeItem(WIPED_K
     if (S.flip == null && $('#cvHint')) $('#cvHint').textContent = HINT;
   });
 })();
+/* ===================== r67 · Dodo 斜杠命令 / 传送门 / 程序指引 / 引用多选 ===================== */
+/* 只在后台 Dodo 页的输入框里生效：输入 / 弹出命令表，继续打字筛选，↑↓ 回车或点击选择。
+   命令名跟随界面语言，另一种语言的命令名也认。每条回复：一句结论 + 一张图（悬停读数）+ 2–3 行要点 + 跳转按钮。
+   数据全部来自本页同一份 V（示例或只读），和页面上的数字一致。 */
+const LL = (z, e) => EN() ? e : z;
+const SCN = { n: 0 };
+const dl = i => vD(dLabel(i));
+const hasData = () => !!(V && !noLive() && !pendingAcct());
+const CMDS = [
+  { id: 'profit', zh: '收益', en: 'profit', dz: '累计净收益曲线', de: 'Cumulative return curve', kw: 'shouyi return earn pnl curve 曲线 净值' },
+  { id: 'orders', zh: '订单', en: 'orders', dz: '最近每天调仓几次', de: 'Rebalances per day', kw: 'dingdan trade trades 交易 调仓 成交' },
+  { id: 'fees', zh: '手续费', en: 'fees', dz: '手续费和计奖收益对比', de: 'Fees vs rewards', kw: 'shouxufei fee cost 费用 成本' },
+  { id: 'pnl', zh: '盈亏拆解', en: 'pnl', dz: '每天盈亏来自哪里', de: 'Where daily P&L comes from', kw: 'yingkui chaijie breakdown 拆解 盈亏' },
+  { id: 'positions', zh: '持仓', en: 'positions', dz: '每个币种多空两边', de: 'Long vs short by coin', kw: 'chicang pos position 仓位 敞口 多空' },
+  { id: 'funding', zh: '资金费', en: 'funding', dz: '资金费去了哪里', de: 'Funding payments', kw: 'zijinfei fund funding rate 费率' },
+  { id: 'go', zh: '前往', en: 'go', dz: '直接带你到某个按钮', de: 'Take me to a button', kw: 'qianwang portal open 打开 去 跳转', sub: 'go' },
+  { id: 'guide', zh: '指引', en: 'guide', dz: '一步步带你做完', de: 'Walk me through it', kw: 'zhiyin walkthrough tour 教程 引导', sub: 'guide' },
+  { id: 'quote', zh: '引用', en: 'quote', dz: '分析引用的数字、曲线点、订单', de: 'Analyse what you quoted', kw: 'yinyong ref reference cite 多选' },
+  { id: 'help', zh: '帮助', en: 'help', dz: '看全部命令', de: 'All commands', kw: 'bangzhu commands ? 命令' },
+];
+/* 传送门目标：程序打开对应的页面 / 弹窗，再把那个按钮点亮 */
+const PORTALS = [
+  { id: 'bind', zh: '绑定币安', en: 'Bind Binance', kw: 'bangding binance api key 绑定 账户', run: () => openBind(), el: () => $('#bnF [type="submit"]') },
+  { id: 'export', zh: '导出交易', en: 'Export trades', kw: 'daochu export csv 下载 导出', run: () => nav('trades'), el: () => $('[data-texport]') },
+  { id: 'password', zh: '修改密码', en: 'Change password', kw: 'mima password 密码 改密码', run: () => openSettings('acct'), el: () => $('#stg [data-sec="pw"]') },
+  { id: 'email', zh: '修改邮箱', en: 'Change email', kw: 'youxiang email mail 邮箱', run: () => openSettings('acct'), el: () => $('#stg [data-sec="mail"]') },
+  { id: 'devices', zh: '登录设备', en: 'Signed-in devices', kw: 'shebei devices device 设备', run: () => openSettings('acct'), el: () => $('#stg [data-sec="dev"]') },
+  { id: 'theme', zh: '昼夜外观', en: 'Day / night', kw: 'waiguan theme dark night 夜间 外观 主题', run: () => openSettings('pref'), el: () => $('#stg [data-thm]')?.closest('.seg') },
+  { id: 'lang', zh: '切换语言', en: 'Language', kw: 'yuyan language english 中文 语言', run: () => openSettings('pref'), el: () => $('#stg [data-lang]')?.closest('.seg') },
+  { id: 'range', zh: '收益曲线范围', en: 'Curve range', kw: 'fanwei range curve 30 60 曲线', run: () => nav('dashboard'), el: () => $('#rangeSeg') },
+  { id: 'blog', zh: '博客', en: 'Blog', kw: 'boke blog 文章', run: () => { $('#avBtn')?.click(); }, el: () => $('[data-tda-blog]') },
+];
+/* 程序指引：预设最短路径。程序替你打开页面、点亮下一步；随时停止，自由操作后点「继续指引」回到原步骤 */
+const FLOWS = [
+  { id: 'bind', zh: '绑定币安', en: 'Bind Binance', kw: 'bangding binance 绑定', steps: [
+    { zh: '起一个账户名称', en: 'Name the account', run: () => { if (!shown('#bnNm')) openBind(); }, el: () => $('#bnNm') },
+    { zh: '复制公钥，粘到币安「创建 API」', en: 'Copy the public key into Binance “Create API”', run: () => { if (!shown('#qbKey')) openBind(); }, el: () => $('#qbKey') },
+    { zh: '把两个 IP 加入白名单', en: 'Add both IPs to the whitelist', run: () => { if (!shown('.qb-ip')) openBind(); }, el: () => $('.qb-ips') },
+    { zh: '照这里勾选权限', en: 'Tick permissions as shown', run: () => { if (!shown('.qb-pms')) openBind(); }, el: () => $('.qb-pms') },
+    { zh: '粘贴 API Key，点「绑定」', en: 'Paste the API Key and tap “Bind”', run: () => { if (!shown('#bnKey')) openBind(); }, el: () => $('#bnF .qb-in') },
+  ] },
+  { id: 'password', zh: '修改密码', en: 'Change password', kw: 'mima password 密码', steps: [
+    { zh: '打开设置 → 账号', en: 'Open Settings → Account', run: () => { if (!shown('#stg')) openSettings('acct'); }, el: () => $('#stg [data-stab="acct"]') },
+    { zh: '点「修改密码」', en: 'Tap “Change” next to Password', run: () => { if (!shown('#stg [data-sec="pw"]')) openSettings('acct'); }, el: () => $('#stg [data-sec="pw"]'), done: () => !!$('#secPwF') },
+    { zh: '输入当前密码和两次新密码', en: 'Enter your current and new password', run: () => { if (!shown('#secPwF')) { if (!shown('#stg')) openSettings('acct'); SEC.open = 'pw'; secRender(); } }, el: () => $('#secPwF') },
+    { zh: '点「保存新密码」', en: 'Tap “Save new password”', run: () => { if (!shown('#secPwF')) { if (!shown('#stg')) openSettings('acct'); SEC.open = 'pw'; secRender(); } }, el: () => $('#secPwF [type="submit"]') },
+  ] },
+  { id: 'export', zh: '导出交易记录', en: 'Export trades', kw: 'daochu export csv 导出', steps: [
+    { zh: '打开交易页', en: 'Open Trades', run: () => nav('trades'), el: () => $('#txHero') },
+    { zh: '需要的话先按币种或日期筛选', en: 'Filter by coin or day if you like', run: () => { if (CUR !== 'trades') nav('trades'); }, el: () => $('#wlList') },
+    { zh: '点「导出 CSV」', en: 'Tap “Export CSV”', run: () => { if (CUR !== 'trades') nav('trades'); }, el: () => $('[data-texport]') },
+  ] },
+];
+FLOWS.forEach(f => { VZT['t_r67g_' + f.id] = ['指引 · ' + f.zh, 'Guide · ' + f.en]; });
+const shown = q => { const e = $(q); return !!(e && e.getBoundingClientRect().width > 0); };
+const nameOf = c => EN() ? c.en : c.zh;
+const norm = s => String(s || '').trim().toLowerCase();
+function findCmd(tok) {
+  const t = norm(tok); if (!t) return null;
+  return CMDS.find(c => c.zh === t || c.en === t) || null;
+}
+function matchList(list, q) {
+  q = norm(q); if (!q) return list.slice();
+  const sc = x => { const a = [x.zh, norm(x.en)], k = norm(x.kw || '');
+    if (a.some(n => n === q)) return 0; if (a.some(n => n.startsWith(q))) return 1; if (a.some(n => n.includes(q))) return 2; if (k.split(/\s+/).some(w => w.startsWith(q))) return 3; if (k.includes(q)) return 4; return 9; };
+  return list.map(x => [x, sc(x)]).filter(x => x[1] < 9).sort((a, b) => a[1] - b[1]).map(x => x[0]);
+}
+
+/* ---------- 图表：SVG 折线 / 柱状（可两组对比）/ 堆叠拆解 / 多空对比 / 指引进度；悬停与触摸都有读数 ---------- */
+Object.assign(VZT, {
+  t_r67cum: ['累计净收益 · 近 {0} 天', 'Cumulative net return · last {0} days'], t_r67eq: ['账户净权益 · 近 {0} 天', 'Net equity · last {0} days'],
+  t_r67ord: ['每天调仓次数 · 近 {0} 天', 'Rebalances per day · last {0} days'], t_r67fee: ['手续费与计奖收益 · 近 {0} 天', 'Fees vs rewards · last {0} days'],
+  t_r67pnl: ['每天盈亏拆解 · 近 {0} 天', 'Daily P&L breakdown · last {0} days'], t_r67pos: ['多空名义 · 按币种', 'Long vs short notional · by coin'],
+  t_r67fund: ['每天资金费 · 近 {0} 天', 'Funding per day · last {0} days'], t_r67real: ['每天已实现（含资金费）· 近 {0} 天', 'Daily realized incl. funding · last {0} days'],
+  t_r67q: ['你引用的日子 · 在曲线上', 'Your quoted days · on the curve'], t_r67qt: ['你引用的订单 · 已实现', 'Your quoted orders · realized'],
+  t_r67g: ['指引 · {0}', 'Guide · {0}'], t_r67tp: ['止盈次数', 'Take-profits'], r67n: ['次', 'times'], r67today: ['今日暂计', 'Today (est.)'], r67tot: ['当天合计', 'Day total'],
+});
+const fmtV = (v, f) => f === 'n' ? String(Math.round(v)) : f === 'm0' ? money(v, 0) : f === 'm2' ? money(v, 2) : f === 's2' ? sgn(v, 2) : sgn(v, 0);
+const axV = v => v === 0 ? '0' : Math.abs(v) >= 1e6 ? (v < 0 ? '−' : '') + (Math.abs(v) / 1e6).toFixed(Math.abs(v) >= 1e7 ? 1 : 2).replace(/\.?0+$/, '') + 'M' : Math.abs(v) >= 1e4 ? (v < 0 ? '−' : '') + (Math.abs(v) / 1e3).toFixed(Math.abs(v) >= 1e5 ? 0 : 1) + 'k' : (v < 0 ? '−' : '') + Math.abs(Math.round(v * 10) / 10);
+function ticks3(lo, hi) { const st = (hi - lo) / 3, p = Math.pow(10, Math.floor(Math.log10(st || 1))), m = st / p, s = (m <= 1 ? 1 : m <= 2 ? 2 : m <= 5 ? 5 : 10) * p, out = []; for (let v = Math.ceil(lo / s) * s; v <= hi + 1e-9; v += s) out.push(Math.abs(v) < s / 1e6 ? 0 : v); return out; }
+const dayLabels = (d0, n, today) => Array.from({ length: n }, (_, k) => d0 + k === DAYS && today ? vT('r67today') : dl(d0 + k));
+const SW = 340, SH = 172, ML = 40, MR = 10, MT = 12, MB = 24;
+function scWrap(id, kind, data, svg, legend) {
+  return `<div class="sc sc-${kind}" data-sc-id="${id}"><svg class="sc-svg" viewBox="0 0 ${SW} ${SH}" role="img" aria-label="${esc(data.al || '')}" data-sc="${esc(JSON.stringify(data))}">${svg}<line class="sc-g" x1="0" x2="0" y1="${MT}" y2="${SH - MB}" opacity="0"/></svg>${legend || ''}</div>`;
+}
+function xAxis(lab, X) { const n = lab.length, ks = n <= 3 ? [...Array(n).keys()] : [0, Math.round((n - 1) / 2), n - 1];
+  return ks.map((k, j) => `<text class="sc-x" x="${X(k).toFixed(1)}" y="${SH - 7}" text-anchor="${j === 0 && n > 1 ? 'start' : j === ks.length - 1 && n > 1 ? 'end' : 'middle'}">${esc(lab[k])}</text>`).join(''); }
+function yGrid(lo, hi, Y) { return ticks3(lo, hi).map(t => `<line class="sc-gr${t === 0 ? ' z' : ''}" x1="${ML}" x2="${SW - MR}" y1="${Y(t).toFixed(1)}" y2="${Y(t).toFixed(1)}"/><text class="sc-y" x="${ML - 6}" y="${(Y(t) + 3.5).toFixed(1)}" text-anchor="end">${axV(t)}</text>`).join(''); }
+Object.assign(VZC, {
+  /* 折线：p 数值；d0 起始日；today 最后一点为今日暂计；hl 高亮的日子（引用） */
+  r7ln(c) {
+    const P = (c.p || []).map(Number); if (P.length < 2) return vzMsg('e_few');
+    const id = 'sc' + (++SCN.n), lab = dayLabels(c.d0, P.length, c.today), mn = Math.min(...P), mx = Math.max(...P), z0 = mn <= 0 && mx >= 0 || Math.min(Math.abs(mn), Math.abs(mx)) < (mx - mn) * .35, lo0 = z0 ? Math.min(mn, 0) : mn, hi0 = z0 ? Math.max(mx, 0) : mx, pad = (hi0 - lo0) * .1 || Math.abs(hi0) * .05 || 1, lo = lo0 - pad, hi = hi0 + pad;
+    const X = k => ML + k / (P.length - 1) * (SW - ML - MR), Y = v => MT + (hi - v) / (hi - lo) * (SH - MT - MB);
+    const ln = P.map((v, k) => `${k ? 'L' : 'M'}${X(k).toFixed(1)},${Y(v).toFixed(1)}`).join(''), base = Y(Math.max(lo, Math.min(hi, 0)));
+    const hl = new Set(c.hl || []), sn = vT(c.sk || 'cum');
+    const pts = P.map((v, k) => `<circle class="sc-p${hl.has(c.d0 + k) ? ' hl' : ''}${k === P.length - 1 ? ' last' : ''}" data-k="${k}" cx="${X(k).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="${hl.has(c.d0 + k) ? 4.6 : k === P.length - 1 ? 3.8 : 2.4}"/>`).join('');
+    const data = { k: 'ln', x0: ML, x1: SW - MR, n: P.length, lab, s: [{ n: sn, v: P, f: c.f || 'sgn0' }], ys: P.map(v => +Y(v).toFixed(1)), d0: c.d0, al: `${vzTi(c)}：${lab[0]} ${fmtV(P[0], c.f)} → ${lab[P.length - 1]} ${fmtV(P[P.length - 1], c.f)}` };
+    return scWrap(id, 'ln', data, `<defs><linearGradient id="${id}a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="sc-a0"/><stop offset="1" class="sc-a1"/></linearGradient></defs>${yGrid(lo, hi, Y)}
+      <path class="sc-ar" d="${ln}L${X(P.length - 1).toFixed(1)},${base.toFixed(1)}L${X(0).toFixed(1)},${base.toFixed(1)}Z" fill="url(#${id}a)"/><path class="sc-l" d="${ln}"/>${pts}${xAxis(lab, X)}<circle class="sc-hv" r="5" cx="-10" cy="-10" opacity="0"/>`);
+  },
+  /* 柱状：s = [{k 名称键, v[], neg 画成支出}]，一组或两组并排对比 */
+  r7vb(c) {
+    const S2 = c.s || [], n = (S2[0] && S2[0].v.length) || 0; if (!n) return vzMsg('e_few');
+    const id = 'sc' + (++SCN.n), lab = dayLabels(c.d0, n, c.today), all = S2.flatMap(s => s.v.map(v => s.neg ? -Math.abs(v) : v));
+    const lo0 = Math.min(0, ...all), hi0 = Math.max(0, ...all), pad = (hi0 - lo0) * .08 || 1, lo = lo0 < 0 ? lo0 - pad : 0, hi = hi0 + pad;
+    const bw = (SW - ML - MR) / n, X = k => ML + bw * (k + .5), Y = v => MT + (hi - v) / (hi - lo) * (SH - MT - MB), g = S2.length, w = Math.max(2, Math.min(18, bw * .72 / g));
+    const bars = S2.map((s, j) => s.v.map((v0, k) => { const v = s.neg ? -Math.abs(v0) : v0, y0 = Y(0), y1 = Y(v), x = X(k) - (g * w) / 2 + j * w;
+      return `<rect class="sc-b ${s.c || (v < 0 ? 'neg' : 'pos')}" data-k="${k}" x="${x.toFixed(1)}" y="${Math.min(y0, y1).toFixed(1)}" width="${(w - (g > 1 ? 1 : 0)).toFixed(1)}" height="${Math.max(.8, Math.abs(y1 - y0)).toFixed(1)}" rx="1.5"/>`; }).join('')).join('');
+    const data = { k: 'vb', x0: ML, x1: SW - MR, n, lab, bw, s: S2.map(s => ({ n: vT(s.k), v: s.v.map(v => s.neg ? -Math.abs(v) : v), f: c.f || 'sgn0' })), al: vzTi(c) };
+    const lg = g > 1 ? `<ul class="sc-lg">${S2.map(s => `<li><i class="${s.c}"></i>${vT(s.k)}</li>`).join('')}</ul>` : '';
+    return scWrap(id, 'vb', data, `${yGrid(lo, hi, Y)}<rect class="sc-col" x="0" y="${MT}" width="0" height="${SH - MT - MB}"/>${bars}${xAxis(lab, X)}`, lg);
+  },
+  /* 堆叠拆解：正项向上、负项向下堆，圆点是当天合计 */
+  r7st(c) {
+    const S2 = c.s || [], n = (S2[0] && S2[0].v.length) || 0; if (!n) return vzMsg('e_few');
+    const id = 'sc' + (++SCN.n), lab = dayLabels(c.d0, n, c.today), up = Array(n).fill(0), dn = Array(n).fill(0);
+    S2.forEach(s => s.v.forEach((v, k) => { if (v > 0) up[k] += v; else dn[k] += v; }));
+    const tot = up.map((u, k) => u + dn[k]), lo0 = Math.min(0, ...dn), hi0 = Math.max(0, ...up), pad = (hi0 - lo0) * .08 || 1, lo = lo0 < 0 ? lo0 - pad : 0, hi = hi0 + pad;
+    const bw = (SW - ML - MR) / n, X = k => ML + bw * (k + .5), Y = v => MT + (hi - v) / (hi - lo) * (SH - MT - MB), w = Math.max(3, Math.min(22, bw * .62));
+    const pu = Array(n).fill(0), pd = Array(n).fill(0); let bars = '';
+    S2.forEach(s => s.v.forEach((v, k) => { if (!v) return; const a = v > 0 ? pu[k] : pd[k], b = a + v; if (v > 0) pu[k] = b; else pd[k] = b;
+      bars += `<rect class="sc-b ${s.c}" data-k="${k}" x="${(X(k) - w / 2).toFixed(1)}" y="${Math.min(Y(a), Y(b)).toFixed(1)}" width="${w.toFixed(1)}" height="${Math.max(.8, Math.abs(Y(b) - Y(a))).toFixed(1)}"/>`; }));
+    const dots = tot.map((v, k) => `<circle class="sc-t" cx="${X(k).toFixed(1)}" cy="${Y(v).toFixed(1)}" r="2.6"/>`).join('');
+    const data = { k: 'st', x0: ML, x1: SW - MR, n, lab, bw, s: S2.map(s => ({ n: vT(s.k), v: s.v, f: c.f || 'sgn0' })).concat([{ n: vT('r67tot'), v: tot, f: c.f || 'sgn0', b: 1 }]), al: vzTi(c) };
+    const lg = `<ul class="sc-lg">${S2.map(s => `<li><i class="${s.c}"></i>${vT(s.k)}</li>`).join('')}<li><i class="tot"></i>${vT('r67tot')}</li></ul>`;
+    return scWrap(id, 'st', data, `${yGrid(lo, hi, Y)}<rect class="sc-col" x="0" y="${MT}" width="0" height="${SH - MT - MB}"/>${bars}${dots}${xAxis(lab, X)}`, lg);
+  },
+  /* 多空对比：每个币种一行，多仓向右、空仓向左 */
+  r7cmp(c) {
+    const it = c.it || []; if (!it.length) return vzMsg('e_zero');
+    const id = 'sc' + (++SCN.n), mx = Math.max(...it.flatMap(x => [x.a, x.b])) || 1, H2 = 26 * it.length + 16, mid = SW / 2 + 16, half = SW / 2 - 40;
+    const rows = it.map((x, k) => { const y = 8 + k * 26, wa = x.a / mx * half, wb = x.b / mx * half;
+      return `<g class="sc-row" data-k="${k}"><rect class="sc-rh" x="0" y="${y - 3}" width="${SW}" height="24"/><text class="sc-n" x="6" y="${y + 13}">${esc(x.n)}</text>
+        <rect class="sc-b sL" x="${mid.toFixed(1)}" y="${y + 2}" width="${Math.max(1, wa).toFixed(1)}" height="14" rx="3"/><rect class="sc-b sS" x="${(mid - wb).toFixed(1)}" y="${y + 2}" width="${Math.max(1, wb).toFixed(1)}" height="14" rx="3"/></g>`; }).join('');
+    const data = { k: 'cmp', n: it.length, rh: 26, lab: it.map(x => x.n), s: [{ n: vT('L'), v: it.map(x => x.a), f: 'm0' }, { n: vT('S'), v: it.map(x => x.b), f: 'm0' }, { n: vT('net'), v: it.map(x => x.a - x.b), f: 'sgn0' }], al: vzTi(c) };
+    return `<div class="sc sc-cmp" data-sc-id="${id}"><svg class="sc-svg" viewBox="0 0 ${SW} ${H2}" role="img" aria-label="${esc(data.al)}" data-sc="${esc(JSON.stringify(data))}"><line class="sc-gr z" x1="${mid}" x2="${mid}" y1="2" y2="${H2 - 6}"/>${rows}</svg><ul class="sc-lg"><li><i class="sS"></i>${vT('S')} ←</li><li><i class="sL"></i>→ ${vT('L')}</li></ul></div>`;
+  },
+  /* 指引进度：每一步一段，已完成 / 当前 / 未开始 */
+  r7prog(c) {
+    const f = FLOWS.find(x => x.id === c.f); if (!f) return '';
+    const n = f.steps.length, gap = 6, w = (SW - gap * (n - 1)) / n, cur = c.i || 0;
+    const segs = f.steps.map((s, k) => `<g class="sc-row" data-k="${k}"><rect class="sc-pg ${k < cur ? 'done' : k === cur ? 'cur' : ''}" x="${(k * (w + gap)).toFixed(1)}" y="10" width="${w.toFixed(1)}" height="12" rx="6"/><text class="sc-x" x="${(k * (w + gap) + w / 2).toFixed(1)}" y="40" text-anchor="middle">${k + 1}</text></g>`).join('');
+    const data = { k: 'prog', n, lab: f.steps.map((s, k) => `${k + 1}. ${EN() ? s.en : s.zh}`), s: [], al: vzTi(c) };
+    return `<div class="sc sc-prog"><svg class="sc-svg" viewBox="0 0 ${SW} 48" role="img" aria-label="${esc(data.al)}" data-sc="${esc(JSON.stringify(data))}">${segs}</svg><ol class="sc-steps">${f.steps.map((s, k) => `<li class="${k < cur ? 'done' : k === cur ? 'cur' : ''}">${esc(EN() ? s.en : s.zh)}</li>`).join('')}</ol></div>`;
+  },
+});
+/* 要点和传送门按钮不画在卡片里：接在图后面 */
+const _vizHtml = vizHtml;
+vizHtml = function (vz) {
+  if (!Array.isArray(vz)) return '';
+  const main = vz.filter(c => c.t !== 'pts' && c.t !== 'chips'), pt = vz.find(c => c.t === 'pts'), ch = vz.find(c => c.t === 'chips');
+  const L2 = x => esc(Array.isArray(x) ? x[EN() ? 1 : 0] : x);
+  return _vizHtml(main)
+    + (ch ? `<div class="r67-chips" data-i18n-skip>${ch.it.map(x => `<button type="button" class="r67-chip" data-go="${esc(x.go)}">${L2(x.l)}</button>`).join('')}</div>` : '')
+    + (pt ? `<ul class="r67-pts" data-i18n-skip>${pt.it.map(x => `<li>${Array.isArray(x) ? x[EN() ? 1 : 0] : x}</li>`).join('')}</ul>` : '');
+};
+/* 悬停 / 触摸读数：一个共用的浮层，按最近的数据点出数 */
+const scTip = document.createElement('div'); scTip.className = 'sc-tip'; scTip.hidden = true; scTip.setAttribute('role', 'status'); scTip.setAttribute('data-i18n-skip', ''); document.body.appendChild(scTip);
+let scCur = null;
+function scHover(svg, ev) {
+  let d; try { d = JSON.parse(svg.dataset.sc); } catch (e) { return; }
+  const r = svg.getBoundingClientRect(), vb = svg.viewBox.baseVal, sx = r.width / vb.width, px = (ev.clientX - r.left) / sx, py = (ev.clientY - r.top) / sx;
+  let k;
+  if (d.k === 'cmp') k = Math.max(0, Math.min(d.n - 1, Math.floor((py - 5) / d.rh)));
+  else if (d.k === 'prog') k = Math.max(0, Math.min(d.n - 1, Math.floor(px / (vb.width / d.n))));
+  else if (d.k === 'ln') k = Math.max(0, Math.min(d.n - 1, Math.round((px - d.x0) / (d.x1 - d.x0) * (d.n - 1))));
+  else k = Math.max(0, Math.min(d.n - 1, Math.floor((px - d.x0) / d.bw)));
+  scCur = svg; svg.dataset.k = k;
+  const g = svg.querySelector('.sc-g'), hv = svg.querySelector('.sc-hv'), col = svg.querySelector('.sc-col');
+  if (d.k === 'ln') { const x = d.x0 + k / (d.n - 1) * (d.x1 - d.x0); g.setAttribute('x1', x); g.setAttribute('x2', x); g.setAttribute('opacity', 1); hv.setAttribute('cx', x); hv.setAttribute('cy', d.ys[k]); hv.setAttribute('opacity', 1); }
+  if (col) { col.setAttribute('x', d.x0 + k * d.bw); col.setAttribute('width', d.bw); }
+  svg.querySelectorAll('.sc-row').forEach(x => x.classList.toggle('on', +x.dataset.k === k));
+  scTip.innerHTML = `<b>${esc(d.lab[k])}</b>` + d.s.map(s => `<span${s.b ? ' class="tt"' : ''}><em>${esc(s.n)}</em><i class="num ${s.f === 'n' || s.f === 'm0' ? '' : cls(s.v[k])}">${fmtV(s.v[k], s.f)}</i></span>`).join('');
+  scTip.hidden = false;
+  const tw = scTip.offsetWidth, th = scTip.offsetHeight; let x = ev.clientX + 14, y = ev.clientY - th - 12;
+  if (x + tw > innerWidth - 8) x = ev.clientX - tw - 14; if (x < 8) x = 8; if (y < 8) y = ev.clientY + 18;
+  scTip.style.left = x + 'px'; scTip.style.top = y + 'px';
+}
+function scOut() { if (!scCur) return; const g = scCur.querySelector('.sc-g'), hv = scCur.querySelector('.sc-hv'), col = scCur.querySelector('.sc-col'); g && g.setAttribute('opacity', 0); hv && (hv.setAttribute('cx', -10), hv.setAttribute('opacity', 0)); col && col.setAttribute('width', 0); scCur.querySelectorAll('.sc-row.on').forEach(x => x.classList.remove('on')); scCur = null; scTip.hidden = true; }
+document.addEventListener('pointermove', e => { const s = e.target.closest && e.target.closest('.sc-svg'); if (s) scHover(s, e); else if (scCur) scOut(); }, { passive: true });
+document.addEventListener('pointerdown', e => { const s = e.target.closest && e.target.closest('.sc-svg'); if (s) scHover(s, e); else if (scCur) scOut(); }, { passive: true });
+$('#stream').addEventListener('scroll', scOut, { passive: true });
+
+/* ---------- 每个命令的回复 ---------- */
+const R = (zh, en, charts, pts, go) => Object.assign(mk(zh, go || null, en), { vz: charts.concat(pts && pts.length ? [{ t: 'pts', it: pts }] : []) });
+const win = n => { const d0 = Math.max(FIRST(), DAYS - n + 1); return { d0, ix: Array.from({ length: DAYS - d0 + 1 }, (_, k) => d0 + k) }; };
+const isTP = t => /止盈/.test(t.act);
+function noData(cmd) {
+  const ch = [vzE(!signedIn() ? 'e_sign' : !ACCTS.length ? 'e_acct' : 'e_test')];
+  return R(`现在还没有可分析的账户数据，「/${cmd.zh}」暂时画不出图。`, `There is no account data yet, so “/${cmd.en}” has nothing to chart.`, ch,
+    [['绑定币安账户后，数字和曲线都会出现在这里', 'Once a Binance account is bound, numbers and curves show up here'], ['想先看看效果：绑定时 API Key 填 1234 即可演示', 'To try it first, bind with 1234 as the API Key']], ['portal:bind', '去绑定币安']);
+}
+const eqLine = () => { const { d0, ix } = win(30); return { t: 'r7ln', ti: ['t_r67eq', ix.length], p: ix.map(i => V.days[i].equity), d0, today: true, sk: 'eq', f: 'm0', src: vzSrc() }; };
+const BUILD = {
+  profit() {
+    const { d0, ix } = win(30), P = ix.map(i => V.days[i].cum), T = V.days[DAYS], ch = P[P.length - 1] - P[0], set = P.slice(0, -1), pk = set.indexOf(Math.max(...set)), w7 = T.cum - V.days[Math.max(d0, DAYS - 7)].cum;
+    return R(`近 ${ix.length - 1} 天累计净收益${ch >= 0 ? '增加' : '减少'} <b class="${cls(ch)}">${sgn(ch, 0)}</b> USDT，今天暂计累计 ${sgn(T.cum, 0)}。`,
+      `Over the last ${ix.length - 1} days cumulative net return ${ch >= 0 ? 'rose' : 'fell'} <b class="${cls(ch)}">${sgn(ch, 0)}</b> USDT; today it stands at ${sgn(T.cum, 0)} (est.).`,
+      [{ t: 'r7ln', ti: ['t_r67cum', ix.length], p: P, d0, today: true, sk: 'cum', src: vzSrc() }],
+      [[`已结算最高 <b>${sgn(set[pk], 0)}</b>，在 ${dLabel(d0 + pk)}`, `Settled high <b>${sgn(set[pk], 0)}</b> on ${enD(dLabel(d0 + pk))}`],
+        [`近 7 天 <b class="${cls(w7)}">${sgn(w7, 0)}</b> USDT`, `Last 7 days <b class="${cls(w7)}">${sgn(w7, 0)}</b> USDT`],
+        [`账户净权益 <b>${money(T.equity, 0)}</b> USDT`, `Net equity <b>${money(T.equity, 0)}</b> USDT`]], ['#curveSec', '看收益曲线']);
+  },
+  orders() {
+    const { d0, ix } = win(14), cnt = ix.map(i => V.trades.filter(t => t.d === i && isTP(t)).length), tot = cnt.reduce((a, b) => a + b, 0), mx = cnt.indexOf(Math.max(...cnt));
+    const tps = V.trades.filter(t => t.d >= d0 && isTP(t)), pnl = tps.reduce((a, t) => a + (t.pnl || 0), 0), by = {}; tps.forEach(t => by[t.coin] = (by[t.coin] || 0) + 1);
+    const top = Object.entries(by).sort((a, b) => b[1] - a[1])[0] || ['—', 0];
+    return R(`近 ${ix.length} 天一共调仓 <b>${tot}</b> 次，今天 ${cnt[cnt.length - 1]} 次。`, `<b>${tot}</b> rebalances in the last ${ix.length} days, ${cnt[cnt.length - 1]} today.`,
+      [{ t: 'r7vb', ti: ['t_r67ord', ix.length], s: [{ k: 't_r67tp', v: cnt, c: 'pos' }], d0, today: true, f: 'n', src: vzSrc() }],
+      [[`最多的一天是 ${dLabel(d0 + mx)}，${cnt[mx]} 次`, `Busiest day: ${enD(dLabel(d0 + mx))}, ${cnt[mx]}`],
+        [`这些止盈合计结转 <b class="${cls(pnl)}">${sgn(pnl, 0)}</b> USDT`, `These take-profits booked <b class="${cls(pnl)}">${sgn(pnl, 0)}</b> USDT`],
+        [`调仓最多的币种：${top[0]}（${top[1]} 次）`, `Most active coin: ${top[0]} (${top[1]})`]], ['#trades', '看交易记录']);
+  },
+  fees() {
+    const { d0, ix } = win(14), fe = ix.map(i => V.days[i].fees), it = ix.map(i => V.days[i].interest), F = fe.reduce((a, b) => a + b, 0), I = it.reduce((a, b) => a + b, 0), T = V.days[DAYS];
+    const n = V.trades.filter(t => t.d >= d0 && isTP(t)).length;
+    return R(`近 ${ix.length} 天手续费 <b class="dn">${sgn(-F, 0)}</b> USDT，同期计奖收益 <b class="up">${sgn(I, 0)}</b>，${I > 0 ? `手续费约占 ${(F / I * 100).toFixed(0)}%` : '计奖收益为 0'}。`,
+      `Fees were <b class="dn">${sgn(-F, 0)}</b> USDT over the last ${ix.length} days against <b class="up">${sgn(I, 0)}</b> in rewards${I > 0 ? ` — about ${(F / I * 100).toFixed(0)}%` : ''}.`,
+      [{ t: 'r7vb', ti: ['t_r67fee', ix.length], s: [{ k: 'dFee', v: fe, neg: 1, c: 'fee' }, { k: 'dInt', v: it, c: 'int' }], d0, today: true, f: 's2', src: vzSrc() }],
+      [[`累计手续费 <b class="dn">${sgn(-T.cumF, 0)}</b> USDT`, `Cumulative fees <b class="dn">${sgn(-T.cumF, 0)}</b> USDT`],
+        [`平均每天 ${money(F / ix.length, 2)}，每次调仓约 ${n ? money(F / n, 2) : '—'}`, `About ${money(F / ix.length, 2)} a day, ${n ? money(F / n, 2) : '—'} per rebalance`]], ['#trades', '看交易记录']);
+  },
+  pnl() {
+    const { d0, ix: ix0 } = win(11), ix = ix0.filter(i => i < DAYS), du = i => { const d = V.days[i], p = V.days[i - 1]; return p ? (d.uL + d.uS) - (p.uL + p.uS) : 0; };
+    const s = [{ k: 'dReal', v: ix.map(i => V.days[i].realized), c: 'real' }, { k: 'dInt', v: ix.map(i => V.days[i].interest), c: 'int' }, { k: 'dFee', v: ix.map(i => -V.days[i].fees), c: 'fee' }, { k: 'dU', v: ix.map(du), c: 'upl' }];
+    const sum = s.map(x => x.v.reduce((a, b) => a + b, 0)), tot = sum.reduce((a, b) => a + b, 0), big = sum.map((v, k) => [k, Math.abs(v)]).sort((a, b) => b[1] - a[1])[0][0];
+    const nm = [['已实现', 'realized P&L'], ['计奖收益', 'rewards'], ['手续费', 'fees'], ['浮盈亏变化', 'unrealized change']];
+    return R(`已结算的近 ${ix.length} 天合计 <b class="${cls(tot)}">${sgn(tot, 0)}</b> USDT，最大的来源是${nm[big][0]}（${sgn(sum[big], 0)}）。`,
+      `The last ${ix.length} settled days add up to <b class="${cls(tot)}">${sgn(tot, 0)}</b> USDT; the biggest driver was ${nm[big][1]} (${sgn(sum[big], 0)}).`,
+      [{ t: 'r7st', ti: ['t_r67pnl', ix.length], s, d0, src: vzSrc() }],
+      [[`已实现 ${sgn(sum[0], 0)} · 计奖收益 <b class="up">${sgn(sum[1], 0)}</b>`, `Realized ${sgn(sum[0], 0)} · rewards <b class="up">${sgn(sum[1], 0)}</b>`],
+        [`手续费 <b class="dn">${sgn(sum[2], 0)}</b> · 浮盈亏变化 ${sgn(sum[3], 0)}`, `Fees <b class="dn">${sgn(sum[2], 0)}</b> · unrealized change ${sgn(sum[3], 0)}`],
+        ['右键或长按图上的一天，可以引用它再问我', 'Right-click or long-press a day to quote it']], ['#curveSec', '看收益曲线']);
+  },
+  positions() {
+    const T = V.days[DAYS], ps = (T.pos || []).slice().sort((a, b) => (b.nL + b.nS) - (a.nL + a.nS)), L = ps.reduce((a, p) => a + p.nL, 0), S3 = ps.reduce((a, p) => a + p.nS, 0), net = L - S3;
+    const big = ps.slice().sort((a, b) => Math.abs(b.nL - b.nS) - Math.abs(a.nL - a.nS))[0];
+    return R(`现在 ${ps.length} 个币种两边都有仓位，多仓名义 ${money(L, 0)}、空仓 ${money(S3, 0)}，${Math.abs(net) < .5 ? '多空持平' : `净敞口${net > 0 ? '偏多' : '偏空'} ${money(Math.abs(net), 0)}`}。`,
+      `${ps.length} coins hold both sides: long notional ${money(L, 0)}, short ${money(S3, 0)}, ${Math.abs(net) < .5 ? 'balanced' : `net ${net > 0 ? 'long' : 'short'} ${money(Math.abs(net), 0)}`}.`,
+      [{ t: 'r7cmp', ti: 't_r67pos', it: ps.slice(0, 6).map(p => ({ n: p.s, a: p.nL, b: p.nS })), src: vzSrc() }],
+      [[`名义最大：${ps[0] ? ps[0].s + ' ' + money(ps[0].nL + ps[0].nS, 0) : '—'}`, `Largest: ${ps[0] ? ps[0].s + ' ' + money(ps[0].nL + ps[0].nS, 0) : '—'}`],
+        [big ? `两边差得最多：${big.s}（${sgn(big.nL - big.nS, 0)}）` : '—', big ? `Widest gap: ${big.s} (${sgn(big.nL - big.nS, 0)})` : '—'],
+        [`占净权益 ${(Math.abs(net) / (T.equity || 1) * 100).toFixed(1)}%`, `${(Math.abs(net) / (T.equity || 1) * 100).toFixed(1)}% of equity`]], ['#pos', '看持仓']);
+  },
+  funding() {
+    const { d0, ix } = win(14), has = ix.some(i => V.days[i].funding != null);
+    if (has) { const f = ix.map(i => V.days[i].funding || 0), F = f.reduce((a, b) => a + b, 0);
+      return R(`近 ${ix.length} 天资金费合计 <b class="${cls(F)}">${sgn(F, 2)}</b> USDT。`, `Funding over the last ${ix.length} days: <b class="${cls(F)}">${sgn(F, 2)}</b> USDT.`,
+        [{ t: 'r7vb', ti: ['t_r67fund', ix.length], s: [{ k: 't_r67fund', v: f }], d0, today: true, f: 's2', src: vzSrc() }],
+        [['资金费已包含在「已实现」里', 'Funding is included in realized P&L'], [`收到的天数 ${f.filter(v => v > 0).length}，付出的天数 ${f.filter(v => v < 0).length}`, `${f.filter(v => v > 0).length} days received, ${f.filter(v => v < 0).length} paid`]], ['#trades', '看交易记录']); }
+    const r = ix.map(i => V.days[i].realized), Rt = r.reduce((a, b) => a + b, 0);
+    return R(`示例数据没有单独的资金费流水：资金费算在「已实现」里，近 ${ix.length} 天已实现合计 <b class="${cls(Rt)}">${sgn(Rt, 0)}</b> USDT。`,
+      `The sample data has no separate funding ledger: funding is part of realized P&L, which totals <b class="${cls(Rt)}">${sgn(Rt, 0)}</b> USDT over the last ${ix.length} days.`,
+      [{ t: 'r7vb', ti: ['t_r67real', ix.length], s: [{ k: 'dReal', v: r }], d0, today: true, src: vzSrc() }],
+      [['接入币安只读后，这里按天列出真实资金费', 'With Binance read-only, real daily funding shows here'], ['多空两边同时持有，资金费大体相互抵消', 'Holding both sides, funding largely offsets']], ['#trades', '看交易记录']);
+  },
+};
+function cmdGoList(kind) {
+  const L2 = kind === 'go' ? PORTALS : FLOWS;
+  return { t: 'chips', it: L2.map(x => ({ go: (kind === 'go' ? 'portal:' : 'guide:') + x.id, l: [x.zh, x.en] })) };
+}
+function buildGo(arg) {
+  const p = arg ? matchList(PORTALS, arg)[0] : null, ch = hasData() ? [eqLine()] : [vzE('e_acct')];
+  if (!p) return { a: R(arg ? `没找到「${esc(arg)}」，下面这些地方可以直接带你去：` : '选一个地方，我直接带你到那个按钮：', arg ? `Couldn’t find “${esc(arg)}”. I can take you straight to any of these:` : 'Pick a place and I’ll take you straight to the button:',
+    [cmdGoList('go'), ...ch], [['也可以直接输入：/前往 修改密码', 'Or type it: /go change password'], ['到了以后，那个按钮会亮起来', 'The button lights up when you arrive']], null) };
+  return { p, a: R(`好，带你去「${p.zh}」，按钮正在发光。`, `Taking you to “${p.en}” — the button is glowing.`, ch,
+    [['到了以后按钮会闪几下，点它就行', 'The button pulses when you get there; just tap it'], ['想一步步做，用 /指引', 'For step-by-step help, use /guide']], ['portal:' + p.id, '再带我去一次']) };
+}
+function buildGuide(arg) {
+  const f = arg ? matchList(FLOWS, arg)[0] : null;
+  if (!f) return { a: R(arg ? `没找到「${esc(arg)}」的指引，可以选这些：` : '选一个要做的事，我一步步带你：', arg ? `No guide for “${esc(arg)}”. Pick one of these:` : 'Pick a task and I’ll walk you through it:',
+    [cmdGoList('guide'), { t: 'r7prog', ti: 't_r67g_' + FLOWS[0].id, f: FLOWS[0].id, i: 0 }], [['指引中随时可以「停止」，自己操作', 'Stop any time and do things your own way'], ['回来时点「继续指引」，从停下的那一步接着走', 'Tap “Resume guide” to pick up where you stopped']], null) };
+  return { f, a: R(`开始「${f.zh}」指引，一共 ${f.steps.length} 步，程序会替你打开页面、点亮下一步。`, `Starting the “${f.en}” guide: ${f.steps.length} steps. I’ll open each screen and light up the next step.`,
+    [{ t: 'r7prog', ti: 't_r67g_' + f.id, f: f.id, i: 0 }],
+    [['随时点「停止」，你可以自由操作', 'Tap “Stop” any time and do things freely'], ['之后点「继续指引」，回到停下的那一步', 'Then tap “Resume guide” to return to that step']], ['guide:' + f.id, '重新开始指引']) };
+}
+function buildQuote(refs) {
+  if (!refs.length) {
+    return R('还没有引用。右键（手机上长按）页面上的数字、曲线上的点或一笔订单，就能引用；在菜单里选「多选」可以一次引用几项。',
+      'Nothing quoted yet. Right-click (long-press on a phone) a number, a point on the curve or an order to quote it; choose “Multi-select” to quote several at once.',
+      hasData() ? [Object.assign(BUILD.profit().vz[0], {})] : [vzE('e_acct')],
+      [['引用会作为标签出现在输入框上方', 'Quotes appear as tags above the input'], ['点标签可以回到它原来的位置', 'Tap a tag to jump back to where it came from'], ['这张图上的点也能直接右键引用', 'Points on this chart can be quoted too']], ['#curveSec', '去收益曲线']);
+  }
+  const days = refs.filter(r => r.k === 'day').map(r => +r.id), trades = refs.filter(r => r.k === 'trade').map(r => V && V.trades.find(t => tid(t) === r.id)).filter(Boolean), txt = refs.filter(r => r.k === 'txt' || r.k === 'pos' || r.k === 'acct');
+  const charts = [], pts = [];
+  if (days.length && hasData()) { const lo = Math.max(FIRST(), Math.min(...days, DAYS - 29) - 2), ix = Array.from({ length: DAYS - lo + 1 }, (_, k) => lo + k);
+    charts.push({ t: 'r7ln', ti: 't_r67q', p: ix.map(i => V.days[i].cum), d0: lo, today: true, hl: days, sk: 'cum', src: vzSrc() });
+    days.sort((a, b) => a - b).forEach(i => { const d = V.days[i]; pts.push([`${dLabel(i)}：当天 <b class="${cls(d.net)}">${sgn(d.net)}</b>，累计 ${sgn(d.cum, 0)}`, `${enD(dLabel(i))}: day <b class="${cls(d.net)}">${sgn(d.net)}</b>, cumulative ${sgn(d.cum, 0)}`]); }); }
+  if (trades.length) { charts.push({ t: 'r7vb', ti: 't_r67qt', s: [{ k: 'pnl', v: trades.map(t => t.pnl || 0) }], d0: 0, lb: 1, src: vzSrc(), tl: trades.map(t => t.coin + ' ' + t.time) });
+    trades.forEach(t => pts.push([`${t.coin} ${t.act} · ${dLabel(t.d)} ${t.time}：${t.pnl ? sgn(t.pnl) : '无盈亏'}，手续费 ${t.fee ? '−' + money(t.fee) : '—'}`, `${t.coin} ${enD(t.act)} · ${enD(dLabel(t.d))} ${t.time}: ${t.pnl ? sgn(t.pnl) : 'no P&L'}, fee ${t.fee ? '−' + money(t.fee) : '—'}`])); }
+  txt.forEach(r => pts.push([`${esc(ctxLabel(r))}`, `${esc(ctxLabel(r))}`]));
+  if (!charts.length) charts.push(hasData() ? eqLine() : vzE('e_acct'));
+  const n = refs.length, sum = days.reduce((a, i) => a + V.days[i].net, 0) + trades.reduce((a, t) => a + (t.pnl || 0), 0);
+  return R(`你引用了 ${n} 项${days.length || trades.length ? `，合计 <b class="${cls(sum)}">${sgn(sum)}</b> USDT` : ''}。`, `You quoted ${n} item${n === 1 ? '' : 's'}${days.length || trades.length ? `, totalling <b class="${cls(sum)}">${sgn(sum)}</b> USDT` : ''}.`,
+    charts, pts.slice(0, 3), days.length ? ['qday:' + days[0], '回到曲线上的这一天'] : trades.length ? ['qtrade:' + tid(trades[0]), '回到这笔订单'] : ['#curveSec', '看收益曲线']);
+}
+/* 订单柱状图的横轴用币种和时间，而不是日期 */
+const _vb = VZC.r7vb;
+VZC.r7vb = c => { if (!c.tl) return _vb(c); const h = _vb(Object.assign({}, c, { d0: 0 })); return h.replace(/data-sc="([^"]*)"/, (m, j) => { try { const d = JSON.parse(j.replace(/&quot;/g, '"').replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&#39;/g, "'")); d.lab = c.tl; return `data-sc="${esc(JSON.stringify(d))}"`; } catch (e) { return m; } })
+  .replace(/<text class="sc-x"[^>]*>[^<]*<\/text>/g, '') + `<p class="sc-tl">${c.tl.map(esc).join(' · ')}</p>`; };
+function buildHelp() {
+  return R(`一共 ${CMDS.length} 个命令：输入 / 弹出列表，继续打字筛选，↑↓ 加回车或直接点下面的命令。`,
+    `${CMDS.length} commands: type / for the list, keep typing to filter, then ↑↓ and Enter — or tap one below.`,
+    [{ t: 'chips', it: CMDS.filter(c => c.id !== 'help').map(c => ({ go: 'cmd:' + c.id, l: ['/' + c.zh, '/' + c.en] })) }, hasData() ? eqLine() : vzE('e_acct')],
+    [['中英文命令名都认，例如 /收益 和 /profit', 'Both languages work, e.g. /profit and /收益'], ['右键或长按数字、曲线点、订单就能引用，再用 /引用 分析', 'Right-click or long-press numbers, curve points or orders, then use /quote'], ['/前往 带你到按钮，/指引 一步步带你做', '/go takes you to a button, /guide walks you through']], ['portal:password', '试试：去修改密码']);
+}
+async function runCmd(cmd, arg) {
+  if (asking) return;
+  const inp = $('#askIn'); inp.value = ''; popClose(); syncSend();
+  const q = '/' + nameOf(cmd) + (arg ? ' ' + arg : '');
+  let a, after = null, ex;
+  if (cmd.id === 'help') a = buildHelp();
+  else if (cmd.id === 'go') { const r = buildGo(arg); a = r.a; if (r.p) after = () => portal(r.p.id); }
+  else if (cmd.id === 'guide') { const r = buildGuide(arg); a = r.a; if (r.f) after = () => guideStart(r.f.id); }
+  else if (cmd.id === 'quote') { const refs = PEND.refs.slice(); ex = { refs, files: [] }; PEND.refs = []; window.__dsbSync && __dsbSync(); a = buildQuote(refs); }
+  else a = hasData() ? BUILD[cmd.id]() : noData(cmd);
+  await ask(q, a, ex);
+  if (after) setTimeout(after, RM ? 0 : 350);
+}
+
+/* ---------- 命令弹层 ---------- */
+const pop = document.createElement('div'); pop.className = 'slp'; pop.id = 'slashPop'; pop.hidden = true; pop.setAttribute('role', 'listbox'); pop.setAttribute('data-i18n-skip', '');
+pop.setAttribute('aria-label', '命令');
+$('#askForm').appendChild(pop);
+const PS = { items: [], i: 0, mode: 'cmd', cmd: null };
+function parse(v) { const m = /^\/(\S*)(?:\s+([\s\S]*))?$/.exec(v); if (!m) return null; return { tok: m[1], rest: m[2], sp: /\s/.test(v) }; }
+function popUpdate() {
+  const v = $('#askIn').value, p = parse(v);
+  if (!p || asking) return popClose();
+  const c = findCmd(p.tok);
+  if (p.sp && c && c.sub) { PS.mode = 'sub'; PS.cmd = c; PS.items = matchList(c.sub === 'go' ? PORTALS : FLOWS, p.rest || ''); }
+  else if (p.sp) return popClose();
+  else { PS.mode = 'cmd'; PS.cmd = null; PS.items = matchList(CMDS, p.tok); }
+  PS.i = Math.min(PS.i, Math.max(0, PS.items.length - 1));
+  popRender();
+}
+function popRender() {
+  const en = EN();
+  pop.innerHTML = (PS.mode === 'sub' ? `<div class="slp-h">/${esc(nameOf(PS.cmd))} · ${PS.cmd.sub === 'go' ? (en ? 'where to?' : '去哪里？') : (en ? 'which task?' : '做什么？')}</div>` : `<div class="slp-h">${en ? 'Commands' : '命令'}<span>↑↓ ${en ? 'pick' : '选择'} · ↵ ${en ? 'run' : '执行'} · Esc</span></div>`)
+    + (PS.items.length ? PS.items.map((x, k) => `<button type="button" class="slp-i${k === PS.i ? ' on' : ''}" role="option" aria-selected="${k === PS.i}" data-sli="${k}">${PS.mode === 'sub' ? `<b>${esc(nameOf(x))}</b><small>${esc(en ? x.zh : x.en)}</small>` : `<b>/${esc(nameOf(x))}</b><small>${esc(en ? x.de : x.dz)}</small><em>/${esc(en ? x.zh : x.en)}</em>`}</button>`).join('')
+      : `<p class="slp-e">${en ? 'No matching command' : '没有匹配的命令'}</p>`);
+  pop.hidden = false; $('#askIn').setAttribute('aria-expanded', 'true');
+  pop.querySelector('.slp-i.on')?.scrollIntoView({ block: 'nearest' });
+}
+function popClose() { if (pop.hidden) return; pop.hidden = true; $('#askIn').setAttribute('aria-expanded', 'false'); }
+function popPick(k) {
+  const x = PS.items[k]; if (!x) return;
+  if (PS.mode === 'sub') { runCmd(PS.cmd, nameOf(x)); return; }
+  if (x.sub) { const inp = $('#askIn'); inp.value = '/' + nameOf(x) + ' '; PS.i = 0; popUpdate(); inp.focus(); return; }
+  runCmd(x, '');
+}
+$('#askIn').setAttribute('aria-controls', 'slashPop'); $('#askIn').setAttribute('aria-autocomplete', 'list');
+$('#askIn').addEventListener('input', () => { PS.i = 0; popUpdate(); });
+$('#askIn').addEventListener('blur', () => setTimeout(() => { if (!pop.contains(document.activeElement)) popClose(); }, 150));
+pop.addEventListener('pointerdown', e => e.preventDefault());
+pop.addEventListener('click', e => { const b = e.target.closest('[data-sli]'); if (b) popPick(+b.dataset.sli); });
+document.addEventListener('keydown', e => {
+  if (e.target !== $('#askIn') || e.isComposing) return;
+  if (pop.hidden) return;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); e.stopPropagation(); const n = PS.items.length; if (n) { PS.i = (PS.i + (e.key === 'ArrowDown' ? 1 : n - 1)) % n; popRender(); } return; }
+  if (e.key === 'Enter' || e.key === 'Tab') { if (!PS.items.length) return; e.preventDefault(); e.stopPropagation(); popPick(PS.i); return; }
+  if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); popClose(); }
+}, true);
+/* 弹层关着时直接回车「/收益」或「/前往 修改密码」也当命令执行 */
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'askForm') return; const v = $('#askIn').value.trim(), p = parse(v); if (!p) return;
+  const c = findCmd(p.tok) || matchList(CMDS, p.tok)[0]; if (!c) return;
+  e.preventDefault(); e.stopPropagation(); runCmd(c, (p.rest || '').trim());
+}, true);
+window.addEventListener('langchange', () => { if (!pop.hidden) popRender(); pop.setAttribute('aria-label', EN() ? 'Commands' : '命令'); });
+
+/* ---------- 传送门：打开页面 / 弹窗，点亮那个按钮 ---------- */
+function glow(el) {
+  $$('.r67-hl').forEach(x => x.classList.remove('r67-hl'));
+  if (!el) return false;
+  el.scrollIntoView({ block: 'center', behavior: RM ? 'auto' : 'smooth' });
+  el.classList.add('r67-hl'); clearTimeout(el._hl); el._hl = setTimeout(() => el.classList.remove('r67-hl'), 6000);
+  return true;
+}
+function waitEl(get, cb, n = 0) { const el = get(); if (el && el.getBoundingClientRect().width > 0) return cb(el); if (n > 30) return cb(null); setTimeout(() => waitEl(get, cb, n + 1), 80); }
+function portal(id) {
+  const p = PORTALS.find(x => x.id === id); if (!p) return;
+  if (guideOn()) guideStop();
+  if ($('#modal.on') && !/^(password|email|devices|theme|lang)$/.test(id)) closeDlg();
+  if (id === 'password' || id === 'email' || id === 'devices') { SEC.open = ''; }
+  p.run();
+  waitEl(p.el, el => { if (!glow(el)) toast(LL('那个按钮现在不在页面上', 'That button is not on screen right now')); });
+}
+/* 跳转按钮：portal:x、guide:x、回到引用的日子 / 订单，其余交给原来的 goTo */
+const _goTo = goTo;
+goTo = function (sel) {
+  if (sel.startsWith('portal:')) return portal(sel.slice(7));
+  if (sel.startsWith('cmd:')) { const c = CMDS.find(x => x.id === sel.slice(4)); if (c) { if (CUR !== 'ai') nav('ai'); runCmd(c, ''); } return; }
+  if (sel.startsWith('guide:')) return guideStart(sel.slice(6));
+  if (sel.startsWith('qday:')) return backTo({ k: 'day', id: +sel.slice(5) });
+  if (sel.startsWith('qtrade:')) return backTo({ k: 'trade', id: sel.slice(7) });
+  return _goTo(sel);
+};
+
+/* ---------- 程序指引：浮动条，可停止、可继续 ---------- */
+const GD = { f: null, i: 0, on: false };
+const gbar = document.createElement('div'); gbar.className = 'gdb'; gbar.id = 'guideBar'; gbar.hidden = true; gbar.setAttribute('role', 'region'); gbar.setAttribute('data-i18n-skip', ''); document.body.appendChild(gbar);
+const guideOn = () => GD.on;
+function guideRender() {
+  const f = FLOWS.find(x => x.id === GD.f); if (!f) { gbar.hidden = true; return; }
+  const en = EN(), s = f.steps[GD.i], last = GD.i === f.steps.length - 1;
+  gbar.setAttribute('aria-label', en ? 'Dodo guide' : 'Dodo 指引');
+  gbar.className = 'gdb' + (GD.on ? '' : ' paused');
+  gbar.innerHTML = GD.on
+    ? `<span class="gdb-dd" aria-hidden="true">${ddMini()}</span><div class="gdb-t"><small>${esc(en ? f.en : f.zh)} · ${GD.i + 1}/${f.steps.length}</small><b>${esc(en ? s.en : s.zh)}</b></div>
+       <div class="gdb-b"><button type="button" class="btn ghost sm" data-gd="stop">${en ? 'Stop' : '停止'}</button>${GD.i > 0 ? `<button type="button" class="btn ghost sm" data-gd="prev">${en ? 'Back' : '上一步'}</button>` : ''}<button type="button" class="btn brand sm" data-gd="next">${last ? (en ? 'Done' : '完成') : (en ? 'Next' : '下一步')}</button></div>`
+    : `<span class="gdb-dd" aria-hidden="true">${ddMini()}</span><div class="gdb-t"><small>${en ? 'Guide paused' : '指引已暂停'} · ${GD.i + 1}/${f.steps.length}</small><b>${esc(en ? f.en : f.zh)}</b></div>
+       <div class="gdb-b"><button type="button" class="btn ghost sm" data-gd="end" aria-label="${en ? 'End guide' : '结束指引'}">✕</button><button type="button" class="btn brand sm" data-gd="resume">${en ? 'Resume guide' : '继续指引'}</button></div>`;
+  gbar.hidden = false;
+}
+function guideShow() {
+  const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i];
+  guideRender(); s.run();
+  waitEl(s.el, el => { if (!GD.on) return; glow(el); if (el) { clearTimeout(el._hl); } });
+}
+function guideStart(id) { if (!FLOWS.some(x => x.id === id)) return; GD.f = id; GD.i = 0; GD.on = true; guideShow(); }
+function guideStop() { GD.on = false; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); guideRender(); }
+function guideEnd() { GD.on = false; GD.f = null; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); gbar.hidden = true; }
+gbar.addEventListener('click', e => {
+  const b = e.target.closest('[data-gd]'); if (!b) return; const k = b.dataset.gd, f = FLOWS.find(x => x.id === GD.f);
+  if (k === 'stop') { guideStop(); toast(LL('指引已暂停：自由操作吧，随时点「继续指引」', 'Guide paused — do your thing, then tap “Resume guide”')); return; }
+  if (k === 'end') { guideEnd(); return; }
+  if (k === 'resume') { GD.on = true; guideShow(); return; }
+  if (k === 'prev') { GD.i = Math.max(0, GD.i - 1); guideShow(); return; }
+  if (k === 'next') { if (GD.i >= f.steps.length - 1) { guideEnd(); toast(LL(`「${f.zh}」指引完成`, `“${f.en}” guide finished`)); return; } GD.i++; guideShow(); }
+});
+/* 用户点了被点亮的按钮，就自动走到下一步 */
+document.addEventListener('click', e => {
+  if (!GD.on || gbar.contains(e.target)) return; const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i], el = s.el();
+  if (el && el.matches('button,[type=submit]') && el.contains(e.target) && GD.i < f.steps.length - 1) setTimeout(() => { if (GD.on) { GD.i++; guideShow(); } }, 260);
+});
+window.addEventListener('langchange', () => { if (GD.f) guideRender(); });
+
+/* ---------- 引用 / 多选：右键或长按数字、曲线点、订单 ---------- */
+const QM = { multi: false, sel: [] };
+const qmenu = document.createElement('div'); qmenu.className = 'qmn'; qmenu.hidden = true; qmenu.setAttribute('role', 'menu'); qmenu.setAttribute('data-i18n-skip', ''); document.body.appendChild(qmenu);
+const qbar = document.createElement('div'); qbar.className = 'gdb qsel'; qbar.hidden = true; qbar.setAttribute('data-i18n-skip', ''); document.body.appendChild(qbar);
+let QSEQ = 0;
+const plain = el => (el.textContent || '').replace(/\s+/g, ' ').trim();
+/* 找到点中的东西：曲线点 → 那一天；订单行 → 那一笔；持仓行 → 那个币；数字 → 带上它的名字 */
+function quoteTarget(t, ev) {
+  if (!t || !t.closest || t.closest('#slashPop,.qmn,.gdb,#modal,.tda-menu')) return null;
+  const cv = t.closest('#curve');
+  if (cv && typeof CV !== 'undefined' && CV) { const r = cv.getBoundingClientRect(), W = cv.viewBox.baseVal.width || r.width, px = (ev.clientX - r.left) * (W / r.width);
+    const k = Math.max(0, Math.min(CV.idx.length - 1, Math.round((px - CV.m.l) / (W - CV.m.l - CV.m.r) * (CV.n - 1)))); const c = ctxOf('day:' + CV.idx[k]); return c && { k: 'day', id: c.id, label: c.label, el: cv }; }
+  const sv = t.closest('.sc-ln .sc-svg');
+  if (sv) { try { const d = JSON.parse(sv.dataset.sc), r = sv.getBoundingClientRect(), px = (ev.clientX - r.left) / (r.width / sv.viewBox.baseVal.width), k = Math.max(0, Math.min(d.n - 1, Math.round((px - d.x0) / (d.x1 - d.x0) * (d.n - 1)))), c = ctxOf('day:' + (d.d0 + k)); return c && { k: 'day', id: c.id, label: c.label, el: sv }; } catch (e) { return null; } }
+  const tr = t.closest('[data-open]');
+  if (tr) { const c = ctxOf('trade:' + tr.dataset.open); if (c) return { k: 'trade', id: c.id, label: c.label, el: tr }; }
+  const pc = t.closest('[data-c],[data-pcoin]');
+  if (pc && V) { const s = pc.dataset.c || pc.dataset.pcoin, c = ctxOf('pos:' + s); if (c && (V.days[DAYS].pos || []).some(p => p.s === s)) return { k: 'pos', id: c.id, label: c.label, el: pc }; }
+  const n = t.closest('.num,.v,.big');
+  if (n && !n.closest('#stream') && /\d/.test(plain(n))) {
+    const host = n.closest('[data-lg],.tile,.kpi,section,.panel,div'), key = host && (host.querySelector('.k,h2,h3,dt,small') || null), nm = key && key !== n ? plain(key).slice(0, 24) : '';
+    if (!n.dataset.qid) n.dataset.qid = 'q' + (++QSEQ);
+    return { k: 'txt', id: n.dataset.qid, label: (nm ? nm + ' · ' : '') + plain(n).slice(0, 32), el: n, page: CUR };
+  }
+  return null;
+}
+const QKEY = r => r.k + ':' + r.id;
+function addRefs(list) {
+  let n = 0;
+  list.forEach(r => { if (PEND.refs.some(x => QKEY(x) === QKEY(r))) return; if (PEND.refs.length >= 6) return; PEND.refs.push({ k: r.k, id: r.id, label: r.label, page: r.page || CUR }); n++; });
+  window.__dsbSync && __dsbSync(); return n;
+}
+function qmenuOpen(r, x, y) {
+  const en = EN(); QM.cur = r;
+  qmenu.innerHTML = `<div class="qmn-h">${esc(r.label)}</div><button type="button" role="menuitem" data-qm="quote">${en ? 'Quote to Dodo' : '引用到 Dodo'}</button><button type="button" role="menuitem" data-qm="multi">${QM.multi ? (en ? 'Add to selection' : '加入多选') : (en ? 'Multi-select' : '多选')}</button><button type="button" role="menuitem" data-qm="ask">${en ? 'Quote and ask now' : '引用并去问 Dodo'}</button>`;
+  qmenu.hidden = false; const w = qmenu.offsetWidth, h = qmenu.offsetHeight;
+  qmenu.style.left = Math.max(8, Math.min(x, innerWidth - w - 8)) + 'px'; qmenu.style.top = Math.max(8, Math.min(y, innerHeight - h - 8)) + 'px';
+  qmenu.querySelector('button').focus({ preventScroll: true });
+}
+const qmenuClose = () => { qmenu.hidden = true; };
+function qbarRender() {
+  const en = EN(); if (!QM.multi) { qbar.hidden = true; $$('.r67-sel').forEach(x => x.classList.remove('r67-sel')); return; }
+  qbar.innerHTML = `<div class="gdb-t"><small>${en ? 'Multi-select' : '多选'}</small><b>${en ? `${QM.sel.length} selected — tap or right-click more` : `已选 ${QM.sel.length} 项 · 继续点选或右键`}</b></div><div class="gdb-b"><button type="button" class="btn ghost sm" data-qb="x">${en ? 'Cancel' : '取消'}</button><button type="button" class="btn brand sm" data-qb="ok"${QM.sel.length ? '' : ' disabled'}>${en ? 'Quote' : '引用'} ${QM.sel.length || ''}</button></div>`;
+  qbar.hidden = false;
+}
+function qToggle(r) { const i = QM.sel.findIndex(x => QKEY(x) === QKEY(r)); if (i >= 0) { QM.sel.splice(i, 1); r.el && r.el.classList.remove('r67-sel'); } else { QM.sel.push(r); r.el && r.el.classList.add('r67-sel'); } qbarRender(); }
+function quoteDone(n, go) { toast(n ? LL(`已引用 ${n} 项，在 Dodo 输入框上方`, `Quoted ${n} — see the tags above Dodo’s input`) : LL('已经引用过了', 'Already quoted')); if (go && CUR !== 'ai') nav('ai'); }
+qmenu.addEventListener('click', e => {
+  const b = e.target.closest('[data-qm]'); if (!b) return; const r = QM.cur, k = b.dataset.qm; qmenuClose(); if (!r) return;
+  if (k === 'multi') { QM.multi = true; if (!QM.sel.some(x => QKEY(x) === QKEY(r))) qToggle(r); else qbarRender(); return; }
+  quoteDone(addRefs([r]), k === 'ask');
+});
+qbar.addEventListener('click', e => {
+  const b = e.target.closest('[data-qb]'); if (!b) return;
+  if (b.dataset.qb === 'ok') { const n = addRefs(QM.sel); QM.multi = false; QM.sel = []; qbarRender(); quoteDone(n, false); return; }
+  QM.multi = false; QM.sel = []; qbarRender();
+});
+document.addEventListener('contextmenu', e => {
+  const r = quoteTarget(e.target, e); if (!r) return;
+  e.preventDefault(); if (QM.multi) { qToggle(r); return; } qmenuOpen(r, e.clientX, e.clientY);
+});
+/* 多选模式下，普通点击也是选中 / 取消 */
+document.addEventListener('click', e => {
+  if (!qmenu.hidden && !qmenu.contains(e.target)) qmenuClose();
+  if (!QM.multi || qbar.contains(e.target) || qmenu.contains(e.target)) return;
+  const r = quoteTarget(e.target, e); if (!r) return; e.preventDefault(); e.stopPropagation(); qToggle(r);
+}, true);
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (!qmenu.hidden) { qmenuClose(); e.stopPropagation(); } else if (QM.multi) { QM.multi = false; QM.sel = []; qbarRender(); } } }, true);
+/* 长按（触屏）：550ms 不动就算 */
+let LP = null;
+document.addEventListener('touchstart', e => { const t0 = e.touches[0]; if (!t0 || e.touches.length > 1) return; const tg = e.target; clearTimeout(LP && LP.t);
+  LP = { x: t0.clientX, y: t0.clientY, t: setTimeout(() => { const r = quoteTarget(tg, { clientX: LP.x, clientY: LP.y }); if (!r) return; LP.fired = true; if (navigator.vibrate) try { navigator.vibrate(12); } catch (x) {} if (QM.multi) qToggle(r); else qmenuOpen(r, LP.x, LP.y); }, 550) }; }, { passive: true });
+document.addEventListener('touchmove', e => { const t0 = e.touches[0]; if (LP && t0 && Math.hypot(t0.clientX - LP.x, t0.clientY - LP.y) > 10) clearTimeout(LP.t); }, { passive: true });
+document.addEventListener('touchend', e => { if (!LP) return; clearTimeout(LP.t); if (LP.fired) { e.preventDefault(); } LP = null; });
+/* 点引用标签：回到它原来的位置 */
+function backTo(r) {
+  if (r.k === 'day') { nav('dashboard'); setTimeout(() => { if (CV && !CV.idx.includes(+r.id)) $(`#rangeSeg [data-r="${DAYS}"]`)?.click(); setTimeout(() => { try { setFlip(+r.id, { focus: false }); } catch (e) {} glow($(`#curve .pt[data-i="${r.id}"]`) ? $('#cvCard') : $('#curveSec')); }, 120); }, 160); return; }
+  if (r.k === 'trade') { nav('trades'); waitEl(() => $(`[data-open="${CSS.escape(r.id)}"]`), el => glow(el || $('#trView'))); return; }
+  if (r.k === 'pos') { if (CUR !== 'dashboard') nav('dashboard'); S.open.add(r.id); openDrawer('pos'); setTimeout(() => glow($(`#pos [data-c="${CSS.escape(r.id)}"]`)), 300); return; }
+  if (r.k === 'acct') { $('#acctBtn')?.click(); return; }
+  if (r.k === 'txt') { if (r.page && r.page !== CUR) nav(r.page); waitEl(() => $(`[data-qid="${r.id}"]`), el => { if (!glow(el)) toast(LL('原来的位置已经刷新，那个数字不在了', 'That spot has refreshed and the number is gone')); }); }
+}
+$('#attRow').addEventListener('click', e => {
+  if (e.target.closest('[data-refx]')) return; const ch = e.target.closest('.ach.ref'); if (!ch) return;
+  const i = [...$('#attRow').querySelectorAll('.ach.ref')].indexOf(ch), r = PEND.refs[i]; if (r) backTo(r);
+});
+/* 引用的数字（不是天、订单、持仓）也给一句像样的回答 */
+const _answerCtx = answerCtx;
+answerCtx = function (ctx) {
+  if (ctx && ctx.k === 'txt') return mk(`你引用的是「${esc(ctx.label)}」，它是页面上现在显示的数字。想知道它怎么来的，可以接着问，或用 /盈亏拆解、/收益 看拆开的图。`, ['#curveSec', '看收益曲线'],
+    `You quoted “${esc(ctx.label)}”, as currently shown on the page. Ask how it is made up, or use /pnl or /profit for a chart.`);
+  return _answerCtx(ctx);
+};
+window.__r67 = { CMDS, PORTALS, FLOWS, runCmd: (id, arg) => runCmd(CMDS.find(c => c.id === id), arg || ''), portal, guideStart, guideStop, GD, PS, backTo, addRefs };
+
+/* ---------- 交易页：导出 CSV（传送门 / 指引的目标） ---------- */
+document.addEventListener('click', e => {
+  if (!e.target.closest('[data-texport]')) return;
+  const rows = [['date', 'time', 'account', 'coin', 'action', 'side', 'price', 'notional', 'pnl', 'fee']].concat((V ? V.trades : []).slice().sort((a, b) => b.ts - a.ts).map(t => [dLabel(t.d), t.time, (acctById(t.acct) || {}).name || t.acct, t.coin, EN() ? enD(t.act) : t.act, t.side, t.px ?? '', t.notional ?? '', t.pnl ?? '', t.fee ?? '']));
+  const csv = '﻿' + rows.map(r => r.map(v => /[",\n]/.test(String(v)) ? '"' + String(v).replace(/"/g, '""') + '"' : v).join(',')).join('\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = '3dtrading-trades.csv'; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  toast(LL(`已导出 ${rows.length - 1} 条交易记录（CSV）`, `Exported ${rows.length - 1} trades (CSV)`));
+});
+
 })();
 </script>
 

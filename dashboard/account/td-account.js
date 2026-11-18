@@ -224,7 +224,7 @@
       'acct.menu': '账户菜单', 'acct.demoUser': '本机账号', 'acct.defaultUser': '3dtrading 用户',
       'acct.binance': '币安子账户', 'acct.all': '全部账户', 'acct.allSub': '合并查看 {n} 个子账户',
       'acct.none': '还没有绑定币安子账户', 'acct.bindNew': '绑定新的币安子账户', 'acct.bindFirst': '去绑定第一个子账户',
-      'acct.toApp': '进入控制台', 'acct.toSite': '回到官网', 'acct.me': '我的', 'acct.profile': '个人资料', 'acct.settings': '设置', 'acct.settingsSub': '个性化、单位、隐私、通知等',
+      'acct.toApp': '进入控制台', 'acct.toSite': '回到官网', 'acct.me': '我的', 'acct.profile': '个人资料', 'acct.settings': '设置', 'acct.blog': '博客', 'acct.settingsSub': '个性化、单位、隐私、通知等',
       'acct.st.awaiting_key': '等待贴回 API Key', 'acct.st.checking': '接入测试中', 'acct.st.verified': '测试通过 · 演示', 'acct.st.failed': '测试未通过',
       'acct.st.observing': '试运行（只观察）· 演示', 'acct.st.running': '运行中 · 演示', 'acct.st.halted': '已停机', 'acct.st.unbound': '已解绑', 'acct.st.unknown': '处理中',
       'acct.demo.name': '示例账户', 'acct.demo.sub': '示例数据 · 未连接币安', 'acct.demo.st': '示例数据 · 未连接币安',
@@ -238,7 +238,7 @@
       'acct.menu': 'Account menu', 'acct.demoUser': 'Local account', 'acct.defaultUser': '3dtrading user',
       'acct.binance': 'Binance sub-accounts', 'acct.all': 'All sub-accounts', 'acct.allSub': 'Combined · {n} total',
       'acct.none': 'No Binance sub-account linked yet', 'acct.bindNew': 'Link a Binance sub-account', 'acct.bindFirst': 'Link your first sub-account',
-      'acct.toApp': 'Open dashboard', 'acct.toSite': 'Back to website', 'acct.me': 'Me', 'acct.profile': 'Profile', 'acct.settings': 'Settings', 'acct.settingsSub': 'Appearance, units, privacy, notifications…',
+      'acct.toApp': 'Open dashboard', 'acct.toSite': 'Back to website', 'acct.me': 'Me', 'acct.profile': 'Profile', 'acct.settings': 'Settings', 'acct.blog': 'Blog', 'acct.settingsSub': 'Appearance, units, privacy, notifications…',
       'acct.st.awaiting_key': 'Waiting for your API Key', 'acct.st.checking': 'Connection test running', 'acct.st.verified': 'Test passed · demo', 'acct.st.failed': 'Test failed',
       'acct.st.observing': 'Trial run (observe only) · demo', 'acct.st.running': 'Running · demo', 'acct.st.halted': 'Halted', 'acct.st.unbound': 'Unbound', 'acct.st.unknown': 'Processing',
       'acct.demo.name': 'Sample account', 'acct.demo.sub': 'Sample data · not connected to Binance', 'acct.demo.st': 'Sample data · not connected to Binance',
@@ -269,6 +269,9 @@
   function login(o) {
     var email = normEmail(o && o.email), u = users().filter(function (x) { return x.email === email; })[0];
     if (!u) return { ok: false, code: 'not_found' };
+    /* r67: log in carries the name taken from what was typed (before @) */
+    var nm = String((o && o.name) || '').trim().slice(0, 40);
+    if (nm && nm !== u.name) { var all = users(); all.forEach(function (x) { if (x.email === email) x.name = nm; }); setJSON(K.users, all); u.name = nm; }
     return { ok: true, session: startSession(u) };
   }
   /* r42 · someone who has signed in or out on this browser before is "returning": the generic entry (auth.html with no
@@ -421,6 +424,8 @@
         h += '<hr>';
         if (opt.layout === 'r56') {
           h += '<a class="tda-mi row" role="menuitem" href="' + esc(opt.settings || '#/settings') + '"><span class="tda-ic">' + ICON.gear + '</span><span class="tda-tx"><b>' + esc(t('acct.settings')) + '</b></span><span class="tda-chev">' + ICON.chev + '</span></a>';
+          /* r67 · 博客：同一页打开 ../../blog/，浏览器返回或博客顶部回到后台 */
+          if (opt.blog) h += '<a class="tda-mi row blog" role="menuitem" data-tda-blog href="' + esc(opt.blog) + '"><span class="tda-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h10.5L19 8v11.5H5z"/><path d="M8.5 10h7M8.5 13.5h7M8.5 17h4.5"/></svg></span><span class="tda-tx"><b>' + esc(t('acct.blog')) + '</b></span><span class="tda-chev">' + ICON.chev + '</span></a>';
           h += '<div class="tda-mi row lang"><span class="tda-ic">' + ICON.globe + '</span><span class="tda-tx"><b>' + esc(t('lang.label')) + '</b></span>' + langToggleHtml() + '</div>';
           h += '<button type="button" class="tda-mi row out" role="menuitem" data-tda-out><span class="tda-ic">' + ICON.out + '</span><span class="tda-tx"><b>' + esc(t('acct.logout')) + '</b></span><span class="tda-chev"></span></button>';
           h += '<p class="tda-foot"><span class="tda-demo">' + esc(t('demo.badge')) + '</span> ' + esc(t('demo.note')) + '</p>';

@@ -205,6 +205,7 @@
     if (e.key !== 'Enter' || e.isComposing || e.shiftKey || e.altKey || e.metaKey || e.ctrlKey) return;
     var el = e.target, c = chain(), i = c.indexOf(el); if (i < 0) return;
     e.preventDefault();
+    if (mode === 'login') { if (el === email && !pw.value) { pw.focus(); return; } if (typeof form.requestSubmit === 'function') form.requestSubmit(); else form.dispatchEvent(new Event('submit', { cancelable: true })); return; }
     if (el !== agree && !check(el)) { emit('td:session'); return; }
     for (var k = 0; k < c.length; k++) { if (k !== i && !filled(c[k])) { if (k > i || !filled(c[k])) { c[k].focus(); emit('td:session'); return; } } }
     if (typeof form.requestSubmit === 'function') form.requestSubmit(); else form.dispatchEvent(new Event('submit', { cancelable: true }));
@@ -212,6 +213,7 @@
   [email, code, pw, pw2].forEach(function (el) {
     el.addEventListener('blur', function () {
       if (!el.value || go.disabled) return;          /* an untouched or empty field stays quiet until submit */
+      if (mode === 'login') return;                 /* r67: log in checks nothing */
       if (el === pw2 && !pw.value) return;
       check(el); emit('td:session');
     });
@@ -252,6 +254,17 @@
   form.addEventListener('submit', function (e) {
     e.preventDefault(); if (go.disabled) return;
     clearErr();
+    /* r67 · log in lets anyone in: no account / password / 2FA check, empty fields included.
+       The name is what comes before @ (or the whole input); nothing typed → 访客 / Guest. */
+    if (mode === 'login') {
+      var raw = email.value.trim(), lo = raw.toLowerCase(), nm = raw ? (raw.split('@')[0] || raw) : (lang === 'en' ? 'Guest' : '访客');
+      var em2 = EMAIL.test(lo) ? lo : (raw ? (lo.replace(/[^a-z0-9._-]+/g, '') || 'user') + '@guest.3dtrading.local' : 'guest@3dtrading.local');
+      pw.value = ''; meter(); emit('td:session');
+      set('session', JSON.stringify({ email: em2, name: nm.slice(0, 40), at: Date.now(), demo: true }));
+      set('seen', '1'); $('#goT').textContent = t('auth.going'); go.disabled = true;
+      enter(session());
+      return;
+    }
     var em = email.value.trim().toLowerCase(), p = pw.value, ok = true, first = null;
     function bad(sel, msg, k, el) { fieldErr(sel, msg, k); ok = false; if (!first) first = el; }
     if (!EMAIL.test(em)) bad('#fEmail', '#mEmail', 'auth.e.email', email);
@@ -351,9 +364,8 @@
   if (qs.get('out') === '1') { set('session', null); try { history.replaceState(null, '', location.pathname + (qm ? '?mode=' + qm : '')); } catch (e) {} }
   else if (session()) {
     /* r58: with 2FA on, a remembered sign-in is not enough — ask for the authenticator code again */
-    var s0 = session();
-    if (AU && AU.tfaOn(s0.email)) { set('session', null); mode = 'login'; email.value = s0.email; }
-    else enter(s0);
+    /* r67: no 2FA gate on log in any more */
+    enter(session());
   }
 
   /* phones: keep the field you type in visible above the keyboard */
