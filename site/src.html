@@ -945,6 +945,8 @@ SCL.addEventListener('scroll', () => {
 /* r69 · 滚轮 = 触发 + CD（Jasper 2026-11-18）。一划的滑动量一过 BASE（196）镜头马上出发去下一站；从出发那一刻起 CD（0.35 s）内，
    每多滑 2×BASE（392）多走一站（196 · 588 · 980 · 1372，最多 4 站）。CD 一结束这一划就锁住，剩下的惯性全部吃掉，要明显再划一下才算下一次。
    太轻、没过门槛的一划不动；鼠标滚轮一格（一两个大值）= 一站。手机触屏不受影响 */
+/* r71 · 触发只算一站（Jasper 2026-11-19）。过门槛那一下（哪怕单个事件就远超 196）只走 1 站，超出部分作废；
+   之后 CD 内只按触发后新滑的距离算，每满 392 多一站（触发后 392 · 784 · 1176，最多 4 站） */
 const WTH = { BASE: +QP.get('wth') || 196, CD: +QP.get('wcd') || 350, GAP: 90, MAXN: 4 };
 const wthAt = n => n <= 0 ? 0 : WTH.BASE + WTH.BASE * 2 * (n - 1);
 const stepsOf = est => { let n = 0; while (n < WTH.MAXN && est >= wthAt(n + 1)) n++; return n; };
@@ -955,7 +957,7 @@ function gesture(dir, n, why) { if (busyIn() || n < 1) return; GLAST = performan
   const tg = clamp(CK.tgt + dir * n, 0, NS - 1); if (tg !== CK.tgt) jump(tg); window.__lastG.tg = tg; }
 let WG = null, GLAST = 0;
 function wStep(g) {   // inside the CD: the scroll so far decides how far this swipe goes
-  const n = Math.min(WTH.MAXN, Math.max(1, stepsOf(g.sum))); if (n <= g.n) return;
+  const n = Math.min(WTH.MAXN, 1 + Math.floor(g.ex / (WTH.BASE * 2))); if (n <= g.n) return;
   if (busyIn() || (g.dir > 0 && g.base === NS - 1)) return; g.n = n;
   const tg = clamp(g.base + g.dir * n, 0, NS - 1); if (tg === CK.tgt) return;
   GLAST = performance.now(); window.__lastG = { dir: g.dir, n, why: 'wheel:' + Math.round(g.sum), tg }; jump(tg); }
@@ -968,9 +970,9 @@ SCL.addEventListener('wheel', e => { e.preventDefault(); if (gateOn() || chsOpen
   let fresh = !W0 || n - W0.last > 160 || (dir !== W0.dir && ad > 2);
   if (!fresh && W0.locked) { W0.minL = Math.min(W0.minL, ad); W0.rise = ad > W0.la ? W0.rise + 1 : 0;
     if (n - W0.tl > 60 && W0.rise >= 3 && ad > Math.max(12, W0.minL * 2.2 + 8)) fresh = true; }   // a real new push rising out of the old one's tail
-  if (fresh) { if (W0 && !W0.locked) wLock('next'); WG = { dir, sum: 0, ds: [], peak: 0, t0: n, last: n, la: ad, rise: 0, locked: false, n: 0, tt: 0, base: CK.tgt }; }
+  if (fresh) { if (W0 && !W0.locked) wLock('next'); WG = { dir, sum: 0, ds: [], peak: 0, t0: n, last: n, la: ad, rise: 0, locked: false, n: 0, tt: 0, ex: 0, base: CK.tgt }; }
   const g = WG; g.last = n; g.la = ad; if (g.locked) return;   // after the CD: the rest of this swipe's inertia is eaten
-  g.sum += ad; g.ds.push(ad); g.peak = Math.max(g.peak, ad);
+  g.sum += ad; g.ds.push(ad); g.peak = Math.max(g.peak, ad); if (g.n) g.ex += ad;   // r71: only scroll after the trigger counts towards extra stops
   if (!g.n) {   // not triggered yet
     clearTimeout(g.tm); g.tm = setTimeout(() => wLock('gap'), WTH.GAP);
     if (g.sum < wthAt(1) || busyIn()) return;
@@ -979,7 +981,7 @@ SCL.addEventListener('wheel', e => { e.preventDefault(); if (gateOn() || chsOpen
     if (dir > 0 && g.base === NS - 1) { window.__lastG = { dir, n: 1, why: 'wheel:door' }; go(1); wLock('door'); return; }
     const tg = clamp(g.base + dir, 0, NS - 1); window.__lastG = { dir, n: 1, why: 'wheel:' + Math.round(g.sum), tg };
     if (tg !== CK.tgt || DF) go(tg - CK.tgt);   // past the bar: the camera sets off now
-    wStep(g); return;
+    g.ex = 0; return;   // r71: the trigger is one stop; its overshoot is dropped
   }
   if (n - g.tt <= WTH.CD) wStep(g); else wLock('cd');
 }, { passive: false });
