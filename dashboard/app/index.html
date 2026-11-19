@@ -56,6 +56,13 @@ if(!window.TDAccount||!window.TDApi){document.documentElement.classList.add('td-
 .btn.sec-dz{color:#d64545;border-color:rgba(214,69,69,.4)}
 .sec-del b{color:#d64545}
 html[data-theme="night"] .btn.sec-dz,html[data-theme="night"] .sec-del b{color:#ff7a7a}
+
+/* r75 · 「我的」菜单在最顶层（2147483000），探头 Dodo 要在它上面，否则头被菜单盖住 */
+body .gpk{z-index:2147483100}
+/* r75 · 往上探的 Dodo：眼睛在头的上半部，露在按钮上沿之上，看向要点的按钮（lk-l 往左下看，lk-r 往右下看） */
+.dd-eye{transition:transform .35s cubic-bezier(.3,.8,.3,1)}
+.lk-l .dd-eye{transform:translate(-3.4px,2.8px)}
+.lk-r .dd-eye{transform:translate(3.4px,2.8px)}
 </style>
 <!-- r64 · 「简约 / 紧凑」密度已删除，只留一种布局 -->
 <style>
@@ -5800,7 +5807,6 @@ function setPanel(t) {
     ${row('清除本机数据', '会话、偏好和 Dodo 历史只保存在这个浏览器', '<button class="btn ghost sm" type="button" data-wipe>清除</button>')}`;
   /* r61：设置里的 Dodo 页只留「绑定 Bot API」；语言跟随全局（偏好页）。探头的 Dodo 直接打开这一页。 */
   return `<h3>Dodo</h3>
-    ${row('Dodo 代你操作', '指引里由 Dodo 直接打开页面、点按钮；密码和 API Key 仍由你自己输入', seg('data-ddact', PREF.act || 'ask', [['show', '只指引'], ['ask', '提交前问我'], ['auto', '全部代办']], 'Dodo 代你操作'))}
     <div class="stg-r stg-bot"><div><b>绑定 Bot API</b><small>把 Dodo 绑定到你自己的 Bot API；只认本站后台的真实回应</small></div></div>
     <div id="dsbBot" class="stg-botb"></div>`;
 }
@@ -6815,46 +6821,59 @@ const PORTALS = [
   { id: 'range', zh: '收益曲线范围', en: 'Curve range', kw: 'fanwei range curve 30 60 曲线', run: () => nav('dashboard'), el: () => $('#rangeSeg') },
   { id: 'blog', zh: '资源', en: 'Resources', kw: 'ziyuan boke blog 博客 文章 资源中心', run: () => { $('#avBtn')?.click(); }, el: () => $('[data-tda-blog]') },
 ];
-/* 程序指引：预设最短路径。程序替你打开页面、点亮下一步；随时停止，自由操作后点「继续指引」回到原步骤 */
+/* r75 · 程序指引 = 目标 + 页面状态（Jasper 2026-11-19：不是纯自动，而是算出我离目标最快先点什么、再点什么，Dodo 只派到我要点的位置）。
+   Dodo 不代点、不代填、不替你跳页面。每次界面变化都重新看你现在在哪：开着哪个页面 / 弹窗 / 菜单 / 标签、哪一项已经填好，
+   算出到目标最少还差哪几下（plan），Dodo 只探在第一下那里。你点错、点到别处、自己先走了几步，都从现在的位置重新算，不会卡住也不会倒退。 */
+const vis = el => !!(el && el.isConnected && el.getClientRects().length && el.getBoundingClientRect().width > 0 && getComputedStyle(el).visibility !== 'hidden');
+const pickVis = q => $$(q).find(vis) || null;
+const menuOn = () => $('#avBtn')?.getAttribute('aria-expanded') === 'true';
+const modalOn = () => { const m = $('#modal'); return !!(m && !m.hidden && m.classList.contains('on')); };
+/* 要填的框：有内容，而且你已经离开这个框（或停手 1.2 秒）才算填好，免得打第一个字 Dodo 就跳走 */
+const GDIN = { el: null, t: 0 };
+const filled = q => { const e = $(q); if (!e || !(e.value || '').trim()) return false; return !(document.activeElement === e && GDIN.el === e && performance.now() - GDIN.t < 1200); };
+const GSTEP = { close: { k: 'close', t: 'tap', zh: '先关掉这个窗口', en: 'Close this window first', el: () => pickVis('#modal [data-qbx]') || pickVis('#modal [data-close]') } };
 const FLOWS = [
   { id: 'bind', zh: '绑定币安', en: 'Bind Binance', kw: 'bangding binance 绑定', steps: [
-    { zh: '起一个账户名称', en: 'Name the account', run: () => { if (!shown('#bnNm')) openBind(); }, el: () => $('#bnNm') },
-    { zh: '复制公钥，粘到币安「创建 API」', en: 'Copy the public key into Binance “Create API”', run: () => { if (!shown('#qbKey')) openBind(); }, el: () => $('#qbKey') },
-    { zh: '把两个 IP 加入白名单', en: 'Add both IPs to the whitelist', run: () => { if (!shown('.qb-ip')) openBind(); }, el: () => $('.qb-ips') },
-    { zh: '照这里勾选权限', en: 'Tick permissions as shown', run: () => { if (!shown('.qb-pms')) openBind(); }, el: () => $('.qb-pms') },
-    { zh: '粘贴 API Key，点「绑定」', en: 'Paste the API Key and tap “Bind”', run: () => { if (!shown('#bnKey')) openBind(); }, el: () => $('#bnF .qb-in') },
-  ] },
+    { k: 'menu', t: 'tap', zh: '点头像，打开「我的」菜单', en: 'Tap your avatar to open the menu', el: () => $('#avBtn') },
+    { k: 'add', t: 'tap', zh: '点「添加币安账户」', en: 'Tap “Add Binance account”', el: () => pickVis('.tda-menu .tda-mi.add') },
+    { k: 'name', t: 'fill', zh: '给这个账户起个名字，比如「主账户」', en: 'Name this account, e.g. “Main”', el: () => $('#bnNm') },
+    { k: 'pub', t: 'tap', zh: '点这里复制公钥，到币安「创建 API」里粘贴', en: 'Tap to copy the public key, then paste it into Binance “Create API”', el: () => $('#qbKey') },
+    { k: 'ip', t: 'tap', zh: '点这里复制 IP，加到币安的 IP 白名单', en: 'Tap to copy the IPs for the Binance IP whitelist', el: () => $('.qb-ip') },
+    { k: 'pm', t: 'info', zh: '在币安照这里勾选权限，勾好了点「好了」', en: 'Tick these permissions in Binance, then tap “Done”', el: () => $('.qb-pms') },
+    { k: 'api', t: 'fill', zh: '把币安给你的 API Key 粘贴到这里', en: 'Paste the API Key from Binance here', el: () => $('#bnKey') },
+    { k: 'go', t: 'tap', zh: '点「绑定」', en: 'Tap “Bind”', el: () => $('#bnF [type="submit"]') },
+  ], plan(M) {
+    const r = [], open = vis($('#bnF'));
+    if (!open) { if (modalOn()) r.push('close'); if (!menuOn()) r.push('menu'); r.push('add'); }
+    if (!open || !filled('#bnNm')) r.push('name');
+    if (!M.pub) r.push('pub');
+    if (!M.ip) r.push('ip');
+    if (!M.pm) r.push('pm');
+    if (!open || !filled('#bnKey')) r.push('api');
+    r.push('go'); return r;
+  } },
   { id: 'password', zh: '修改密码', en: 'Change password', kw: 'mima password 密码', steps: [
-    { zh: '打开设置 → 账号', en: 'Open Settings → Account', run: () => { if (!shown('#stg')) openSettings('acct'); }, el: () => $('#stg [data-stab="acct"]') },
-    { zh: '点「修改密码」', en: 'Tap “Change” next to Password', run: () => { if (!shown('#stg [data-sec="pw"]')) openSettings('acct'); }, el: () => $('#stg [data-sec="pw"]'), done: () => !!$('#secPwF') },
-    { zh: '输入当前密码和两次新密码', en: 'Enter your current and new password', run: () => { if (!shown('#secPwF')) { if (!shown('#stg')) openSettings('acct'); SEC.open = 'pw'; secRender(); } }, el: () => $('#secPwF') },
-    { zh: '点「保存新密码」', en: 'Tap “Save new password”', run: () => { if (!shown('#secPwF')) { if (!shown('#stg')) openSettings('acct'); SEC.open = 'pw'; secRender(); } }, el: () => $('#secPwF [type="submit"]') },
-  ] },
+    { k: 'menu', t: 'tap', zh: '点头像，打开「我的」菜单', en: 'Tap your avatar to open the menu', el: () => $('#avBtn') },
+    { k: 'set', t: 'tap', zh: '点「设置」', en: 'Tap “Settings”', el: () => pickVis('.tda-menu a[href="#/settings"]') },
+    { k: 'tab', t: 'tap', zh: '切到「账号」', en: 'Switch to “Account”', el: () => pickVis('#stg [data-stab="acct"]') },
+    { k: 'open', t: 'tap', zh: '点「修改密码」', en: 'Tap “Change” next to Password', el: () => $('#stg [data-sec="pw"]') },
+    { k: 'pw0', t: 'fill', zh: '输入当前密码', en: 'Enter your current password', el: () => $('#secPw0') },
+    { k: 'pw1', t: 'fill', zh: '输入新密码：至少 8 位，有字母和数字', en: 'New password: 8+ characters with letters and numbers', el: () => $('#secPw1') },
+    { k: 'pw2', t: 'fill', zh: '再输一次新密码', en: 'Type the new password again', el: () => $('#secPw2') },
+    { k: 'save', t: 'tap', zh: '点「保存新密码」', en: 'Tap “Save new password”', el: () => $('#secPwF [type="submit"]') },
+  ], plan() {
+    const r = [], stg = vis($('#stg')), f = stg && $('#secPwF');
+    if (!stg) { if (modalOn()) r.push('close'); if (!menuOn()) r.push('menu'); r.push('set'); if (SET.tab !== 'acct') r.push('tab'); }
+    else if (!f && !vis($('#stg [data-sec="pw"]'))) r.push('tab');
+    if (!f) r.push('open');
+    ['pw0', 'pw1', 'pw2'].forEach((k, i) => { if (!f || !filled('#secPw' + i)) r.push(k); });
+    r.push('save'); return r;
+  } },
   { id: 'export', zh: '导出交易记录', en: 'Export trades', kw: 'daochu export csv 导出', steps: [
-    { zh: '打开交易页', en: 'Open Trades', run: () => nav('trades'), el: () => $('#txHero') },
-    { zh: '需要的话先按币种或日期筛选', en: 'Filter by coin or day if you like', run: () => { if (CUR !== 'trades') nav('trades'); }, el: () => $('#wlList') },
-    { zh: '点「导出 CSV」', en: 'Tap “Export CSV”', run: () => { if (CUR !== 'trades') nav('trades'); }, el: () => $('[data-texport]') },
-  ] },
+    { k: 'nav', t: 'tap', zh: '点「交易」', en: 'Tap “Trades”', el: () => pickVis('[data-nav="trades"]') },
+    { k: 'csv', t: 'tap', zh: '点「导出 CSV」；想先按币种或日期筛选也可以', en: 'Tap “Export CSV” (filter by coin or day first if you like)', el: () => pickVis('[data-texport]') },
+  ], plan() { const r = []; if (CUR !== 'trades') { if (modalOn()) r.push('close'); r.push('nav'); } r.push('csv'); return r; } },
 ];
-/* r70 · Dodo 代你操作：act = Dodo 自己点 / 填；you = 要你在币安那边做，做完点「好了」；need = 只有你能输入的（密码、API Key），填好后 Dodo 接着做；
-   submit = 最后那一下提交（设置里「提交前问我」时先问一句）。 */
-(function () {
-  const F = id => FLOWS.find(f => f.id === id).steps, val = q => ($(q)?.value || '').trim();
-  const b = F('bind');
-  b[0].act = () => { const i = $('#bnNm'); if (i && !i.value.trim()) dodoType(i, LL('主账户', 'Main account')); };
-  b[1].act = () => $('#qbKey')?.click(); b[1].you = ['公钥已复制。到币安「创建 API」粘贴进去，回来点「好了」', 'Public key copied. Paste it into Binance “Create API”, then tap “Done”'];
-  b[2].act = () => { const v = BN_IPS.join(' '); (navigator.clipboard?.writeText(v) || Promise.reject()).then(() => { $$('.qb-ip').forEach(c => qbCopied(c)); toast(LL('两个 IP 已一起复制', 'Both IPs copied')); }, () => $('.qb-ip')?.click()); };
-  b[2].you = ['两个 IP 已复制。在币安 IP 白名单里粘贴，回来点「好了」', 'Both IPs copied. Paste them into the Binance IP whitelist, then tap “Done”'];
-  b[3].you = ['在币安照这里勾选权限，好了点「好了」', 'Tick these permissions in Binance, then tap “Done”'];
-  b[4].need = () => val('#bnKey').length > 0; b[4].needT = ['把 API Key 粘贴进来，Dodo 接着点「绑定」', 'Paste the API Key; Dodo will tap “Bind” next'];
-  b[4].submit = () => $('#bnF [type="submit"]'); b[4].sub = ['绑定', 'Bind']; b[4].err = () => $('#bnErr')?.textContent.trim();
-  const p = F('password');
-  p[1].act = () => { if (!$('#secPwF')) $('#stg [data-sec="pw"]')?.click(); };
-  p[2].need = () => !!(val('#secPw0') && val('#secPw1') && val('#secPw2')); p[2].needT = ['输入当前密码和两次新密码，Dodo 接着保存', 'Type your current and new password; Dodo saves it next'];
-  p[3].submit = () => $('#secPwF [type="submit"]'); p[3].sub = ['保存新密码', 'Save new password']; p[3].err = () => $('#secPwF .bnm-err')?.textContent.trim();
-  const x = F('export');
-  x[2].act = () => $('[data-texport]')?.click();
-})();
 FLOWS.forEach(f => { VZT['t_r67g_' + f.id] = ['指引 · ' + f.zh, 'Guide · ' + f.en]; });
 const shown = q => { const e = $(q); return !!(e && e.getBoundingClientRect().width > 0); };
 const nameOf = c => EN() ? c.en : c.zh;
@@ -7096,9 +7115,9 @@ function buildGuide(arg) {
   if (ACTM() !== 'show') return { f, a: R(`我来帮你「${f.zh}」，一共 ${f.steps.length} 步：页面和按钮我直接替你点，只有密码、API Key 这类要你输入的地方会停下来等你。`, `I’ll do “${f.en}” for you: ${f.steps.length} steps. I open the screens and tap the buttons, and only stop where you need to type something like a password or API Key.`,
     [],
     [['随时点气泡角上的 × 接手，自己操作', 'Tap the × on Dodo’s bubble any time to take over'], ['设置 → Dodo 里可以改成「只指引」或「全部代办」', 'Settings → Dodo can switch this to “Guide only” or “Do everything”']], ['guide:' + f.id, '重新来一次']) };
-  return { f, a: R(`开始「${f.zh}」指引，一共 ${f.steps.length} 步，Dodo 会从要点的按钮后面探出头，你自己点。`, `Starting the “${f.en}” guide: ${f.steps.length} steps. Dodo peeks out from behind each button for you to tap.`,
+  return { f, a: R(`开始「${f.zh}」指引。Dodo 会先看你现在在哪个页面，算出最少还要点几下，然后只在下一下要点的地方探头，你自己点。`, `Starting the “${f.en}” guide. Dodo checks where you are, works out the fewest taps to get there, and peeks out only where your next tap goes — you do the tapping.`,
     [],
-    [['Dodo 从要点的按钮后面探出头，你自己点，它就跳到下一步', 'Dodo peeks out from behind each button; tap it and Dodo moves on'], ['点气泡角上的 × 停下；右下角的小 Dodo 能带你回到停下的那一步', 'Tap × to stop; the little Dodo bottom-right brings you back']], ['guide:' + f.id, '重新开始指引']) };
+    [['点错了或自己先走了几步也没关系，Dodo 会从你现在的位置重新算', 'Wrong tap or went ahead yourself? Dodo recalculates from where you are'], ['点气泡角上的 × 停下；右下角的小 Dodo 能带你回到停下的那一步', 'Tap × to stop; the little Dodo bottom-right brings you back']], ['guide:' + f.id, '重新开始指引']) };
 }
 function buildQuote(refs) {
   if (!refs.length) {
@@ -7237,6 +7256,7 @@ function peekPlace() {
   let pick = cands.find(q => q.a < 40) || cands.sort((p, q) => p.a - q.a)[0];
   if (!pick) pick = { x: Math.max(M, Math.min(r.right - cw - ins, innerWidth - w - M)), lf: false };
   gpk.classList.remove('dn'); gpk.classList.toggle('lf', pick.lf);
+  { const hx = pick.lf ? pick.x + w - cw : pick.x; gpk.classList.toggle('lk-l', r.left + r.width / 2 < hx + cw / 2 - 4); gpk.classList.toggle('lk-r', r.left + r.width / 2 >= hx + cw / 2 - 4); }
   gpk.style.transform = `translate(${Math.round(pick.x)}px,${Math.round(yy)}px)`;
 }
 /* r74 · 不在指引里的「在这里」探头：换页或点了别处就收起，不挡后面的内容 */
@@ -7244,8 +7264,8 @@ const peekDrop = () => { if (!GPK || GD.on) return; $$('.r67-hl').forEach(x => x
 addEventListener('hashchange', peekDrop);
 document.addEventListener('pointerdown', e => { if (GPK && !GD.on && !e.target.closest('.gpk') && !GPK.contains(e.target)) peekDrop(); }, true);
 function peekLoop() { peekPlace(); if (GPK) peekOff.raf = requestAnimationFrame(peekLoop); }
-/* r73 · 和 Dodo 页顶部导航探头同一个画法 */
-const ddHead = () => `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="16" fill="#1fbfa2"/><rect x="1" y="1" width="58" height="57" rx="16" fill="url(#gpkG)"/><defs><linearGradient id="gpkG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62f3d9"/><stop offset="1" stop-color="#27d3b3"/></linearGradient></defs><circle cx="30" cy="42.6" r="16" fill="rgba(0,0,0,.08)"/><circle cx="30" cy="41" r="16" fill="#f5f0e1"/><circle cx="32" cy="41" r="8" fill="#141416"/><rect x="28.4" y="39" width="2.2" height="4.4" fill="#ef4444"/><rect x="33.4" y="37.8" width="2.2" height="6" fill="#22c55e"/><circle cx="35.6" cy="37.4" r="1.9" fill="#fff"/></svg>`;
+/* r73 · 和 Dodo 页顶部导航探头同一个画法；r75 · 往上探单独画头：眼睛在上半部（顶部导航往下挂的那只不动） */
+const ddHead = () => `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="16" fill="#1fbfa2"/><rect x="1" y="1" width="58" height="57" rx="16" fill="url(#gpkG)"/><defs><linearGradient id="gpkG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62f3d9"/><stop offset="1" stop-color="#27d3b3"/></linearGradient></defs><circle cx="30" cy="25.6" r="15" fill="rgba(0,0,0,.08)"/><circle cx="30" cy="24" r="15" fill="#f5f0e1"/><g class="dd-eye"><circle cx="30" cy="24" r="7.6" fill="#141416"/><rect x="26.5" y="22.1" width="2.1" height="4.2" fill="#ef4444"/><rect x="31.3" y="20.9" width="2.1" height="5.7" fill="#22c55e"/><circle cx="33.5" cy="20.4" r="1.8" fill="#fff"/></g></svg>`;
 /* r73 · scrollIntoView 会连 overflow:hidden 的卡片一起滚（交易记录主卡错位的根因）。只让页面滚，卡片自己的 scrollTop 保持原样 */
 function safeInto(el, o) {
   const keep = [];
@@ -7274,17 +7294,13 @@ const gpkX = (k, l) => `<button type="button" class="gpk-x" data-gd="${k}" aria-
 function gpkBody() {
   const en = EN(), f = GD.on && FLOWS.find(z => z.id === GD.f);
   if (!f) return `${gpkX('x', en ? 'Close' : '关闭')}<span class="gpk-m">${esc(GPKSAY)}</span>`;
-  const s = f.steps[GD.i], n = f.steps.length, W = GD.wait, last = GD.i >= n - 1;
-  let msg = en ? s.en : s.zh, btn = '';
-  if (ACTM() !== 'show' && W) {
-    msg = W === 'you' ? s.you[en ? 1 : 0] : W === 'need' ? s.needT[en ? 1 : 0] : W === 'ask' ? (en ? `Shall I tap “${s.sub[1]}”?` : `我来点「${s.sub[0]}」？`) : (en ? `On it: ${s.en}` : `Dodo 正在做：${s.zh}`);
-    btn = W === 'you' ? `<button type="button" class="gpk-a" data-gd="done">${en ? 'Done' : '好了'}</button>` : W === 'ask' ? `<button type="button" class="gpk-a" data-gd="go">${en ? 'Go ahead' : '好，点吧'}</button>` : '';
-  } else if (ACTM() === 'show') {
-    const el = s.el(), tap = el && el.matches && el.matches('button,a[href],[role="button"],[type="submit"]');
-    if (!tap) btn = `<button type="button" class="gpk-a" data-gd="next">${last ? (en ? 'Done' : '完成') : (en ? 'Next' : '下一步')}</button>`;
-  }
-  const dots = f.steps.map((_, k) => `<i class="${k < GD.i ? 'd' : k === GD.i ? 'on' : ''}"></i>`).join('');
-  return `${gpkX('stop', en ? 'Stop guide' : '停止指引')}<span class="gpk-m">${esc(msg)}</span>${btn ? `<span class="gpk-r">${btn}</span>` : ''}<span class="gpk-p" role="img" aria-label="${en ? `Step ${GD.i + 1} of ${n}` : `第 ${GD.i + 1} / ${n} 步`}">${dots}<small>${GD.i + 1}/${n}</small></span>`;
+  /* r75 · 一句话（下一下要做什么）+ 只有「去币安那边做」的步骤才有「好了」+ 圆点按剩余步数 */
+  const s = gdDef(f, GD.cur), n = Math.max(1, GD.tot), i = Math.min(GD.i, n - 1);
+  const msg = s ? (en ? s.en : s.zh) : '';
+  const btn = s && s.t === 'info' ? `<button type="button" class="gpk-a" data-gd="ok">${en ? 'Done' : '好了'}</button>` : '';
+  const dots = Array.from({ length: n }, (_, k) => `<i class="${k < i ? 'd' : k === i ? 'on' : ''}"></i>`).join('');
+  const left = n - i;
+  return `${gpkX('stop', en ? 'Stop guide' : '停止指引')}<span class="gpk-m">${esc(msg)}</span>${btn ? `<span class="gpk-r">${btn}</span>` : ''}<span class="gpk-p" role="img" aria-label="${en ? `${left} step${left > 1 ? 's' : ''} to go` : `还差 ${left} 步`}">${dots}<small>${en ? `${left} left` : `还差 ${left} 步`}</small></span>`;
 }
 function waitEl(get, cb, n = 0) { const el = get(); if (el && el.getBoundingClientRect().width > 0) return cb(el); if (n > 30) return cb(null); setTimeout(() => waitEl(get, cb, n + 1), 80); }
 function portal(id) {
@@ -7294,7 +7310,7 @@ function portal(id) {
   if (id === 'password' || id === 'email' || id === 'devices') { SEC.open = ''; }
   p.run();
   waitEl(p.el, el => { if (!glow(el, LL(`「${p.zh}」在这里，点它就行`, `“${p.en}” is right here`))) { toast(LL('那个按钮现在不在页面上', 'That button is not on screen right now')); return; }
-    if (p.tap && ACTM() !== 'show') dodoTap(el, () => el.click()); });   // r70 · 代你操作：安全的入口 Dodo 直接点开
+  });   // r75 · 传送门只带到按钮旁边，由你来点；「帮我打开」才是直接打开
 }
 /* 跳转按钮：portal:x、guide:x、回到引用的日子 / 订单，其余交给原来的 goTo */
 const _goTo = goTo;
@@ -7308,93 +7324,80 @@ goTo = function (sel) {
   return _goTo(sel);
 };
 
-/* ---------- 程序指引：浮动条，可停止、可继续 ---------- */
-const GD = { f: null, i: 0, on: false, fin: null, tok: 0, wait: '' };
+/* ---------- 程序指引（r75）：看你现在在哪 → 算最短路径 → Dodo 只探在下一下；可停止、可继续 ---------- */
+const GD = { f: null, i: 0, tot: 0, on: false, fin: null, tok: 0, cur: '', rem: [], mk: {} };
 const gbar = document.createElement('div'); gbar.className = 'gdb'; gbar.id = 'guideBar'; gbar.hidden = true; gbar.setAttribute('role', 'region'); gbar.setAttribute('data-i18n-skip', ''); document.body.appendChild(gbar);
 const guideOn = () => GD.on;
+const gdDef = (f, k) => (f && f.steps.find(s => s.k === k)) || GSTEP[k] || null;
 function guideRender() {
   const f = FLOWS.find(x => x.id === GD.f); if (!f) { gbar.hidden = true; return; }
   const en = EN();
   if (GD.on) { gbar.hidden = true; const b = GPK && gpk.querySelector('.gpk-b'); if (b) b.innerHTML = gpkBody(); return; }
-  /* 停下以后：右下角留一颗小胶囊，点它回到停下的那一步 */
+  /* 停下以后：右下角留一颗小胶囊，点它从你现在的位置接着算 */
   gbar.setAttribute('aria-label', en ? 'Dodo guide' : 'Dodo 指引');
   gbar.className = 'gdb paused gdr';
-  gbar.innerHTML = `<span class="gdb-dd" aria-hidden="true">${ddMini()}</span><button type="button" class="gdr-go" data-gd="resume"><small>${en ? 'Guide paused' : '指引已暂停'} · ${GD.i + 1}/${f.steps.length}</small><b>${en ? `Resume “${esc(f.en)}”` : `继续「${esc(f.zh)}」`}</b></button>${gpkX('end', en ? 'End guide' : '结束指引')}`;
+  gbar.innerHTML = `<span class="gdb-dd" aria-hidden="true">${ddMini()}</span><button type="button" class="gdr-go" data-gd="resume"><small>${en ? 'Guide paused' : '指引已暂停'}</small><b>${en ? `Resume “${esc(f.en)}”` : `继续「${esc(f.zh)}」`}</b></button>${gpkX('end', en ? 'End guide' : '结束指引')}`;
   gbar.hidden = false;
 }
-function guideShow() {
-  const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i], tok = ++GD.tok;
-  GD.wait = ACTM() !== 'show' ? 'busy' : '';
-  const go = () => { if (!GD.on || tok !== GD.tok) return; guideRender(); s.run();
-    waitEl(s.el, el => { if (!GD.on || tok !== GD.tok) return; glow(el, EN() ? s.en : s.zh); if (el) { clearTimeout(el._hl); } if (ACTM() !== 'show') agentStep(f, s, el, tok); }); };
-  /* r74 · 上一步的 Dodo 先缩回去，再从下一个按钮背后冒出来 */
-  if (GPK && !gpk.hidden && !RM) { gpk.classList.add('out'); setTimeout(go, 200); } else go();
+/* 重新算一次：现在的状态 → 还差哪几下 → Dodo 探在第一下 */
+let GDT = 0, GDDUE = 0;
+/* 节流不防抖：页面上一直有动画在改 class 时也照样会算 */
+function gdKick(ms) { if (!GD.on) return; const due = performance.now() + (ms == null ? 90 : ms); if (GDT && GDDUE <= due) return; clearTimeout(GDT); GDDUE = due; GDT = setTimeout(() => { GDT = 0; gdTick(); }, Math.max(0, due - performance.now())); }
+function gdTick() {
+  if (!GD.on) return; const f = FLOWS.find(x => x.id === GD.f); if (!f) return;
+  if (GD.mk.ok) { guideEnd(true); toast(LL(`「${f.zh}」完成了`, `“${f.en}” done`)); return; }
+  const rem = f.plan(GD.mk); GD.rem = rem;
+  GD.tot = Math.max(GD.tot, rem.length); GD.i = GD.tot - rem.length;
+  const k = rem[0], s = gdDef(f, k), el = s && s.el();
+  if (!el || !vis(el)) {   // 菜单正在展开、页面正在切换：等它出来再探头
+    if (GD.cur !== '') { GD.cur = ''; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); }
+    gdKick(250); return;
+  }
+  if (k === GD.cur && GPK === el && el.classList.contains('r67-hl')) { const b = gpk.querySelector('.gpk-b'); if (b) { const h = gpkBody(); if (b.innerHTML !== h) b.innerHTML = h; } return; }
+  const tok = ++GD.tok, swap = GPK && !gpk.hidden && !RM;
+  GD.cur = k;
+  const show = () => { if (!GD.on || tok !== GD.tok) return; glow(el, EN() ? s.en : s.zh); clearTimeout(el._hl); };
+  /* 上一下的 Dodo 先缩回去，再从下一个地方冒出来 */
+  if (swap) { gpk.classList.add('out'); setTimeout(show, 200); } else show();
 }
-/* r70 · Dodo 代你操作：Dodo 的小手移到按钮上，点一下；轮到你时停下来等你 */
+/* 界面一变（弹窗开关、菜单展开、换页、输入）就重新算 */
+const gdMo = new MutationObserver(ms => { if (GD.on && ms.some(m => !gpk.contains(m.target) && !gbar.contains(m.target))) gdKick(); });
+function gdWatch(on) { gdMo.disconnect(); clearInterval(gdWatch.iv); if (!on) return;
+  gdMo.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden', 'aria-expanded', 'aria-selected', 'class'] });
+  gdWatch.iv = setInterval(() => gdKick(0), 700); }
+document.addEventListener('input', e => { if (!GD.on) return; GDIN.el = e.target; GDIN.t = performance.now(); gdKick(1300); }, true);
+document.addEventListener('focusout', () => gdKick(60), true);
+addEventListener('hashchange', () => gdKick(120));
+/* 你自己点的那几下：复制公钥、复制 IP 记下来（币安那边的事我们看不到）；提交后看结果 */
+document.addEventListener('click', e => {
+  if (!GD.on || !e.isTrusted || gpk.contains(e.target) || gbar.contains(e.target)) return;
+  if (GD.f === 'bind') { if (e.target.closest('#qbKey')) GD.mk.pub = 1; if (e.target.closest('.qb-ip')) GD.mk.ip = 1; }
+  if (GD.f === 'export' && e.target.closest('[data-texport]')) GD.mk.ok = 1;
+  gdKick(120);
+}, true);
+document.addEventListener('submit', e => {
+  if (!GD.on) return; const id = e.target.id;
+  if (GD.f === 'bind' && id === 'bnF') setTimeout(() => { if (QB.done) GD.mk.ok = 1; gdKick(0); }, 60);
+  if (GD.f === 'password' && id === 'secPwF') setTimeout(() => { if (!$('#secPwF') && !SEC.err) GD.mk.ok = 1; gdKick(0); }, 60);
+});
+function guideShow() { GD.cur = ''; gdWatch(true); gdTick(); }
+function guideStart(id) { if (!FLOWS.some(x => x.id === id)) return; GD.f = id; GD.i = 0; GD.tot = 0; GD.mk = {}; GD.on = true; GD.fin = null; guideShow(); }
+function guideStop() { GD.on = false; GD.tok++; GD.cur = ''; gdWatch(false); clearTimeout(GDT); GDT = 0; dcur.hidden = true; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); guideRender(); }
+function guideEnd(done) { GD.fin = done ? GD.f : null; GD.on = false; GD.tok++; GD.cur = ''; gdWatch(false); clearTimeout(GDT); GDT = 0; dcur.hidden = true; GD.f = null; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); gbar.hidden = true; gdcSync(); }
+/* r70 的代点小手留着给「帮我打开」以外的旧调用，不再用在指引里 */
 const dcur = document.createElement('div'); dcur.className = 'ddcur'; dcur.hidden = true; dcur.setAttribute('aria-hidden', 'true');
 dcur.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 3l14 7.5-6.2 1.6L10 18z"/></svg><i></i>'; document.body.appendChild(dcur);
-let DCX = innerWidth / 2, DCY = innerHeight - 90;
-function dodoTap(el, cb) {
-  if (!el) { cb(); return; }
-  safeInto(el, { block: 'center', behavior: 'auto' });
-  const r = el.getBoundingClientRect(), x = r.left + Math.min(r.width / 2, 60), y = r.top + r.height / 2;
-  dcur.hidden = false; dcur.classList.remove('tap'); dcur.style.transition = 'none'; dcur.style.transform = `translate(${DCX}px,${DCY}px)`;
-  void dcur.offsetWidth; dcur.style.transition = RM ? 'none' : ''; dcur.style.transform = `translate(${x}px,${y}px)`; DCX = x; DCY = y;
-  setTimeout(() => { dcur.classList.add('tap'); cb(); setTimeout(() => { dcur.hidden = true; dcur.classList.remove('tap'); }, 700); }, RM ? 60 : 620);
-}
-function ACTM() { return PREF.act === 'show' ? 'show' : PREF.act === 'auto' ? 'auto' : 'ask'; }
-function dodoType(el, v) { el.focus({ preventScroll: true }); el.value = v; el.dispatchEvent(new Event('input', { bubbles: true })); }
-function agentNext(f, tok, ms) {
-  setTimeout(() => { if (!GD.on || tok !== GD.tok) return;
-    if (GD.i >= f.steps.length - 1) { guideEnd(true); toast(LL(`「${f.zh}」已完成`, `“${f.en}” done`)); return; }
-    GD.i++; guideShow(); }, ms == null ? 520 : ms);
-}
-function agentStep(f, s, el, tok) {
-  const live = () => GD.on && tok === GD.tok;
-  if (s.need && !s.need()) {           // 只有你能输入：等你填好
-    GD.wait = 'need'; guideRender();
-    const t = el && el.querySelector ? (el.matches('input') ? el : el.querySelector('input')) : null; if (t) t.focus({ preventScroll: true });
-    const poll = () => { if (!live()) return; if (s.need()) { GD.wait = 'busy'; guideRender(); setTimeout(() => live() && agentSubmit(f, s, tok), 450); } else setTimeout(poll, 300); };
-    poll(); return;
-  }
-  if (s.submit) { agentSubmit(f, s, tok); return; }
-  if (s.act) { dodoTap(el, () => { if (!live()) return; s.act(); if (s.you) { GD.wait = 'you'; guideRender(); } else agentNext(f, tok); }); return; }
-  if (s.you) { GD.wait = 'you'; guideRender(); return; }
-  agentNext(f, tok, 700);
-}
-function agentSubmit(f, s, tok) {
-  const live = () => GD.on && tok === GD.tok, b = s.submit && s.submit();
-  if (!b) { agentNext(f, tok); return; }
-  glow(b);
-  if (ACTM() === 'ask' && GD.wait !== 'go') { GD.wait = 'ask'; guideRender(); return; }
-  GD.wait = 'busy'; guideRender();
-  dodoTap(b, () => { if (!live()) return; b.click();
-    setTimeout(() => { if (!live()) return; if (s.err && s.err()) { GD.wait = 'need'; guideRender(); toast(LL('有一项没通过，改好后 Dodo 再提交', 'Something needs fixing; Dodo will submit again after')); const again = () => { if (!live()) return; if (s.err && s.err()) setTimeout(again, 400); else agentStep(f, s, b, tok); }; setTimeout(again, 600); return; }
-      guideEnd(true); toast(LL(`「${f.zh}」已完成`, `“${f.en}” done`)); }, 450); });
-}
-function guideStart(id) { if (!FLOWS.some(x => x.id === id)) return; GD.f = id; GD.i = 0; GD.on = true; GD.fin = null; guideShow(); }
-function guideStop() { GD.on = false; GD.tok++; GD.wait = ''; dcur.hidden = true; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); guideRender(); }
-function guideEnd(done) { GD.fin = done ? GD.f : null; GD.on = false; GD.tok++; GD.wait = ''; dcur.hidden = true; GD.f = null; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); gbar.hidden = true; gdcSync(); }
+function ACTM() { return 'show'; }   // r75 · 指引里 Dodo 一律不代点、不代填
 function gdClick(e) {
   const b = e.target.closest('[data-gd]'); if (!b) return; const k = b.dataset.gd, f = FLOWS.find(x => x.id === GD.f);
   if (k === 'x') { $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); return; }
   if (!f) return;
-  if (k === 'stop') { guideStop(); toast(LL('指引已停下：自由操作吧，点右下角的小 Dodo 可以接着来', 'Guide paused — do your thing; tap the little Dodo to pick it up again')); return; }
+  if (k === 'stop') { guideStop(); toast(LL('指引已停下：自由操作吧，点右下角的小 Dodo 会从你现在的位置接着带', 'Guide paused — do your thing; tap the little Dodo to carry on from where you are')); return; }
   if (k === 'end') { guideEnd(); return; }
   if (k === 'resume') { GD.on = true; guideShow(); return; }
-  if (k === 'done') { GD.wait = 'busy'; agentNext(f, GD.tok, 0); return; }
-  if (k === 'go') { const s = f.steps[GD.i]; GD.wait = 'go'; agentSubmit(f, s, GD.tok); return; }
-  if (k === 'prev') { GD.i = Math.max(0, GD.i - 1); guideShow(); return; }
-  if (k === 'next') { if (GD.i >= f.steps.length - 1) { guideEnd(true); toast(LL(`「${f.zh}」指引完成`, `“${f.en}” guide finished`)); return; } GD.i++; guideShow(); }
+  if (k === 'ok') { if (GD.cur === 'pm') GD.mk.pm = 1; gdKick(0); return; }
 }
 gbar.addEventListener('click', gdClick); gpk.addEventListener('click', gdClick);
-/* 用户点了被点亮的按钮，就自动走到下一步 */
-document.addEventListener('click', e => {
-  if (!GD.on || gbar.contains(e.target) || gpk.contains(e.target) || !e.isTrusted) return; const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i], el = s.el();
-  if (ACTM() !== 'show') { const sb = s.submit && s.submit(); if (sb && sb.contains(e.target) && GD.wait === 'ask') { const tk = GD.tok; GD.wait = 'busy'; guideRender(); setTimeout(() => { if (!GD.on || tk !== GD.tok) return; if (s.err && s.err()) { GD.wait = 'need'; guideRender(); } else { guideEnd(true); toast(LL(`「${f.zh}」已完成`, `“${f.en}” done`)); } }, 450); } return; }
-  /* r74 · 用户自己点了被指的按钮：Dodo 缩回，从下一个按钮背后冒出；最后一步点完就结束 */
-  if (el && el.matches('button,a[href],[role="button"],[type=submit]') && el.contains(e.target)) { const tk = GD.tok; setTimeout(() => { if (!GD.on || tk !== GD.tok) return; if (GD.i >= f.steps.length - 1) { guideEnd(true); toast(LL(`「${f.zh}」完成了`, `“${f.en}” done`)); } else { GD.i++; guideShow(); } }, 260); }
-}, true);   /* 捕获阶段：按钮的点击会重绘设置页，冒泡到这里时原按钮已经不在了 */
 window.addEventListener('langchange', () => { if (GD.f) guideRender(); });
 
 /* ---------- 引用 / 多选：右键或长按数字、曲线点、订单 ---------- */

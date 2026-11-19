@@ -374,7 +374,7 @@
     stage.setAttribute('aria-description', st.peeks.map(function (k) { return k[L()]; }).join('；'));
   }
   function dHead(g) {
-    return '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="16" fill="#1fbfa2"/><rect x="1" y="1" width="58" height="57" rx="16" fill="url(#' + g + ')"/><defs><linearGradient id="' + g + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62f3d9"/><stop offset="1" stop-color="#27d3b3"/></linearGradient></defs><circle cx="30" cy="42.6" r="16" fill="rgba(0,0,0,.08)"/><circle cx="30" cy="41" r="16" fill="#f5f0e1"/><circle cx="32" cy="41" r="8" fill="#141416"/><rect x="28.4" y="39" width="2.2" height="4.4" fill="#ef4444"/><rect x="33.4" y="37.8" width="2.2" height="6" fill="#22c55e"/><circle cx="35.6" cy="37.4" r="1.9" fill="#fff"/></svg>';
+    return '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="16" fill="#1fbfa2"/><rect x="1" y="1" width="58" height="57" rx="16" fill="url(#' + g + ')"/><defs><linearGradient id="' + g + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62f3d9"/><stop offset="1" stop-color="#27d3b3"/></linearGradient></defs><circle cx="30" cy="25.6" r="15" fill="rgba(0,0,0,.08)"/><circle cx="30" cy="24" r="15" fill="#f5f0e1"/><g class="dd-eye"><circle cx="30" cy="24" r="7.6" fill="#141416"/><rect x="26.5" y="22.1" width="2.1" height="4.2" fill="#ef4444"/><rect x="31.3" y="20.9" width="2.1" height="5.7" fill="#22c55e"/><circle cx="33.5" cy="20.4" r="1.8" fill="#fff"/></g></svg>';
   }
   function peekPlace() {
     if (!PK.list || !PK.list.length) return;
@@ -416,6 +416,9 @@
       var pick = cands.filter(function (k) { return k.a < 40; })[0] || cands.sort(function (q, z) { return q.a - z.a; })[0];
       if (!pick) { p.e.classList.remove('dn', 'in'); w = p.e.offsetWidth; h = p.e.offsetHeight; pick = { m: 'up', x: Math.max(M, Math.min(r.right - cw - ins, VW - w - M)), y: Math.max(top0 + M, r.top - h + 1), w: w, h: h, lf: false }; }
       p.e.classList.toggle('dn', pick.m === 'dn'); p.e.classList.toggle('in', pick.m === 'in'); p.e.classList.toggle('lf', pick.lf);
+      /* r75: the eye looks toward the middle of the target (a hanging head is turned upside down, so its left and right swap) */
+      var hx0 = pick.lf ? pick.x + pick.w - cw : pick.x, toL = r.left + r.width / 2 < hx0 + cw / 2 - 4; if (pick.m === 'dn') toL = !toL;
+      p.e.classList.toggle('lk-l', toL); p.e.classList.toggle('lk-r', !toL);
       boxes.push({ x: pick.x, y: pick.y, w: pick.w, h: pick.h });
       p.e.style.transform = 'translate(' + Math.round(pick.x) + 'px,' + Math.round(pick.y) + 'px)';
     });

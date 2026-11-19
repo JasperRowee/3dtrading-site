@@ -386,3 +386,8 @@ html.embed .bnh,.bnh{padding-left:calc(max(16px,env(safe-area-inset-left)) + 118
 #tkF.kb>.tk-go{grid-column:2;grid-row:1;height:44px}
 /* 很矮的窗口：最后一步整页缩放后仍放不下时，舞台自己滚动（不裁切） */
 .stage.fit{overflow-y:auto;overscroll-behavior:contain}
+
+/* r75 · 往上探的 Dodo：眼睛在头的上半部，露在按钮上沿之上，看向要点的按钮（lk-l 往左下看，lk-r 往右下看） */
+.dd-eye{transition:transform .35s cubic-bezier(.3,.8,.3,1)}
+.lk-l .dd-eye{transform:translate(-3.4px,2.8px)}
+.lk-r .dd-eye{transform:translate(3.4px,2.8px)}

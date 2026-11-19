@@ -1004,14 +1004,28 @@ SCL.addEventListener('scroll', () => {
    飞行中再划一下，和手机一样：同方向终点 +1、反方向 −1（go() 接着当前速度改终点）。鼠标滚轮一格 = 一站 */
 const WTH = { BASE: +QP.get('wth') || 130, GAP: 90, PAUSE: +QP.get('wps') || 180, STALL: 450 };
 const busyIn = () => GATE || PFX.busy() || HOMING;
+/* r75 · 滚轮录制：官网地址后加 ?rec=1。右下角小面板记下每个滚动事件（时间、滑动量）和程序认出的每一划，
+   「下载」存成 JSON，用来按 Jasper 的 Magic Mouse 真实数据调规则。不加参数时这段不运行 */
+if (QP.get('rec')) { const R = { t0: performance.now(), ev: [], fires: [], lab: '' }, box = document.createElement('div');
+  box.style.cssText = 'position:fixed;right:12px;bottom:12px;z-index:99999;font:600 12px/1.5 -apple-system,system-ui,sans-serif;color:#fff;background:rgba(10,14,20,.86);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px 12px;min-width:220px;backdrop-filter:blur(8px)';
+  const B = (k, t) => `<button data-wr="${k}" style="all:unset;cursor:pointer;padding:3px 9px;margin:6px 6px 0 0;border-radius:999px;background:${k === 'dl' ? '#21c7a8' : 'rgba(255,255,255,.14)'};color:${k === 'dl' ? '#04201a' : '#fff'}">${t}</button>`;
+  const draw = () => { box.innerHTML = `<div>滚轮录制 · 事件 ${R.ev.length} · 认出 ${R.fires.length} 划</div><div style="opacity:.7;font-weight:500">先点下面的情况再划：${R.lab || '未标注'}</div><div>${[['one', '单划一下'], ['fast', '快速连划'], ['slow', '慢起手连划']].map(([k, t]) => B('l:' + t, t)).join('')}</div><div>${B('dl', '下载数据')}${B('clr', '清空')}</div>`; };
+  box.addEventListener('click', e => { const b = e.target.closest('[data-wr]'); if (!b) return; const k = b.dataset.wr;
+    if (k.startsWith('l:')) { R.lab = k.slice(2); R.ev.push({ t: Math.round(performance.now() - R.t0), mark: R.lab }); }
+    if (k === 'clr') { R.ev = []; R.fires = []; R.t0 = performance.now(); }
+    if (k === 'dl') { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify({ ua: navigator.userAgent, at: new Date().toISOString(), ev: R.ev, fires: R.fires }, null, 0)], { type: 'application/json' })); a.download = 'wheel-rec-' + Date.now() + '.json'; a.click(); }
+    draw(); });
+  window.__wrec = { R, ev(e) { R.ev.push({ t: Math.round((performance.now() - R.t0) * 10) / 10, dy: Math.round(e.deltaY * 100) / 100, dx: Math.round(e.deltaX * 100) / 100, m: e.deltaMode }); if (R.ev.length % 10 === 1) draw(); },
+    fire(why, sum) { R.fires.push({ t: Math.round(performance.now() - R.t0), why, sum: Math.round(sum) }); draw(); } };
+  document.body.appendChild(box); draw(); }
 function gesture(dir, n, why) { if (busyIn() || n < 1) return; GLAST = performance.now(); window.__lastG = { dir, n, why };
   if (dir > 0 && CK.tgt === NS - 1) { go(1); return; }   // the door
   if (n === 1) { go(dir); return; }
   const tg = clamp(CK.tgt + dir * n, 0, NS - 1); if (tg !== CK.tgt) jump(tg); window.__lastG.tg = tg; }
 let WG = null, GLAST = 0;
-function wFire(g, why) { g.n = 1; g.locked = true; g.tl = performance.now(); g.minL = 1e9; g.rc = []; g.rise = 0; clearTimeout(g.tm);
+function wFire(g, why) { if (window.__wrec) __wrec.fire(why, g.sum); g.n = 1; g.locked = true; g.tl = performance.now(); g.minL = 1e9; g.rc = []; g.rise = 0; clearTimeout(g.tm);
   window.__lastW = { sum: Math.round(g.sum), n: 1, why, k: g.ds.length }; gesture(g.dir, 1, 'wheel:' + why + ':' + Math.round(g.sum)); }
-SCL.addEventListener('wheel', e => { e.preventDefault(); if (gateOn() || chsOpen()) return;
+SCL.addEventListener('wheel', e => { e.preventDefault(); if (window.__wrec) __wrec.ev(e); if (gateOn() || chsOpen()) return;
   let dy = e.deltaY; if (e.deltaMode === 1) dy *= 16; else if (e.deltaMode === 2) dy *= innerHeight; if (Math.abs(dy) < .5) return;
   const n = performance.now(), dir = Math.sign(dy), ad = Math.abs(dy);
   // a tiny reverse wobble that never got going, then the old direction again within the pause: still the old swipe
@@ -1019,12 +1033,23 @@ SCL.addEventListener('wheel', e => { e.preventDefault(); if (gateOn() || chsOpen
   const W0 = WG, tail = W0 && W0.locked;
   if (W0 && tail && dir !== W0.dir && ad <= 12 && n - W0.last <= WTH.PAUSE) { W0.last = n; return; }   // reverse jitter inside the inertia
   let fresh = !W0 || n - W0.last > WTH.PAUSE || (dir !== W0.dir && ad > 2);
-  if (fresh && tail && W0.rc.length >= 3 && dir === W0.dir && n - W0.last <= WTH.STALL && ad <= W0.la * 1.25 + 4) fresh = false;   // a stall in the old inertia (the page hitched), not a new push
-  if (!fresh && tail) { W0.minL = Math.min(W0.minL, ad); W0.rise = ad > W0.la ? W0.rise + 1 : 0; W0.rc.push(ad); if (W0.rc.length > 6) W0.rc.shift();
+  /* r75 · 卡顿规则只在力度没有往上走时生效：停顿后这一下不超过停顿前这几下的最大值，就还是旧惯性（画面卡了一下）。
+     手指真的又推了一下，力度会接着往上涨，下面「连续 2 次回升」那条会把它认成新一划，所以慢起手的新一划也不会被吃掉 */
+  const decaying = tail && W0.rc.length >= 3 && ad <= Math.max(...W0.rc) * 1.1 + 4;   // 力度没超过刚才的惯性水平
+  if (fresh && tail && decaying && dir === W0.dir && n - W0.last <= WTH.STALL) fresh = false;   // a stall in the old inertia (the page hitched), not a new push
+  let seed = 0;
+  if (!fresh && tail) { W0.minL = Math.min(W0.minL, ad);
+    const up = ad > W0.la; if (up) { if (!W0.rise) { W0.base = W0.la; W0.rs = 0; } W0.rise++; W0.rs += ad; } else W0.rise = 0;
+    W0.rc.push(ad); if (W0.rc.length > 6) W0.rc.shift();
     const avg = W0.rc.slice(0, -1).reduce((a, b) => a + b, 0) / Math.max(1, W0.rc.length - 1);
-    if (n - W0.tl > 80 && W0.rise >= 3 && ad > Math.max(20, avg * 2.5, W0.minL * 1.8 + 6)) fresh = true; }   // a real new push rising out of the old one's tail
+    /* r75 · 惯性在变弱时，力度连续 2 次回升、而且比回升前大出一截，就是手指又推了一下（起手慢的一划也认得出）。
+       以前要连续 3 次、超过平均 2.5 倍，慢起手达不到，整划被当惯性吃掉 → 连划几下不动。
+       再多看一帧：手指推的那一下会持续有力，惯性里单独一帧的尖峰下一帧就掉回去，不算新一划 */
+    const lift = W0.lp && ad >= W0.base * 1.6 + 4 && ad >= 8;
+    W0.lp = W0.rise >= 2 && ad >= W0.base * 2 + 6 && ad >= 8;
+    if (n - W0.tl > 80 && (lift || (W0.rise >= 3 && ad > Math.max(20, avg * 2.5, W0.minL * 1.8 + 6)))) { fresh = true; seed = Math.max(0, W0.rs - (up ? ad : 0)); W0.lp = false; } }   // a real new push rising out of the old one's tail
   if (fresh) { if (W0) clearTimeout(W0.tm); const pv = W0 && dir !== W0.dir && W0.locked ? W0 : null;
-    WG = { dir, sum: 0, ds: [], peak: 0, t0: n, last: n, la: ad, rise: 0, locked: false, n: 0, prev: pv }; }
+    WG = { dir, sum: seed, ds: [], peak: 0, t0: n, last: n, la: ad, rise: 0, locked: false, n: 0, prev: pv }; }
   const g = WG; g.last = n; g.la = ad; if (g.locked) return;   // this swipe already moved one stop: the rest of its inertia is eaten
   g.sum += ad; g.ds.push(ad); g.peak = Math.max(g.peak, ad);
   clearTimeout(g.tm); if (g.ds.length <= 2 && g.peak >= 40) g.tm = setTimeout(() => { if (WG === g && !g.n && g.ds.length <= 2 && !busyIn()) wFire(g, 'notch'); }, WTH.GAP);   // one click of a mouse wheel
