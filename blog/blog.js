@@ -111,6 +111,7 @@
     main.innerHTML = html; D.title = title;
     var cur = !h ? '' : m ? m[1] : null;   /* r70 · 顶栏 / 底栏标签跟着当前栏目 */
     D.querySelectorAll('#fnav .tab').forEach(function (a) { if (cur !== null && a.getAttribute('data-c') === cur) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    ink();
     var b = main.querySelector('[data-back]'); if (b && lastList) b.setAttribute('href', lastList);
     if (route.done) { scrollTo(0, 0); main.focus({ preventScroll: true }); }
     route.done = true;
@@ -139,6 +140,41 @@
     try { localStorage.setItem('r49site.lang', n); localStorage.setItem('3dt.r49login.lang', n); } catch (e) {}
     staticText(); route.done = false; route(); route.done = true;
   });
+
+  /* r74 · 手机底栏：选中项下面一块滑动底色，手指按住左右划时底色跟着手走，松手就进那一栏；新选中的图标轻弹一下 */
+  var inkEl = D.getElementById('fnInk'), fnav = D.getElementById('fnav'), inkCur = null;
+  function inkTo(a) {
+    if (!inkEl) return;
+    if (!a || !a.offsetWidth) { inkEl.style.opacity = 0; return; }
+    inkEl.style.opacity = 1; inkEl.style.left = a.offsetLeft + 'px'; inkEl.style.top = a.offsetTop + 'px';
+    inkEl.style.width = a.offsetWidth + 'px'; inkEl.style.height = a.offsetHeight + 'px';
+  }
+  function ink() {
+    var a = D.querySelector('#fnav .tab[aria-current="page"]');
+    if (a && a !== inkCur && inkCur !== null) { a.classList.remove('pop'); void a.offsetWidth; a.classList.add('pop'); }
+    var first = inkCur === null; inkCur = a || false;
+    if (first && inkEl) { inkEl.style.transition = 'none'; inkTo(a); void inkEl.offsetWidth; inkEl.style.transition = ''; } else inkTo(a);
+  }
+  if (fnav) {
+    var dn = null, last = null, swallow = false;
+    fnav.addEventListener('pointerdown', function (e) {
+      if (e.pointerType === 'mouse') return; var a = e.target.closest('.tab'); if (!a) return;
+      dn = a; last = a; fnav.classList.add('drag'); inkTo(a);
+    });
+    fnav.addEventListener('pointermove', function (e) {
+      if (!dn) return; var el = D.elementFromPoint(e.clientX, e.clientY), a = el && el.closest && el.closest('#fnav .tab');
+      if (a && a !== last) { last = a; inkTo(a); }
+    });
+    function up() {
+      if (!dn) return; var a = last, moved = a !== dn; dn = null; fnav.classList.remove('drag');
+      if (moved) { swallow = true; setTimeout(function () { swallow = false; a.click(); }, 0); }
+    }
+    fnav.addEventListener('pointerup', up);
+    fnav.addEventListener('pointercancel', function () { dn = null; fnav.classList.remove('drag'); ink(); });
+    fnav.addEventListener('click', function (e) { if (swallow && e.isTrusted) { e.preventDefault(); e.stopPropagation(); } }, true);
+    fnav.addEventListener('animationend', function (e) { var t = e.target.closest && e.target.closest('.tab'); if (t) t.classList.remove('pop'); });
+    var rzT; addEventListener('resize', function () { clearTimeout(rzT); rzT = setTimeout(ink, 80); });
+  }
   addEventListener('hashchange', route);
   addEventListener('storage', function (e) { if (e.key === 'r49site.lang' && (e.newValue === 'en' ? 'en' : 'zh') !== L()) { root.dataset.lang = e.newValue === 'en' ? 'en' : 'zh'; staticText(); route.done = false; route(); route.done = true; } });
   staticText(); route();

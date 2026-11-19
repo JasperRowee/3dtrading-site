@@ -3377,6 +3377,45 @@ html[data-theme="night"] .tx-coins .ci{box-shadow:0 0 0 1px var(--line),0 2px 6p
 /* 4 Dodo 直接打开：打开的那块轻轻亮一下（不探头、不让你点） */
 .r73-open{animation:r73open 1.4s ease-out 1}
 @keyframes r73open{0%{box-shadow:0 0 0 0 rgba(47,220,188,.55)}30%{box-shadow:0 0 0 6px rgba(47,220,188,.28)}100%{box-shadow:0 0 0 0 rgba(47,220,188,0)}}
+/* ===== r74 · 2 指引重做：没有卡片和底部条，只有 Dodo 从按钮背后探头 + 气泡（一句话 · 小按钮 · 小圆点进度 · 角上 ×） ===== */
+.vz-c.vz-r7prog{display:none}
+.gpk{max-width:min(300px,calc(100vw - 16px))}
+.gpk .gpk-b{position:relative;pointer-events:auto;display:flex;flex-direction:column;align-items:flex-start;gap:7px;padding:9px 30px 8px 12px;min-width:132px;font-size:13px;line-height:1.45}
+.gpk .gpk-m{display:block;font-weight:650;color:var(--ink)}
+.gpk-x{position:absolute;top:4px;right:4px;width:22px;height:22px;border:0;padding:0;border-radius:50%;background:transparent;color:var(--ink3);display:grid;place-items:center;cursor:pointer;transition:background .15s,color .15s}
+.gpk-x:hover,.gpk-x:focus-visible{background:var(--hov);color:var(--ink);outline:none}
+.gpk-x svg{width:10px;height:10px;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;fill:none}
+.gpk-r{display:flex;gap:6px}
+.gpk-a{appearance:none;border:0;font:inherit;font-size:12.5px;font-weight:650;height:28px;padding:0 13px;border-radius:999px;background:var(--brandD);color:#fff;cursor:pointer;box-shadow:0 4px 10px -4px rgba(10,138,115,.6);transition:transform .15s}
+.gpk-a:active{transform:scale(.96)}
+.gpk-p{display:flex;align-items:center;gap:4px;height:10px}
+.gpk-p i{display:block;width:6px;height:6px;border-radius:3px;background:var(--line);transition:width .3s cubic-bezier(.3,.8,.3,1),background .3s}
+.gpk-p i.d{background:var(--brand)}
+.gpk-p i.on{width:16px;background:var(--brandD)}
+.gpk-p small{margin-left:5px;font-size:11px;line-height:1;color:var(--ink3);font-weight:600;font-variant-numeric:tabular-nums}
+.gpk.out .gpk-h{animation:gpkOut .2s ease-in both}.gpk.out .gpk-b{opacity:0;transform:translateY(4px);transition:opacity .15s,transform .15s}
+@keyframes gpkOut{from{transform:translateY(0)}to{transform:translateY(82%)}}
+@media (max-width:760px){.gpk .gpk-b{font-size:12.5px;padding:8px 32px 8px 11px}.gpk-x{width:28px;height:28px;top:2px;right:2px}}
+/* 停下以后的小胶囊：点它回到停下的那一步 */
+.gdb.gdr{width:auto;gap:6px;padding:5px 5px 5px 8px;border-radius:999px;align-items:center}
+.gdr-go{appearance:none;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;padding:2px 4px;min-height:36px}
+.gdr-go small{display:block;font-size:11.5px;color:var(--ink3);font-weight:600}.gdr-go b{display:block;font-size:13.5px;font-weight:650;color:var(--brandD)}
+.gdb.gdr .gpk-x{position:static;width:32px;height:32px}
+/* r74 · 手机底栏：选中项是一块滑动底色（弹性缓动），顶上一道品牌色细条；图标轻弹 */
+@media (max-width:760px){
+  .tnav,html[data-theme="night"] .tnav{touch-action:none;-webkit-user-select:none;user-select:none}
+  .tnav a,html[data-theme="night"] .tnav a{position:relative;z-index:1;-webkit-tap-highlight-color:transparent;transition:color .25s}
+  .tnav a[aria-current="page"],html[data-theme="night"] .tnav a[aria-current="page"]{background:none}
+  .tnav-ink{display:block;top:0;height:0;border-radius:14px;pointer-events:none;
+    background:linear-gradient(180deg,rgba(47,220,188,.2),rgba(47,220,188,.09));box-shadow:inset 0 0 0 1px rgba(47,220,188,.2),0 8px 20px -12px rgba(47,220,188,.55);
+    transition:left .48s cubic-bezier(.34,1.3,.5,1),width .48s cubic-bezier(.34,1.3,.5,1),top .3s,height .3s,opacity .2s}
+  .tnav-ink::after{left:50%;right:auto;top:0;width:18px;height:3px;margin-left:-9px;border-radius:0 0 3px 3px}
+  .tnav.drag .tnav-ink{transition-duration:.2s,.2s,.2s,.2s,.2s}
+  .tnav a.pop svg{animation:navPop .55s cubic-bezier(.3,1.6,.5,1)}
+}
+@keyframes navPop{0%{transform:none}30%{transform:translateY(-4px) scale(1.16)}60%{transform:translateY(1px) scale(.95)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.tnav-ink{transition:none}.tnav a.pop svg{animation:none}}
+
 </style>
 </head>
 <body>
@@ -3815,11 +3854,31 @@ document.addEventListener('click', e => { MENUS.forEach(([w]) => { if (!e.target
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && MENUS.some(([w]) => $(w).classList.contains('open'))) { e.preventDefault(); e.stopImmediatePropagation(); closeMenus(null, true); } }, true);
 $('#acctMenu').addEventListener('click', e => { const b = e.target.closest('[data-v]'); closeMenus(); if (b) setView(b.dataset.v); });
 /* the black pill slides under the current page */
+/* r74 · 手机底栏也用这块滑动底色：位置跟着当前项（含上下），新选中的图标轻弹；手指按住左右划时底色跟手走，松手进那一页 */
+let inkCur = null;
+const inkMob = () => matchMedia('(max-width:760px)').matches;
+function inkTo(a) {
+  const ink = $('#tnavInk'); if (!ink) return;
+  if (!a || !a.offsetWidth) { ink.style.opacity = 0; return; }
+  ink.style.opacity = 1; ink.style.left = a.offsetLeft + 'px'; ink.style.width = a.offsetWidth + 'px';
+  if (inkMob()) { ink.style.top = a.offsetTop + 'px'; ink.style.height = a.offsetHeight + 'px'; } else { ink.style.top = ''; ink.style.height = ''; }
+}
 function moveInk() {
   const a = $('.tnav a[aria-current="page"]'), ink = $('#tnavInk');
-  if (!a) { ink.style.opacity = 0; return; }
-  ink.style.opacity = 1; ink.style.left = a.offsetLeft + 'px'; ink.style.width = a.offsetWidth + 'px';
+  if (!a) { ink.style.opacity = 0; inkCur = false; return; }
+  if (a !== inkCur && inkCur) { a.classList.remove('pop'); void a.offsetWidth; a.classList.add('pop'); }
+  const first = inkCur === null; inkCur = a;
+  if (first) { ink.style.transition = 'none'; inkTo(a); void ink.offsetWidth; ink.style.transition = ''; } else inkTo(a);
 }
+(() => { const t = $('#tnav'); if (!t) return; let dn = null, last = null, swallow = false;
+  t.addEventListener('pointerdown', e => { if (e.pointerType === 'mouse' || !inkMob()) return; const a = e.target.closest('a[data-nav]'); if (!a) return; dn = last = a; t.classList.add('drag'); inkTo(a); });
+  t.addEventListener('pointermove', e => { if (!dn) return; const a = document.elementFromPoint(e.clientX, e.clientY)?.closest?.('#tnav a[data-nav]'); if (a && a !== last) { last = a; inkTo(a); } });
+  t.addEventListener('pointerup', () => { if (!dn) return; const a = last, moved = a !== dn; dn = null; t.classList.remove('drag'); if (moved) { swallow = true; setTimeout(() => { swallow = false; a.click(); }, 0); } });
+  t.addEventListener('pointercancel', () => { dn = null; t.classList.remove('drag'); inkCur && inkTo(inkCur); });
+  t.addEventListener('click', e => { if (swallow && e.isTrusted) { e.preventDefault(); e.stopPropagation(); } }, true);
+  t.addEventListener('animationend', e => e.target.closest?.('a')?.classList.remove('pop'));
+  let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => inkCur && inkTo(inkCur), 80); });
+})();
 addEventListener('scroll', () => document.body.classList.toggle('scrolled', scrollY > 4), { passive: true });
 /* one place to change which account is shown; every page re-renders from the same state */
 function setView(v, quiet) {
@@ -6884,10 +6943,7 @@ Object.assign(VZC, {
     return `<div class="sc sc-cmp" data-sc-id="${id}"><svg class="sc-svg" viewBox="0 0 ${SW} ${H2}" role="img" aria-label="${esc(data.al)}" data-sc="${esc(JSON.stringify(data))}"><line class="sc-gr z" x1="${mid}" x2="${mid}" y1="2" y2="${H2 - 6}"/>${rows}</svg><ul class="sc-lg"><li><i class="sS"></i>${vT('S')} ←</li><li><i class="sL"></i>→ ${vT('L')}</li></ul></div>`;
   },
   /* 指引进度：每一步一段，已完成 / 当前 / 未开始 */
-  r7prog(c) {
-    const f = FLOWS.find(x => x.id === c.f); if (!f) return '';
-    return `<div class="gdc" data-gdf="${f.id}">${gdcInner(f.id)}</div>`;
-  },
+  r7prog() { return ''; },   // r74 · 指引卡去掉：进度只在 Dodo 气泡下面的小圆点里
 });
 /* r69 · 指引卡片和底部浮动条同步：当前步高亮，做完的打勾，停止 / 继续指引在卡片底部 */
 function gdcInner(id) {
@@ -7036,13 +7092,13 @@ function buildGo(arg) {
 function buildGuide(arg) {
   const f = arg ? matchList(FLOWS, arg)[0] : null;
   if (!f) return { a: R(arg ? `没找到「${esc(arg)}」的指引，可以选这些：` : '选一个要做的事，我一步步带你：', arg ? `No guide for “${esc(arg)}”. Pick one of these:` : 'Pick a task and I’ll walk you through it:',
-    [cmdGoList('guide'), { t: 'r7prog', ti: 't_r67g_' + FLOWS[0].id, f: FLOWS[0].id, i: 0 }], [['指引中随时可以「停止」，自己操作', 'Stop any time and do things your own way'], ['回来时点「继续指引」，从停下的那一步接着走', 'Tap “Resume guide” to pick up where you stopped']], null) };
+    [cmdGoList('guide')], [['Dodo 会从要点的按钮后面探出头，你自己点就行', 'Dodo peeks out from behind each button; you tap it yourself'], ['点气泡角上的 × 可以随时停下', 'Tap the × on the bubble to stop any time']], null) };
   if (ACTM() !== 'show') return { f, a: R(`我来帮你「${f.zh}」，一共 ${f.steps.length} 步：页面和按钮我直接替你点，只有密码、API Key 这类要你输入的地方会停下来等你。`, `I’ll do “${f.en}” for you: ${f.steps.length} steps. I open the screens and tap the buttons, and only stop where you need to type something like a password or API Key.`,
-    [{ t: 'r7prog', ti: 't_r67g_' + f.id, f: f.id, i: 0 }],
-    [['随时点「停止」接手，自己操作', 'Tap “Stop” any time to take over'], ['设置 → Dodo 里可以改成「只指引」或「全部代办」', 'Settings → Dodo can switch this to “Guide only” or “Do everything”']], ['guide:' + f.id, '重新来一次']) };
-  return { f, a: R(`开始「${f.zh}」指引，一共 ${f.steps.length} 步，程序会替你打开页面、点亮下一步。`, `Starting the “${f.en}” guide: ${f.steps.length} steps. I’ll open each screen and light up the next step.`,
-    [{ t: 'r7prog', ti: 't_r67g_' + f.id, f: f.id, i: 0 }],
-    [['随时点「停止」，你可以自由操作', 'Tap “Stop” any time and do things freely'], ['之后点「继续指引」，回到停下的那一步', 'Then tap “Resume guide” to return to that step']], ['guide:' + f.id, '重新开始指引']) };
+    [],
+    [['随时点气泡角上的 × 接手，自己操作', 'Tap the × on Dodo’s bubble any time to take over'], ['设置 → Dodo 里可以改成「只指引」或「全部代办」', 'Settings → Dodo can switch this to “Guide only” or “Do everything”']], ['guide:' + f.id, '重新来一次']) };
+  return { f, a: R(`开始「${f.zh}」指引，一共 ${f.steps.length} 步，Dodo 会从要点的按钮后面探出头，你自己点。`, `Starting the “${f.en}” guide: ${f.steps.length} steps. Dodo peeks out from behind each button for you to tap.`,
+    [],
+    [['Dodo 从要点的按钮后面探出头，你自己点，它就跳到下一步', 'Dodo peeks out from behind each button; tap it and Dodo moves on'], ['点气泡角上的 × 停下；右下角的小 Dodo 能带你回到停下的那一步', 'Tap × to stop; the little Dodo bottom-right brings you back']], ['guide:' + f.id, '重新开始指引']) };
 }
 function buildQuote(refs) {
   if (!refs.length) {
@@ -7110,9 +7166,19 @@ function popRender() {
   pop.innerHTML = (PS.mode === 'sub' ? `<div class="slp-h">/${esc(nameOf(PS.cmd))} · ${PS.cmd.sub === 'go' ? (en ? 'where to?' : '去哪里？') : PS.cmd.sub === 'open' ? (en ? 'open what?' : '打开什么？') : (en ? 'which task?' : '做什么？')}</div>` : `<div class="slp-h">${en ? 'Commands' : '命令'}<span>↑↓ ${en ? 'pick' : '选择'} · ↵ ${en ? 'run' : '执行'} · Esc</span></div>`)
     + (PS.items.length ? PS.items.map((x, k) => `<button type="button" class="slp-i${k === PS.i ? ' on' : ''}" role="option" aria-selected="${k === PS.i}" data-sli="${k}">${PS.mode === 'sub' ? `<b>${esc(nameOf(x))}</b><small>${esc(en ? x.zh : x.en)}</small>` : `<b>/${esc(nameOf(x))}</b><small>${esc(en ? x.de : x.dz)}</small><em>/${esc(en ? x.zh : x.en)}</em>`}</button>`).join('')
       : `<p class="slp-e">${en ? 'No matching command' : '没有匹配的命令'}</p>`);
-  pop.hidden = false; $('#askIn').setAttribute('aria-expanded', 'true');
+  pop.hidden = false; $('#askIn').setAttribute('aria-expanded', 'true'); popFit();
   pop.querySelector('.slp-i.on')?.scrollIntoView({ block: 'nearest' });
 }
+/* r74 · 10 命令面板高度：顶边不越过顶部导航（手机键盘弹起时 vh 不变、可视区变矮，原来的 52vh 会顶到导航下面）。
+   可用高度 = 输入框上沿 − max(顶栏下沿, 可视区上沿) − 间距，列表在面板里自己滚 */
+function popFit() {
+  if (pop.hidden) return;
+  const hd = document.querySelector('header.top'), hb = hd && getComputedStyle(hd).position === 'fixed' ? hd.getBoundingClientRect().bottom : 0;
+  const vv = window.visualViewport, vt = vv ? vv.offsetTop : 0, ft = $('#askForm').getBoundingClientRect().top;
+  const lim = Math.max(hb, vt) + 10, avail = Math.floor(ft - 8 - lim);
+  pop.style.maxHeight = Math.max(120, Math.min(360, avail)) + 'px';
+}
+addEventListener('resize', popFit); window.visualViewport && (visualViewport.addEventListener('resize', popFit), visualViewport.addEventListener('scroll', popFit));
 function popClose() { if (pop.hidden) return; pop.hidden = true; $('#askIn').setAttribute('aria-expanded', 'false'); }
 function popPick(k) {
   const x = PS.items[k]; if (!x) return;
@@ -7146,23 +7212,37 @@ let GPK = null;
 function peekOff() { GPK = null; gpk.hidden = true; cancelAnimationFrame(peekOff.raf); }
 function peekPlace() {
   if (!GPK || !GPK.isConnected || !GPK.classList.contains('r67-hl')) { peekOff(); return; }
-  const r = GPK.getBoundingClientRect(), M = 8;
+  const r = GPK.getBoundingClientRect(), M = 8, top0 = innerWidth <= 760 && !GPK.closest('#modal, [role="dialog"]') ? 64 : 8;   /* 弹窗盖在顶栏上面，弹窗里的目标可以探到顶栏那一带 */
+  /* r74 · 目标在屏幕外：页面先滚过去，停稳了 Dodo 再冒头 */
+  const k = Math.round(r.top) + ',' + Math.round(r.left);
+  if (k !== GPK._k) { GPK._k = k; GPK._st = 0; } else GPK._st++;
+  if (!GPK._up) { if (GPK._st < 4 && performance.now() - GPK._t0 < 1800) { gpk.hidden = true; return; } GPK._up = 1; gpk.classList.remove('out'); gpk.hidden = false; }
   if (!r.width || r.bottom < 0 || r.top > innerHeight) { gpk.classList.add('off'); return; }
   gpk.classList.remove('off');
-  /* r73 · Dodo 从按钮背后探出大半个头：头的下沿贴着按钮上沿（被按钮挡住的那截剪掉），不盖住按钮文字。
-     候选：头在按钮右端 / 左端 × 气泡在右 / 左 × 从上沿 / 下沿探出；挑第一个不压到旁边按钮、链接、输入框的位置 */
-  const c = gpk.querySelector('.gpk-c'), cw = c ? c.offsetWidth : 40, w = gpk.offsetWidth, h = gpk.offsetHeight, top0 = innerWidth <= 760 ? 64 : 8;
+  /* r73 · Dodo 从按钮背后探出大半个头：头的下沿贴着按钮上沿。
+     r74 · 只从上沿探出（以前没地方时会倒挂到按钮下方——改密码时偶尔出现）；上面放不下就把页面往下挪出位置 */
+  const c = gpk.querySelector('.gpk-c'), cw = c ? c.offsetWidth : 40, w = gpk.offsetWidth, h = gpk.offsetHeight, y = r.top - h + 1;
+  if (y < top0 && !GPK._nudge) {
+    GPK._nudge = 1; let sp = GPK.parentElement;
+    for (; sp && sp !== document.body; sp = sp.parentElement) { const cs = getComputedStyle(sp); if (/auto|scroll/.test(cs.overflowY) && sp.scrollHeight > sp.clientHeight + 2) break; }
+    const d = top0 - y + 6;
+    if (sp && sp !== document.body && sp.scrollTop > 0) sp.scrollBy(0, -d); else scrollBy(0, -d);
+    GPK._up = 0; GPK._st = 0; GPK._t0 = performance.now(); gpk.hidden = true; return;
+  }
   if (!GPK._obs) GPK._obs = $$('button, a[href], input, select, textarea, [role="button"], .seg').filter(e => e !== GPK && !e.contains(GPK) && !GPK.contains(e) && !gpk.contains(e));
   const obs = GPK._obs.map(e => e.getBoundingClientRect()).filter(o => o.width && Math.abs(o.top - r.top) < 220);
   const area = (x, y) => obs.reduce((s, o) => s + Math.max(0, Math.min(x + w, o.right) - Math.max(x, o.left)) * Math.max(0, Math.min(y + h, o.bottom) - Math.max(y, o.top)), 0);
-  const ins = Math.min(14, r.width / 6), cands = [];
-  [false, true].forEach(dn => { const y = dn ? r.bottom - 1 : r.top - h + 1; if (y < top0 || y + h > innerHeight - M) return;
-    [r.right - cw - ins, r.left + ins].forEach(hx => [false, true].forEach(lf => { const x = lf ? hx + cw - w : hx; if (x < M || x + w > innerWidth - M) return; cands.push({ x, y, dn, lf, a: area(x, y) }); })); });
-  let pick = cands.find(k => k.a < 40) || cands.sort((p, q) => p.a - q.a)[0];
-  if (!pick) pick = { x: Math.max(M, Math.min(r.right - cw - ins, innerWidth - w - M)), y: Math.max(M, r.top - h + 1), dn: false, lf: false };
-  gpk.classList.toggle('dn', pick.dn); gpk.classList.toggle('lf', pick.lf);
-  gpk.style.transform = `translate(${Math.round(pick.x)}px,${Math.round(pick.y)}px)`;
+  const ins = Math.min(14, r.width / 6), cands = [], yy = Math.max(top0, y);
+  [r.right - cw - ins, r.left + ins].forEach(hx => [false, true].forEach(lf => { const x = lf ? hx + cw - w : hx; if (x < M || x + w > innerWidth - M) return; cands.push({ x, lf, a: area(x, yy) }); }));
+  let pick = cands.find(q => q.a < 40) || cands.sort((p, q) => p.a - q.a)[0];
+  if (!pick) pick = { x: Math.max(M, Math.min(r.right - cw - ins, innerWidth - w - M)), lf: false };
+  gpk.classList.remove('dn'); gpk.classList.toggle('lf', pick.lf);
+  gpk.style.transform = `translate(${Math.round(pick.x)}px,${Math.round(yy)}px)`;
 }
+/* r74 · 不在指引里的「在这里」探头：换页或点了别处就收起，不挡后面的内容 */
+const peekDrop = () => { if (!GPK || GD.on) return; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); };
+addEventListener('hashchange', peekDrop);
+document.addEventListener('pointerdown', e => { if (GPK && !GD.on && !e.target.closest('.gpk') && !GPK.contains(e.target)) peekDrop(); }, true);
 function peekLoop() { peekPlace(); if (GPK) peekOff.raf = requestAnimationFrame(peekLoop); }
 /* r73 · 和 Dodo 页顶部导航探头同一个画法 */
 const ddHead = () => `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="16" fill="#1fbfa2"/><rect x="1" y="1" width="58" height="57" rx="16" fill="url(#gpkG)"/><defs><linearGradient id="gpkG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62f3d9"/><stop offset="1" stop-color="#27d3b3"/></linearGradient></defs><circle cx="30" cy="42.6" r="16" fill="rgba(0,0,0,.08)"/><circle cx="30" cy="41" r="16" fill="#f5f0e1"/><circle cx="32" cy="41" r="8" fill="#141416"/><rect x="28.4" y="39" width="2.2" height="4.4" fill="#ef4444"/><rect x="33.4" y="37.8" width="2.2" height="6" fill="#22c55e"/><circle cx="35.6" cy="37.4" r="1.9" fill="#fff"/></svg>`;
@@ -7176,15 +7256,35 @@ function safeInto(el, o) {
   const fix = () => keep.forEach(([p, t, l]) => { if (p.scrollTop !== t) p.scrollTop = t; if (p.scrollLeft !== l) p.scrollLeft = l; });
   fix(); keep.forEach(([p]) => { const f = () => fix(); p.addEventListener('scroll', f); setTimeout(() => p.removeEventListener('scroll', f), 1500); });
 }
+let GPKSAY = '';
 function glow(el, say) {
   $$('.r67-hl').forEach(x => x.classList.remove('r67-hl'));
   if (!el) { peekOff(); return false; }
   safeInto(el, { block: 'center', behavior: RM ? 'auto' : 'smooth' });
   el.classList.add('r67-hl'); clearTimeout(el._hl); el._hl = setTimeout(() => el.classList.remove('r67-hl'), 6000);
+  GPKSAY = say || LL('在这里，点它就行', 'Right here — just tap it');
   gpk.className = 'gpk';
-  gpk.innerHTML = `<span class="gpk-c" aria-hidden="true"><span class="gpk-h">${ddHead()}</span></span><span class="gpk-b">${esc(say || LL('在这里，点它就行', 'Right here — just tap it'))}</span>`;
-  el._obs = null; gpk.hidden = false; GPK = el; cancelAnimationFrame(peekOff.raf); peekLoop();
+  gpk.innerHTML = `<span class="gpk-c" aria-hidden="true"><span class="gpk-h">${ddHead()}</span></span><span class="gpk-b">${gpkBody()}</span>`;
+  Object.assign(el, { _obs: null, _up: 0, _k: '', _st: 0, _nudge: 0, _t0: performance.now() });
+  gpk.hidden = true; GPK = el; cancelAnimationFrame(peekOff.raf); peekLoop();
   return true;
+}
+/* r74 · 指引不再有卡片和底部条：只有 Dodo 的气泡——一句话、要你确认时的一个小按钮、小圆点进度、角上的 × */
+const gpkX = (k, l) => `<button type="button" class="gpk-x" data-gd="${k}" aria-label="${l}"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6"/></svg></button>`;
+function gpkBody() {
+  const en = EN(), f = GD.on && FLOWS.find(z => z.id === GD.f);
+  if (!f) return `${gpkX('x', en ? 'Close' : '关闭')}<span class="gpk-m">${esc(GPKSAY)}</span>`;
+  const s = f.steps[GD.i], n = f.steps.length, W = GD.wait, last = GD.i >= n - 1;
+  let msg = en ? s.en : s.zh, btn = '';
+  if (ACTM() !== 'show' && W) {
+    msg = W === 'you' ? s.you[en ? 1 : 0] : W === 'need' ? s.needT[en ? 1 : 0] : W === 'ask' ? (en ? `Shall I tap “${s.sub[1]}”?` : `我来点「${s.sub[0]}」？`) : (en ? `On it: ${s.en}` : `Dodo 正在做：${s.zh}`);
+    btn = W === 'you' ? `<button type="button" class="gpk-a" data-gd="done">${en ? 'Done' : '好了'}</button>` : W === 'ask' ? `<button type="button" class="gpk-a" data-gd="go">${en ? 'Go ahead' : '好，点吧'}</button>` : '';
+  } else if (ACTM() === 'show') {
+    const el = s.el(), tap = el && el.matches && el.matches('button,a[href],[role="button"],[type="submit"]');
+    if (!tap) btn = `<button type="button" class="gpk-a" data-gd="next">${last ? (en ? 'Done' : '完成') : (en ? 'Next' : '下一步')}</button>`;
+  }
+  const dots = f.steps.map((_, k) => `<i class="${k < GD.i ? 'd' : k === GD.i ? 'on' : ''}"></i>`).join('');
+  return `${gpkX('stop', en ? 'Stop guide' : '停止指引')}<span class="gpk-m">${esc(msg)}</span>${btn ? `<span class="gpk-r">${btn}</span>` : ''}<span class="gpk-p" role="img" aria-label="${en ? `Step ${GD.i + 1} of ${n}` : `第 ${GD.i + 1} / ${n} 步`}">${dots}<small>${GD.i + 1}/${n}</small></span>`;
 }
 function waitEl(get, cb, n = 0) { const el = get(); if (el && el.getBoundingClientRect().width > 0) return cb(el); if (n > 30) return cb(null); setTimeout(() => waitEl(get, cb, n + 1), 80); }
 function portal(id) {
@@ -7213,32 +7313,22 @@ const GD = { f: null, i: 0, on: false, fin: null, tok: 0, wait: '' };
 const gbar = document.createElement('div'); gbar.className = 'gdb'; gbar.id = 'guideBar'; gbar.hidden = true; gbar.setAttribute('role', 'region'); gbar.setAttribute('data-i18n-skip', ''); document.body.appendChild(gbar);
 const guideOn = () => GD.on;
 function guideRender() {
-  const f = FLOWS.find(x => x.id === GD.f); if (!f) { gbar.hidden = true; gdcSync(); return; }
-  const en = EN(), s = f.steps[GD.i], last = GD.i === f.steps.length - 1;
+  const f = FLOWS.find(x => x.id === GD.f); if (!f) { gbar.hidden = true; return; }
+  const en = EN();
+  if (GD.on) { gbar.hidden = true; const b = GPK && gpk.querySelector('.gpk-b'); if (b) b.innerHTML = gpkBody(); return; }
+  /* 停下以后：右下角留一颗小胶囊，点它回到停下的那一步 */
   gbar.setAttribute('aria-label', en ? 'Dodo guide' : 'Dodo 指引');
-  gbar.className = 'gdb' + (GD.on ? '' : ' paused');
-  const W = GD.wait, A = GD.on && ACTM() !== 'show' && W;
-  if (A) {
-    const msg = W === 'you' ? (en ? s.you[1] : s.you[0]) : W === 'need' ? (en ? s.needT[1] : s.needT[0]) : W === 'ask' ? (en ? `Dodo is ready to tap “${s.sub[1]}”` : `Dodo 准备点「${s.sub[0]}」`) : (en ? s.en : s.zh);
-    const lab = W === 'busy' ? (en ? 'Dodo is doing it' : 'Dodo 正在操作') : W === 'ask' ? (en ? 'Your OK first' : '先问你一句') : (en ? 'Your turn' : '轮到你');
-    const btn = W === 'you' ? `<button type="button" class="btn brand sm" data-gd="done">${en ? 'Done' : '好了'}</button>`
-      : W === 'ask' ? `<button type="button" class="btn brand sm" data-gd="go">${en ? 'Go ahead' : '好，点吧'}</button>` : '';
-    gbar.className = 'gdb agent' + (W === 'busy' ? ' busy' : '') + (innerWidth <= 760 && !$('#modal').hidden ? ' top' : '');   // r70 · 手机弹窗打开时提示条放到顶部，不挡输入框
-    gbar.innerHTML = `<span class="gdb-dd" aria-hidden="true">${ddMini()}</span><div class="gdb-t"><small>${lab} · ${esc(en ? f.en : f.zh)} · ${GD.i + 1}/${f.steps.length}</small><b>${esc(msg)}</b></div>
-       <div class="gdb-b"><button type="button" class="btn ghost sm" data-gd="stop">${en ? 'Stop' : '停止'}</button>${btn}</div>`;
-    gbar.hidden = false; gdcSync(); return;
-  }
-  gbar.innerHTML = GD.on
-    ? `<span class="gdb-dd" aria-hidden="true">${ddMini()}</span><div class="gdb-t"><small>${esc(en ? f.en : f.zh)} · ${GD.i + 1}/${f.steps.length}</small><b>${esc(en ? s.en : s.zh)}</b></div>
-       <div class="gdb-b"><button type="button" class="btn ghost sm" data-gd="stop">${en ? 'Stop' : '停止'}</button>${GD.i > 0 ? `<button type="button" class="btn ghost sm" data-gd="prev">${en ? 'Back' : '上一步'}</button>` : ''}<button type="button" class="btn brand sm" data-gd="next">${last ? (en ? 'Done' : '完成') : (en ? 'Next' : '下一步')}</button></div>`
-    : `<span class="gdb-dd" aria-hidden="true">${ddMini()}</span><div class="gdb-t"><small>${en ? 'Guide paused' : '指引已暂停'} · ${GD.i + 1}/${f.steps.length}</small><b>${esc(en ? f.en : f.zh)}</b></div>
-       <div class="gdb-b"><button type="button" class="btn ghost sm" data-gd="end" aria-label="${en ? 'End guide' : '结束指引'}">✕</button><button type="button" class="btn brand sm" data-gd="resume">${en ? 'Resume guide' : '继续指引'}</button></div>`;
-  gbar.hidden = false; gdcSync();
+  gbar.className = 'gdb paused gdr';
+  gbar.innerHTML = `<span class="gdb-dd" aria-hidden="true">${ddMini()}</span><button type="button" class="gdr-go" data-gd="resume"><small>${en ? 'Guide paused' : '指引已暂停'} · ${GD.i + 1}/${f.steps.length}</small><b>${en ? `Resume “${esc(f.en)}”` : `继续「${esc(f.zh)}」`}</b></button>${gpkX('end', en ? 'End guide' : '结束指引')}`;
+  gbar.hidden = false;
 }
 function guideShow() {
   const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i], tok = ++GD.tok;
-  GD.wait = ACTM() !== 'show' ? 'busy' : ''; guideRender(); s.run();
-  waitEl(s.el, el => { if (!GD.on || tok !== GD.tok) return; glow(el, EN() ? s.en : s.zh); if (el) { clearTimeout(el._hl); } if (ACTM() !== 'show') agentStep(f, s, el, tok); });
+  GD.wait = ACTM() !== 'show' ? 'busy' : '';
+  const go = () => { if (!GD.on || tok !== GD.tok) return; guideRender(); s.run();
+    waitEl(s.el, el => { if (!GD.on || tok !== GD.tok) return; glow(el, EN() ? s.en : s.zh); if (el) { clearTimeout(el._hl); } if (ACTM() !== 'show') agentStep(f, s, el, tok); }); };
+  /* r74 · 上一步的 Dodo 先缩回去，再从下一个按钮背后冒出来 */
+  if (GPK && !gpk.hidden && !RM) { gpk.classList.add('out'); setTimeout(go, 200); } else go();
 }
 /* r70 · Dodo 代你操作：Dodo 的小手移到按钮上，点一下；轮到你时停下来等你 */
 const dcur = document.createElement('div'); dcur.className = 'ddcur'; dcur.hidden = true; dcur.setAttribute('aria-hidden', 'true');
@@ -7285,22 +7375,26 @@ function agentSubmit(f, s, tok) {
 function guideStart(id) { if (!FLOWS.some(x => x.id === id)) return; GD.f = id; GD.i = 0; GD.on = true; GD.fin = null; guideShow(); }
 function guideStop() { GD.on = false; GD.tok++; GD.wait = ''; dcur.hidden = true; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); guideRender(); }
 function guideEnd(done) { GD.fin = done ? GD.f : null; GD.on = false; GD.tok++; GD.wait = ''; dcur.hidden = true; GD.f = null; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); gbar.hidden = true; gdcSync(); }
-gbar.addEventListener('click', e => {
+function gdClick(e) {
   const b = e.target.closest('[data-gd]'); if (!b) return; const k = b.dataset.gd, f = FLOWS.find(x => x.id === GD.f);
-  if (k === 'stop') { guideStop(); toast(LL('指引已暂停：自由操作吧，随时点「继续指引」', 'Guide paused — do your thing, then tap “Resume guide”')); return; }
+  if (k === 'x') { $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); return; }
+  if (!f) return;
+  if (k === 'stop') { guideStop(); toast(LL('指引已停下：自由操作吧，点右下角的小 Dodo 可以接着来', 'Guide paused — do your thing; tap the little Dodo to pick it up again')); return; }
   if (k === 'end') { guideEnd(); return; }
   if (k === 'resume') { GD.on = true; guideShow(); return; }
   if (k === 'done') { GD.wait = 'busy'; agentNext(f, GD.tok, 0); return; }
   if (k === 'go') { const s = f.steps[GD.i]; GD.wait = 'go'; agentSubmit(f, s, GD.tok); return; }
   if (k === 'prev') { GD.i = Math.max(0, GD.i - 1); guideShow(); return; }
   if (k === 'next') { if (GD.i >= f.steps.length - 1) { guideEnd(true); toast(LL(`「${f.zh}」指引完成`, `“${f.en}” guide finished`)); return; } GD.i++; guideShow(); }
-});
+}
+gbar.addEventListener('click', gdClick); gpk.addEventListener('click', gdClick);
 /* 用户点了被点亮的按钮，就自动走到下一步 */
 document.addEventListener('click', e => {
-  if (!GD.on || gbar.contains(e.target) || !e.isTrusted) return; const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i], el = s.el();
+  if (!GD.on || gbar.contains(e.target) || gpk.contains(e.target) || !e.isTrusted) return; const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i], el = s.el();
   if (ACTM() !== 'show') { const sb = s.submit && s.submit(); if (sb && sb.contains(e.target) && GD.wait === 'ask') { const tk = GD.tok; GD.wait = 'busy'; guideRender(); setTimeout(() => { if (!GD.on || tk !== GD.tok) return; if (s.err && s.err()) { GD.wait = 'need'; guideRender(); } else { guideEnd(true); toast(LL(`「${f.zh}」已完成`, `“${f.en}” done`)); } }, 450); } return; }
-  if (el && el.matches('button,[type=submit]') && el.contains(e.target) && GD.i < f.steps.length - 1) setTimeout(() => { if (GD.on) { GD.i++; guideShow(); } }, 260);
-});
+  /* r74 · 用户自己点了被指的按钮：Dodo 缩回，从下一个按钮背后冒出；最后一步点完就结束 */
+  if (el && el.matches('button,a[href],[role="button"],[type=submit]') && el.contains(e.target)) { const tk = GD.tok; setTimeout(() => { if (!GD.on || tk !== GD.tok) return; if (GD.i >= f.steps.length - 1) { guideEnd(true); toast(LL(`「${f.zh}」完成了`, `“${f.en}” done`)); } else { GD.i++; guideShow(); } }, 260); }
+}, true);   /* 捕获阶段：按钮的点击会重绘设置页，冒泡到这里时原按钮已经不在了 */
 window.addEventListener('langchange', () => { if (GD.f) guideRender(); });
 
 /* ---------- 引用 / 多选：右键或长按数字、曲线点、订单 ---------- */

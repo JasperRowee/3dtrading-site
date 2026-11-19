@@ -97,13 +97,29 @@ h2 .l{color:var(--up)}h2 .s{color:var(--dn)}h2 .y{color:var(--bn)}
 .chap{display:none;position:fixed;z-index:8;right:12px;bottom:calc(14px + env(safe-area-inset-bottom));height:36px;padding:0 14px;border:0;border-radius:18px;align-items:center;gap:2px;background:rgba(12,18,22,.78);color:#aeb6be;font:500 13px var(--mono);letter-spacing:.04em;box-shadow:inset 0 0 0 1px rgba(255,255,255,.14);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:opacity .3s}
 .chap b{color:#f3f5f6;font-weight:700}.chap::after{content:"";width:6px;height:6px;margin-left:8px;border:solid currentColor;border-width:0 1.5px 1.5px 0;transform:translateY(-2px) rotate(45deg)}
 .chap.off{opacity:0;pointer-events:none}
-.chs{position:fixed;inset:0;z-index:30;display:flex;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .25s;touch-action:pan-y}
+/* r74 · 7 · 手机章节：底部升起一条横向时间轴（11 个点 + 名字），手指左右拖选、松手前往，点外面收起 */
+.chs{position:fixed;inset:0;z-index:30;display:flex;align-items:flex-end;justify-content:center;background:linear-gradient(to top,rgba(0,0,0,.55),rgba(0,0,0,.08) 55%,rgba(0,0,0,0));opacity:0;pointer-events:none;transition:opacity .28s;touch-action:none}
 .chs.on{opacity:1;pointer-events:auto}
-.chs ol{list-style:none;margin:0;padding:8px 0 calc(10px + env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:72vh;overflow:auto;border-radius:18px 18px 0 0;background:#10171b;box-shadow:inset 0 1px 0 rgba(255,255,255,.1);transform:translateY(24px);transition:transform .3s cubic-bezier(.2,.75,.2,1)}
-.chs.on ol{transform:none}
-.chs li button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:14px;width:100%;height:46px;padding:0 22px;color:#c7cdd3;font:500 15px var(--sans);cursor:pointer}
-.chs li button i{font:500 12px var(--mono);font-style:normal;color:#6f7a84;width:20px}
-.chs li button.on{color:#fff;background:rgba(47,220,188,.12)}.chs li button.on i{color:#5fe3c4}
+.chs .tl{position:relative;box-sizing:border-box;width:calc(100% - 20px);max-width:480px;margin:0 10px calc(10px + env(safe-area-inset-bottom));padding:16px 18px 14px;border-radius:22px;background:linear-gradient(180deg,rgba(24,34,40,.86),rgba(10,16,20,.92));box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),inset 0 1px 0 rgba(255,255,255,.14),0 18px 50px rgba(0,0,0,.5);backdrop-filter:blur(18px) saturate(1.3);-webkit-backdrop-filter:blur(18px) saturate(1.3);transform:translateY(calc(100% + 30px)) scale(.96);transition:transform .46s cubic-bezier(.2,1.25,.3,1)}
+.chs.on .tl{transform:none}
+.chs .tlh{display:flex;align-items:baseline;gap:10px;margin:0 2px 14px;color:#f3f5f6}
+.chs .tlh b{font:700 22px var(--mono);letter-spacing:.02em;color:#5fe3c4;min-width:30px}
+.chs .tlh span{font:600 17px var(--sans);transition:opacity .15s}
+.chs .tlh em{margin-left:auto;font:400 11px var(--sans);font-style:normal;color:#6f7a84}
+.chs .tlr{position:relative;height:58px;touch-action:none;cursor:grab}
+.chs .tll,.chs .tlf{position:absolute;left:var(--x0,14px);top:14px;height:2px;border-radius:2px}
+.chs .tll{right:var(--x0,14px);background:rgba(255,255,255,.12)}
+.chs .tlf{width:var(--fw,0);background:linear-gradient(90deg,rgba(95,227,196,.25),#5fe3c4);transition:width .22s cubic-bezier(.2,.8,.2,1)}
+.chs .tlk{position:absolute;left:0;top:3px;width:24px;height:24px;margin-left:-12px;border-radius:50%;background:radial-gradient(circle,#5fe3c4 0 4px,rgba(95,227,196,.22) 5px 100%);box-shadow:0 0 0 1px rgba(95,227,196,.55),0 0 18px rgba(95,227,196,.45);transform:translateX(var(--kx,0));transition:transform .22s cubic-bezier(.2,.9,.25,1.15);pointer-events:none}
+.chs .tlr.drag .tlk{transition:transform .06s linear;width:30px;height:30px;margin-left:-15px;top:0}
+.chs .tlr button{all:unset;position:absolute;top:0;width:var(--cw,30px);margin-left:calc(var(--cw,30px) / -2);height:58px;display:flex;flex-direction:column;align-items:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.chs .tlr button i{display:block;width:6px;height:6px;margin-top:12px;border-radius:50%;background:#56616a;transform:scale(0);transition:transform .35s cubic-bezier(.2,1.4,.3,1) calc(var(--d,0) * 22ms),background .2s}
+.chs.on .tlr button i{transform:none}
+.chs .tlr button.done i{background:#5fe3c4}
+.chs .tlr button span{margin-top:12px;font:500 10.5px var(--sans);color:#7d8892;white-space:nowrap;letter-spacing:.02em;opacity:0;transform:translateY(6px);transition:opacity .3s calc(80ms + var(--d,0) * 22ms),transform .3s calc(80ms + var(--d,0) * 22ms),color .15s}
+.chs.on .tlr button span{opacity:1;transform:none}
+.chs .tlr button.on span{color:#fff;font-weight:700;transform:translateY(-1px) scale(1.12)}
+.chs .tlr button.cur:not(.on) span{color:#aeb6be}
 html.tx3 .chap,html.tx3o .chap{opacity:0!important;pointer-events:none!important}   /* r66 · 4: at 01 the cards behind the copy are cut away instead (as on the computer) */
 .hud{display:none;position:fixed;z-index:7;left:12px;right:12px;bottom:calc(66px + env(safe-area-inset-bottom));justify-content:center;pointer-events:none;transition:opacity .25s}
 .hc{width:100%;max-width:420px;padding:12px 14px;border-radius:16px;background:rgba(10,15,18,.82);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1),0 12px 30px rgba(0,0,0,.45);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font-size:14px;line-height:1.35;color:#d9dee3}
@@ -338,7 +354,7 @@ html.joined-site body>:not(#joinf){visibility:hidden!important}
 </div>
 </div>
 <div class="toast" id="toast" role="status"></div>
-<div class="chs" id="chs" role="dialog" aria-label="选择章节"><ol id="chsL"></ol></div>
+<div class="chs" id="chs" role="dialog" aria-label="选择章节"><div class="tl" id="chsT"><div class="tlh"><b id="chsN">01</b><span id="chsTx"></span><em>左右拖动 · 松手前往</em></div><div class="tlr" id="chsL"><i class="tll"></i><i class="tlf" id="chsF"></i><i class="tlk" id="chsK"></i></div></div></div>
 <i id="layTg" hidden></i>
 <div class="gate" id="gate" hidden aria-hidden="true" role="button" tabindex="0" aria-label="轻触开始体验"><b>轻触开始体验</b></div>
 <div class="hfade" id="hfade" aria-hidden="true"></div>
@@ -353,9 +369,9 @@ addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) re
 <div class="pfx" id="pfx" aria-hidden="true"><canvas id="pfxS"></canvas><canvas id="pfxP"></canvas></div><div class="pfxg" id="pfxG" aria-hidden="true"></div>
 <script>/* r62 · back from the log-in page (?via=planet): the shell covers the screen from the first paint, the copy waits for the landing */
 try { if (/[?&]via=planet\b/.test(location.search) && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('via-planet', 'tx3'); } catch (e) {}</script>
-<script src="/3dtrading-site/login/planet.js?v=r72" data-art="1" data-gx="pfxS" data-orb="pfxP"></script>
+<script src="/3dtrading-site/login/planet.js?v=r74" data-art="1" data-gx="pfxS" data-orb="pfxP"></script>
 
-<script src="i18n/r48.js?v=r55"></script>
+<script src="i18n/r48.js?v=r74"></script>
 <script>
 const LOGOS = /*LOGOS*/{};
 (() => {
@@ -858,7 +874,7 @@ const PFX = (() => {
     if (e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; if (exit(a.href)) e.preventDefault(); }, true);
   // warm up: size the art and bake its sky once the page is idle, and fetch the log-in page's files so it opens at once
   const warm = () => { try { if (art()) { art().fit(); art().frame({}); } } catch (e) {}
-    ['/3dtrading-site/login/', '/3dtrading-site/login/login.css?v=r66', '/3dtrading-site/login/login.js?v=r66', '/3dtrading-site/login/space.js?v=r73', '/3dtrading-site/login/vendor/three/build/three.module.min.js', '/3dtrading-site/login/vendor/three/build/three.core.min.js', '/3dtrading-site/dashboard/account/td-auth.js?v=r58']
+    ['/3dtrading-site/login/', '/3dtrading-site/login/login.css?v=r74', '/3dtrading-site/login/login.js?v=r74', '/3dtrading-site/login/space.js?v=r74', '/3dtrading-site/login/vendor/three/build/three.module.min.js', '/3dtrading-site/login/vendor/three/build/three.core.min.js', '/3dtrading-site/dashboard/account/td-auth.js?v=r58']
       .forEach(h => { const l = document.createElement('link'); l.rel = 'prefetch'; l.href = h; document.head.appendChild(l); }); };
   if (!de.classList.contains('via-planet')) (window.requestIdleCallback || setTimeout)(warm, { timeout: 2500 });
   const hold = t => { if (X) X.tgt = t; };   // test hook: park the camera part-way
@@ -983,54 +999,37 @@ SCL.addEventListener('scroll', () => {
    「偶尔第一下不触发」的原因：还没过门槛时，事件之间只要停顿 90 ms 这一划就被锁死（慢划、Magic Mouse 起手慢时常见），
    后面再怎么滑都被当成惯性吃掉；上一划的惯性尾巴里起手的新一划也常被吞。改为：没触发的一划不锁，停顿超过 160 ms 才重新计数；
    从旧惯性里冒出来的新一划判定放宽 */
-const WTH = { BASE: +QP.get('wth') || 130, STEP: +QP.get('wst') || 588, CD: +QP.get('wcd') || 350, GAP: 90, MAXN: 4, FLOOR: +QP.get('wfl') || 40 };   // r73 · 3: FLOOR — only force above this (px per event) counts towards extra stops
-const wthAt = n => n <= 0 ? 0 : WTH.BASE + WTH.STEP * (n - 1);
-const stepsOf = est => { let n = 0; while (n < WTH.MAXN && est >= wthAt(n + 1)) n++; return n; };
+/* r74 · 11 · 电脑照手机（Jasper 2026-11-19）：一划 = 一站。滑过门槛（BASE）马上出发，不再按力度多走、也没有 CD 加站；
+   这一划后面的惯性全部吃掉，直到明显停顿（PAUSE ms 没有事件）或者从尾巴里明显再推一下，才算下一划。
+   飞行中再划一下，和手机一样：同方向终点 +1、反方向 −1（go() 接着当前速度改终点）。鼠标滚轮一格 = 一站 */
+const WTH = { BASE: +QP.get('wth') || 130, GAP: 90, PAUSE: +QP.get('wps') || 180, STALL: 450 };
 const busyIn = () => GATE || PFX.busy() || HOMING;
 function gesture(dir, n, why) { if (busyIn() || n < 1) return; GLAST = performance.now(); window.__lastG = { dir, n, why };
   if (dir > 0 && CK.tgt === NS - 1) { go(1); return; }   // the door
   if (n === 1) { go(dir); return; }
   const tg = clamp(CK.tgt + dir * n, 0, NS - 1); if (tg !== CK.tgt) jump(tg); window.__lastG.tg = tg; }
 let WG = null, GLAST = 0;
-function wStep(g) {   // inside the CD: the scroll so far decides how far this swipe goes
-  const n = Math.min(WTH.MAXN, 1 + Math.floor(g.ex / WTH.STEP)); if (n <= g.n) return;
-  if (busyIn() || (g.dir > 0 && g.base === NS - 1)) return; g.n = n;
-  const tg = clamp(g.base + g.dir * n, 0, NS - 1); if (tg === CK.tgt) return;
-  GLAST = performance.now(); window.__lastG = { dir: g.dir, n, why: 'wheel:' + Math.round(g.sum), tg }; jump(tg); }
-function wLock(why) { const g = WG; if (!g || g.locked) return; g.locked = true; g.tl = performance.now(); clearTimeout(g.tm); clearTimeout(g.cd); g.minL = 1e9;
-  if (!g.n && why === 'gap' && g.ds.length <= 2 && g.peak >= 40 && !busyIn()) { g.n = 1; gesture(g.dir, 1, 'notch'); }   // one click of a mouse wheel
-  window.__lastW = { sum: Math.round(g.sum), n: g.n, why, k: g.ds.length }; }
+function wFire(g, why) { g.n = 1; g.locked = true; g.tl = performance.now(); g.minL = 1e9; g.rc = []; g.rise = 0; clearTimeout(g.tm);
+  window.__lastW = { sum: Math.round(g.sum), n: 1, why, k: g.ds.length }; gesture(g.dir, 1, 'wheel:' + why + ':' + Math.round(g.sum)); }
 SCL.addEventListener('wheel', e => { e.preventDefault(); if (gateOn() || chsOpen()) return;
   let dy = e.deltaY; if (e.deltaMode === 1) dy *= 16; else if (e.deltaMode === 2) dy *= innerHeight; if (Math.abs(dy) < .5) return;
   const n = performance.now(), dir = Math.sign(dy), ad = Math.abs(dy);
-  /* r73 · 3 · 正常划一下还会连翻（Magic Mouse）：三个口子
-     ① 镜头起飞时页面卡顿，惯性事件之间断了 >160 ms，后半截惯性被当成新的一划又凑够门槛 → 断档后接着的值不比上一个大，仍算同一划的尾巴
-     ② 惯性尾巴里夹着反向的小抖动（几 px），被当成反向新手势，原方向回来时又成了一划新的 → 尾巴里的反向小值直接忽略；
-        一个没起势的反向小抖动后 160 ms 内原方向又回来，就接回原来那一划
-     ③ 从尾巴里「冒出新一划」的判定太松，尾巴本身的起伏就能触发 → 要连涨 3 次、明显高于最近尾巴均值、锁定 80 ms 后 */
-  if (WG && !WG.n && WG.prev && dir === WG.prev.dir && dir !== WG.dir && WG.sum < 40 && n - WG.last < 160) { WG.prev.last = WG.last; WG = WG.prev; }
-  const W0 = WG, tail = W0 && (W0.locked || W0.n > 0);
-  if (W0 && tail && dir !== W0.dir && ad <= 12 && n - W0.last <= 160) { W0.last = n; return; }
-  let fresh = !W0 || n - W0.last > 160 || (dir !== W0.dir && ad > 2);
-  if (fresh && W0 && tail && dir === W0.dir && n - W0.last <= 700 && ad <= W0.la * 1.25 + 4) fresh = false;   // ① a stall inside the old swipe's inertia
-  if (!fresh && W0.locked) { W0.minL = Math.min(W0.minL, ad); W0.rise = ad > W0.la ? W0.rise + 1 : 0; (W0.rc = W0.rc || []).push(ad); if (W0.rc.length > 6) W0.rc.shift();
+  // a tiny reverse wobble that never got going, then the old direction again within the pause: still the old swipe
+  if (WG && !WG.n && WG.prev && dir === WG.prev.dir && dir !== WG.dir && WG.sum < 40 && n - WG.last < WTH.PAUSE) { WG.prev.last = WG.last; WG = WG.prev; }
+  const W0 = WG, tail = W0 && W0.locked;
+  if (W0 && tail && dir !== W0.dir && ad <= 12 && n - W0.last <= WTH.PAUSE) { W0.last = n; return; }   // reverse jitter inside the inertia
+  let fresh = !W0 || n - W0.last > WTH.PAUSE || (dir !== W0.dir && ad > 2);
+  if (fresh && tail && W0.rc.length >= 3 && dir === W0.dir && n - W0.last <= WTH.STALL && ad <= W0.la * 1.25 + 4) fresh = false;   // a stall in the old inertia (the page hitched), not a new push
+  if (!fresh && tail) { W0.minL = Math.min(W0.minL, ad); W0.rise = ad > W0.la ? W0.rise + 1 : 0; W0.rc.push(ad); if (W0.rc.length > 6) W0.rc.shift();
     const avg = W0.rc.slice(0, -1).reduce((a, b) => a + b, 0) / Math.max(1, W0.rc.length - 1);
     if (n - W0.tl > 80 && W0.rise >= 3 && ad > Math.max(20, avg * 2.5, W0.minL * 1.8 + 6)) fresh = true; }   // a real new push rising out of the old one's tail
-  if (fresh) { if (W0 && !W0.locked) wLock('next'); const pv = W0 && dir !== W0.dir && (W0.locked || W0.n) ? W0 : null;
-    WG = { dir, sum: 0, ds: [], peak: 0, t0: n, last: n, la: ad, rise: 0, locked: false, n: 0, tt: 0, ex: 0, base: CK.tgt, prev: pv }; }
-  const g = WG; g.last = n; g.la = ad; if (g.locked) return;   // after the CD: the rest of this swipe's inertia is eaten
-  g.sum += ad; g.ds.push(ad); g.peak = Math.max(g.peak, ad); if (g.n) g.ex += Math.max(0, ad - WTH.FLOOR);   /* r73 · 3: a normal swipe's inertia (each event under ~40) no longer adds stops; only a hard flick does */   // r71: only scroll after the trigger counts towards extra stops
-  if (!g.n) {   // not triggered yet
-    clearTimeout(g.tm); if (g.ds.length <= 2 && g.peak >= 40) g.tm = setTimeout(() => { if (WG === g && !g.n && g.ds.length <= 2) wLock('gap'); }, WTH.GAP);   // r72: only a lone mouse-wheel notch (≥40) locks on a pause; a slow small swipe keeps adding up
-    if (g.sum < wthAt(1) || busyIn()) return;
-    clearTimeout(g.tm); g.n = 1; g.tt = n; g.base = CK.tgt; g.cd = setTimeout(() => wLock('cd'), WTH.CD);
-    GLAST = n; window.__lastW = null;
-    if (dir > 0 && g.base === NS - 1) { window.__lastG = { dir, n: 1, why: 'wheel:door' }; go(1); wLock('door'); return; }
-    const tg = clamp(g.base + dir, 0, NS - 1); window.__lastG = { dir, n: 1, why: 'wheel:' + Math.round(g.sum), tg };
-    if (tg !== CK.tgt || DF) go(tg - CK.tgt);   // past the bar: the camera sets off now
-    g.ex = 0; return;   // r71: the trigger is one stop; its overshoot is dropped
-  }
-  if (n - g.tt <= WTH.CD) wStep(g); else wLock('cd');
+  if (fresh) { if (W0) clearTimeout(W0.tm); const pv = W0 && dir !== W0.dir && W0.locked ? W0 : null;
+    WG = { dir, sum: 0, ds: [], peak: 0, t0: n, last: n, la: ad, rise: 0, locked: false, n: 0, prev: pv }; }
+  const g = WG; g.last = n; g.la = ad; if (g.locked) return;   // this swipe already moved one stop: the rest of its inertia is eaten
+  g.sum += ad; g.ds.push(ad); g.peak = Math.max(g.peak, ad);
+  clearTimeout(g.tm); if (g.ds.length <= 2 && g.peak >= 40) g.tm = setTimeout(() => { if (WG === g && !g.n && g.ds.length <= 2 && !busyIn()) wFire(g, 'notch'); }, WTH.GAP);   // one click of a mouse wheel
+  if (g.sum < WTH.BASE || busyIn()) return;
+  wFire(g, 'swipe');   // past the bar: one stop, now
 }, { passive: false });
 addEventListener('keydown', e => { if (e.repeat) return; if (['ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(1); } if (['ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); go(-1); }
   if (e.key === 'Home') jump(0); if (e.key === 'End') jump(NS - 1); });
@@ -1096,15 +1095,31 @@ document.addEventListener('mouseleave', () => { mx = my = 0; });
 
 /* ---------- HTML bits ---------- */
 const BLK = Array.from({ length: NS }, (_, i) => document.getElementById('b' + (i + 1))), cue = document.getElementById('cue');
-const NAMES = [siteText('监测'), siteText('双向进场'), siteText('行情'), siteText('平仓'), siteText('补仓'), siteText('滚雪球'), siteText('资金安全'), siteText('密钥安全'), siteText('三样都要'), siteText('问它'), siteText('开始')];
+const NAMES = [siteText('盯盘'), siteText('双开'), siteText('波动'), siteText('止盈'), siteText('补仓'), siteText('复利'), siteText('托管'), siteText('授权'), siteText('兼得'), 'Dodo', siteText('开始')];   // r74 · 7: two-character names
 const rail = document.getElementById('rail'); NAMES.forEach((n, i) => { const b = document.createElement('button'); b.innerHTML = `<span>${n}</span><i></i>`; b.onclick = () => jump(i); rail.appendChild(b); });
 const railB = [...rail.children];
 const chap = document.getElementById('chap'), chs = document.getElementById('chs'), chsL = document.getElementById('chsL');
-NAMES.forEach((n, i) => { const li = document.createElement('li'), b = document.createElement('button'); b.innerHTML = `<i>${String(i + 1).padStart(2, '0')}</i>${n}`; b.onclick = e => { e.stopPropagation(); chsSet(false); jump(i); }; li.appendChild(b); chsL.appendChild(li); });
+const chsK = document.getElementById('chsK'), chsF = document.getElementById('chsF'), chsN = document.getElementById('chsN'), chsTx = document.getElementById('chsTx');
+NAMES.forEach((n, i) => { const b = document.createElement('button'); b.style.setProperty('--d', i); b.innerHTML = `<i></i><span>${n}</span>`; b.setAttribute('aria-label', String(i + 1).padStart(2, '0') + ' ' + n); chsL.appendChild(b); });
 const chsB = [...chsL.querySelectorAll('button')], chsOpen = () => chs.classList.contains('on');
-function chsSet(on) { chs.classList.toggle('on', on); if (on) chsB.forEach((b, i) => b.classList.toggle('on', i === CK.tgt)); }
+let chsI = 0, chsDrag = null;
+const chsGeo = () => { const w = chsL.clientWidth, x0 = 14, st = (w - 2 * x0) / (NS - 1); return { x0, st }; };
+function chsPick(i, instant) { chsI = clamp(i, 0, NS - 1); const { x0, st } = chsGeo(), x = x0 + st * chsI;
+  chsL.style.setProperty('--kx', x + 'px'); chsL.style.setProperty('--fw', st * chsI + 'px');
+  chsB.forEach((b, k) => { b.classList.toggle('on', k === chsI); b.classList.toggle('done', k <= chsI); });
+  chsN.textContent = String(chsI + 1).padStart(2, '0'); chsTx.textContent = NAMES[chsI]; }
+function chsSet(on) { if (on) { const { x0, st } = chsGeo(); chsL.style.setProperty('--x0', x0 + 'px'); chsL.style.setProperty('--cw', Math.max(26, st) + 'px');
+    chsB.forEach((b, k) => { b.style.left = x0 + st * k + 'px'; b.classList.toggle('cur', k === CK.tgt); }); chsPick(CK.tgt); }
+  chs.classList.toggle('on', on); }
+const chsAt = X => { const r = chsL.getBoundingClientRect(), { x0, st } = chsGeo(); return Math.round((X - r.left - x0) / st); };
+chsL.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); chsDrag = { x: e.clientX, i0: chsI }; chsL.classList.add('drag'); try { chsL.setPointerCapture(e.pointerId); } catch (_) {} chsPick(chsAt(e.clientX)); });
+chsL.addEventListener('pointermove', e => { if (!chsDrag) return; const i = clamp(chsAt(e.clientX), 0, NS - 1); if (i !== chsI) { chsPick(i); if (navigator.vibrate) try { navigator.vibrate(4); } catch (_) {} } });
+const chsUp = e => { if (!chsDrag) return; chsDrag = null; chsL.classList.remove('drag'); const i = chsI; e && e.stopPropagation();
+  setTimeout(() => { chsSet(false); if (i !== CK.tgt) jump(i); }, 140); };
+chsL.addEventListener('pointerup', chsUp); chsL.addEventListener('pointercancel', () => { chsDrag = null; chsL.classList.remove('drag'); });
 chap.onclick = e => { e.stopPropagation(); if (!GATE && !PFX.busy()) chsSet(true); };
-chs.addEventListener('click', e => { if (e.target === chs) chsSet(false); });
+chs.addEventListener('click', e => { if (!e.target.closest('.tl')) chsSet(false); });
+chs.addEventListener('pointerdown', e => { if (!e.target.closest('.tl')) { e.preventDefault(); chsSet(false); } });
 let side = -1;
 /* copy coming in: each headline is cut into its lines, each line rises out of its own mask (CSS); the step's block gets .in once the camera is nearly there */
 BLK.forEach(b => b.querySelectorAll('h1,h2').forEach(h => { h.innerHTML = h.innerHTML.split(/<br\s*\/?>/i).map(l => `<span class="ln"><span>${l}</span></span>`).join(''); }));

@@ -189,8 +189,11 @@ function start() {
   }
 
   /* ---------- loop ---------- */
-  const T0 = performance.now(); let frozenT = 6.5;
-  const clock = () => still ? frozenT : (performance.now() - T0) / 1000;
+  /* r74 · 3 · 手机官网 → 登录交接时星空闪一下、挪一下：预载等待时时钟停住，官网取到的那一帧和交接后第一帧是同一时刻；
+     交接那一刻从停住的时刻接着走（漂移、闪烁不跳） */
+  let frozenT = 6.5, tAcc = 0, tLast = performance.now();
+  const waiting = () => root.classList.contains('embed-wait');
+  const clock = () => { if (still) return frozenT; const n = performance.now(); if (!waiting()) tAcc += Math.min(.25, (n - tLast) / 1000); tLast = n; return tAcc; };
   let raf = 0, lastDraw = 0, frames = 0, pmx = 0, smx = 0;
   function render() {
     U.uTime.value = clock();
@@ -216,8 +219,9 @@ function start() {
     skyU.uRt.value.setFromMatrixColumn(cam.matrixWorld, 0); skyU.uUp.value.setFromMatrixColumn(cam.matrixWorld, 1);
     skyU.uFw.value.setFromMatrixColumn(cam.matrixWorld, 2).negate();
     skyU.uC.value.set(G.cx, G.cy); skyU.uWH.value.set(W, H); skyU.uFp.value = G.f; skyU.uDiscS.value.set(G.cx, G.cy, G.R);
-    const ar = W / H, ce = D.getElementById('card'), cr = ce ? ce.getBoundingClientRect() : null, sy = window.scrollY || 0;
-    if (cr && cr.width) skyU.uCard.value.set(cr.left, cr.top + sy, cr.right, cr.bottom + sy); else skyU.uCard.value.set(-9e3, -9e3, -9e3, -9e3);
+    const ar = W / H, ce = D.getElementById('card'), jm = root.classList.contains('jui'); if (jm) root.classList.add('jmeasure');   // r74 · 3: the card's resting place, not where the entrance (--jp) has it now
+    const cr = ce ? ce.getBoundingClientRect() : null, sr = sceneEl.getBoundingClientRect(); if (jm) root.classList.remove('jmeasure');   // r74 · 8: in the scene's own pixels (the phone scene is fixed)
+    if (cr && cr.width) skyU.uCard.value.set(cr.left - sr.left, cr.top - sr.top, cr.right - sr.left, cr.bottom - sr.top); else skyU.uCard.value.set(-9e3, -9e3, -9e3, -9e3);
     if (G.mob) {   /* phone: the planet sits top-right, so space opens to its lower left */
       skyU.uNebDir.value.set(-.62, .78); skyU.uBand.value.set(.05 * ar, .62, .55, -1); skyU.uGal.value.set(.20 * ar, .25, -.5, .032);
     } else {
@@ -230,12 +234,18 @@ function start() {
     fillDust(dustNear, G.mob ? 14 : 26, G.d * .32, G.d * .7, 3, 7, .05, .16, 5502);
     skyU.uStill.value = dustU.uStill.value = still ? 1 : 0;
   }
-  let sigv = ''; const sig = () => [innerWidth, innerHeight, root.lang].join('|');
+  let sigv = ''; const sig = () => { const r = sceneEl.getBoundingClientRect(); return [Math.round(r.width), Math.round(r.height), root.lang].join('|'); };   // r74 · 8: the scene's size (a phone keyboard does not change it)
+  /* r74 · 8 · 手机键盘：场景不动，只有表单被顶上去 → 只更新卡片后面压暗的位置，不重建 */
+  let cardT = 0; const cardOnly = () => { cancelAnimationFrame(cardT); cardT = requestAnimationFrame(() => { if (!G) return; const ce = D.getElementById('card'); if (!ce || root.classList.contains('jui')) return;
+    const cr = ce.getBoundingClientRect(), sr = sceneEl.getBoundingClientRect(); skyU.uCard.value.set(cr.left - sr.left, cr.top - sr.top, cr.right - sr.left, cr.bottom - sr.top);
+    const cv4 = skyU.uCard.value; dustU.uCardD.value.set(cv4.x * DPR, (H - cv4.w) * DPR, cv4.z * DPR, (H - cv4.y) * DPR); if (still) render(); }); };
+  if (window.visualViewport) { visualViewport.addEventListener('resize', cardOnly); visualViewport.addEventListener('scroll', cardOnly); }
+  addEventListener('scroll', cardOnly, { passive: true });
   function maybe(force) { const s = sig(); if (force || s !== sigv) { sigv = s; build(); } }
   let rzT = 0; addEventListener('resize', () => { clearTimeout(rzT); rzT = setTimeout(() => maybe(), 60); });
   addEventListener('td:lang', () => setTimeout(() => maybe(true), 40));
   D.addEventListener('visibilitychange', () => { if (D.hidden) stop(); else kick(); });
-  addEventListener('td:join', () => kick());   // r63 · 预载在官网里时不画；交接那一刻开始
+  addEventListener('td:join', () => { tLast = performance.now(); kick(); });   // r63 · 预载在官网里时不画；交接那一刻开始
   addEventListener('pageshow', kick);
   if (RM && RM.addEventListener) RM.addEventListener('change', () => { still = RM.matches; if (still) { frozenT = clock(); placeCamera(0); } skyU.uStill.value = dustU.uStill.value = still ? 1 : 0; render(); kick(); });
   if (window.ResizeObserver) { const ce = D.getElementById('card'); if (ce) new ResizeObserver(() => { if (G) { spaceLayout(); if (still) render(); } }).observe(ce); }

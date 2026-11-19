@@ -140,5 +140,14 @@
  "进门": "Enter",
  "选择章节": "Chapters",
  "博客": "Blog",
- "资源": "Resources"
+ "资源": "Resources",
+ "盯盘": "Watch",
+ "双开": "Hedge",
+ "波动": "Swing",
+ "止盈": "Profit",
+ "复利": "Compound",
+ "托管": "Custody",
+ "授权": "Keys",
+ "兼得": "All three",
+ "左右拖动 · 松手前往": "Drag · release to go"
 }

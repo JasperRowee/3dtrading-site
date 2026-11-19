@@ -303,7 +303,10 @@ html[data-theme="day"] .orbnav button[aria-pressed="true"]{background:#0a8a72}
 html.arrive .top,html.arrive .hero,html.arrive .side{animation:r61in .6s cubic-bezier(.2,.7,.2,1) both}
 html.arrive .top{animation-delay:.25s}html.arrive .hero{animation-delay:.32s}html.arrive .side{animation-delay:.42s}
 /* 返回官网: the copy and the form go first, then the camera flies into the planet */
-html.leave .top,html.leave .wrap{opacity:0;transform:translateY(6px);transition:opacity .28s,transform .28s;pointer-events:none}
+html.leave .top,html.leave .wrap{pointer-events:none}
+/* r74 · 5 · 返回官网：文字和组件不再一起瞬间没掉，而是按从上到下的顺序错落淡出、轻轻上移（每个间隔约 30 ms，单个 0.3 s，全程约 0.5 s），星球同时飞走 */
+html.leave .lv{opacity:0!important;translate:0 -14px!important;transition:opacity .3s cubic-bezier(.4,0,.7,1) var(--ld,0ms),translate .38s cubic-bezier(.5,0,.75,0) var(--ld,0ms)!important;animation:none!important}
+html.leave #card.lv{translate:0 -8px!important;scale:.985;transition:opacity .34s ease var(--ld,0ms),translate .4s cubic-bezier(.5,0,.75,0) var(--ld,0ms),scale .4s ease var(--ld,0ms)!important}
 @view-transition{navigation:auto}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.18s}
 @media (prefers-reduced-motion:reduce){html.arrive .top,html.arrive .hero,html.arrive .side{animation:none}}
@@ -350,6 +353,7 @@ html.embed-wait,html.embed-wait body{background:transparent!important}
 html.embed-wait .scene,html.embed-wait body::after{visibility:hidden}
 html.jui .top,html.jui .hero,html.jui .side{animation:none!important;opacity:var(--jp,0);translate:0 calc((1 - var(--jp,0)) * 22px);scale:calc(.965 + .035 * var(--jp,0));transition:none!important}
 html.jui .top{translate:0 calc((1 - var(--jp,0)) * -10px);scale:1}
+html.jui.jmeasure .top,html.jui.jmeasure .hero,html.jui.jmeasure .side{translate:none!important;scale:none!important}   /* r74 · 3: space.js measures the card where it will rest */
 html.embed-wait *{pointer-events:none!important}
 
 /* r66 · 发送验证码按钮旁：演示验证码在本页显示（表单一打开就看得到） */
@@ -404,6 +408,7 @@ html.embed-wait *{pointer-events:none!important}
 @media (max-width:900px){.rstep{font-size:14px;margin:-8px 0 18px}.rsem{font-size:15px}}
 
 /* r73 · 窗口不够高时（不只按全屏做）：间距收紧、标题变小、整体往上；再不够才让表单区域滚动。背景固定，不露黑底 */
+@media (max-width:900px){.scene{position:fixed;height:var(--sceneH,100lvh);will-change:transform}}   /* r74 · 8: the phone's background stays put, a keyboard only lifts the form */
 @media (min-width:901px){.scene{position:fixed;height:100vh}html[data-theme=night] body::after{position:fixed}}
 @media (min-width:901px) and (max-height:820px){
   .wrap{align-items:start}
@@ -437,3 +442,10 @@ html.embed-wait *{pointer-events:none!important}
   .card{max-height:calc(100vh - var(--barH) - 12px);overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
   .side{padding-top:4px;padding-bottom:8px}
 }
+
+/* r74 · 4 · 「发送验证码」和输入框对齐：按钮不再写死高度和 top，而是上下各留同样的边距，跟着输入框的高度走（48 / 54 / 50 / 42 都居中），
+   圆角 = 输入框圆角 − 边距，文字垂直居中；眼睛按钮同理 */
+.inp.has-btn .sendc{top:6px;bottom:6px;right:6px;height:auto;display:inline-flex;align-items:center;justify-content:center;line-height:1;border-radius:7px;box-sizing:border-box}
+.inp .eye{top:50%;transform:translateY(-50%)}
+@media (max-width:900px){.inp.has-btn .sendc{top:7px;bottom:7px;right:7px;border-radius:7px}}
+@media (min-width:901px) and (max-height:680px){.inp.has-btn .sendc{top:5px;bottom:5px;right:5px;font-size:12.5px;min-width:96px}.inp.has-btn input{padding-right:110px}}

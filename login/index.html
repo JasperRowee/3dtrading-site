@@ -16,7 +16,7 @@ addEventListener('pagereveal',function(e){var v=e.viewTransition;if(v)[v.ready,v
 <link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/dodo-180.png">
 <style>/* r62 · the website <-> log-in fade opts in here, inline, so it is known before login.css arrives (the copy in login.css stays) */@view-transition{navigation:auto}</style>
-<link rel="stylesheet" href="login.css?v=r73">
+<link rel="stylesheet" href="login.css?v=r74">
 </head>
 <body>
 <div class="scene" id="scene" aria-hidden="true"><canvas id="space"></canvas><canvas id="gx"></canvas><canvas id="orb"></canvas></div>
@@ -118,9 +118,9 @@ addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) re
   try { u = new URL(e.activation && e.activation.entry && e.activation.entry.url || '', location.href).pathname; } catch (x) {}
   if (!/\/(site|login)\/(index\.html)?$/.test(u)) v.skipTransition(); });</script>
 <script src="/3dtrading-site/dashboard/account/td-auth.js?v=r58"></script>
-<script src="login.js?v=r73"></script>
-<script src="planet.js?v=r72"></script>
-<script type="module" src="space.js?v=r73"></script>
+<script src="login.js?v=r74"></script>
+<script src="planet.js?v=r74"></script>
+<script type="module" src="space.js?v=r74"></script>
 <script>/* r62 · 返回官网 (logo): the form fades, the camera flies straight at the planet (the website's line, its motion law) until the
    shell covers the screen; the website carries on from there, in through the shell, to the step you left (r62.site.at, else 01).
    Arrival (?via=…) is dropped from the address so a reload is plain. */
@@ -129,7 +129,7 @@ if(!a)return;a.addEventListener('click',function(e){if(e.button||e.metaKey||e.ct
 try{var G=window.DeviceOrientationEvent,k=sessionStorage.getItem('r49site.gy');if(G&&typeof G.requestPermission==='function'&&k!=='skip'&&k!=='denied')G.requestPermission().then(function(r){try{sessionStorage.setItem('r49site.gy',r==='granted'?'on':'denied')}catch(x){}if(r==='granted'&&window.__EMBED&&parent.__gyOn)parent.__gyOn()}).catch(function(){})}catch(x){}/* r68 · 3: this tap counts as the person's go-ahead for motion back on the website */
 
 var n=1;try{n=Math.max(1,parseInt(sessionStorage.getItem('r62.site.at'))||1)}catch(x){}var to=a.getAttribute('href')+'?at='+n+'&via=planet',d=document.documentElement;
-d.classList.remove('arrive');d.classList.add('leave');setTimeout(function(){P.fly(0,function(){if(window.__EMBED&&parent.__siteJoin)parent.__siteJoin.back();else location.href=to})},60)});
+d.classList.remove('arrive');if(window.__leaveStagger)window.__leaveStagger();d.classList.add('leave');setTimeout(function(){P.fly(0,function(){if(window.__EMBED&&parent.__siteJoin)parent.__siteJoin.back();else location.href=to})},60)});
 window.__joinBack=function(){a.click()};
 (window.requestIdleCallback||setTimeout)(function(){var l=document.createElement('link');l.rel='prefetch';l.href=a.getAttribute('href');document.head.appendChild(l)},{timeout:3000})})()</script>
 <script>/* r63 · 同页衔接的这一侧：prep(去哪个模式/语言) · ui(界面进场 0–1) · go(场景交接) */

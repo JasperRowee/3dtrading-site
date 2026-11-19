@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="page.css?v=r49l">
 <link rel="stylesheet" href="bind-bn.css?v=r58">
 <link rel="stylesheet" href="connect-r45.css?v=r58">
-<link rel="stylesheet" href="tut.css?v=r73">
+<link rel="stylesheet" href="tut.css?v=r74">
 </head>
 <body class="tut">
 <!-- r49b · the illustrated tutorial of the 自行生成 route (from r48 connect.html), shown INSIDE the binding page (../index.html #guide)
@@ -18,7 +18,7 @@
      Always a dark Binance-style screen; our own coded illustration, never the live Binance site.
      There is no form here: 回到上方 scrolls the page back up to the API Key field (postMessage, no navigation). -->
 <header class="bnh" id="hb">
-  <button type="button" class="tx-exit" id="tcExit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span data-i18n="cx.exit">退出教程</span></button>
+  <button type="button" class="tx-exit" id="tcExit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span data-i18n="cx.exit">退出绑定</span></button>
   <a class="logo" id="logo" href="../" data-i18n-attr="aria-label:cx.toBind"><img src="../assets/3dtrading-logo-white.svg" alt="3dtrading" width="91" height="22"></a>
   <nav class="pg" id="pg" data-i18n-attr="aria-label:cx.prog" aria-label="绑定进度">
     <ol id="big"></ol>
@@ -45,7 +45,7 @@
   <!-- r72 (Jasper: 不要在币安界面里突然加账户名): the account name and 绑定 live in our own small card, outside the Binance screen.
        They still belong to the form above (form="tkF"). -->
   <div class="tk-card" id="tkCard" hidden>
-    <b class="tk-ch"><img src="../assets/3dtrading-logo.svg" alt="3dtrading" width="74" height="18"></b>
+    <b class="tk-ch"><img src="../assets/3dtrading-logo.svg" alt="3dtrading" width="74" height="18"><span class="tk-nl" data-i18n="cx.nL">账户名称（可选）</span></b>
     <div class="tk-row"><input form="tkF" id="tkNm" name="bn58-n" maxlength="24" autocomplete="off" spellcheck="false" placeholder="账户名称（可选）" data-i18n-attr="placeholder:cx.nL;aria-label:cx.nL" aria-label="账户名称（可选）" aria-describedby="tkErr"><button form="tkF" type="submit" class="tk-go" id="backKey" data-i18n="cx.bind">绑定</button></div>
   </div>
   <section class="panel okp" id="panel" hidden role="dialog" aria-modal="true" aria-labelledby="tkOkT"><div class="tk-ok" id="tkOk"></div></section>
@@ -71,6 +71,6 @@
 <script src="../../dashboard/account/vendor/qrcode.js?v=r58"></script>
 <script src="bind-bn.js?v=r72"></script>
 <script src="bn-app.js?v=r72"></script>
-<script src="tutorial.js?v=r73"></script>
+<script src="tutorial.js?v=r74"></script>
 </body>
 </html>

@@ -47,7 +47,7 @@
       'cx.okT': '演示绑定成功', 'cx.okTag': '演示账户', 'cx.okP': '没有连接真实币安，也没有发送或保存 API Key；后台里的数字均为演示数据。',
       'cx.okL': '已演示绑定的账户', 'cx.okSub': '演示绑定 · 未连接币安', 'cx.okNext': '继续绑定下一个账户', 'cx.okDash': '完成，回到后台', 'cx.okToast': '演示绑定成功：{n}', 'cx.nextToast': '换一个子账户，从第 1 步再走一遍',
       'cx.cpPub': '复制公钥', 'cx.ex': '示例', 'cx.toBind': '回到绑定',
-      'cx.close': '回到绑定', 'cx.exit': '退出教程', 'cx.goBind': '去绑定', 'cx.of': '第 {n} / {m} 步', 'cx.prev': '上一步', 'cx.next': '下一步', 'cx.auto': '自动播放', 'cx.tcL': '教程控制', 'cx.dot': '第 {n} 步，共 {m} 步',
+      'cx.close': '回到绑定', 'cx.exit': '退出绑定', 'cx.goBind': '去绑定', 'cx.of': '第 {n} / {m} 步', 'cx.prev': '上一步', 'cx.next': '下一步', 'cx.auto': '自动播放', 'cx.tcL': '教程控制', 'cx.dot': '第 {n} 步，共 {m} 步',
       'cx.autoRm': '已开启“减少动态效果”，不会自动播放', 'cx.cpdPub': '已复制公钥', 'cx.cpdEx': '（示例）', 'cx.cpdIp': '已复制 IP：{v}',
       'cx.cpdIps': '已复制白名单：{v}', 'cx.try': '用示例 Key 体验', 'cx.tryH': '<b>演示</b>没有真实 Key？输入 <code>1234</code> 可演示绑定', 'cx.pasted': '已粘贴 API Key', 'cx.pasteNone': '剪贴板是空的，先在币安复制 API Key', 'cx.pasteFail': '浏览器没让读取剪贴板，请长按输入框或按 ⌘/Ctrl+V 粘贴', 'cx.spotL': '点暗处进入下一步'
     },
@@ -68,7 +68,7 @@
       'cx.okT': 'Demo binding complete', 'cx.okTag': 'Demo account', 'cx.okP': 'Binance is not connected and your API Key was not sent or stored; the dashboard’s numbers are demo data.',
       'cx.okL': 'Demo-bound accounts', 'cx.okSub': 'Demo binding · Not connected to Binance', 'cx.okNext': 'Bind another account', 'cx.okDash': 'Done, back to the dashboard', 'cx.okToast': 'Demo binding complete: {n}', 'cx.nextToast': 'Use another sub-account and go through step 1 again',
       'cx.cpPub': 'Copy public key', 'cx.ex': 'Example', 'cx.toBind': 'Back to binding',
-      'cx.close': 'Back to binding', 'cx.exit': 'Exit tutorial', 'cx.goBind': 'Go to binding', 'cx.of': 'Step {n} / {m}', 'cx.prev': 'Back', 'cx.next': 'Next', 'cx.auto': 'Autoplay', 'cx.tcL': 'Tutorial controls', 'cx.dot': 'Step {n} of {m}',
+      'cx.close': 'Back to binding', 'cx.exit': 'Exit binding', 'cx.goBind': 'Go to binding', 'cx.of': 'Step {n} / {m}', 'cx.prev': 'Back', 'cx.next': 'Next', 'cx.auto': 'Autoplay', 'cx.tcL': 'Tutorial controls', 'cx.dot': 'Step {n} of {m}',
       'cx.autoRm': 'Reduce motion is on, so autoplay is unavailable', 'cx.cpdPub': 'Public key copied', 'cx.cpdEx': ' (example)', 'cx.cpdIp': 'IP copied: {v}',
       'cx.cpdIps': 'Whitelist copied: {v}', 'cx.try': 'Try with the sample key', 'cx.tryH': '<b>Demo</b>No real key? Enter <code>1234</code> to try a demo bind', 'cx.pasted': 'API Key pasted', 'cx.pasteNone': 'The clipboard is empty — copy the API Key on Binance first', 'cx.pasteFail': 'The browser blocked reading the clipboard; long-press the field or press ⌘/Ctrl+V to paste', 'cx.spotL': 'Click the dark area to go on'
     }
@@ -134,8 +134,9 @@
         peeks: [
           { t: '[data-t="ipw"]', zh: '白名单已填好，点我复制，到币安粘贴后点「确认」', en: 'Whitelist is ready. Click to copy, paste it on Binance, then Confirm' },
           { t: '[data-t="pg"]', zh: 'IP 加好后，照着勾亮着的几项，提现别勾，点「保存」', en: 'After the IPs, tick the lit ones, keep Withdrawals off, Save' },
-          { t: '#tkKey', zh: '复制币安给的 API Key，点这里直接粘贴', en: 'Copy the API Key from Binance and click here to paste' },
-          { t: '#tkCard', zh: '给账户起个名字（可不填），再点「绑定」', en: 'Name the account (optional), then click Bind' }
+          { t: '#tkKey', zh: '复制币安给的 API Key，点这里粘贴，再点「绑定」', en: 'Copy the API Key from Binance, paste it here, then click Bind' },
+          /* r74 (Jasper: 「复制 API Key」那段话变成账户名称填写): the name field takes the place of Binance's 「复制 API Key」 note */
+          { t: '#tkCard', zh: '给这个账户起个名字（可不填）', en: 'Name this account (optional)' }
         ] }
     ] }
   ];
@@ -231,7 +232,7 @@
     HOT = st.our ? $(st.our) : host.querySelector(sel) || hb.querySelector(sel);
     var inForm = HOT && tkF && tkF.contains(HOT);
     if (tkF) tkF.classList.toggle('pre', !st.last);
-    if (tkCard) tkCard.hidden = !st.last || !!OKV;
+    cardMount(host, st);
     peekBuild(st); // r59: before the last step only the API Key box shows (name + 绑定 come last)
     if (HOT && (st.our || inForm)) HOT.classList.add('cue');
     if (HOT && !st.our && !inForm) { HOT.classList.add('hot'); HOT.setAttribute('tabindex', '0'); HOT.setAttribute('role', 'button'); HOT.setAttribute('aria-label', st[L()]); }
@@ -253,9 +254,21 @@
     /* r60 (Jasper: 手机教程被顶栏/底栏裁切): on a phone the drawn app is exactly as tall as the visible stage, so its
      * bottom sheets (确认 / 下一步) sit right above our controls instead of under them; longer pages scroll natively. */
     host.style.minHeight = Math.ceil(ah / s) + 'px';
-    host.style.paddingBottom = st && st.last && tkCard ? Math.ceil((tkCard.offsetHeight + 24) / s) + 'px' : '';
+    host.style.paddingBottom = '';
     var nh = host.scrollHeight;
+    stage.classList.remove('fit'); PK.style.removeProperty('--pkhs');
     if (ph) return phoneCam(host, st, s, ah, nh);
+    /* r74 (Jasper: 整个页面不要裁切): the last step shows the whole Binance screen — scaled to fit the stage; on a very short
+       window it stops shrinking at .55 and the stage scrolls instead of cutting the page off */
+    if (st && st.last) {
+      host.style.minHeight = ''; nh = host.scrollHeight;
+      var fs = Math.max(.55, Math.min(aw / natW, (ah - 16) / nh)), fx = Math.max(0, Math.round((aw - natW * fs) / 2));
+      host.style.minHeight = Math.ceil((ah - 16) / fs) + 'px'; nh = host.scrollHeight;
+      view.style.transform = 'translate(' + fx + 'px,0) scale(' + fs.toFixed(4) + ')';
+      if (nh * fs > ah + 1) { stage.classList.add('fit'); sizer.style.height = Math.ceil(nh * fs) + 'px'; }
+      PK.style.setProperty('--pkhs', Math.round(Math.max(46, Math.min(54, 70 * fs))) + 'px');
+      return;
+    }
     /* r59: a step may name a fixed anchor (cam / pcam): the camera frames that, not the menu item, so the page holds still */
     var anc = st && (ph ? st.pcam : st.cam), aEl = anc ? host.querySelector(anc) : null;
     var tgt = aEl || (!HOT || !host.contains(HOT) ? null : HOT), r = null;
@@ -323,8 +336,34 @@
   }
   /* ---------- r72 · Dodo peeks: light, no overlay. Each Dodo sits at its target's corner with one short line. ---------- */
   var tkCard = $('#tkCard'), PK = document.createElement('div'); PK.className = 'dpks'; PK.setAttribute('aria-hidden', 'true'); document.body.appendChild(PK);
+  /* r74 (Jasper: 复制 API Key 那段话变成账户名称填写；不要突然加 UI): on the last step our name field takes the exact place of
+     Binance's 「复制 API Key。自行生成的密钥没有 Secret Key。」 note (desktop .bn-warn, phone .ba-warn); 绑定 sits at the end of the
+     API Key row, so the order reads name → key → 绑定. Every other step keeps them parked and hidden. */
+  var cardHome = tkCard && tkCard.parentNode, cardRow = tkCard && tkCard.querySelector('.tk-row'), bindBtn = $('#backKey');
+  function cardPark() {
+    if (!tkCard) return;
+    if (tkCard.parentNode !== cardHome) cardHome.appendChild(tkCard);
+    if (bindBtn && bindBtn.parentNode !== cardRow) cardRow.appendChild(bindBtn);
+    tkCard.classList.remove('inl'); tkCard.hidden = true; if (tkF) tkF.classList.remove('kb');
+  }
+  function cardMount(host, st) {
+    if (!tkCard) return;
+    if (!st || !st.last || OKV) { tkCard.hidden = true; return; }
+    var nt = host.querySelector('.bn-warn, .ba-warn'), krow = tkF && tkF.querySelector('.tk-in');
+    if (nt) { nt.parentNode.insertBefore(tkCard, nt); nt.hidden = true; nt.style.display = 'none'; tkCard.classList.add('inl'); }
+    if (krow && bindBtn) { krow.parentNode.insertBefore(bindBtn, krow.nextSibling); tkF.classList.add('kb'); }
+    tkCard.hidden = false;
+  }
   function peekBuild(st) {
-    PK.innerHTML = ''; PK.list = [];
+    PK.innerHTML = ''; PK.list = []; PK.classList.remove('solo');
+    /* r74 (Jasper: 之前的步骤也要 Dodo 探头): every other step gets one Dodo head peeking from behind the control to click
+       (the step's line stays in the hint next to it) */
+    if (st && !st.peeks && !OKV) {
+      var e0 = document.createElement('div'); e0.className = 'dpk solo';
+      e0.innerHTML = '<span class="dpc"><span class="dph">' + dHead('dpkG0') + '</span></span>';
+      PK.appendChild(e0); PK.list.push({ e: e0, t: function () { var de = document.documentElement; return (S.hold || de.classList.contains('intro')) ? null : spotTarget(); } });
+      PK.classList.add('solo'); stage.removeAttribute('aria-description'); return;
+    }
     if (!st || !st.peeks || OKV) { stage.removeAttribute('aria-description'); return; }
     st.peeks.forEach(function (k, i) {
       var e = document.createElement('div'); e.className = 'dpk'; e.style.animationDelay = (i * 140) + 'ms';
@@ -341,11 +380,15 @@
     if (!PK.list || !PK.list.length) return;
     if (OKV) { PK.innerHTML = ''; PK.list = []; return; }
     var VW = window.innerWidth, sr = stage.getBoundingClientRect(), top0 = sr.top, VH = window.innerHeight - tc.offsetHeight, M = 8, boxes = [];
-    if (tkCard && !tkCard.hidden) { var cr = tkCard.getBoundingClientRect(); boxes.push({ x: cr.left, y: cr.top, w: cr.width, h: cr.height, card: 1 }); }
+    if (tkCard && !tkCard.hidden && !tkCard.classList.contains('inl')) { var cr = tkCard.getBoundingClientRect(); boxes.push({ x: cr.left, y: cr.top, w: cr.width, h: cr.height, card: 1 }); }
+    if (hintEl && !hintEl.hidden) { var hr = hintEl.getBoundingClientRect(); if (hr.width) boxes.push({ x: hr.left, y: hr.top, w: hr.width, h: hr.height }); }
     function ovA(x, y, w, h, o) { return Math.max(0, Math.min(x + w, o.right) - Math.max(x, o.left) - 2) * Math.max(0, Math.min(y + h, o.bottom) - Math.max(y, o.top) - 2); }
     var ctl = [].slice.call(stage.querySelectorAll('input, button, textarea, [data-t]')).concat(tkCard && !tkCard.hidden ? [tkCard] : []);
+    /* r74: words on the screen count too (half weight), so a head or a line does not sit on a label or a permission */
+    var txt = [].slice.call(view.querySelectorAll('span, b, u, small, p, em, code, label, .bn-kl, .ba-v')).filter(function (e) { return !e.children.length && e.textContent.trim(); });
     PK.list.forEach(function (p) {
-      var el = document.querySelector(p.t), r = el && el.getBoundingClientRect();
+      var el = typeof p.t === 'function' ? p.t() : document.querySelector(p.t), r = el && el.getBoundingClientRect();
+      var top0 = el && hb.contains(el) ? 0 : sr.top; /* r74: a control in the top bar (avatar) — the Dodo hangs below it */
       if (!r || !r.width || r.bottom < top0 + 10 || r.top > VH - 10) { p.e.classList.add('off'); return; }
       p.e.classList.remove('off');
       /* r73: the Dodo's head comes up from behind the target's top edge (the hidden part is clipped off), the line sits beside it.
@@ -356,6 +399,8 @@
       var obs = ctl.filter(function (e) { return e !== el && !e.contains(el) && !el.contains(e); }).map(function (e) { return e.getBoundingClientRect(); })
         .filter(function (o) { return o.width && Math.abs(o.top - r.top) < 260; })
         .concat(boxes.map(function (b) { return { left: b.x, top: b.y, right: b.x + b.w, bottom: b.y + b.h }; }));
+      var tob = txt.filter(function (e) { return !el.contains(e) && !e.contains(el); }).map(function (e) { return e.getBoundingClientRect(); })
+        .filter(function (o) { return o.width && Math.abs(o.top - r.top) < 260; });
       var own = [].slice.call(el.querySelectorAll('*')).filter(function (e) { return !e.children.length && e.textContent.trim(); }).map(function (e) { return e.getBoundingClientRect(); });
       var fld = el.matches('input, textarea') || !!el.querySelector('input, textarea'); /* 输入框：挂进去的气泡不能盖住要粘贴的地方 */
       var ins = Math.min(14, r.width / 6), cands = [];
@@ -365,7 +410,7 @@
         if (y < top0 + M || y + h > VH - M) return;
         [r.right - cw - ins, r.left + ins].forEach(function (hx) { [false, true].forEach(function (lf) {
           var x = lf ? hx + cw - w : hx; if (x < M || x + w > VW - M) return;
-          var a = 0; obs.forEach(function (o) { a += ovA(x, y, w, h, o); }); if (m === 'in') { own.forEach(function (o) { a += ovA(x, y, w, h, o); }); if (fld) a += 3 * ovA(x, y, w, h, { left: r.left, top: r.top, right: r.left + r.width * .75, bottom: r.bottom }); }
+          var a = 0; obs.forEach(function (o) { a += ovA(x, y, w, h, o); }); tob.forEach(function (o) { a += .5 * ovA(x, y, w, h, o); }); if (m === 'in') { own.forEach(function (o) { a += ovA(x, y, w, h, o); }); if (fld) a += 3 * ovA(x, y, w, h, { left: r.left, top: r.top, right: r.left + r.width * .75, bottom: r.bottom }); }
           cands.push({ m: m, x: x, y: y, w: w, h: h, lf: lf, a: a }); }); });
       });
       var pick = cands.filter(function (k) { return k.a < 40; })[0] || cands.sort(function (q, z) { return q.a - z.a; })[0];
@@ -454,7 +499,10 @@
   $('#tcNext').addEventListener('click', function () { if ($('#tcNext').classList.contains('fin')) { if (S.auto) setAuto(false); up('key'); return; } S.hold = false; manual(); });
   /* r63 · 随时离开：左上角「退出教程」回到打开教程前的地方（从后台来就回后台的绑定面板） */
   (function () { var x = $('#tcExit'); if (x && x.parentNode !== document.body) document.body.appendChild(x); })(); /* 放在压暗层之上，任何一步都不会被压暗 */
-  $('#tcExit').addEventListener('click', function () { if (S.auto) setAuto(false); up('top'); });
+  /* r74 (Jasper: 退出教程改成退出绑定，直接回到官网): leave the whole binding flow for the website (relative path, so it works locally and under /3dtrading-site/) */
+  $('#tcExit').addEventListener('click', function () { if (S.auto) setAuto(false);
+    var u = new URL('../../site/', location.href); u.searchParams.set('lang', L());
+    try { window.top.location.href = u.href; } catch (x) { location.href = u.href; } });
   /* r63 · 手机上左右滑动翻步（竖向滑动仍是滚动画面） */
   (function () { var x0 = null, y0 = 0, t0 = 0;
     stage.addEventListener('touchstart', function (e) { if (e.touches.length !== 1 || e.target.closest('#tkF') || e.target.closest('#tkCard')) { x0 = null; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now(); }, { passive: true });
@@ -499,7 +547,7 @@
      dashboard picks it up once after sign-in. The key itself is only looked at: never stored, logged, put in a URL or sent. */
   var TB = window.TDBind, AU = window.TDAuth, tkF = $('#tkF'), tkKey = $('#tkKey'), tkNm = $('#tkNm'), tkErr = $('#tkErr'), tkRes = $('#tkRes'), tkOk = $('#tkOk'), tkN = $('#tkN'), hold = $('#tkHold');
   var OKV = null; // the result being shown, or null
-  function parkForm() { if (tkF && tkF.parentNode !== hold) hold.appendChild(tkF); }
+  function parkForm() { if (tkF && tkF.parentNode !== hold) hold.appendChild(tkF); cardPark(); }
   function mountForm(host) { var sl = host.querySelector('[data-slot="key"].slot'); if (sl && tkF) sl.appendChild(tkF); }
   /* the QR box on the key page: this site's own binding page (phone opens the App-style walkthrough). Built from the live origin;
      no caption, no key or secret in it. It is NOT the authenticator QR of the dashboard's 2FA settings. */

@@ -404,3 +404,30 @@
   window.__login = { t: t, lang: function () { return lang; }, mode: function () { return mode; }, session: session, accounts: accounts, setLang: setLang, setMode: setMode, dashUrl: DASH_URL, dashHref: dashHref, showTf: showTf };
   apply();
 })();
+
+/* r74 · 8 · 手机键盘（Jasper 2026-11-19）：键盘弹出时背景（星球、星空）不动，只有表单被顶上去。
+   手机上场景固定在屏幕上，高度锁在没有键盘时的高度（只在宽度变了、没有输入框聚焦时更新）；
+   iOS 为了露出输入框会把可见区域往下平移（visualViewport.offsetTop），场景反向补上这段，看上去纹丝不动 */
+(function () {
+  var sc = document.getElementById('scene'), d = document.documentElement, vv = window.visualViewport; if (!sc) return;
+  var mob = function () { return innerWidth <= 900; }, bw = innerWidth, bh = innerHeight;
+  var typing = function () { var a = document.activeElement; return !!a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA' || a.isContentEditable); };
+  function lock() { if (!mob()) { d.style.removeProperty('--sceneH'); sc.style.transform = ''; return; }
+    if (innerWidth !== bw) { bw = innerWidth; bh = innerHeight; } else if (!typing()) bh = innerHeight;
+    d.style.setProperty('--sceneH', bh + 'px'); pan(); }
+  function pan() { if (!mob()) return; var y = vv ? Math.max(0, vv.offsetTop) : 0; sc.style.transform = y ? 'translate3d(0,' + y.toFixed(1) + 'px,0)' : ''; }
+  lock(); addEventListener('resize', lock); addEventListener('orientationchange', function () { setTimeout(function () { bw = -1; lock(); }, 250); });
+  if (vv) { vv.addEventListener('resize', lock); vv.addEventListener('scroll', pan); }
+  document.addEventListener('focusout', function () { setTimeout(lock, 350); });
+  window.__kbd = { h: function () { return bh; }, pan: pan };
+})();
+
+/* r74 · 5 · 返回官网时的错落退场：从上到下给每个看得见的文字 / 组件一个延迟（--ld），html.leave 时一个接一个淡出上移 */
+window.__leaveStagger = function () {
+  var q = '.top .logo,.top .pill,.top .seg,.hero h1,.hero .lede,.hero .pts li,#tabs,#formBox form > *,#card,.side > :not(#card)';
+  var els = [].slice.call(document.querySelectorAll(q)).filter(function (e) { return e.offsetParent !== null || getComputedStyle(e).position === 'fixed'; });
+  els.sort(function (a, b) { return a.getBoundingClientRect().top - b.getBoundingClientRect().top; });
+  var i = 0; els.forEach(function (e) { var d = e.id === 'card' ? 150 : Math.min(260, i++ * 26); e.style.setProperty('--ld', d + 'ms'); e.classList.add('lv'); });
+  return els.length;
+};
+addEventListener('pageshow', function (e) { if (!e.persisted) return; [].forEach.call(document.querySelectorAll('.lv'), function (x) { x.classList.remove('lv'); x.style.removeProperty('--ld'); }); });

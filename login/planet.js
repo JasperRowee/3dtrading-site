@@ -131,7 +131,7 @@
   }
 
   function size() {
-    dpr = Math.min(2, devicePixelRatio || 1); W = document.documentElement.clientWidth; H = innerHeight; mob = W < 900;
+    dpr = Math.min(2, devicePixelRatio || 1); W = document.documentElement.clientWidth; var se = !ART && document.getElementById('scene'); H = (se && se.clientHeight) || innerHeight; mob = W < 900;   // r74 · 8: the scene's height (a phone keyboard does not change it)
     cv.width = GL.width = Math.round(W * dpr); cv.height = GL.height = Math.round(H * dpr);
     SKY = null; place();
     FIELD = []; var n = Math.round(W * H / (mob ? 9000 : 11000));
@@ -274,7 +274,7 @@
     if (keep) { cx = keep.cx; cy = keep.cy; R = keep.R; }
     frames++;
   }
-  var raf = 0;
+  var raf = 0, dpr0 = 0;
   function loop(t) { if (!WAIT()) draw(t); raf = requestAnimationFrame(loop); }
   /* r63 · 同页衔接：官网把场景交过来的那一刻才开始「到达」（2D 天空先在，WebGL 天空随后淡入），和整页打开时一样 */
   if (!ART) window.__planetJoin = function () { t0 = 0; mkT = performance.now(); MK = 0;   // r66 · 2: the form is already whole; the dimming under it starts at once, no second entrance
@@ -306,7 +306,7 @@
     };
     return;
   }
-  size(); addEventListener('resize', function () { size(); draw(performance.now()); });
+  size(); addEventListener('resize', function () { var w0 = W, h0 = H; dpr0 = dpr; W = document.documentElement.clientWidth; var se = document.getElementById('scene'), h1 = (se && se.clientHeight) || innerHeight; if (w0 === W && h0 === h1 && dpr0 === Math.min(2, devicePixelRatio || 1)) return; size(); draw(performance.now()); });   // r74 · 8: a keyboard is not a resize
   if (still || ARRIVE) draw(performance.now()); if (!still) raf = requestAnimationFrame(loop); // arriving: paint before the first frame, no blank
   if (ARRIVE) document.documentElement.classList.add('arrive');
   addEventListener('td:lang', function () { setTimeout(function () { measure(); draw(performance.now()); }, 30); });

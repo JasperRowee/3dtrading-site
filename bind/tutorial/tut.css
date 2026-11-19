@@ -357,3 +357,32 @@ html.embed .bnh,.bnh{padding-left:calc(max(16px,env(safe-area-inset-left)) + 118
 @media (prefers-reduced-motion:reduce){.dph,.dph svg{animation:none}}
 .dpk.in{align-items:flex-start}.dpk.in .dpb{margin:8px 0 0;border-radius:4px 12px 12px 12px}.dpk.in.lf .dpb{border-radius:12px 4px 12px 12px}
 @media (min-width:900px){.dpk{max-width:400px}}
+
+/* r74 · 1 (Jasper: Dodo 探头只露一点头 / 被裁)：头放大，露出约 86%（眼睛完整露出来），只有下沿一小截藏在目标后面 */
+.dpk{--hs:var(--pkhs,54px)}
+.dpc{height:calc(var(--hs) * .86)}
+.dpk .dpb{margin-bottom:calc(var(--hs) * .34)}
+.dpk.dn .dpb{margin:calc(var(--hs) * .34) 0 0}
+@keyframes dphUp{from{transform:translateY(86%)}to{transform:translateY(0)}}
+@keyframes dphDn{from{transform:rotate(180deg) translateY(86%)}to{transform:rotate(180deg) translateY(0)}}
+@media (max-width:640px){.dpk{--hs:46px}}
+/* 其他步骤：只有一个 Dodo 头，从要点的按钮后面探出来；放在压暗层之上，句子仍在旁边的提示里 */
+.dpks.solo{z-index:54}
+.dpk.solo{gap:0}
+/* 账户名称：占用币安「复制 API Key。自行生成的密钥没有 Secret Key。」那一行的位置，深色、和币安输入框同一套样式 */
+.tk-card.inl{position:static;left:auto;bottom:auto;z-index:auto;width:auto;max-width:none;margin:0 0 22px;padding:12px 14px;border-radius:10px;background:rgba(47,220,188,.06);color:#eaecef;box-shadow:inset 0 0 0 1px rgba(47,220,188,.45);gap:8px}
+.tk-card.inl .tk-ch{gap:10px;height:auto}
+.tk-card.inl .tk-ch img{height:14px;filter:brightness(0) invert(1)}
+.tk-card .tk-nl{display:none}
+.tk-card.inl .tk-nl{display:inline;font:600 13px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;color:#b7bdc6}
+.tk-card.inl input{height:44px;border:1px solid #474d57;background:#0b0e11;color:#eaecef}
+.tk-card.inl input::placeholder{color:#5e6673}
+.tk-card.inl input:focus{border-color:#fcd535;box-shadow:0 0 0 3px rgba(252,213,53,.16);background:#0b0e11}
+.ba-key .tk-card.inl{margin:6px 0 14px;padding:10px 12px}
+/* 绑定按钮接在 API Key 输入框右边 */
+#tkF.kb{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:8px}
+#tkF.kb>*{grid-column:1 / -1}
+#tkF.kb>.tk-in{grid-column:1}
+#tkF.kb>.tk-go{grid-column:2;grid-row:1;height:44px}
+/* 很矮的窗口：最后一步整页缩放后仍放不下时，舞台自己滚动（不裁切） */
+.stage.fit{overflow-y:auto;overscroll-behavior:contain}
