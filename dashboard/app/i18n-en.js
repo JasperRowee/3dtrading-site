@@ -2387,4 +2387,11 @@ window.I18N_EN = {
 "只指引": "Guide only",
 "提交前问我": "Ask before submitting",
 "全部代办": "Do everything",
+"查看建议白名单": "See suggested whitelist",
+"收起建议白名单": "Hide suggested whitelist",
+"建议白名单：成交量大、流动性好的 USDT 交易对。勾选白名单后只能交易名单里的币对，不确定就不勾。": "Suggested whitelist: high-volume, liquid USDT pairs. With a whitelist on, only these pairs can be traded; leave it unticked if unsure.",
+"复制全部": "Copy all",
+"已复制建议白名单": "Suggested whitelist copied",
+"到了以后 Dodo 会在按钮旁边探头，点它就行": "Dodo peeks out next to the button; just tap it",
+"到了以后，Dodo 会在那个按钮旁边探头": "Dodo peeks out by the button when you arrive",
 };

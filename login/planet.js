@@ -105,7 +105,7 @@
       x.fillStyle = b > .85 ? 'rgba(255,232,190,' + a + ')' : b > .6 ? 'rgba(170,236,226,' + a + ')' : 'rgba(226,234,244,' + a + ')';
       x.beginPath(); x.arc(sx, sy, sz / 2 + .15, 0, 7); x.fill(); }
     n = mob ? 5 : 10; // a few bright stars with a soft glow and a cross glint
-    for (s = 0; s < n; s++) { sx = rnd(s * 7 + 5101) * w; sy = rnd(s * 7 + 5107) * h; b = rnd(s * 7 + 5113); var rg = 5 + b * 6;
+    for (s = 0; s < n; s++) { sx = hash(s * 3.71 + 51.3) * w; sy = hash(s * 5.13 + 17.9) * h; b = hash(s * 2.29 + 7.7); var rg = 5 + b * 6;   // r72: rnd() put these on a grid
       var gl = x.createRadialGradient(sx, sy, 0, sx, sy, rg); gl.addColorStop(0, 'rgba(220,240,246,.45)'); gl.addColorStop(1, 'rgba(220,240,246,0)');
       x.fillStyle = gl; x.beginPath(); x.arc(sx, sy, rg, 0, 7); x.fill();
       x.strokeStyle = 'rgba(230,244,248,.28)'; x.lineWidth = .7; x.beginPath(); x.moveTo(sx - rg * 1.5, sy); x.lineTo(sx + rg * 1.5, sy); x.moveTo(sx, sy - rg * 1.5); x.lineTo(sx, sy + rg * 1.5); x.stroke();

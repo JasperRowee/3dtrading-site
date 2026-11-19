@@ -322,3 +322,22 @@ html.embed .bnh,.bnh{padding-left:calc(max(16px,env(safe-area-inset-left)) + 118
   .tdemo{grid-area:d;gap:6px}
   .tcb.try{flex:none;height:34px;padding:0 12px;font-size:13px}
 }
+
+/* r72 · 账户名放到我们自己的白色小卡（不在币安界面里）；最后一步不压暗，4 个 Dodo 探头各说一句 */
+.tk-card{position:fixed;left:16px;bottom:calc(var(--tcH,72px) + 16px);z-index:30;width:360px;max-width:calc(100vw - 24px);box-sizing:border-box;padding:12px 14px 14px;border-radius:14px;background:#fff;color:#1e2329;box-shadow:0 10px 32px rgba(0,0,0,.28);display:flex;flex-direction:column;gap:10px}
+.tk-card[hidden]{display:none}
+.tk-card .tk-ch{display:flex;align-items:center;height:18px}.tk-card .tk-ch img{height:16px;width:auto}
+.tk-card .tk-row{display:flex;gap:8px}
+.tk-card input{flex:1;min-width:0;height:42px;box-sizing:border-box;border-radius:8px;border:1px solid #d8dce1;background:#f5f6f8;color:#1e2329;padding:0 12px;font:14px -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+.tk-card input::placeholder{color:#8a919c}
+.tk-card input:focus{outline:0;border-color:#1fe0bf;box-shadow:0 0 0 3px rgba(31,224,191,.2);background:#fff}
+.tk-card input.bad{border-color:#f6465d}
+.dpks{position:fixed;inset:0;pointer-events:none;z-index:40}
+.dpk{position:absolute;left:0;top:0;display:flex;align-items:flex-end;gap:6px;max-width:260px;animation:dpkIn .42s cubic-bezier(.2,.9,.3,1.25) both}
+.dpk.off{visibility:hidden}
+.dpk img{flex:none;width:34px;height:34px;border-radius:50%;box-shadow:0 3px 10px rgba(0,0,0,.25);animation:dpkBob 2.6s ease-in-out infinite}
+.dpb{position:relative;padding:7px 10px;border-radius:12px 12px 12px 4px;background:#fff;color:#1e2329;font:600 12.5px/1.45 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+@keyframes dpkIn{from{opacity:0;transform-origin:left bottom;scale:.6}to{opacity:1;scale:1}}
+@keyframes dpkBob{0%,100%{translate:0 0}50%{translate:0 -3px}}
+@media (max-width:640px){.tk-card{left:10px;right:10px;width:auto;bottom:calc(var(--tcH,72px) + 10px)}.dpk{max-width:230px}.dpb{font-size:12px}.dpk img{width:28px;height:28px}}
+@media (prefers-reduced-motion:reduce){.dpk,.dpk img{animation:none}}

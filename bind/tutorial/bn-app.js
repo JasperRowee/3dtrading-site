@@ -195,7 +195,7 @@
         return '<span class="ba-ck' + (on ? ' on' : '') + (lock ? ' lock' : '') + (open && !p.required ? ' skip' : '') + '"><i></i><u>' + esc(en ? p.en : p.zh) + '</u>' + (lock ? LK : '') + '</span>';
       }).join('');
       var ips = (cfg.kit && cfg.kit.ips) || [];
-      var ipw = part === 'ip' ? ' data-t="ipw" data-copy="ips"' : ' data-copy="ips"';
+      var ipw = (part === 'ip' || part === 'bind') ? ' data-t="ipw" data-copy="ips"' : ' data-copy="ips"';
       return '<div class="ba-app">' + nav(w.subT, I.x) + '<div class="ba-dd"><b>' + esc(w.apiM) + '</b>' + I.tri + '</div><div class="ba-key ba-ecard">' +
         '<div class="ba-eh"><b>' + esc(w.edit) + '</b><span class="ba-btn y sm"' + (part === 'save' ? ' data-t="save"' : '') + '>' + esc(w.save) + '</span><span class="ba-btn sm">' + esc(w.cancel) + '</span></div>' +
         '<div class="ba-qr" data-slot="qr"><div class="q"></div><span>' + esc(en ? 'Scan to get address' : '扫码获取地址') + '</span></div>' +
@@ -204,13 +204,13 @@
         '<p class="ba-warn">' + esc(w.warnK) + '</p>' +
         '<small>' + esc(w.pubL) + '</small><button type="button" class="ba-kv ba-pk" data-copy="pub" aria-label="' + esc(en ? 'Copy 3dtrading’s full public key' : '复制 3dtrading 的完整公钥') + '"><code>' + esc(cfg.pubShort || '') + '</code><span class="cpi" aria-hidden="true">' + I.cp + '</span></button>' +
         '<small>' + esc(w.key) + '</small><div class="ba-kv slot" data-slot="key"></div>' +
-        '<small>' + esc(w.perm) + '</small><div class="ba-grid one"' + (part === 'perm' ? ' data-t="pg"' : '') + '>' + perms + '</div>' +
+        '<small>' + esc(w.perm) + '</small><div class="ba-grid one"' + (part === 'perm' || part === 'bind' ? ' data-t="pg"' : '') + '>' + perms + '</div>' +
         (open ? '' : '<p class="ba-lockn">' + LK + esc(en ? 'Trading permissions unlock once trusted IPs are added.' : '添加受信任的 IP 后，才能勾选交易权限。') + '</p>') +
         '<b class="ba-ipt">' + esc(w.ipT) + '</b><div class="ba-rad' + (tr ? '' : ' on') + '"><i></i>' + esc(w.ipAny) + '</div>' + (tr ? '' : '<p class="ba-anyw">' + esc(w.anyW) + '</p>') +
         '<div class="ba-rad' + (tr ? ' on' : '') + '"' + (part === 'iponly' ? ' data-t="iponly"' : '') + '><i></i>' + esc(w.ipOnly) + '</div>' +
         (tr ? (part === 'ip' || open
           ? '<div class="ba-ipw"' + ipw + '><div class="ba-chips">' + ips.map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') + '</div>' +
-            '<div class="ba-in mute ba-ipin"><code>' + esc(ips.join(' ')) + '</code><b>' + esc(part === 'ip' ? (en ? 'Copy' : '复制') : w.ipOk) + '</b></div></div>'
+            '<div class="ba-in mute ba-ipin"><code>' + esc(ips.join(' ')) + '</code><b>' + esc(part === 'ip' || part === 'bind' ? (en ? 'Copy' : '复制') : w.ipOk) + '</b></div></div>'
           : '<div class="ba-chips">' + (ipsIn ? ips.map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') : '') + '</div>' +
             '<div class="ba-in mute ba-ipin">' + esc(w.ipIn) + '<b' + (part === 'ips' ? ' data-t="ipadd"' : '') + '>' + esc(w.ipOk) + '</b></div>') : '') + '</div></div>';
     }

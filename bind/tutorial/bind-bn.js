@@ -161,7 +161,7 @@
       return '<span class="bn-ck' + (on ? ' on' : '') + (lock ? ' lock' : '') + (open && !p.required ? ' skip' : '') + '"' + (lock ? ' aria-disabled="true"' : '') + '><i></i><u>' + esc(en ? p.en : p.zh) + '</u>' + (lock ? LOCK : '') + '</span>';
     }).join('') || '<span class="bn-ck"><u>' + esc(en ? 'Permission list appears after you apply' : '申请绑定后显示权限清单') + '</u></span>';
     var ips = ipsOf(cfg) || [];
-    var ipCopy = part === 'ip' ? ' data-t="ipw" data-copy="ips" title="' + esc(en ? 'Click to copy the whitelist' : '点击复制白名单') + '"' : ' data-copy="ips"';
+    var ipCopy = (part === 'ip' || part === 'bind') ? ' data-t="ipw" data-copy="ips" title="' + esc(en ? 'Click to copy the whitelist' : '点击复制白名单') + '"' : ' data-copy="ips"';
     return '<div class="bn-key">' +
       '<div class="bn-qr" data-slot="qr"><div class="q"></div><span>' + esc(w.qr) + '</span></div>' +
       '<div class="bn-kd">' +
@@ -172,13 +172,13 @@
       '<div class="bn-kl">' + esc(w.pub) + '</div><div class="bn-kr"><button type="button" class="bn-in bn-pk" data-copy="pub" aria-label="' + esc(en ? 'Copy the full public key' : '复制完整公钥') + '"><code>' + esc(cfg.pubShort || shortPub(cfg, w)) + '</code>' + CPI + '</button></div>' +
       '<div class="bn-kl">' + esc(w.key) + '</div><div class="bn-kr slot" data-slot="key"' + (part === 'keys' ? ' data-t="key"' : '') + '></div></div>' +
       '<div class="bn-perm">' +
-      '<div class="bn-kl bn-plh"><span>' + esc(w.perm) + '</span></div><div class="bn-grid"' + (part === 'perm' ? ' data-t="pg"' : '') + '>' + perms + '</div>' +
+      '<div class="bn-kl bn-plh"><span>' + esc(w.perm) + '</span></div><div class="bn-grid"' + (part === 'perm' || part === 'bind' ? ' data-t="pg"' : '') + '>' + perms + '</div>' +
       (open ? '' : '<p class="bn-lockn">' + LOCK + esc(en ? 'Trading permissions unlock once trusted IPs are added.' : '添加受信任的 IP 后，才能勾选交易权限。') + '</p>') +
       '<div class="bn-ipt">' + esc(w.ipT) + '</div>' +
       '<div class="bn-rad' + (trusted ? '' : ' on') + '"><i></i>' + esc(w.ipAny) + ' <em>' + esc(w.ipAnyW) + '</em></div>' +
       '<div class="bn-rad' + (trusted ? ' on' : '') + '"' + (part === 'iponly' ? ' data-t="iponly"' : '') + '><i></i>' + esc(w.ipOnly) + '</div>' +
       (trusted ? (ipsIn ? '<div class="bn-ipw"' + ipCopy + '><div class="bn-chips" data-slot="ips">' + ips.map(function (ip) { return '<span>' + esc(ip) + '<b>✕</b></span>'; }).join('') + '</div>' +
-          '<div class="bn-ipin"><span><code>' + esc(ips.join(' ')) + '</code></span><b>' + esc(part === 'ip' ? (en ? 'Copy' : '复制') : w.ok) + '</b></div></div>'
+          '<div class="bn-ipin"><span><code>' + esc(ips.join(' ')) + '</code></span><b>' + esc(part === 'ip' || part === 'bind' ? (en ? 'Copy' : '复制') : w.ok) + '</b></div></div>'
         : '<div class="bn-chips" data-slot="ips"></div><div class="bn-ipin"><span>' + (part === 'ips' ? '<code>' + esc(ips.join(' ')) + '</code>' : esc(w.ipPh)) + '</span><b' + (part === 'ips' ? ' data-t="ipok"' : '') + '>' + esc(w.ok) + '</b></div>') : '') +
       (part === 'perm' ? '<div class="bn-sv"><span class="bn-btn y" data-t="save">' + esc(en ? 'Save' : '保存') + '</span><span class="bn-btn">' + esc(en ? 'Cancel' : '取消') + '</span></div>' : '') +
       '</div></div></div>';

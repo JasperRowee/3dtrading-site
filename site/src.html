@@ -350,7 +350,7 @@ addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) re
 <div class="pfx" id="pfx" aria-hidden="true"><canvas id="pfxS"></canvas><canvas id="pfxP"></canvas></div><div class="pfxg" id="pfxG" aria-hidden="true"></div>
 <script>/* r62 · back from the log-in page (?via=planet): the shell covers the screen from the first paint, the copy waits for the landing */
 try { if (/[?&]via=planet\b/.test(location.search) && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('via-planet', 'tx3'); } catch (e) {}</script>
-<script src="/3dtrading-site/login/planet.js?v=r70" data-art="1" data-gx="pfxS" data-orb="pfxP"></script>
+<script src="/3dtrading-site/login/planet.js?v=r72" data-art="1" data-gx="pfxS" data-orb="pfxP"></script>
 
 <script src="i18n/r48.js?v=r55"></script>
 <script>
@@ -411,6 +411,10 @@ let DCAP = (() => { const q = +(new URLSearchParams(location.search).get('dmax')
   return ios || ((navigator.hardwareConcurrency || 4) >= 8 && (navigator.deviceMemory || 4) >= 6) ? 3 : 2; })();
 const dprMax = () => Math.min(DCAP, devicePixelRatio || 1);
 let PERF = { n: 0, s: 0 };
+/* r72 · 手机转场负载（Jasper 2026-11-19）：按机器分档。手机（触屏）一律轻量：门光不做全屏模糊、门的羽化遮罩不做高斯模糊；
+   跑起来平均每帧超过 24 ms 就降一档分辨率：3 → 2 → 1.5（电脑 2 → 1.5）。转场途中也计数，太慢下次转场直接用半分辨率 */
+let LOWQ = /[?&]lowq=1/.test(location.search) || matchMedia('(pointer:coarse)').matches;
+const DFLOOR = 1.5;
 const QP = new URLSearchParams(location.search); let MS = +(QP.get('ms') || .62), MSX = +(QP.get('msx') || .75), MSY = .08;
 /* phones, per step: how large the picture is drawn (bigger = closer). 01 keeps the approved .62; from 02 the camera comes in */
 const MSS = (QP.get('mss') || '.62,.8,.8,.8,.8,.74,.55,.8,.8,.8,.62').split(',').map(Number); let CMS = MS;
@@ -657,7 +661,7 @@ let CULL = null, TXW = 0, TXD = 0, DOORG = null, FOGD = 150, TXO = 0, DOORFX = 0
 const PFX = (() => {
   const box = document.getElementById('pfx'), SKY = document.getElementById('pfxS'), art = () => window.__planetArt;
   const noMask = () => { if (SKY.style.maskImage || SKY.style.webkitMaskImage) SKY.style.webkitMaskImage = SKY.style.maskImage = ''; };
-  const UC = .5, LEN = 1.5, LEN_DOOR = 1.25, FM = .62, OH = 2.4;   // the way out is 1.5 moves, its first half inside the planet · FM: the log-in page's phone lens
+  const UC = .5, LEN = 1.5, LEN_DOOR = +(QP.get('ld') || 2.6), UA = .4, FM = .62, OH = 2.4;   // r72 · UA: the door's way in ends at UA, the rest is outside   // the way out is 1.5 moves, its first half inside the planet · FM: the log-in page's phone lens
   // OH: the shell stays see-through until its outline is well inside the screen (o = OH·ox), so the website is seen inside the planet
   // it came out of; from there on it is opaque, the log-in page's own planet, and the two pages hand over there (planet.js path3)
   const stepNow = () => { const b = [...document.querySelectorAll('#rail button')], i = b.findIndex(x => x.classList.contains('on')); return i < 0 ? 1 : i + 1; };
@@ -713,7 +717,7 @@ const PFX = (() => {
   function setRes(lo) { LORES = lo; const d = dprMax() * (lo ? .5 : 1), nd = lo ? Math.max(.6, d) : d; if (nd === DPR) return; DPR = nd; cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); }
   const busy = () => !!X;
   // the scene is wholly under the overlay (the shell has closed over it, or we are through the door): it need not be drawn
-  const hidden = () => !!X && (X.kind === 'door' ? X.past && X.u >= .22 : X.out && X.o >= X.oh - 1e-4);   // r64: no snapshot — the disc shows the live site until the shell has closed
+  const hidden = () => !!X && (X.kind === 'door' ? X.past && (!X.pin || X.o >= X.oh - 1e-4) : X.out && X.o >= X.oh - 1e-4);   // r72: through the door the scene is drawn again once we look back at the planet   // r64: no snapshot — the disc shows the live site until the shell has closed
   function exit(url) {
     if (X || leaving || !art()) return false; leaving = true; remember();
     const go = loginURL(url, 'exit'); window.__enter = { kind: 'exit', url: go, at: performance.now() };
@@ -731,7 +735,7 @@ const PFX = (() => {
   function cam(dt) {
     if (!X) { CULL = null; TXW = 0; TXD = 0; TXO = 0; DOORFX = 0; FOGD = 150; if (LORES) setRes(false); return; }
     // r66 · 1：只有在星球外面（官网只是圆盘里的一小块）才降分辨率；一进外壳、以及整段穿门，都是全分辨率
-    const lo = X.kind !== 'door' && X.out && !RM; if (lo !== LORES) setRes(lo);
+    const lo = (X.kind !== 'door' ? X.out : X.past) && !RM; if (lo !== LORES) setRes(lo);   // r72: the door's outside part too
     CST = { p: C.p.slice(), f: C.f.slice(), r: C.r.slice(), u: C.u.slice(), F: C.F, cx: C.cx, cy: C.cy };
     txFollow();
     // r67 · 11: door → log-in and log-in → website both run on the camera's own law (accelerate at CA, glide by FACTOR) from the speed they come in with
@@ -739,14 +743,25 @@ const PFX = (() => {
     const P0 = C.p.slice(), f0 = C.f.slice(), cx0 = C.cx, cy0 = C.cy, F0 = C.F, u = X.u;
     let P, f, cx, cy, F = F0;
     if (X.kind === 'door') {
-      /* r66 · 7：先在原地转过去正对门（前 25%），再朝门直线推进、到门口顺着门的法线穿过去；门一直亮着、越近开得越大；
-         Logo 和 Dodo 在镜头经过前淡掉；整段固定 1.3 秒 */
-      const S0 = X.A || (X.A = { p: P0.slice(), f: f0.slice(), cx: cx0, cy: cy0 }), toD = nrm(sub3(X.Dc, S0.p)), ua = sm(sg(u, 0, .25)), ub = sg(u, .22, 1), wB = ub * ub * (3 - 2 * ub) * .35 + ub * ub * .65;
+      /* r66 · 7：先在原地转过去正对门（前 25%），再朝门直线推进、到门口顺着门的法线穿过去；门一直亮着、越近开得越大；Logo 和 Dodo 在镜头经过前淡掉
+         r72 · 真的出门（Jasper 2026-11-19）：门里不再是一张星球图，而是门外真正的深空。穿过门后镜头继续往外飞，边飞边回头（水平转 180°），
+         身后那颗星球——我们刚才所在的官网——从画面一侧转进来，壳还是透明的，看得见里面的城市；镜头一路退到登录页的大球位置，壳合上，交给登录页 */
+      const u1 = Math.min(1, u / UA), o2 = Math.max(0, (u - UA) / (1 - UA));
+      const S0 = X.A || (X.A = { p: P0.slice(), f: f0.slice(), cx: cx0, cy: cy0 }), toD = nrm(sub3(X.Dc, S0.p)), ua = sm(sg(u1, 0, .25)), ub = sg(u1, .22, 1), wB = ub * ub * (3 - 2 * ub) * .35 + ub * ub * .65;
       const ch = Math.hypot(...sub3(X.Pd, S0.p));
       P = herm(S0.p, toD.map(v => v * ch), X.Pd, X.n.map(v => v * ch * .35), wB);
       f = nlerp(nlerp(S0.f, toD, ua), X.n, sm(sg(wB, .55, .92))); cx = L(S0.cx, W / 2, ua); cy = L(S0.cy, H / 2, ua);
-      X.past = (P[0] - X.Dc[0]) * X.n[0] + (P[2] - X.Dc[2]) * X.n[2] > -.4; if (X.past && X.uPast == null) { X.uPast = u; X.tPast = performance.now(); }
-      TXD = 0; TXO = sm(sg(u, .08, .85)); DOORFX = sm(sg(u, .02, .26)); TXW = 0; CULL = null;
+      if (o2 > 0) {   // outside: on out along the door's normal, turning round to the planet
+        const Pe = X.n.map((v, i) => SC[i] + v * X.dEnd), l2 = Math.hypot(...sub3(Pe, X.Pd)), tq = [X.n[2], 0, -X.n[0]];
+        P = herm(X.Pd, X.n.map(v => v * ch * .35 / (1 - UA) * UA), Pe, X.n.map(v => v * l2 * .25), o2);
+        const th = Math.PI * sm(sg(o2, .06, .9)), yd = nrm(X.n.map((v, i) => v * Math.cos(th) + tq[i] * Math.sin(th)));
+        f = nlerp(yd, nrm(sub3(SC, P)), sm(sg(o2, .6, .95))); X.th = th;
+        const k = sm(sg(o2, .6, 1)); cx = L(W / 2, X.cxe, k); cy = L(H / 2, X.cye, k); F = Math.exp(L(Math.log(F0), Math.log(X.Fe), sm(sg(o2, .25, 1))));
+      }
+      X.past = o2 > 0 || (P[0] - X.Dc[0]) * X.n[0] + (P[2] - X.Dc[2]) * X.n[2] > -.4; if (X.past && X.uPast == null) { X.uPast = u; X.tPast = performance.now(); }
+      const dd = Math.hypot(...sub3(P, SC)); X.d = dd; X.out = X.past && dd > SR; X.o = X.out ? clamp((dd - SR) / (X.dEnd - SR)) : 0; X.o2 = o2;
+      TXD = 0; TXO = sm(sg(u1, .08, .85)); DOORFX = sm(sg(u1, .02, .26)); TXW = X.past ? sm(sg(o2, 0, .3)) : 0; FOGD = 150 - 32 * TXW;
+      CULL = X.out ? { n: nrm(sub3(P, SC)), c: SR / dd, r2: (SR * .9) ** 2 } : null;
     } else {
       if (!X.fe) axis();
       if (u <= UC) {   // inside: straight back, curving onto the axis; the lens and the framing move to the log-in page's
@@ -763,6 +778,10 @@ const PFX = (() => {
       TXW = sm(sg(u, .03, .3)); TXD = 0; FOGD = 150 - 32 * TXW;
     }
     setCam(P, add3(P, f), 0, 0); C.F = F; C.cx = cx; C.cy = cy; txPin();
+    if (X.kind === 'door') {   // r72: where the planet is on screen (for the log-in page's drawing of it)
+      const v = sub3(SC, P), Z = v[0] * C.f[0] + v[1] * C.f[1] + v[2] * C.f[2];
+      X.pin = X.out && Z > SR * .15; if (X.pin) { X.pcx = C.cx + C.F * (v[0] * C.r[0] + v[2] * C.r[2]) / Z; X.pcy = C.cy - C.F * (v[0] * C.u[0] + v[1] * C.u[1] + v[2] * C.u[2]) / Z;
+        X.pr = Math.min(1e5, C.F * SR / Math.sqrt(Math.max(1e-6, X.d * X.d - SR * SR))); } }
   }
   /* each frame, after the scene is drawn: outside the shell, the log-in page's picture with the website inside the disc */
   function compose() {
@@ -776,18 +795,26 @@ const PFX = (() => {
       if (!X.past && D) { const poly = prPoly([[D.da - D.hw2, D.e1], [D.da + D.hw2, D.e1], [D.da + D.hw2, D.e0], [D.da - D.hw2, D.e0]].map(([a, e]) => onS(a, e, D.rr)));
         if (poly.length >= 3) { const ys = poly.map(p => p.y), xs = poly.map(p => p.x), x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
           k = clamp((y1 - y0) / H); qc = [clamp((x0 + x1) / 2, -W, 2 * W), clamp((y0 + y1) / 2, -H, 2 * H)];
-          const cover = x0 < -40 && x1 > W + 40 && y0 < -40 && y1 > H + 40, f = clamp(.05 * Math.min(x1 - x0, y1 - y0), 2, 26);
+          const cover = x0 < -40 && x1 > W + 40 && y0 < -40 && y1 > H + 40, f = LOWQ ? 0 : clamp(.05 * Math.min(x1 - x0, y1 - y0), 2, 26);
           if (cover) doorMask(''); else doorMask(poly.map(p => p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' '), f); }
         else doorMask(''); } else doorMask('');
       { const e = 1 - Math.exp(-Math.min(.1, (now - (X.tC || now)) / 1000) / .07); X.tC = now; X.kS = X.kS == null ? k : X.kS + (k - X.kS) * e; X.ee = e; k = X.kS; }   // r67 · 7: no one-frame jump when the door's outline leaves the screen
-      box.style.opacity = (sm(sg(X.u, 0, .08)) * L(.78, 1, sm(sg(k, .25, .8)))).toFixed(3);   // a little of the door's own light still shows through while it is small
-      const z = sm(k), R = X.Rl * L(.3, 1, z), ccx = qc ? qc[0] : X.cxe, ccy = qc ? qc[1] : X.cye;
-      art().frame({ cx: L(ccx, X.cxe, z), cy: L(ccy, X.cye, z), R, sky: 1, shell: 1, gl: JOIN.sky() });
+      box.style.opacity = X.past ? '1' : (sm(sg(X.u, 0, .08)) * L(.78, 1, sm(sg(k, .25, .8)))).toFixed(3);   // a little of the door's own light still shows through while it is small
+      // r72: the sky outside turns with the camera (drawn a little larger, slid as we turn round, back to the log-in page's own size at the end)
+      { const sc = 1 + .3 * (1 - sm(sg(X.o2 || 0, .55, 1))), sd = X.sd || (X.sd = Math.sign((X.n[2] * C.r[0] - X.n[0] * C.r[2]) || 1)), tx = sd * W * .13 * (1 - (X.th || 0) / Math.PI) * (sc - 1) / .3;
+        SKY.style.transform = `translateX(${tx.toFixed(1)}px) scale(${sc.toFixed(4)})`; }
+      if (X.pin) { const r = X.pr, rm = Math.max(0, r - .75), dim = .35 * sm(sg(X.o, 0, X.oh)); if (X.tPin == null) X.tPin = now; const skf = X.u >= .995 ? 1 : sm(clamp((now - X.tPin) / 450));   // r72: the log-in sky fades in as the planet turns into view
+        box.style.setProperty('--vg', sg(X.o, 0, X.ox).toFixed(3));
+        SKY.style.webkitMaskImage = SKY.style.maskImage = `radial-gradient(circle at ${X.pcx.toFixed(1)}px ${X.pcy.toFixed(1)}px, transparent ${rm.toFixed(1)}px, #000 ${(rm + 1).toFixed(1)}px)`;
+        art().frame({ cx: X.pcx, cy: X.pcy, R: r, sky: skf, lite: 1, gl: JOIN.sky(), shell: .4 * sm(sg(X.o, 0, X.ox)) + .6 * sm(sg(X.o, X.ox, X.oh)), inner: (c, x, y, R) => { c.save(); c.beginPath(); c.arc(x, y, R, 0, 7);
+          c.globalCompositeOperation = 'destination-out'; c.fillStyle = '#000'; c.fill(); c.globalCompositeOperation = 'source-over';
+          if (dim > .005) { c.fillStyle = `rgba(2,5,9,${dim.toFixed(3)})`; c.fill(); } c.restore(); } }); }
+      else { noMask(); box.style.setProperty('--vg', '1'); art().frame({ cx: -1e4, cy: -1e4, R: 1, sky: 1, shell: 1, gl: null }); }   // r72: the log-in sky has the planet's glow in it; looking away from the planet only the stars   // the planet is behind us: only the deep space outside
       if (GLO) { let op, sc, bl, gx = qc ? qc[0] - W / 2 : 0, gy = qc ? qc[1] - H / 2 : 0;
         if (X.tPast == null) { const gk = sm(sg(k, .3, 1)); op = .5 * gk; sc = L(.3, 1, gk); bl = 6; gx *= 1 - gk; gy *= 1 - gk; }
-        else { const gt = clamp((now - X.tPast) / 350); op = .5 * (1 - sm(gt)); sc = 1 + 1.4 * gt; bl = 6 + 54 * gt; gx = gy = 0; }
+        else { const gt = clamp((now - X.tPast) / 350); op = .5 * (1 - sm(gt)); sc = 1 + 1.4 * gt; bl = LOWQ ? 0 : 6 + 54 * gt; gx = gy = 0; }
         X.gS = X.gS == null ? op : X.gS + (op - X.gS) * (X.ee || 1); op = X.gS;
-        GLO.style.display = op > .003 ? 'block' : 'none'; GLO.style.opacity = op.toFixed(3); GLO.style.transform = `translate(${gx.toFixed(1)}px,${gy.toFixed(1)}px) scale(${sc.toFixed(3)})`; GLO.style.filter = `blur(${bl.toFixed(1)}px)`; }
+        GLO.style.display = op > .003 ? 'block' : 'none'; GLO.style.opacity = op.toFixed(3); GLO.style.transform = `translate(${gx.toFixed(1)}px,${gy.toFixed(1)}px) scale(${sc.toFixed(3)})`; GLO.style.filter = bl > 0 ? `blur(${bl.toFixed(1)}px)` : ''; }
     } else if (!X.out) { noMask();
       if (box.className !== 'pfx') { box.className = 'pfx'; de.classList.remove('via-planet'); }
     } else {
@@ -805,7 +832,7 @@ const PFX = (() => {
     } else {
       // r63 · the log-in page's own topbar, headline and form come in over the late part of the pull-back and are whole on the last frame
       // r66 · 7：门：登录界面只在过门之后淡入（约 0.35 秒，1.3 秒时已完整），不和官网场景叠在一起
-      const up = X.kind === 'door' ? (X.uPast == null ? 0 : X.u >= 1 ? 1 : sm((performance.now() - X.tPast) / 350)) : sm(sg(X.u, .66, .985));
+      const up = X.kind === 'door' ? sm(sg(X.u, UA + (1 - UA) * .9, .99)) : sm(sg(X.u, .66, .985));   // r72: the log-in page comes in once the planet has settled, as on the way out
       JOIN.ui(up);
       if (!X.nav && X.tgt >= 1 && X.tgt - X.u < 1e-3) { X.nav = true; if (!JOIN.go(X.url)) location.href = X.url; }
     }
@@ -819,7 +846,7 @@ const PFX = (() => {
     const ux = UC + (1 - UC) * X.oh; if (s && Date.now() - s.at < 20000 && s.u > UC) { X.u = Math.max(ux, s.u); X.v = Math.min(0, s.v); } else X.u = ux;
     X.out = true; X.o = (X.u - UC) / (1 - UC); X.d = SR + (X.dEnd - SR) * X.o; de.classList.add('tx3'); compose();
   }
-  function reset() { txClear(); noMask(); doorMask(''); if (GLO) GLO.style.display = 'none'; X = null; CULL = null; TXW = 0; TXD = 0; TXO = 0; DOORFX = 0; FOGD = 150; box.className = 'pfx'; box.style.clipPath = ''; box.style.opacity = ''; de.classList.remove('via-planet', 'tx3', 'tx3o'); }
+  function reset() { txClear(); noMask(); doorMask(''); SKY.style.transform = ''; if (GLO) GLO.style.display = 'none'; X = null; CULL = null; TXW = 0; TXD = 0; TXO = 0; DOORFX = 0; FOGD = 150; box.className = 'pfx'; box.style.clipPath = ''; box.style.opacity = ''; de.classList.remove('via-planet', 'tx3', 'tx3o'); }
   // 登录/注册 (and 和 Dodo 对话, which also goes to sign-up) from any step: the pull-back. Signed in, they stay plain links
   document.addEventListener('click', e => { const a = e.target.closest && e.target.closest('a[data-go]'); if (!a || user() || a.dataset.go === 'dashboard') return;
     try { if (a.dataset.go === 'ai') sessionStorage.setItem('3dt.next', 'ai'); else sessionStorage.removeItem('3dt.next'); } catch (x) {}   // r66: after signing in, 和 Dodo 对话 lands on Dodo
@@ -947,8 +974,12 @@ SCL.addEventListener('scroll', () => {
    太轻、没过门槛的一划不动；鼠标滚轮一格（一两个大值）= 一站。手机触屏不受影响 */
 /* r71 · 触发只算一站（Jasper 2026-11-19）。过门槛那一下（哪怕单个事件就远超 196）只走 1 站，超出部分作废；
    之后 CD 内只按触发后新滑的距离算，每满 392 多一站（触发后 392 · 784 · 1176，最多 4 站） */
-const WTH = { BASE: +QP.get('wth') || 196, CD: +QP.get('wcd') || 350, GAP: 90, MAXN: 4 };
-const wthAt = n => n <= 0 ? 0 : WTH.BASE + WTH.BASE * 2 * (n - 1);
+/* r72 · 第一下更容易（Jasper 2026-11-19）：触发门槛 196 → 130；CD 内每多一站 392 × 1.5 = 588。
+   「偶尔第一下不触发」的原因：还没过门槛时，事件之间只要停顿 90 ms 这一划就被锁死（慢划、Magic Mouse 起手慢时常见），
+   后面再怎么滑都被当成惯性吃掉；上一划的惯性尾巴里起手的新一划也常被吞。改为：没触发的一划不锁，停顿超过 160 ms 才重新计数；
+   从旧惯性里冒出来的新一划判定放宽 */
+const WTH = { BASE: +QP.get('wth') || 130, STEP: +QP.get('wst') || 588, CD: +QP.get('wcd') || 350, GAP: 90, MAXN: 4 };
+const wthAt = n => n <= 0 ? 0 : WTH.BASE + WTH.STEP * (n - 1);
 const stepsOf = est => { let n = 0; while (n < WTH.MAXN && est >= wthAt(n + 1)) n++; return n; };
 const busyIn = () => GATE || PFX.busy() || HOMING;
 function gesture(dir, n, why) { if (busyIn() || n < 1) return; GLAST = performance.now(); window.__lastG = { dir, n, why };
@@ -957,7 +988,7 @@ function gesture(dir, n, why) { if (busyIn() || n < 1) return; GLAST = performan
   const tg = clamp(CK.tgt + dir * n, 0, NS - 1); if (tg !== CK.tgt) jump(tg); window.__lastG.tg = tg; }
 let WG = null, GLAST = 0;
 function wStep(g) {   // inside the CD: the scroll so far decides how far this swipe goes
-  const n = Math.min(WTH.MAXN, 1 + Math.floor(g.ex / (WTH.BASE * 2))); if (n <= g.n) return;
+  const n = Math.min(WTH.MAXN, 1 + Math.floor(g.ex / WTH.STEP)); if (n <= g.n) return;
   if (busyIn() || (g.dir > 0 && g.base === NS - 1)) return; g.n = n;
   const tg = clamp(g.base + g.dir * n, 0, NS - 1); if (tg === CK.tgt) return;
   GLAST = performance.now(); window.__lastG = { dir: g.dir, n, why: 'wheel:' + Math.round(g.sum), tg }; jump(tg); }
@@ -969,12 +1000,12 @@ SCL.addEventListener('wheel', e => { e.preventDefault(); if (gateOn() || chsOpen
   const n = performance.now(), dir = Math.sign(dy), ad = Math.abs(dy), W0 = WG;
   let fresh = !W0 || n - W0.last > 160 || (dir !== W0.dir && ad > 2);
   if (!fresh && W0.locked) { W0.minL = Math.min(W0.minL, ad); W0.rise = ad > W0.la ? W0.rise + 1 : 0;
-    if (n - W0.tl > 60 && W0.rise >= 3 && ad > Math.max(12, W0.minL * 2.2 + 8)) fresh = true; }   // a real new push rising out of the old one's tail
+    if (n - W0.tl > 50 && W0.rise >= 2 && ad > Math.max(10, W0.minL * 1.8 + 6)) fresh = true; }   // a real new push rising out of the old one's tail
   if (fresh) { if (W0 && !W0.locked) wLock('next'); WG = { dir, sum: 0, ds: [], peak: 0, t0: n, last: n, la: ad, rise: 0, locked: false, n: 0, tt: 0, ex: 0, base: CK.tgt }; }
   const g = WG; g.last = n; g.la = ad; if (g.locked) return;   // after the CD: the rest of this swipe's inertia is eaten
   g.sum += ad; g.ds.push(ad); g.peak = Math.max(g.peak, ad); if (g.n) g.ex += ad;   // r71: only scroll after the trigger counts towards extra stops
   if (!g.n) {   // not triggered yet
-    clearTimeout(g.tm); g.tm = setTimeout(() => wLock('gap'), WTH.GAP);
+    clearTimeout(g.tm); if (g.ds.length <= 2 && g.peak >= 40) g.tm = setTimeout(() => { if (WG === g && !g.n && g.ds.length <= 2) wLock('gap'); }, WTH.GAP);   // r72: only a lone mouse-wheel notch (≥40) locks on a pause; a slow small swipe keeps adding up
     if (g.sum < wthAt(1) || busyIn()) return;
     clearTimeout(g.tm); g.n = 1; g.tt = n; g.base = CK.tgt; g.cd = setTimeout(() => wLock('cd'), WTH.CD);
     GLAST = n; window.__lastW = null;
@@ -1867,7 +1898,7 @@ function frame(now) {
   if (SITESTOP) { LOOPING = false; return; }   // r63 · joined to the log-in page: the website draws nothing until it comes back
   FN++; if (FN % 4 === 0) inkScan();
   const dt = Math.min(.05, (now - last) / 1000); last = now; T += dt;
-  if (DCAP > 2 && !document.hidden && dt > 0 && !PFX.busy()) { PERF.n++; PERF.s += dt; if (PERF.n >= 90) { if (PERF.s / PERF.n > .024) { DCAP = 2; resize(); } PERF = { n: 0, s: 0 }; } }   // r66 · 1: too slow at 3×: 2×
+  if (DCAP > DFLOOR && !document.hidden && dt > 0 && !PFX.busy()) { PERF.n++; PERF.s += dt; if (PERF.n >= 90) { if (PERF.s / PERF.n > .024) { DCAP = DCAP > 2 ? 2 : DFLOOR; LOWQ = true; resize(); window.__tier = DCAP; } PERF = { n: 0, s: 0 }; } }   // r66 · 1 / r72: too slow: one step down (3× → 2× → 1.5×)
   if (RM) { DF = null; CK.t = CK.tgt; CK.v = 0; CK.vs = 0; } else if (DF) dfStep(dt); else camStep(CK, dt);
   scrLock(GATE || PFX.busy() || HOMING || !!DF);   // r64: no page scroll under the motion layer, a planet transition or going home
   K.t = CK.t; K.v = CK.v; K.tgt = CK.tgt;   // r61: the scene clock is the camera's; what it shows moves with the shot

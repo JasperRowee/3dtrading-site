@@ -2557,10 +2557,17 @@ html.rm .ddp.in.think .ddp-pu,html.rm .ddp.in.think .ddp-head svg,html.rm .ddp.i
 .r67-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 2px}
 .r67-chip{appearance:none;font:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);background:var(--sf-hi);color:var(--ink);border-radius:999px;padding:6px 12px;cursor:pointer;min-height:34px}.r67-chip:hover{border-color:var(--brandD);color:var(--brandD)}
 @keyframes r67hl{0%,100%{box-shadow:0 0 0 2px var(--brandD),0 0 0 6px rgba(47,220,188,.28)}50%{box-shadow:0 0 0 2px var(--brandD),0 0 0 12px rgba(47,220,188,0)}}
-.r67-hl{position:relative;z-index:2;animation:r67hl 1.2s ease-in-out infinite;border-radius:10px;outline:none}
+.r67-hl{position:relative;z-index:2;border-radius:10px;outline:none;box-shadow:0 0 0 2px rgba(47,220,188,.55)}
+/* r72 (Jasper: 指引不要闪，就探头，然后说一些话): Dodo peeks over the target's top-right corner with a speech bubble */
+.gpk{position:fixed;left:0;top:0;z-index:118;pointer-events:none;display:flex;align-items:flex-end;gap:6px;max-width:min(280px,calc(100vw - 16px));transition:opacity .2s}
+.gpk[hidden]{display:none}.gpk.off{opacity:0}
+.gpk .gpk-d{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;background:var(--sf);box-shadow:var(--sh2);animation:gpkIn .45s cubic-bezier(.2,.9,.3,1.3) both}
+.gpk .gpk-d svg{width:30px;height:30px}
+.gpk .gpk-b{padding:7px 11px;border-radius:12px 12px 12px 4px;background:var(--sf);color:var(--ink);border:1px solid var(--line);box-shadow:var(--sh2);font-size:12.5px;font-weight:600;line-height:1.45;animation:gpkB .3s .15s ease-out both}
+@keyframes gpkIn{from{transform:translateY(16px) scale(.6);opacity:0}}@keyframes gpkB{from{opacity:0;transform:translateX(-6px)}}
 .r67-sel{outline:2px dashed var(--brandD)!important;outline-offset:2px;background-color:rgba(47,220,188,.1)}
-html.rm .r67-hl{animation:none;box-shadow:0 0 0 3px var(--brandD)}
-@media (prefers-reduced-motion:reduce){.r67-hl{animation:none;box-shadow:0 0 0 3px var(--brandD)}}
+html.rm .gpk *{animation:none!important}
+@media (prefers-reduced-motion:reduce){.gpk *{animation:none!important}}
 .gdb{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:80;display:flex;align-items:center;gap:12px;width:min(560px,calc(100vw - 24px));background:var(--sf);color:var(--ink);border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh2);padding:10px 12px}
 .gdb.paused{width:auto;max-width:calc(100vw - 24px)}.gdb.qsel{bottom:84px}
 .gdb-dd{flex:0 0 auto;width:30px;height:30px;display:grid;place-items:center}.gdb-dd svg{width:30px;height:30px}
@@ -2950,6 +2957,11 @@ html[data-theme="night"] .qb-ok{color:#04261f}
 .qb-pm.on{background:var(--brandL);color:var(--ink)}.qb-pm.on i,.qb-pm.on small{color:var(--brandD)}
 .qb-pm.off i,.qb-pm.off small{color:var(--short)}
 .qb-pm.opt{background:transparent;border:1px dashed var(--line)}.qb-pm.opt small{color:var(--goldInk)}
+.qb-wl{white-space:nowrap;margin-left:auto;appearance:none;border:0;background:none;padding:0 0 0 2px;font:inherit;font-size:11.5px;font-weight:650;color:var(--brandD);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.qb-pmw{min-width:0}.qb-wlp{margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--soft);font-size:12.5px;color:var(--ink2);line-height:1.5}
+.qb-wlp[hidden]{display:none}.qb-wlp p{margin:0 0 7px}
+.qb-wlc{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}.qb-wlc code{font:600 12px ui-monospace,Menlo,monospace;padding:3px 7px;border-radius:6px;background:var(--sf);color:var(--ink);border:1px solid var(--line)}
+.qb-wlcp{position:relative;appearance:none;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--sf);color:var(--ink);border-radius:8px;padding:5px 10px;font:inherit;font-size:12.5px;font-weight:650;cursor:pointer}.qb-wlcp .qb-ci svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
 .qb-f{align-items:start}.qb-f .qb-k{padding-top:10px}
 .qb-in{display:flex;gap:8px;flex-wrap:wrap}
 .qb-in input{flex:1 1 220px;min-width:0;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--sf);color:var(--ink);font:inherit;font-size:14px}
@@ -3058,6 +3070,7 @@ html[data-theme="night"] .ddm{box-shadow:0 40px 100px -30px rgba(0,0,0,.8),0 0 0
   .qb-key code,.qb-ip code{font-size:12.5px}
   .qb-pms{display:grid;grid-template-columns:1fr 1fr;gap:4px}
   .qb-pm{padding:5px 7px;font-size:11.5px;gap:4px;min-width:0}
+  .qb-pm.opt{grid-column:1/-1}
   .qb-pm span{flex:1 1 auto;min-width:0;line-height:1.25}
   .qb-pm small{font-size:10px;padding:0 3px;flex:none}
   .qb-ips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
@@ -3465,7 +3478,7 @@ html[data-theme="night"] .qb-lead{background:#0a0d10;box-shadow:0 0 0 1px rgba(2
 
 <div class="tip" id="tip"></div>
 <div class="toast" id="toast" role="status"></div>
-<script src="i18n-en.js?v=r70"></script>
+<script src="i18n-en.js?v=r72"></script>
 <script id="i18n-engine">
 /* i18n · zh ⇄ en。源码文案保持中文；英文来自 i18n-en.js（window.I18N_EN）。
    键规则：去掉首尾空白、合并空白；日期与数字替换成 {0}{1}…，按出现顺序。查不到整句时按 · ，；。： 分段再查。 */
@@ -5892,9 +5905,11 @@ function bnPem() {
 }
 const bnShort = () => { const b = bnPem().split('\n')[1]; return b.slice(0, 10) + '…' + b.slice(-8); };
 const bnSave = () => { try { TDBind.saveDraft($('#bnNm')?.value || ''); } catch (e) {} };
+/* r72 (Jasper): 「允许交易币对白名单」可选旁边加「查看建议白名单」——常用、成交量大的 USDT 交易对 */
+const BN_PAIRS = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT', 'XRPUSDT', 'DOGEUSDT', 'ADAUSDT', 'LINKUSDT', 'AVAXUSDT', 'LTCUSDT', 'TRXUSDT', 'DOTUSDT'];
 const CP_I = '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2.5"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>';
 function qbForm() {
-  const pm = BN_PERMS.map(([id, t, k]) => `<li class="qb-pm ${k}" data-pm="${id}"><i aria-hidden="true">${k === 'on' ? '✓' : k === 'off' ? '✕' : '○'}</i><span>${t}</span><small>${k === 'on' ? '勾选' : k === 'off' ? '不勾' : '可选'}</small></li>`).join('');
+  const pm = BN_PERMS.map(([id, t, k]) => `<li class="qb-pm ${k}" data-pm="${id}"><i aria-hidden="true">${k === 'on' ? '✓' : k === 'off' ? '✕' : '○'}</i><span>${t}</span><small>${k === 'on' ? '勾选' : k === 'off' ? '不勾' : '可选'}</small>${id === 'pairs' ? '<button type="button" class="qb-wl" id="qbWlB" data-qbwl aria-expanded="false" aria-controls="qbWl">查看建议白名单</button>' : ''}</li>`).join('');
   /* r67 · 只留五行：账户名称 → 公钥 → IP 白名单 → 权限配置 → API Key + 绑定。说明、长提示、演示提示、跳过都去掉；1234 演示照样可用。r68：「查看完整教程」入口恢复（电脑在底部右侧，手机在顶部右侧） */
   return `<div class="qb qb5" id="qb">
     <div class="qb-row"><label class="qb-k" for="bnNm"><em>1</em>账户名称</label>
@@ -5902,7 +5917,8 @@ function qbForm() {
     <div class="qb-row"><div class="qb-k"><em>2</em>公钥</div>
       <button type="button" class="qb-key" id="qbKey" data-qbcp="pem" aria-label="复制完整公钥"><code>${esc(bnShort())}</code><span class="qb-ci">${CP_I}</span><span class="qb-ok" aria-hidden="true">已复制</span></button></div>
     <div class="qb-row"><div class="qb-k"><em>3</em>IP 白名单</div><div class="qb-ips">${BN_IPS.map((ip, i) => `<button type="button" class="qb-ip" data-qbcp="ip${i}" aria-label="复制 IP ${ip}"><code>${ip}</code><span class="qb-ci">${CP_I}</span><span class="qb-ok" aria-hidden="true">已复制</span></button>`).join('')}</div></div>
-    <div class="qb-row"><div class="qb-k"><em>4</em>权限配置</div><ul class="qb-pms" aria-label="币安 API 权限">${pm}</ul></div>
+    <div class="qb-row"><div class="qb-k"><em>4</em>权限配置</div><div class="qb-pmw"><ul class="qb-pms" aria-label="币安 API 权限">${pm}</ul>
+      <div class="qb-wlp" id="qbWl" hidden><p>建议白名单：成交量大、流动性好的 USDT 交易对。勾选白名单后只能交易名单里的币对，不确定就不勾。</p><div class="qb-wlc">${BN_PAIRS.map(x => `<code>${x}</code>`).join('')}</div><button type="button" class="qb-wlcp" data-qbcp="pairs"><span class="qb-ci">${CP_I}</span>复制全部<span class="qb-ok" aria-hidden="true">已复制</span></button></div></div></div>
     <form class="qb-row qb-f" id="bnF" novalidate><label class="qb-k" for="bnKey"><em>5</em>API Key</label>
       <div class="qb-in"><input id="bnKey" autocomplete="off" spellcheck="false" maxlength="64" placeholder="粘贴 API Key" aria-describedby="bnErr">
         <button type="submit" class="btn brand">绑定</button></div>
@@ -5985,11 +6001,13 @@ document.addEventListener('click', e => {
   if (!e.target.closest('#qb')) return;
   const c = e.target.closest('[data-qbcp]');
   if (c) {
-    const k = c.dataset.qbcp, v = k === 'pem' ? bnPem() : BN_IPS[+k.slice(2)];
-    (navigator.clipboard?.writeText(v) || Promise.reject()).then(() => { qbCopied(c); toast(k === 'pem' ? '已复制完整公钥' : '已复制 IP ' + v); },
+    const k = c.dataset.qbcp, v = k === 'pem' ? bnPem() : k === 'pairs' ? BN_PAIRS.join(',') : BN_IPS[+k.slice(2)];
+    (navigator.clipboard?.writeText(v) || Promise.reject()).then(() => { qbCopied(c); toast(k === 'pem' ? '已复制完整公钥' : k === 'pairs' ? '已复制建议白名单' : '已复制 IP ' + v); },
       () => { try { getSelection().selectAllChildren(c.querySelector('code')); } catch (x) {} toast(k === 'pem' ? '复制失败：请改用完整教程里的公钥' : '复制失败：已选中文本，请按 ⌘C / Ctrl+C'); });
     return;
   }
+  const wl = e.target.closest('[data-qbwl]');
+  if (wl) { const pn = $('#qbWl'); pn.hidden = !pn.hidden; wl.setAttribute('aria-expanded', String(!pn.hidden)); wl.textContent = pn.hidden ? '查看建议白名单' : '收起建议白名单'; if (window.__i18nApply) __i18nApply(wl); return; }
   if (e.target.closest('#bnGuide')) { bnSave(); return; }
   if (e.target.closest('[data-qbskip]')) { bnSave(); closeDlg(); toast('已跳过：可随时在个人菜单或「我的」里添加币安账户'); return; }
   if (e.target.closest('[data-bxnext]')) { QB.done = null; QB.carried = false; qbRender('key'); toast('换一个子账户，按同样五行再绑定一次'); return; }
@@ -6983,9 +7001,9 @@ function cmdGoList(kind) {
 function buildGo(arg) {
   const p = arg ? matchList(PORTALS, arg)[0] : null, ch = hasData() ? [eqLine()] : [vzE('e_acct')];
   if (!p) return { a: R(arg ? `没找到「${esc(arg)}」，下面这些地方可以直接带你去：` : '选一个地方，我直接带你到那个按钮：', arg ? `Couldn’t find “${esc(arg)}”. I can take you straight to any of these:` : 'Pick a place and I’ll take you straight to the button:',
-    [cmdGoList('go'), ...ch], [['也可以直接输入：/前往 修改密码', 'Or type it: /go change password'], ['到了以后，那个按钮会亮起来', 'The button lights up when you arrive']], null) };
-  return { p, a: R(`好，带你去「${p.zh}」，按钮正在发光。`, `Taking you to “${p.en}” — the button is glowing.`, ch,
-    [['到了以后按钮会闪几下，点它就行', 'The button pulses when you get there; just tap it'], ['想一步步做，用 /指引', 'For step-by-step help, use /guide']], ['portal:' + p.id, '再带我去一次']) };
+    [cmdGoList('go'), ...ch], [['也可以直接输入：/前往 修改密码', 'Or type it: /go change password'], ['到了以后，Dodo 会在那个按钮旁边探头', 'Dodo peeks out by the button when you arrive']], null) };
+  return { p, a: R(`好，带你去「${p.zh}」，Dodo 在按钮旁边等你。`, `Taking you to “${p.en}” — Dodo is waiting by the button.`, ch,
+    [['到了以后 Dodo 会在按钮旁边探头，点它就行', 'Dodo peeks out next to the button; just tap it'], ['想一步步做，用 /指引', 'For step-by-step help, use /guide']], ['portal:' + p.id, '再带我去一次']) };
 }
 function buildGuide(arg) {
   const f = arg ? matchList(FLOWS, arg)[0] : null;
@@ -7094,11 +7112,27 @@ document.addEventListener('submit', e => {
 window.addEventListener('langchange', () => { if (!pop.hidden) popRender(); pop.setAttribute('aria-label', EN() ? 'Commands' : '命令'); });
 
 /* ---------- 传送门：打开页面 / 弹窗，点亮那个按钮 ---------- */
-function glow(el) {
+const gpk = document.createElement('div'); gpk.className = 'gpk'; gpk.hidden = true; gpk.setAttribute('role', 'status'); gpk.setAttribute('data-i18n-skip', ''); document.body.appendChild(gpk);
+let GPK = null;
+function peekOff() { GPK = null; gpk.hidden = true; cancelAnimationFrame(peekOff.raf); }
+function peekPlace() {
+  if (!GPK || !GPK.isConnected || !GPK.classList.contains('r67-hl')) { peekOff(); return; }
+  const r = GPK.getBoundingClientRect(), w = gpk.offsetWidth, h = gpk.offsetHeight, M = 8;
+  if (!r.width || r.bottom < 0 || r.top > innerHeight) { gpk.classList.add('off'); return; }
+  gpk.classList.remove('off');
+  let x = r.right - Math.min(w, r.width / 2 + 40), y = r.top - h + 8;           // Dodo peeks over the top-right edge
+  if (y < M) y = r.bottom - 8;                                                   // no room above: peek from below
+  x = Math.max(M, Math.min(x, innerWidth - w - M)); y = Math.max(M, Math.min(y, innerHeight - h - M));
+  gpk.style.transform = `translate(${Math.round(x)}px,${Math.round(y)}px)`;
+}
+function peekLoop() { peekPlace(); if (GPK) peekOff.raf = requestAnimationFrame(peekLoop); }
+function glow(el, say) {
   $$('.r67-hl').forEach(x => x.classList.remove('r67-hl'));
-  if (!el) return false;
+  if (!el) { peekOff(); return false; }
   el.scrollIntoView({ block: 'center', behavior: RM ? 'auto' : 'smooth' });
   el.classList.add('r67-hl'); clearTimeout(el._hl); el._hl = setTimeout(() => el.classList.remove('r67-hl'), 6000);
+  gpk.innerHTML = `<span class="gpk-d" aria-hidden="true">${ddMini()}</span><span class="gpk-b">${esc(say || LL('在这里，点它就行', 'Right here — just tap it'))}</span>`;
+  gpk.hidden = false; GPK = el; cancelAnimationFrame(peekOff.raf); peekLoop();
   return true;
 }
 function waitEl(get, cb, n = 0) { const el = get(); if (el && el.getBoundingClientRect().width > 0) return cb(el); if (n > 30) return cb(null); setTimeout(() => waitEl(get, cb, n + 1), 80); }
@@ -7108,7 +7142,7 @@ function portal(id) {
   if ($('#modal.on') && !/^(password|email|devices|theme|lang)$/.test(id)) closeDlg();
   if (id === 'password' || id === 'email' || id === 'devices') { SEC.open = ''; }
   p.run();
-  waitEl(p.el, el => { if (!glow(el)) { toast(LL('那个按钮现在不在页面上', 'That button is not on screen right now')); return; }
+  waitEl(p.el, el => { if (!glow(el, LL(`「${p.zh}」在这里，点它就行`, `“${p.en}” is right here`))) { toast(LL('那个按钮现在不在页面上', 'That button is not on screen right now')); return; }
     if (p.tap && ACTM() !== 'show') dodoTap(el, () => el.click()); });   // r70 · 代你操作：安全的入口 Dodo 直接点开
 }
 /* 跳转按钮：portal:x、guide:x、回到引用的日子 / 订单，其余交给原来的 goTo */
@@ -7152,7 +7186,7 @@ function guideRender() {
 function guideShow() {
   const f = FLOWS.find(x => x.id === GD.f); if (!f) return; const s = f.steps[GD.i], tok = ++GD.tok;
   GD.wait = ACTM() !== 'show' ? 'busy' : ''; guideRender(); s.run();
-  waitEl(s.el, el => { if (!GD.on || tok !== GD.tok) return; glow(el); if (el) { clearTimeout(el._hl); } if (ACTM() !== 'show') agentStep(f, s, el, tok); });
+  waitEl(s.el, el => { if (!GD.on || tok !== GD.tok) return; glow(el, EN() ? s.en : s.zh); if (el) { clearTimeout(el._hl); } if (ACTM() !== 'show') agentStep(f, s, el, tok); });
 }
 /* r70 · Dodo 代你操作：Dodo 的小手移到按钮上，点一下；轮到你时停下来等你 */
 const dcur = document.createElement('div'); dcur.className = 'ddcur'; dcur.hidden = true; dcur.setAttribute('aria-hidden', 'true');
@@ -7197,8 +7231,8 @@ function agentSubmit(f, s, tok) {
       guideEnd(true); toast(LL(`「${f.zh}」已完成`, `“${f.en}” done`)); }, 450); });
 }
 function guideStart(id) { if (!FLOWS.some(x => x.id === id)) return; GD.f = id; GD.i = 0; GD.on = true; GD.fin = null; guideShow(); }
-function guideStop() { GD.on = false; GD.tok++; GD.wait = ''; dcur.hidden = true; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); guideRender(); }
-function guideEnd(done) { GD.fin = done ? GD.f : null; GD.on = false; GD.tok++; GD.wait = ''; dcur.hidden = true; GD.f = null; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); gbar.hidden = true; gdcSync(); }
+function guideStop() { GD.on = false; GD.tok++; GD.wait = ''; dcur.hidden = true; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); guideRender(); }
+function guideEnd(done) { GD.fin = done ? GD.f : null; GD.on = false; GD.tok++; GD.wait = ''; dcur.hidden = true; GD.f = null; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); gbar.hidden = true; gdcSync(); }
 gbar.addEventListener('click', e => {
   const b = e.target.closest('[data-gd]'); if (!b) return; const k = b.dataset.gd, f = FLOWS.find(x => x.id === GD.f);
   if (k === 'stop') { guideStop(); toast(LL('指引已暂停：自由操作吧，随时点「继续指引」', 'Guide paused — do your thing, then tap “Resume guide”')); return; }

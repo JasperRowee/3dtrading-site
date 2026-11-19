@@ -121,18 +121,22 @@
       /* r61 (Jasper): after the public key, the edit page is shown ready-made, in Binance's order of what to do there:
        * IP whitelist (already filled — click it to copy) → permissions (what we need already ticked) → last, the API Key (click to paste).
        * Click anywhere in the dark to go on. */
-      { d: ['perm', 'ip'], t: '[data-t="ipw"]', ha: '.bn-rad.on', kind: 'self', zh: '「只访问受信任的IP」已选好，白名单也已填好。点白名单复制，到币安粘贴后点「确认」。点暗处继续', en: 'Restrict to trusted IPs is chosen and the whitelist is filled in. Click the whitelist to copy it, paste it on Binance and click Confirm. Click the dark area to go on' },
-      { d: ['perm', 'perm'], t: '[data-t="pg"]', kind: 'self', zh: 'IP 加好后权限会解锁。在币安照着勾选亮着的 5 项，其余不勾，点「保存」并由你本人完成验证。点暗处继续', en: 'Once the IPs are added, permissions unlock. On Binance tick the 5 lit ones, leave the rest, click Save and pass the check yourself. Click the dark area to go on' },
       { p: ['sub', { rows: 1, toast: 'pm', hot: 'mgmt' }], pt: '[data-t="mgmt"]', zh: '统一账户更新完成后，点左上角「账号管理 ▾」', en: 'When Portfolio Margin is ready, tap Account Management ▾' },
       { p: ['sub', { rows: 1, sheet: 'mgmt' }], pt: '[data-t="apim"]', zh: '点「API管理」', en: 'Tap API Management' },
       { p: ['api', { hot: 'newapi' }], pt: '[data-t="newapi"]', zh: '点「+ 创建API」', en: 'Tap + Create API' },
       { p: ['api', { sheet: 'type', self: true }], pt: '[data-t="next"]', zh: '选「自行生成」，点「下一步」', en: 'Choose Self-generated, tap Next' },
       { p: ['api', { sheet: 'pub' }], pt: '[data-t="next2"]', copy: 'pub', zh: '在「上传公钥」里点下面的公钥框复制 3dtrading 的公钥，粘贴进「您的公钥」，点「下一步」，再由你本人完成验证', en: 'In Upload public key, tap the key box below to copy 3dtrading’s public key, paste it into Your public key, tap Next, then pass the check yourself' },
-      { p: ['key', { self: true, part: 'ip' }], pt: '[data-t="ipw"]', ha: '.ba-rad.on', zh: '「只访问受信任的IP」已选好，白名单也已填好。点白名单复制，到币安粘贴后点「确认」。点暗处继续', en: 'Restrict to trusted IPs is chosen and the whitelist is filled in. Tap it to copy, paste it on Binance and tap Confirm. Tap the dark area to go on' },
-      { p: ['key', { self: true, part: 'perm' }], pt: '[data-t="pg"]', zh: 'IP 加好后权限会解锁。在币安照着勾选亮着的 5 项，其余不勾，点「保存」并由你本人完成验证。点暗处继续', en: 'Once the IPs are added, permissions unlock. On Binance tick the 5 lit ones, leave the rest, tap Save and pass the check yourself. Tap the dark area to go on' }
     ] },
     { id: 'bind', url: 'api', subs: [
-      { d: ['perm', 'bind'], kind: 'self', p: ['key', { self: true, part: 'bind' }], our: '#tkKey', last: true, zh: '最后，复制币安给出的 API Key，点这一行直接粘贴，再点「绑定」', en: 'Last, copy the API Key Binance shows, click this row to paste it, then click Bind' }
+      /* r72 (Jasper: 最后三步不要清单、不要压暗，只是 4 个 Dodo，含账户名): one light screen, four Dodos peek out by
+       * the whitelist, the permissions, the API Key row and our own account-name card, each saying one short line. */
+      { d: ['perm', 'bind'], kind: 'self', p: ['key', { self: true, part: 'bind' }], our: '#tkKey', last: true, zh: '最后在币安加白名单、勾权限，再把 API Key 贴回来点「绑定」', en: 'Last: add the whitelist and permissions on Binance, then paste the API Key back and click Bind',
+        peeks: [
+          { t: '[data-t="ipw"]', zh: '白名单已填好，点我复制，到币安粘贴后点「确认」', en: 'Whitelist is ready. Click to copy, paste it on Binance, then Confirm' },
+          { t: '[data-t="pg"]', zh: 'IP 加好后，照着勾亮着的几项，提现别勾，点「保存」', en: 'After the IPs, tick the lit ones, keep Withdrawals off, Save' },
+          { t: '#tkKey', zh: '复制币安给的 API Key，点这里直接粘贴', en: 'Copy the API Key from Binance and click here to paste' },
+          { t: '#tkCard', zh: '给账户起个名字（可不填），再点「绑定」', en: 'Name the account (optional), then click Bind' }
+        ] }
     ] }
   ];
   function subs(b) { var ph = phone(); return BIG[b].subs.filter(function (s) { return s.our || (ph ? s.p : s.d); }); }
@@ -226,7 +230,9 @@
     var sel = ph ? st.pt : st.t;
     HOT = st.our ? $(st.our) : host.querySelector(sel) || hb.querySelector(sel);
     var inForm = HOT && tkF && tkF.contains(HOT);
-    if (tkF) tkF.classList.toggle('pre', !st.last); // r59: before the last step only the API Key box shows (name + 绑定 come last)
+    if (tkF) tkF.classList.toggle('pre', !st.last);
+    if (tkCard) tkCard.hidden = !st.last || !!OKV;
+    peekBuild(st); // r59: before the last step only the API Key box shows (name + 绑定 come last)
     if (HOT && (st.our || inForm)) HOT.classList.add('cue');
     if (HOT && !st.our && !inForm) { HOT.classList.add('hot'); HOT.setAttribute('tabindex', '0'); HOT.setAttribute('role', 'button'); HOT.setAttribute('aria-label', st[L()]); }
     if (big3) panel.scrollTop = 0;
@@ -247,6 +253,7 @@
     /* r60 (Jasper: 手机教程被顶栏/底栏裁切): on a phone the drawn app is exactly as tall as the visible stage, so its
      * bottom sheets (确认 / 下一步) sit right above our controls instead of under them; longer pages scroll natively. */
     host.style.minHeight = Math.ceil(ah / s) + 'px';
+    host.style.paddingBottom = st && st.last && tkCard ? Math.ceil((tkCard.offsetHeight + 24) / s) + 'px' : '';
     var nh = host.scrollHeight;
     if (ph) return phoneCam(host, st, s, ah, nh);
     /* r59: a step may name a fixed anchor (cam / pcam): the camera frames that, not the menu item, so the page holds still */
@@ -276,7 +283,7 @@
     stage.scrollTop = Math.max(0, Math.min(max, y));
   }
   function showHint(st) {
-    if (OKV) { hintEl.hidden = true; return; } // r61: the last step has its hint too (there is no side panel any more)
+    if (OKV || st.peeks) { hintEl.hidden = true; return; } // r61: the last step has its hint too (there is no side panel any more)
     var txt = st[L()], cp = st.copy || null, ex = '<em class="ex">' + esc(t('cx.ex')) + '</em>', body = '', btns = '';
     if (cp === 'pub') { body = pubEx() ? ex : ''; }
     else if (cp === 'ips') { body = ipsEx() ? ex : ''; btns = ipList().map(function (ip, i) { return '<button type="button" class="cp ip" data-copy="ip" data-i="' + i + '">' + esc(ip) + '</button>'; }).join(''); }
@@ -314,13 +321,47 @@
     if (!HOT || S.hold) return;
     if (S.auto) later(auto, MOVE + DWELL); // only with 自动播放 switched on (off by default)
   }
+  /* ---------- r72 · Dodo peeks: light, no overlay. Each Dodo sits at its target's corner with one short line. ---------- */
+  var tkCard = $('#tkCard'), PK = document.createElement('div'); PK.className = 'dpks'; PK.setAttribute('aria-hidden', 'true'); document.body.appendChild(PK);
+  function peekBuild(st) {
+    PK.innerHTML = ''; PK.list = [];
+    if (!st || !st.peeks || OKV) { stage.removeAttribute('aria-description'); return; }
+    st.peeks.forEach(function (k, i) {
+      var e = document.createElement('div'); e.className = 'dpk'; e.style.animationDelay = (i * 140) + 'ms';
+      e.innerHTML = '<img src="../assets/dodo.svg" alt=""><span class="dpb">' + esc(k[L()]) + '</span>';
+      PK.appendChild(e); PK.list.push({ e: e, t: k.t });
+    });
+    stage.setAttribute('aria-description', st.peeks.map(function (k) { return k[L()]; }).join('；'));
+  }
+  function peekPlace() {
+    if (!PK.list || !PK.list.length) return;
+    if (OKV) { PK.innerHTML = ''; PK.list = []; return; }
+    var VW = window.innerWidth, sr = stage.getBoundingClientRect(), top0 = sr.top, VH = window.innerHeight - tc.offsetHeight, M = 8, ph = phone(), boxes = [];
+    if (tkCard && !tkCard.hidden) { var cr = tkCard.getBoundingClientRect(); boxes.push({ x: cr.left, y: cr.top, w: cr.width, h: cr.height, card: 1 }); }
+    PK.list.forEach(function (p) {
+      var el = document.querySelector(p.t), r = el && el.getBoundingClientRect();
+      if (!r || !r.width || r.bottom < top0 + 10 || r.top > VH - 10) { p.e.classList.add('off'); return; }
+      p.e.classList.remove('off');
+      var w = p.e.offsetWidth, h = p.e.offsetHeight, x, y;
+      /* sit just above the target's top-right corner, the Dodo peeking over its edge; desktop prefers the right side */
+      if (!ph && r.right + 10 + w <= VW - M && p.t !== '#tkCard') { x = r.right + 10; y = r.top + Math.min(r.height / 2, 22) - h / 2; }
+      else { x = r.right - w; y = r.top - h + 6; }
+      x = Math.max(M, Math.min(x, VW - w - M)); y = Math.max(top0 + M, Math.min(y, VH - h - M));
+      boxes.forEach(function (b) { if (x < b.x + b.w && x + w > b.x && y < b.y + b.h && y + h > b.y) y = b.card ? b.y - h - 4 : b.y + b.h + 4; });
+      boxes.push({ x: x, y: y, w: w, h: h });
+      p.e.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
+    });
+  }
+  stage.addEventListener('scroll', peekPlace, { passive: true });
+  window.addEventListener('resize', peekPlace);
   function spotTarget() {
     var st = subs(S.b)[S.s];
     if (st && st.last && tkF && tkF.parentNode && tkF.parentNode !== hold) return tkF; // the whole form: key, name and 绑定
     return HOT;
   }
   function spot() {
-    var de = document.documentElement, el = (S.hold || OKV || de.classList.contains('intro')) ? null : spotTarget();
+    var de = document.documentElement, st1 = subs(S.b)[S.s], el = (S.hold || OKV || de.classList.contains('intro') || (st1 && st1.peeks)) ? null : spotTarget();
+    peekPlace();
     var r = el && el.getBoundingClientRect();
     /* r61: the public-key step says "click the key box to copy it, then Next", so the lit area takes in the key box as well as Next
        (a dimmed key box would only have moved on, and the key could not be copied) */
@@ -393,7 +434,7 @@
   $('#tcExit').addEventListener('click', function () { if (S.auto) setAuto(false); up('top'); });
   /* r63 · 手机上左右滑动翻步（竖向滑动仍是滚动画面） */
   (function () { var x0 = null, y0 = 0, t0 = 0;
-    stage.addEventListener('touchstart', function (e) { if (e.touches.length !== 1 || e.target.closest('#tkF')) { x0 = null; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now(); }, { passive: true });
+    stage.addEventListener('touchstart', function (e) { if (e.touches.length !== 1 || e.target.closest('#tkF') || e.target.closest('#tkCard')) { x0 = null; return; } x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; t0 = Date.now(); }, { passive: true });
     stage.addEventListener('touchend', function (e) { if (x0 == null) return; var c = e.changedTouches[0], dx = c.clientX - x0, dy = c.clientY - y0; x0 = null;
       if (Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.6 || Date.now() - t0 > 700) return;
       if (S.auto) setAuto(false); if (dx < 0) { S.hold = false; manual(); } else back(); }, { passive: true });
@@ -460,7 +501,7 @@
         : '<button type="button" class="tcb" id="tkReg">' + esc(t('cx.okReg')) + '</button><button type="button" class="tk-go" id="tkLogin">' + esc(t('cx.okLogin')) + '</button>') + '</div>';
   }
   function showOk(v) {
-    OKV = v; tkKey.value = ''; tkN.textContent = '0 / 64'; panel.hidden = false; tkOk.innerHTML = okHtml(v); spot();
+    OKV = v; tkKey.value = ''; tkN.textContent = '0 / 64'; panel.hidden = false; if (tkCard) tkCard.hidden = true; tkOk.innerHTML = okHtml(v); spot();
     if (S.auto) setAuto(false); cur.classList.remove('on'); hintEl.hidden = true;
     toast(t('cx.okToast', { n: v.name }));
     try { $('#tkOkT').focus({ preventScroll: true }); } catch (x) { $('#tkOkT').focus(); }
