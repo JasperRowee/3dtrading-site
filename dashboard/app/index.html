@@ -3423,6 +3423,16 @@ html[data-theme="night"] .tx-coins .ci{box-shadow:0 0 0 1px var(--line),0 2px 6p
 @keyframes navPop{0%{transform:none}30%{transform:translateY(-4px) scale(1.16)}60%{transform:translateY(1px) scale(.95)}100%{transform:none}}
 @media (prefers-reduced-motion:reduce){.tnav-ink{transition:none}.tnav a.pop svg{animation:none}}
 
+
+/* Clip the head within the control, or animate it horizontally from its edge. */
+.gpk{max-width:none}
+.gpk .gpk-c,.gpk .gpk-b{position:absolute;margin:0}
+.gpk .gpk-b{width:max-content;overflow:auto;overscroll-behavior:contain}
+.gpk .gpk-h{width:100%;height:100%;left:0;animation:gpkSide .42s ease-out both;--peek-x:-62%}
+.gpk.lk-r .gpk-h{--peek-x:62%}
+.gpk.peek-inside .gpk-h{animation-name:gpkUp;top:22%}
+.gpk .gpk-h svg{filter:none;animation:none}
+@keyframes gpkSide{from{transform:translateX(var(--peek-x))}to{transform:translateX(0)}}
 </style>
 </head>
 <body>
@@ -3551,6 +3561,7 @@ html[data-theme="night"] .tx-coins .ci{box-shadow:0 0 0 1px var(--line),0 2px 6p
 
 <div class="tip" id="tip"></div>
 <div class="toast" id="toast" role="status"></div>
+<script src="../../bind/dodo-peek.js?v=r76b"></script>
 <script src="i18n-en.js?v=r72"></script>
 <script id="i18n-engine">
 /* i18n · zh ⇄ en。源码文案保持中文；英文来自 i18n-en.js（window.I18N_EN）。
@@ -7231,33 +7242,21 @@ let GPK = null;
 function peekOff() { GPK = null; gpk.hidden = true; cancelAnimationFrame(peekOff.raf); }
 function peekPlace() {
   if (!GPK || !GPK.isConnected || !GPK.classList.contains('r67-hl')) { peekOff(); return; }
-  const r = GPK.getBoundingClientRect(), M = 8, top0 = innerWidth <= 760 && !GPK.closest('#modal, [role="dialog"]') ? 64 : 8;   /* 弹窗盖在顶栏上面，弹窗里的目标可以探到顶栏那一带 */
-  /* r74 · 目标在屏幕外：页面先滚过去，停稳了 Dodo 再冒头 */
+  const r = GPK.getBoundingClientRect();
   const k = Math.round(r.top) + ',' + Math.round(r.left);
   if (k !== GPK._k) { GPK._k = k; GPK._st = 0; } else GPK._st++;
-  if (!GPK._up) { if (GPK._st < 4 && performance.now() - GPK._t0 < 1800) { gpk.hidden = true; return; } GPK._up = 1; gpk.classList.remove('out'); gpk.hidden = false; }
-  if (!r.width || r.bottom < 0 || r.top > innerHeight) { gpk.classList.add('off'); return; }
-  gpk.classList.remove('off');
-  /* r73 · Dodo 从按钮背后探出大半个头：头的下沿贴着按钮上沿。
-     r74 · 只从上沿探出（以前没地方时会倒挂到按钮下方——改密码时偶尔出现）；上面放不下就把页面往下挪出位置 */
-  const c = gpk.querySelector('.gpk-c'), cw = c ? c.offsetWidth : 40, w = gpk.offsetWidth, h = gpk.offsetHeight, y = r.top - h + 1;
-  if (y < top0 && !GPK._nudge) {
-    GPK._nudge = 1; let sp = GPK.parentElement;
-    for (; sp && sp !== document.body; sp = sp.parentElement) { const cs = getComputedStyle(sp); if (/auto|scroll/.test(cs.overflowY) && sp.scrollHeight > sp.clientHeight + 2) break; }
-    const d = top0 - y + 6;
-    if (sp && sp !== document.body && sp.scrollTop > 0) sp.scrollBy(0, -d); else scrollBy(0, -d);
-    GPK._up = 0; GPK._st = 0; GPK._t0 = performance.now(); gpk.hidden = true; return;
+  if (!GPK._up) {
+    if (GPK._st < 4 && performance.now() - GPK._t0 < 1800) { gpk.hidden = true; return; }
+    GPK._up = 1; gpk.classList.remove('out'); gpk.hidden = false;
   }
-  if (!GPK._obs) GPK._obs = $$('button, a[href], input, select, textarea, [role="button"], .seg').filter(e => e !== GPK && !e.contains(GPK) && !GPK.contains(e) && !gpk.contains(e));
-  const obs = GPK._obs.map(e => e.getBoundingClientRect()).filter(o => o.width && Math.abs(o.top - r.top) < 220);
-  const area = (x, y) => obs.reduce((s, o) => s + Math.max(0, Math.min(x + w, o.right) - Math.max(x, o.left)) * Math.max(0, Math.min(y + h, o.bottom) - Math.max(y, o.top)), 0);
-  const ins = Math.min(14, r.width / 6), cands = [], yy = Math.max(top0, y);
-  [r.right - cw - ins, r.left + ins].forEach(hx => [false, true].forEach(lf => { const x = lf ? hx + cw - w : hx; if (x < M || x + w > innerWidth - M) return; cands.push({ x, lf, a: area(x, yy) }); }));
-  let pick = cands.find(q => q.a < 40) || cands.sort((p, q) => p.a - q.a)[0];
-  if (!pick) pick = { x: Math.max(M, Math.min(r.right - cw - ins, innerWidth - w - M)), lf: false };
-  gpk.classList.remove('dn'); gpk.classList.toggle('lf', pick.lf);
-  { const hx = pick.lf ? pick.x + w - cw : pick.x; gpk.classList.toggle('lk-l', r.left + r.width / 2 < hx + cw / 2 - 4); gpk.classList.toggle('lk-r', r.left + r.width / 2 >= hx + cw / 2 - 4); }
-  gpk.style.transform = `translate(${Math.round(pick.x)}px,${Math.round(yy)}px)`;
+  const panel = GPK.closest('#modal, [role=menu], .top, .hdr, .card') || document.documentElement;
+  const b = gpk.querySelector('.gpk-b');
+  const layout = [k, r.width, r.height, innerWidth, innerHeight, b.textContent].join('|');
+  if (layout === GPK._peekLayout) return;
+  GPK._peekLayout = layout;
+  gpk.classList.toggle('off', !placeDodoPeek(GPK, gpk, panel, {
+    top: panel === document.documentElement && innerWidth <= 760 ? 64 : 0
+  }));
 }
 /* r74 · 不在指引里的「在这里」探头：换页或点了别处就收起，不挡后面的内容 */
 const peekDrop = () => { if (!GPK || GD.on) return; $$('.r67-hl').forEach(x => x.classList.remove('r67-hl')); peekOff(); };
@@ -7284,6 +7283,7 @@ function glow(el, say) {
   el.classList.add('r67-hl'); clearTimeout(el._hl); el._hl = setTimeout(() => el.classList.remove('r67-hl'), 6000);
   GPKSAY = say || LL('在这里，点它就行', 'Right here — just tap it');
   gpk.className = 'gpk';
+  el._peekLayout = null;
   gpk.innerHTML = `<span class="gpk-c" aria-hidden="true"><span class="gpk-h">${ddHead()}</span></span><span class="gpk-b">${gpkBody()}</span>`;
   Object.assign(el, { _obs: null, _up: 0, _k: '', _st: 0, _nudge: 0, _t0: performance.now() });
   gpk.hidden = true; GPK = el; cancelAnimationFrame(peekOff.raf); peekLoop();

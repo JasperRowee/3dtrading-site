@@ -391,3 +391,13 @@ html.embed .bnh,.bnh{padding-left:calc(max(16px,env(safe-area-inset-left)) + 118
 .dd-eye{transition:transform .35s cubic-bezier(.3,.8,.3,1)}
 .lk-l .dd-eye{transform:translate(-3.4px,2.8px)}
 .lk-r .dd-eye{transform:translate(3.4px,2.8px)}
+
+/* The head is masked at the control edge. The bubble has its own position. */
+.dpk{max-width:none}
+.dpk .dpc,.dpk .dpb{position:absolute;margin:0}
+.dpk .dpb{width:max-content;overflow:hidden}
+.dpk .dph{width:100%;height:100%;left:0;animation-name:dphSide;--peek-x:-62%}
+.dpk.lk-r .dph{--peek-x:62%}
+.dpk.peek-inside .dph{animation-name:dphUp;top:22%}
+.dpk .dph svg{filter:none;animation:none}
+@keyframes dphSide{from{transform:translateX(var(--peek-x))}to{transform:translateX(0)}}

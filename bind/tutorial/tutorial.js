@@ -379,48 +379,15 @@
   function peekPlace() {
     if (!PK.list || !PK.list.length) return;
     if (OKV) { PK.innerHTML = ''; PK.list = []; return; }
-    var VW = window.innerWidth, sr = stage.getBoundingClientRect(), top0 = sr.top, VH = window.innerHeight - tc.offsetHeight, M = 8, boxes = [];
-    if (tkCard && !tkCard.hidden && !tkCard.classList.contains('inl')) { var cr = tkCard.getBoundingClientRect(); boxes.push({ x: cr.left, y: cr.top, w: cr.width, h: cr.height, card: 1 }); }
-    if (hintEl && !hintEl.hidden) { var hr = hintEl.getBoundingClientRect(); if (hr.width) boxes.push({ x: hr.left, y: hr.top, w: hr.width, h: hr.height }); }
-    function ovA(x, y, w, h, o) { return Math.max(0, Math.min(x + w, o.right) - Math.max(x, o.left) - 2) * Math.max(0, Math.min(y + h, o.bottom) - Math.max(y, o.top) - 2); }
-    var ctl = [].slice.call(stage.querySelectorAll('input, button, textarea, [data-t]')).concat(tkCard && !tkCard.hidden ? [tkCard] : []);
-    /* r74: words on the screen count too (half weight), so a head or a line does not sit on a label or a permission */
-    var txt = [].slice.call(view.querySelectorAll('span, b, u, small, p, em, code, label, .bn-kl, .ba-v')).filter(function (e) { return !e.children.length && e.textContent.trim(); });
+    var bottom = tc.getBoundingClientRect().top || window.innerHeight;
+    var boxes = [];
+    if (hintEl && !hintEl.hidden) boxes.push(hintEl.getBoundingClientRect());
     PK.list.forEach(function (p) {
-      var el = typeof p.t === 'function' ? p.t() : document.querySelector(p.t), r = el && el.getBoundingClientRect();
-      var top0 = el && hb.contains(el) ? 0 : sr.top; /* r74: a control in the top bar (avatar) — the Dodo hangs below it */
-      if (!r || !r.width || r.bottom < top0 + 10 || r.top > VH - 10) { p.e.classList.add('off'); return; }
-      p.e.classList.remove('off');
-      /* r73: the Dodo's head comes up from behind the target's top edge (the hidden part is clipped off), the line sits beside it.
-         Candidates: from the top edge (line beside the head) → from the top edge with the line hanging down beside it (tight gaps on phones)
-         → hanging from the bottom edge; head near the right end or the left end; line to the right or left. First one that hits no
-         other control / target / Dodo wins. */
-      var c = p.e.querySelector('.dpc'), cw = c ? c.offsetWidth : 40, ch = c ? c.offsetHeight : 28, w, h;
-      var obs = ctl.filter(function (e) { return e !== el && !e.contains(el) && !el.contains(e); }).map(function (e) { return e.getBoundingClientRect(); })
-        .filter(function (o) { return o.width && Math.abs(o.top - r.top) < 260; })
-        .concat(boxes.map(function (b) { return { left: b.x, top: b.y, right: b.x + b.w, bottom: b.y + b.h }; }));
-      var tob = txt.filter(function (e) { return !el.contains(e) && !e.contains(el); }).map(function (e) { return e.getBoundingClientRect(); })
-        .filter(function (o) { return o.width && Math.abs(o.top - r.top) < 260; });
-      var own = [].slice.call(el.querySelectorAll('*')).filter(function (e) { return !e.children.length && e.textContent.trim(); }).map(function (e) { return e.getBoundingClientRect(); });
-      var fld = el.matches('input, textarea') || !!el.querySelector('input, textarea'); /* 输入框：挂进去的气泡不能盖住要粘贴的地方 */
-      var ins = Math.min(14, r.width / 6), cands = [];
-      ['up', 'in', 'dn'].forEach(function (m) {
-        p.e.classList.toggle('dn', m === 'dn'); p.e.classList.toggle('in', m === 'in'); w = p.e.offsetWidth; h = p.e.offsetHeight;
-        var y = m === 'dn' ? r.bottom - 1 : m === 'in' ? r.top - ch + 1 : r.top - h + 1;
-        if (y < top0 + M || y + h > VH - M) return;
-        [r.right - cw - ins, r.left + ins].forEach(function (hx) { [false, true].forEach(function (lf) {
-          var x = lf ? hx + cw - w : hx; if (x < M || x + w > VW - M) return;
-          var a = 0; obs.forEach(function (o) { a += ovA(x, y, w, h, o); }); tob.forEach(function (o) { a += .5 * ovA(x, y, w, h, o); }); if (m === 'in') { own.forEach(function (o) { a += ovA(x, y, w, h, o); }); if (fld) a += 3 * ovA(x, y, w, h, { left: r.left, top: r.top, right: r.left + r.width * .75, bottom: r.bottom }); }
-          cands.push({ m: m, x: x, y: y, w: w, h: h, lf: lf, a: a }); }); });
-      });
-      var pick = cands.filter(function (k) { return k.a < 40; })[0] || cands.sort(function (q, z) { return q.a - z.a; })[0];
-      if (!pick) { p.e.classList.remove('dn', 'in'); w = p.e.offsetWidth; h = p.e.offsetHeight; pick = { m: 'up', x: Math.max(M, Math.min(r.right - cw - ins, VW - w - M)), y: Math.max(top0 + M, r.top - h + 1), w: w, h: h, lf: false }; }
-      p.e.classList.toggle('dn', pick.m === 'dn'); p.e.classList.toggle('in', pick.m === 'in'); p.e.classList.toggle('lf', pick.lf);
-      /* r75: the eye looks toward the middle of the target (a hanging head is turned upside down, so its left and right swap) */
-      var hx0 = pick.lf ? pick.x + pick.w - cw : pick.x, toL = r.left + r.width / 2 < hx0 + cw / 2 - 4; if (pick.m === 'dn') toL = !toL;
-      p.e.classList.toggle('lk-l', toL); p.e.classList.toggle('lk-r', !toL);
-      boxes.push({ x: pick.x, y: pick.y, w: pick.w, h: pick.h });
-      p.e.style.transform = 'translate(' + Math.round(pick.x) + 'px,' + Math.round(pick.y) + 'px)';
+      var el = typeof p.t === 'function' ? p.t() : document.querySelector(p.t);
+      var panel = el && (el.closest('.bn-modal, .ba-sheet, .bn-um, .ba-pop') || (hb.contains(el) ? hb : stage));
+      var placed = panel && placeDodoPeek(el, p.e, panel, { bottom: bottom, occupied: boxes });
+      p.e.classList.toggle('off', !placed);
+      if (placed) boxes.push.apply(boxes, placed);
     });
   }
   stage.addEventListener('scroll', peekPlace, { passive: true });
