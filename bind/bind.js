@@ -194,7 +194,10 @@
 
   /* ---------- the window over the Binance replica, and the tutorial behind it ---------- */
   var gf = $('#guideFrame'), win = $('#win'), dim = $('#dim');
-  gf.src = 'tutorial/?lang=' + L() + '&v=r61'; // set after this page has stored ?lang=, so both agree
+  var guideUrl = new URL('tutorial/', location.href);
+  guideUrl.searchParams.set('lang', L());
+  if (new URLSearchParams(location.search).get('from') === 'app') guideUrl.searchParams.set('from', 'app');
+  gf.src = guideUrl.href; // set after this page has stored ?lang=, so both agree
   function tell(cmd) { try { gf.contentWindow.postMessage({ bn49cmd: cmd }, location.origin); } catch (x) { /* not loaded yet */ } }
   function setInert(el, on) { if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert'); }
   function openWin(focusKey) {

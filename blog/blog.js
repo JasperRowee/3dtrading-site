@@ -118,8 +118,23 @@
   }
   function staticText() {
     D.querySelectorAll('[data-i]').forEach(function (e) { e.textContent = t(e.getAttribute('data-i')); });
+    syncAccountLinks();
     root.lang = L() === 'en' ? 'en' : 'zh-CN';
   }
+
+  function syncAccountLinks() {
+    var session;
+    try { session = JSON.parse(localStorage.getItem('3dt.session')); } catch (e) {}
+    var signedIn = !!(session && session.email);
+    D.querySelectorAll('[data-account-link]').forEach(function (a) {
+      a.href = signedIn ? '../dashboard/app/' : '../login/';
+      a.textContent = t(signedIn ? 'app' : 'login');
+    });
+  }
+  addEventListener('pageshow', syncAccountLinks);
+  addEventListener('storage', function (e) {
+    if (e.key === '3dt.session' || e.key === null) syncAccountLinks();
+  });
 
   var toastT;
   function toast(s) { var e = D.getElementById('toast'); e.textContent = s; e.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(function () { e.classList.remove('on'); }, 1800); }
@@ -141,17 +156,19 @@
     staticText(); route.done = false; route(); route.done = true;
   });
 
-  /* r74 · 手机底栏：选中项下面一块滑动底色，手指按住左右划时底色跟着手走，松手就进那一栏；新选中的图标轻弹一下 */
+  /* r74 · 手机底栏：选中项下面一块滑动底色，手指按住左右划时底色跟着手走，松手就进那一栏 */
   var inkEl = D.getElementById('fnInk'), fnav = D.getElementById('fnav'), inkCur = null;
   function inkTo(a) {
     if (!inkEl) return;
+    var previous = fnav.querySelector('.ink-target');
+    if (previous) previous.classList.remove('ink-target');
+    if (a) a.classList.add('ink-target');
     if (!a || !a.offsetWidth) { inkEl.style.opacity = 0; return; }
     inkEl.style.opacity = 1; inkEl.style.left = a.offsetLeft + 'px'; inkEl.style.top = a.offsetTop + 'px';
     inkEl.style.width = a.offsetWidth + 'px'; inkEl.style.height = a.offsetHeight + 'px';
   }
   function ink() {
     var a = D.querySelector('#fnav .tab[aria-current="page"]');
-    if (a && a !== inkCur && inkCur !== null) { a.classList.remove('pop'); void a.offsetWidth; a.classList.add('pop'); }
     var first = inkCur === null; inkCur = a || false;
     if (first && inkEl) { inkEl.style.transition = 'none'; inkTo(a); void inkEl.offsetWidth; inkEl.style.transition = ''; } else inkTo(a);
   }
@@ -172,7 +189,6 @@
     fnav.addEventListener('pointerup', up);
     fnav.addEventListener('pointercancel', function () { dn = null; fnav.classList.remove('drag'); ink(); });
     fnav.addEventListener('click', function (e) { if (swallow && e.isTrusted) { e.preventDefault(); e.stopPropagation(); } }, true);
-    fnav.addEventListener('animationend', function (e) { var t = e.target.closest && e.target.closest('.tab'); if (t) t.classList.remove('pop'); });
     var rzT; addEventListener('resize', function () { clearTimeout(rzT); rzT = setTimeout(ink, 80); });
   }
   addEventListener('hashchange', route);

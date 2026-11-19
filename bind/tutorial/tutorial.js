@@ -128,16 +128,7 @@
       { p: ['api', { sheet: 'pub' }], pt: '[data-t="next2"]', copy: 'pub', zh: '在「上传公钥」里点下面的公钥框复制 3dtrading 的公钥，粘贴进「您的公钥」，点「下一步」，再由你本人完成验证', en: 'In Upload public key, tap the key box below to copy 3dtrading’s public key, paste it into Your public key, tap Next, then pass the check yourself' },
     ] },
     { id: 'bind', url: 'api', subs: [
-      /* r72 (Jasper: 最后三步不要清单、不要压暗，只是 4 个 Dodo，含账户名): one light screen, four Dodos peek out by
-       * the whitelist, the permissions, the API Key row and our own account-name card, each saying one short line. */
-      { d: ['perm', 'bind'], kind: 'self', p: ['key', { self: true, part: 'bind' }], our: '#tkKey', last: true, zh: '最后在币安加白名单、勾权限，再把 API Key 贴回来点「绑定」', en: 'Last: add the whitelist and permissions on Binance, then paste the API Key back and click Bind',
-        peeks: [
-          { t: '[data-t="ipw"]', zh: '白名单已填好，点我复制，到币安粘贴后点「确认」', en: 'Whitelist is ready. Click to copy, paste it on Binance, then Confirm' },
-          { t: '[data-t="pg"]', zh: 'IP 加好后，照着勾亮着的几项，提现别勾，点「保存」', en: 'After the IPs, tick the lit ones, keep Withdrawals off, Save' },
-          { t: '#tkKey', zh: '复制币安给的 API Key，点这里粘贴，再点「绑定」', en: 'Copy the API Key from Binance, paste it here, then click Bind' },
-          /* r74 (Jasper: 「复制 API Key」那段话变成账户名称填写): the name field takes the place of Binance's 「复制 API Key」 note */
-          { t: '#tkCard', zh: '给这个账户起个名字（可不填）', en: 'Name this account (optional)' }
-        ] }
+      { d: ['perm', 'bind'], kind: 'self', p: ['key', { self: true, part: 'bind' }], our: '#tkKey', last: true, zh: '在币安添加 IP 白名单并保存所需权限（提现保持关闭）。复制 API Key 到绑定框，账户名称可选，最后点「绑定」。', en: 'On Binance, add the IP whitelist and save the required permissions. Keep withdrawals off. Paste the API key, optionally name the account, and click Bind.' }
     ] }
   ];
   function subs(b) { var ph = phone(); return BIG[b].subs.filter(function (s) { return s.our || (ph ? s.p : s.d); }); }
@@ -233,7 +224,6 @@
     var inForm = HOT && tkF && tkF.contains(HOT);
     if (tkF) tkF.classList.toggle('pre', !st.last);
     cardMount(host, st);
-    peekBuild(st); // r59: before the last step only the API Key box shows (name + 绑定 come last)
     if (HOT && (st.our || inForm)) HOT.classList.add('cue');
     if (HOT && !st.our && !inForm) { HOT.classList.add('hot'); HOT.setAttribute('tabindex', '0'); HOT.setAttribute('role', 'button'); HOT.setAttribute('aria-label', st[L()]); }
     if (big3) panel.scrollTop = 0;
@@ -256,7 +246,7 @@
     host.style.minHeight = Math.ceil(ah / s) + 'px';
     host.style.paddingBottom = '';
     var nh = host.scrollHeight;
-    stage.classList.remove('fit'); PK.style.removeProperty('--pkhs');
+    stage.classList.remove('fit');
     if (ph) return phoneCam(host, st, s, ah, nh);
     /* r74 (Jasper: 整个页面不要裁切): the last step shows the whole Binance screen — scaled to fit the stage; on a very short
        window it stops shrinking at .55 and the stage scrolls instead of cutting the page off */
@@ -266,7 +256,6 @@
       host.style.minHeight = Math.ceil((ah - 16) / fs) + 'px'; nh = host.scrollHeight;
       view.style.transform = 'translate(' + fx + 'px,0) scale(' + fs.toFixed(4) + ')';
       if (nh * fs > ah + 1) { stage.classList.add('fit'); sizer.style.height = Math.ceil(nh * fs) + 'px'; }
-      PK.style.setProperty('--pkhs', Math.round(Math.max(46, Math.min(54, 70 * fs))) + 'px');
       return;
     }
     /* r59: a step may name a fixed anchor (cam / pcam): the camera frames that, not the menu item, so the page holds still */
@@ -296,7 +285,7 @@
     stage.scrollTop = Math.max(0, Math.min(max, y));
   }
   function showHint(st) {
-    if (OKV || st.peeks) { hintEl.hidden = true; return; } // r61: the last step has its hint too (there is no side panel any more)
+    if (OKV) { hintEl.hidden = true; return; } // r61: the last step has its hint too (there is no side panel any more)
     var txt = st[L()], cp = st.copy || null, ex = '<em class="ex">' + esc(t('cx.ex')) + '</em>', body = '', btns = '';
     if (cp === 'pub') { body = pubEx() ? ex : ''; }
     else if (cp === 'ips') { body = ipsEx() ? ex : ''; btns = ipList().map(function (ip, i) { return '<button type="button" class="cp ip" data-copy="ip" data-i="' + i + '">' + esc(ip) + '</button>'; }).join(''); }
@@ -334,8 +323,7 @@
     if (!HOT || S.hold) return;
     if (S.auto) later(auto, MOVE + DWELL); // only with 自动播放 switched on (off by default)
   }
-  /* ---------- r72 · Dodo peeks: light, no overlay. Each Dodo sits at its target's corner with one short line. ---------- */
-  var tkCard = $('#tkCard'), PK = document.createElement('div'); PK.className = 'dpks'; PK.setAttribute('aria-hidden', 'true'); document.body.appendChild(PK);
+  var tkCard = $('#tkCard');
   /* r74 (Jasper: 复制 API Key 那段话变成账户名称填写；不要突然加 UI): on the last step our name field takes the exact place of
      Binance's 「复制 API Key。自行生成的密钥没有 Secret Key。」 note (desktop .bn-warn, phone .ba-warn); 绑定 sits at the end of the
      API Key row, so the order reads name → key → 绑定. Every other step keeps them parked and hidden. */
@@ -354,52 +342,13 @@
     if (krow && bindBtn) { krow.parentNode.insertBefore(bindBtn, krow.nextSibling); tkF.classList.add('kb'); }
     tkCard.hidden = false;
   }
-  function peekBuild(st) {
-    PK.innerHTML = ''; PK.list = []; PK.classList.remove('solo');
-    /* r74 (Jasper: 之前的步骤也要 Dodo 探头): every other step gets one Dodo head peeking from behind the control to click
-       (the step's line stays in the hint next to it) */
-    if (st && !st.peeks && !OKV) {
-      var e0 = document.createElement('div'); e0.className = 'dpk solo';
-      e0.innerHTML = '<span class="dpc"><span class="dph">' + dHead('dpkG0') + '</span></span>';
-      PK.appendChild(e0); PK.list.push({ e: e0, t: function () { var de = document.documentElement; return (S.hold || de.classList.contains('intro')) ? null : spotTarget(); } });
-      PK.classList.add('solo'); stage.removeAttribute('aria-description'); return;
-    }
-    if (!st || !st.peeks || OKV) { stage.removeAttribute('aria-description'); return; }
-    st.peeks.forEach(function (k, i) {
-      var e = document.createElement('div'); e.className = 'dpk'; e.style.animationDelay = (i * 140) + 'ms';
-      /* r73 (Jasper: Dodo 探头要从按钮背后探出大半个头，和后台 Dodo 页顶部导航那只一样) */
-      e.innerHTML = '<span class="dpc"><span class="dph">' + dHead('dpkG' + i) + '</span></span><span class="dpb">' + esc(k[L()]) + '</span>';
-      PK.appendChild(e); PK.list.push({ e: e, t: k.t });
-    });
-    stage.setAttribute('aria-description', st.peeks.map(function (k) { return k[L()]; }).join('；'));
-  }
-  function dHead(g) {
-    return '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="16" fill="#1fbfa2"/><rect x="1" y="1" width="58" height="57" rx="16" fill="url(#' + g + ')"/><defs><linearGradient id="' + g + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62f3d9"/><stop offset="1" stop-color="#27d3b3"/></linearGradient></defs><circle cx="30" cy="25.6" r="15" fill="rgba(0,0,0,.08)"/><circle cx="30" cy="24" r="15" fill="#f5f0e1"/><g class="dd-eye"><circle cx="30" cy="24" r="7.6" fill="#141416"/><rect x="26.5" y="22.1" width="2.1" height="4.2" fill="#ef4444"/><rect x="31.3" y="20.9" width="2.1" height="5.7" fill="#22c55e"/><circle cx="33.5" cy="20.4" r="1.8" fill="#fff"/></g></svg>';
-  }
-  function peekPlace() {
-    if (!PK.list || !PK.list.length) return;
-    if (OKV) { PK.innerHTML = ''; PK.list = []; return; }
-    var bottom = tc.getBoundingClientRect().top || window.innerHeight;
-    var boxes = [];
-    if (hintEl && !hintEl.hidden) boxes.push(hintEl.getBoundingClientRect());
-    PK.list.forEach(function (p) {
-      var el = typeof p.t === 'function' ? p.t() : document.querySelector(p.t);
-      var panel = el && (el.closest('.bn-modal, .ba-sheet, .bn-um, .ba-pop') || (hb.contains(el) ? hb : stage));
-      var placed = panel && placeDodoPeek(el, p.e, panel, { bottom: bottom, occupied: boxes });
-      p.e.classList.toggle('off', !placed);
-      if (placed) boxes.push.apply(boxes, placed);
-    });
-  }
-  stage.addEventListener('scroll', peekPlace, { passive: true });
-  window.addEventListener('resize', peekPlace);
   function spotTarget() {
     var st = subs(S.b)[S.s];
     if (st && st.last && tkF && tkF.parentNode && tkF.parentNode !== hold) return tkF; // the whole form: key, name and 绑定
     return HOT;
   }
   function spot() {
-    var de = document.documentElement, st1 = subs(S.b)[S.s], el = (S.hold || OKV || de.classList.contains('intro') || (st1 && st1.peeks)) ? null : spotTarget();
-    peekPlace();
+    var de = document.documentElement, st1 = subs(S.b)[S.s], el = (S.hold || OKV || de.classList.contains('intro') || (st1 && st1.last)) ? null : spotTarget();
     var r = el && el.getBoundingClientRect();
     /* r61: the public-key step says "click the key box to copy it, then Next", so the lit area takes in the key box as well as Next
        (a dimmed key box would only have moved on, and the key could not be copied) */
@@ -469,9 +418,10 @@
   $('#tcNext').addEventListener('click', function () { if ($('#tcNext').classList.contains('fin')) { if (S.auto) setAuto(false); up('key'); return; } S.hold = false; manual(); });
   /* r63 · 随时离开：左上角「退出教程」回到打开教程前的地方（从后台来就回后台的绑定面板） */
   (function () { var x = $('#tcExit'); if (x && x.parentNode !== document.body) document.body.appendChild(x); })(); /* 放在压暗层之上，任何一步都不会被压暗 */
-  /* r74 (Jasper: 退出教程改成退出绑定，直接回到官网): leave the whole binding flow for the website (relative path, so it works locally and under /3dtrading-site/) */
+  /* Exit to the dashboard for dashboard launches, or to the website for direct launches. */
   $('#tcExit').addEventListener('click', function () { if (S.auto) setAuto(false);
-    var u = new URL('../../site/', location.href); u.searchParams.set('lang', L());
+    var fromApp = new URLSearchParams(location.search).get('from') === 'app';
+    var u = new URL(fromApp ? '../../dashboard/app/' : '../../site/', location.href); u.searchParams.set('lang', L());
     try { window.top.location.href = u.href; } catch (x) { location.href = u.href; } });
   /* r63 · 手机上左右滑动翻步（竖向滑动仍是滚动画面） */
   (function () { var x0 = null, y0 = 0, t0 = 0;

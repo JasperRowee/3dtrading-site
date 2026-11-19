@@ -3408,31 +3408,24 @@ html[data-theme="night"] .tx-coins .ci{box-shadow:0 0 0 1px var(--line),0 2px 6p
 .gdr-go{appearance:none;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;padding:2px 4px;min-height:36px}
 .gdr-go small{display:block;font-size:11.5px;color:var(--ink3);font-weight:600}.gdr-go b{display:block;font-size:13.5px;font-weight:650;color:var(--brandD)}
 .gdb.gdr .gpk-x{position:static;width:32px;height:32px}
-/* r74 · 手机底栏：选中项是一块滑动底色（弹性缓动），顶上一道品牌色细条；图标轻弹 */
+/* Mobile navigation */
 @media (max-width:760px){
-  .tnav,html[data-theme="night"] .tnav{touch-action:none;-webkit-user-select:none;user-select:none}
-  .tnav a,html[data-theme="night"] .tnav a{position:relative;z-index:1;-webkit-tap-highlight-color:transparent;transition:color .25s}
-  .tnav a[aria-current="page"],html[data-theme="night"] .tnav a[aria-current="page"]{background:none}
+  .tnav,html[data-theme="night"] .tnav{background:rgba(18,24,26,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);touch-action:none;user-select:none}
+  .tnav a,html[data-theme="night"] .tnav a{position:relative;z-index:1;-webkit-tap-highlight-color:transparent;transition:none}
+  .tnav a[aria-current="page"],html[data-theme="night"] .tnav a[aria-current="page"],
+  .tnav a[aria-current="page"] svg,html[data-theme="night"] .tnav a[aria-current="page"] svg{background:none;color:var(--navfg)}
+  .tnav a.ink-target,html[data-theme="night"] .tnav a.ink-target,
+  .tnav a.ink-target svg,html[data-theme="night"] .tnav a.ink-target svg{color:var(--blk)}
+  body:not(.kb-open)::after{content:"";position:fixed;inset:auto 0 0;height:calc(var(--navh) + var(--navb));z-index:24;pointer-events:none;
+    -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    -webkit-mask-image:linear-gradient(transparent,#000 65%);mask-image:linear-gradient(transparent,#000 65%)}
   .tnav-ink{display:block;top:0;height:0;border-radius:14px;pointer-events:none;
-    background:linear-gradient(180deg,rgba(47,220,188,.2),rgba(47,220,188,.09));box-shadow:inset 0 0 0 1px rgba(47,220,188,.2),0 8px 20px -12px rgba(47,220,188,.55);
-    transition:left .48s cubic-bezier(.34,1.3,.5,1),width .48s cubic-bezier(.34,1.3,.5,1),top .3s,height .3s,opacity .2s}
-  .tnav-ink::after{left:50%;right:auto;top:0;width:18px;height:3px;margin-left:-9px;border-radius:0 0 3px 3px}
-  .tnav.drag .tnav-ink{transition-duration:.2s,.2s,.2s,.2s,.2s}
-  .tnav a.pop svg{animation:navPop .55s cubic-bezier(.3,1.6,.5,1)}
+    background:var(--brand);box-shadow:none;transition:left .24s ease-out}
+  .tnav-ink::after{content:none}
+  .tnav.drag .tnav-ink{transition-duration:.12s}
 }
-@keyframes navPop{0%{transform:none}30%{transform:translateY(-4px) scale(1.16)}60%{transform:translateY(1px) scale(.95)}100%{transform:none}}
-@media (prefers-reduced-motion:reduce){.tnav-ink{transition:none}.tnav a.pop svg{animation:none}}
+@media (prefers-reduced-motion:reduce){.tnav-ink{transition:none}}
 
-
-/* Clip the head within the control, or animate it horizontally from its edge. */
-.gpk{max-width:none}
-.gpk .gpk-c,.gpk .gpk-b{position:absolute;margin:0}
-.gpk .gpk-b{width:max-content;overflow:auto;overscroll-behavior:contain}
-.gpk .gpk-h{width:100%;height:100%;left:0;animation:gpkSide .42s ease-out both;--peek-x:-62%}
-.gpk.lk-r .gpk-h{--peek-x:62%}
-.gpk.peek-inside .gpk-h{animation-name:gpkUp;top:22%}
-.gpk .gpk-h svg{filter:none;animation:none}
-@keyframes gpkSide{from{transform:translateX(var(--peek-x))}to{transform:translateX(0)}}
 </style>
 </head>
 <body>
@@ -3877,14 +3870,15 @@ let inkCur = null;
 const inkMob = () => matchMedia('(max-width:760px)').matches;
 function inkTo(a) {
   const ink = $('#tnavInk'); if (!ink) return;
+  $('.tnav .ink-target')?.classList.remove('ink-target');
+  a?.classList.add('ink-target');
   if (!a || !a.offsetWidth) { ink.style.opacity = 0; return; }
   ink.style.opacity = 1; ink.style.left = a.offsetLeft + 'px'; ink.style.width = a.offsetWidth + 'px';
   if (inkMob()) { ink.style.top = a.offsetTop + 'px'; ink.style.height = a.offsetHeight + 'px'; } else { ink.style.top = ''; ink.style.height = ''; }
 }
 function moveInk() {
   const a = $('.tnav a[aria-current="page"]'), ink = $('#tnavInk');
-  if (!a) { ink.style.opacity = 0; inkCur = false; return; }
-  if (a !== inkCur && inkCur) { a.classList.remove('pop'); void a.offsetWidth; a.classList.add('pop'); }
+  if (!a) { inkTo(null); inkCur = false; return; }
   const first = inkCur === null; inkCur = a;
   if (first) { ink.style.transition = 'none'; inkTo(a); void ink.offsetWidth; ink.style.transition = ''; } else inkTo(a);
 }
@@ -3894,7 +3888,6 @@ function moveInk() {
   t.addEventListener('pointerup', () => { if (!dn) return; const a = last, moved = a !== dn; dn = null; t.classList.remove('drag'); if (moved) { swallow = true; setTimeout(() => { swallow = false; a.click(); }, 0); } });
   t.addEventListener('pointercancel', () => { dn = null; t.classList.remove('drag'); inkCur && inkTo(inkCur); });
   t.addEventListener('click', e => { if (swallow && e.isTrusted) { e.preventDefault(); e.stopPropagation(); } }, true);
-  t.addEventListener('animationend', e => e.target.closest?.('a')?.classList.remove('pop'));
   let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => inkCur && inkTo(inkCur), 80); });
 })();
 addEventListener('scroll', () => document.body.classList.toggle('scrolled', scrollY > 4), { passive: true });
