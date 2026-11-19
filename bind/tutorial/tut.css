@@ -341,3 +341,19 @@ html.embed .bnh,.bnh{padding-left:calc(max(16px,env(safe-area-inset-left)) + 118
 @keyframes dpkBob{0%,100%{translate:0 0}50%{translate:0 -3px}}
 @media (max-width:640px){.tk-card{left:10px;right:10px;width:auto;bottom:calc(var(--tcH,72px) + 10px)}.dpk{max-width:230px}.dpb{font-size:12px}.dpk img{width:28px;height:28px}}
 @media (prefers-reduced-motion:reduce){.dpk,.dpk img{animation:none}}
+
+/* r73 (Jasper: Dodo 探头 = 从按钮背后探出大半个头，和后台 Dodo 页顶部导航那只同一个画法)：头的下沿贴着目标上沿，被挡住的那截剪掉 */
+.dpk{--hs:44px;gap:2px;animation:dpkFade .3s ease-out both}
+.dpc{position:relative;flex:none;width:calc(var(--hs) + 8px);height:calc(var(--hs) * .68);overflow:hidden}
+.dph{position:absolute;left:4px;top:0;width:var(--hs);height:var(--hs);animation:dphUp .55s cubic-bezier(.2,.9,.3,1.15) both;animation-delay:inherit}
+.dph svg{display:block;width:100%;height:100%;filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));animation:dpkBob 3.6s ease-in-out .8s infinite}
+.dpk .dpb{margin-bottom:calc(var(--hs) * .18)}
+.dpk.dn{align-items:flex-start}.dpk.dn .dph{top:auto;bottom:0;transform:rotate(180deg);animation-name:dphDn}.dpk.dn .dpb{margin:calc(var(--hs) * .18) 0 0;border-radius:4px 12px 12px 12px}
+.dpk.lf{flex-direction:row-reverse}.dpk.lf .dpb{border-radius:12px 12px 4px 12px}.dpk.lf.dn .dpb{border-radius:12px 4px 12px 12px}
+@keyframes dpkFade{from{opacity:0}to{opacity:1}}
+@keyframes dphUp{from{transform:translateY(72%)}to{transform:translateY(0)}}
+@keyframes dphDn{from{transform:rotate(180deg) translateY(72%)}to{transform:rotate(180deg) translateY(0)}}
+@media (max-width:640px){.dpk{--hs:38px}}
+@media (prefers-reduced-motion:reduce){.dph,.dph svg{animation:none}}
+.dpk.in{align-items:flex-start}.dpk.in .dpb{margin:8px 0 0;border-radius:4px 12px 12px 12px}.dpk.in.lf .dpb{border-radius:12px 4px 12px 12px}
+@media (min-width:900px){.dpk{max-width:400px}}

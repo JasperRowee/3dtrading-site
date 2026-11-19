@@ -244,6 +244,7 @@ function start() {
 
   window.__space = {
     mode: 'webgl', version: 'r57', sky: 'r55', still: () => still, frames: () => frames,
+    snap: () => { if (!G) maybe(true); if (G) render(); return cv0; },   // r73 · 6: the website takes one real frame even while this page waits hidden (rendered and read in the same task)
     disc: () => G && { cx: Math.round(G.cx), cy: Math.round(G.cy), R: Math.round(G.R), mob: G.mob },
     dust: () => [dustFar, dustNear].map(m => m.geometry.attributes.position ? m.geometry.attributes.position.count : 0),
     meshes: () => scene.children.length, yaw: () => +Math.atan2(cam.position.x - S.x, cam.position.z - S.z).toFixed(4)

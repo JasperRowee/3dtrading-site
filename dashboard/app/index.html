@@ -3350,6 +3350,33 @@ html[data-theme="night"] .qb-lead{background:#0a0d10;box-shadow:0 0 0 1px rgba(2
   html:has(body.kb-open[data-page="ai"]),body.kb-open[data-page="ai"]{overflow:hidden;overscroll-behavior:none}
   body.kb-open[data-page="ai"] header.top,body.kb-open[data-page="ai"] .ddp{touch-action:none}
 }
+/* ===================== r73（Nova 分支 · 后台） ===================== */
+/* 1 交易记录主卡偶发错位：传送门 / 指引对卡里的「导出 CSV」做 scrollIntoView({block:'center'})，
+   卡片 overflow:hidden 但装饰图形伸出卡外（scrollHeight 451 > 280），浏览器把卡片自己也滚了 61px —— 大数字顶出上沿、下半截空、装饰和柱子错位；
+   卡片元素不重建，scrollTop 一直留着，只有刷新才好。改成 overflow:clip（不再是可滚动容器），JS 里再兜底把这类卡片的 scrollTop 归零。 */
+.tx-hero,.hero,.sb-hero{overflow:clip}
+/* 2 挡板：币种小卡各自的大阴影（0 10px 24px）在 8px 间隙里连成一条灰色底板。改成贴身的细阴影，小卡直接压在深色卡片下沿上 */
+.tx-coins .ci{box-shadow:0 0 0 1px rgba(11,13,16,.06),0 2px 6px -2px rgba(11,13,16,.14)}
+.tx-coins .ci:hover{box-shadow:0 0 0 1px rgba(11,13,16,.08),0 6px 12px -6px rgba(11,13,16,.28)}
+.tx-coins .ci.on{box-shadow:0 6px 12px -8px rgba(10,138,115,.7)}
+html[data-theme="night"] .tx-coins .ci{box-shadow:0 0 0 1px var(--line),0 2px 6px -2px rgba(0,0,0,.4)}
+/* 5 Dodo 探头：从按钮背后探出大半个头（和 Dodo 页顶部导航那只同一个画法），旁边气泡说一句话 */
+.gpk{--hs:46px;gap:2px}
+.gpk .gpk-c{position:relative;flex:none;width:calc(var(--hs) + 8px);height:calc(var(--hs) * .68);overflow:hidden;pointer-events:none}
+.gpk .gpk-h{position:absolute;left:4px;top:0;width:var(--hs);height:var(--hs);animation:gpkUp .55s cubic-bezier(.2,.9,.3,1.15) both}
+.gpk .gpk-h svg{display:block;width:100%;height:100%;filter:drop-shadow(0 3px 6px rgba(15,60,52,.22));animation:gpkBob 3.8s ease-in-out .8s infinite}
+.gpk .gpk-b{margin-bottom:calc(var(--hs) * .18)}
+.gpk.dn{align-items:flex-start}
+.gpk.dn .gpk-h{top:auto;bottom:0;transform:rotate(180deg);animation-name:gpkDn}
+.gpk.dn .gpk-b{margin:calc(var(--hs) * .18) 0 0;border-radius:4px 12px 12px 12px}
+.gpk.lf{flex-direction:row-reverse}.gpk.lf .gpk-b{border-radius:12px 12px 4px 12px}.gpk.lf.dn .gpk-b{border-radius:12px 4px 12px 12px}
+@keyframes gpkUp{from{transform:translateY(72%)}to{transform:translateY(0)}}
+@keyframes gpkDn{from{transform:rotate(180deg) translateY(72%)}to{transform:rotate(180deg) translateY(0)}}
+@keyframes gpkBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@media (max-width:760px){.gpk{--hs:40px}.gpk .gpk-b{font-size:12px;padding:6px 9px}}
+/* 4 Dodo 直接打开：打开的那块轻轻亮一下（不探头、不让你点） */
+.r73-open{animation:r73open 1.4s ease-out 1}
+@keyframes r73open{0%{box-shadow:0 0 0 0 rgba(47,220,188,.55)}30%{box-shadow:0 0 0 6px rgba(47,220,188,.28)}100%{box-shadow:0 0 0 0 rgba(47,220,188,0)}}
 </style>
 </head>
 <body>
@@ -5286,6 +5313,7 @@ function renderTrades() {
 }
 /* the black summary card + the coin strip that sits across its lower edge */
 function renderWatch() {
+  { const h = $('#txHero'); if (h) { h.scrollTop = 0; h.scrollLeft = 0; } }   // r73 · 卡片被滚动过就归零（偶发错位的根因见 CSS 注释）
   const f = S.tf, list = tradeList(), base = noDayList(), dd = selDay();
   const tp = LIVE ? list.reduce((s, g) => s + g.items.reduce((a, t) => a + (t.pnl || 0), 0), 0) : list.reduce((s, g) => s + g.lead.pnl, 0), fee = list.reduce((s, g) => s + g.items.reduce((a, t) => a + (t.fee || 0), 0), 0), gi = list.reduce((s, g) => s + (g.g ? g.g.amount : 0), 0);
   const N = 30, d0 = DAYS - N + 1, cnt = Array(N).fill(0), pn = Array(N).fill(0);
@@ -6995,8 +7023,8 @@ const BUILD = {
   },
 };
 function cmdGoList(kind) {
-  const L2 = kind === 'go' ? PORTALS : FLOWS;
-  return { t: 'chips', it: L2.map(x => ({ go: (kind === 'go' ? 'portal:' : 'guide:') + x.id, l: [x.zh, x.en] })) };
+  const L2 = SUBL(kind);
+  return { t: 'chips', it: L2.map(x => ({ go: (kind === 'go' ? 'portal:' : kind === 'open' ? 'open:' : 'guide:') + x.id, l: [x.zh, x.en] })) };
 }
 function buildGo(arg) {
   const p = arg ? matchList(PORTALS, arg)[0] : null, ch = hasData() ? [eqLine()] : [vzE('e_acct')];
@@ -7044,7 +7072,7 @@ function buildHelp() {
   return R(`一共 ${CMDS.length} 个命令：输入 / 弹出列表，继续打字筛选，↑↓ 加回车或直接点下面的命令。`,
     `${CMDS.length} commands: type / for the list, keep typing to filter, then ↑↓ and Enter — or tap one below.`,
     [{ t: 'chips', it: CMDS.filter(c => c.id !== 'help').map(c => ({ go: 'cmd:' + c.id, l: ['/' + c.zh, '/' + c.en] })) }, hasData() ? eqLine() : vzE('e_acct')],
-    [['中英文命令名都认，例如 /收益 和 /profit', 'Both languages work, e.g. /profit and /收益'], ['右键或长按数字、曲线点、订单就能引用，再用 /引用 分析', 'Right-click or long-press numbers, curve points or orders, then use /quote'], ['/前往 带你到按钮，/指引 一步步带你做', '/go takes you to a button, /guide walks you through']], ['portal:password', '试试：去修改密码']);
+    [['中英文命令名都认，例如 /收益 和 /profit', 'Both languages work, e.g. /profit and /收益'], ['右键或长按数字、曲线点、订单就能引用，再用 /引用 分析', 'Right-click or long-press numbers, curve points or orders, then use /quote'], ['/前往 带你到按钮，/指引 一步步带你做', '/go takes you to a button, /guide walks you through'], ['说「帮我打开 修改密码」或 /打开，Dodo 直接打开；在 Telegram / Discord 里说也一样', 'Say “open change password” or /open and Dodo opens it; works from Telegram / Discord too']], ['portal:password', '试试：去修改密码']);
 }
 async function runCmd(cmd, arg) {
   if (asking) return;
@@ -7053,6 +7081,7 @@ async function runCmd(cmd, arg) {
   let a, after = null, ex;
   if (cmd.id === 'help') a = buildHelp();
   else if (cmd.id === 'go') { const r = buildGo(arg); a = r.a; if (r.p) after = () => portal(r.p.id); }
+  else if (cmd.id === 'open') { const r = buildOpen(arg); a = r.a; if (r.o) after = () => doOpen(r.o); }
   else if (cmd.id === 'guide') { const r = buildGuide(arg); a = r.a; if (r.f) after = () => guideStart(r.f.id); }
   else if (cmd.id === 'quote') { const refs = PEND.refs.slice(); ex = { refs, files: [] }; PEND.refs = []; window.__dsbSync && __dsbSync(); a = buildQuote(refs); }
   else a = hasData() ? BUILD[cmd.id]() : noData(cmd);
@@ -7070,7 +7099,7 @@ function popUpdate() {
   const v = $('#askIn').value, p = parse(v);
   if (!p || asking) return popClose();
   const c = findCmd(p.tok);
-  if (p.sp && c && c.sub) { PS.mode = 'sub'; PS.cmd = c; PS.items = matchList(c.sub === 'go' ? PORTALS : FLOWS, p.rest || ''); }
+  if (p.sp && c && c.sub) { PS.mode = 'sub'; PS.cmd = c; PS.items = matchList(SUBL(c.sub), p.rest || ''); }
   else if (p.sp) return popClose();
   else { PS.mode = 'cmd'; PS.cmd = null; PS.items = matchList(CMDS, p.tok); }
   PS.i = Math.min(PS.i, Math.max(0, PS.items.length - 1));
@@ -7078,7 +7107,7 @@ function popUpdate() {
 }
 function popRender() {
   const en = EN();
-  pop.innerHTML = (PS.mode === 'sub' ? `<div class="slp-h">/${esc(nameOf(PS.cmd))} · ${PS.cmd.sub === 'go' ? (en ? 'where to?' : '去哪里？') : (en ? 'which task?' : '做什么？')}</div>` : `<div class="slp-h">${en ? 'Commands' : '命令'}<span>↑↓ ${en ? 'pick' : '选择'} · ↵ ${en ? 'run' : '执行'} · Esc</span></div>`)
+  pop.innerHTML = (PS.mode === 'sub' ? `<div class="slp-h">/${esc(nameOf(PS.cmd))} · ${PS.cmd.sub === 'go' ? (en ? 'where to?' : '去哪里？') : PS.cmd.sub === 'open' ? (en ? 'open what?' : '打开什么？') : (en ? 'which task?' : '做什么？')}</div>` : `<div class="slp-h">${en ? 'Commands' : '命令'}<span>↑↓ ${en ? 'pick' : '选择'} · ↵ ${en ? 'run' : '执行'} · Esc</span></div>`)
     + (PS.items.length ? PS.items.map((x, k) => `<button type="button" class="slp-i${k === PS.i ? ' on' : ''}" role="option" aria-selected="${k === PS.i}" data-sli="${k}">${PS.mode === 'sub' ? `<b>${esc(nameOf(x))}</b><small>${esc(en ? x.zh : x.en)}</small>` : `<b>/${esc(nameOf(x))}</b><small>${esc(en ? x.de : x.dz)}</small><em>/${esc(en ? x.zh : x.en)}</em>`}</button>`).join('')
       : `<p class="slp-e">${en ? 'No matching command' : '没有匹配的命令'}</p>`);
   pop.hidden = false; $('#askIn').setAttribute('aria-expanded', 'true');
@@ -7117,22 +7146,44 @@ let GPK = null;
 function peekOff() { GPK = null; gpk.hidden = true; cancelAnimationFrame(peekOff.raf); }
 function peekPlace() {
   if (!GPK || !GPK.isConnected || !GPK.classList.contains('r67-hl')) { peekOff(); return; }
-  const r = GPK.getBoundingClientRect(), w = gpk.offsetWidth, h = gpk.offsetHeight, M = 8;
+  const r = GPK.getBoundingClientRect(), M = 8;
   if (!r.width || r.bottom < 0 || r.top > innerHeight) { gpk.classList.add('off'); return; }
   gpk.classList.remove('off');
-  let x = r.right - Math.min(w, r.width / 2 + 40), y = r.top - h + 8;           // Dodo peeks over the top-right edge
-  if (y < M) y = r.bottom - 8;                                                   // no room above: peek from below
-  x = Math.max(M, Math.min(x, innerWidth - w - M)); y = Math.max(M, Math.min(y, innerHeight - h - M));
-  gpk.style.transform = `translate(${Math.round(x)}px,${Math.round(y)}px)`;
+  /* r73 · Dodo 从按钮背后探出大半个头：头的下沿贴着按钮上沿（被按钮挡住的那截剪掉），不盖住按钮文字。
+     候选：头在按钮右端 / 左端 × 气泡在右 / 左 × 从上沿 / 下沿探出；挑第一个不压到旁边按钮、链接、输入框的位置 */
+  const c = gpk.querySelector('.gpk-c'), cw = c ? c.offsetWidth : 40, w = gpk.offsetWidth, h = gpk.offsetHeight, top0 = innerWidth <= 760 ? 64 : 8;
+  if (!GPK._obs) GPK._obs = $$('button, a[href], input, select, textarea, [role="button"], .seg').filter(e => e !== GPK && !e.contains(GPK) && !GPK.contains(e) && !gpk.contains(e));
+  const obs = GPK._obs.map(e => e.getBoundingClientRect()).filter(o => o.width && Math.abs(o.top - r.top) < 220);
+  const area = (x, y) => obs.reduce((s, o) => s + Math.max(0, Math.min(x + w, o.right) - Math.max(x, o.left)) * Math.max(0, Math.min(y + h, o.bottom) - Math.max(y, o.top)), 0);
+  const ins = Math.min(14, r.width / 6), cands = [];
+  [false, true].forEach(dn => { const y = dn ? r.bottom - 1 : r.top - h + 1; if (y < top0 || y + h > innerHeight - M) return;
+    [r.right - cw - ins, r.left + ins].forEach(hx => [false, true].forEach(lf => { const x = lf ? hx + cw - w : hx; if (x < M || x + w > innerWidth - M) return; cands.push({ x, y, dn, lf, a: area(x, y) }); })); });
+  let pick = cands.find(k => k.a < 40) || cands.sort((p, q) => p.a - q.a)[0];
+  if (!pick) pick = { x: Math.max(M, Math.min(r.right - cw - ins, innerWidth - w - M)), y: Math.max(M, r.top - h + 1), dn: false, lf: false };
+  gpk.classList.toggle('dn', pick.dn); gpk.classList.toggle('lf', pick.lf);
+  gpk.style.transform = `translate(${Math.round(pick.x)}px,${Math.round(pick.y)}px)`;
 }
 function peekLoop() { peekPlace(); if (GPK) peekOff.raf = requestAnimationFrame(peekLoop); }
+/* r73 · 和 Dodo 页顶部导航探头同一个画法 */
+const ddHead = () => `<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="16" fill="#1fbfa2"/><rect x="1" y="1" width="58" height="57" rx="16" fill="url(#gpkG)"/><defs><linearGradient id="gpkG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62f3d9"/><stop offset="1" stop-color="#27d3b3"/></linearGradient></defs><circle cx="30" cy="42.6" r="16" fill="rgba(0,0,0,.08)"/><circle cx="30" cy="41" r="16" fill="#f5f0e1"/><circle cx="32" cy="41" r="8" fill="#141416"/><rect x="28.4" y="39" width="2.2" height="4.4" fill="#ef4444"/><rect x="33.4" y="37.8" width="2.2" height="6" fill="#22c55e"/><circle cx="35.6" cy="37.4" r="1.9" fill="#fff"/></svg>`;
+/* r73 · scrollIntoView 会连 overflow:hidden 的卡片一起滚（交易记录主卡错位的根因）。只让页面滚，卡片自己的 scrollTop 保持原样 */
+function safeInto(el, o) {
+  const keep = [];
+  for (let p = el.parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
+    const cs = getComputedStyle(p); if (/hidden|clip/.test(cs.overflowY + cs.overflowX)) keep.push([p, p.scrollTop, p.scrollLeft]);
+  }
+  el.scrollIntoView(o);
+  const fix = () => keep.forEach(([p, t, l]) => { if (p.scrollTop !== t) p.scrollTop = t; if (p.scrollLeft !== l) p.scrollLeft = l; });
+  fix(); keep.forEach(([p]) => { const f = () => fix(); p.addEventListener('scroll', f); setTimeout(() => p.removeEventListener('scroll', f), 1500); });
+}
 function glow(el, say) {
   $$('.r67-hl').forEach(x => x.classList.remove('r67-hl'));
   if (!el) { peekOff(); return false; }
-  el.scrollIntoView({ block: 'center', behavior: RM ? 'auto' : 'smooth' });
+  safeInto(el, { block: 'center', behavior: RM ? 'auto' : 'smooth' });
   el.classList.add('r67-hl'); clearTimeout(el._hl); el._hl = setTimeout(() => el.classList.remove('r67-hl'), 6000);
-  gpk.innerHTML = `<span class="gpk-d" aria-hidden="true">${ddMini()}</span><span class="gpk-b">${esc(say || LL('在这里，点它就行', 'Right here — just tap it'))}</span>`;
-  gpk.hidden = false; GPK = el; cancelAnimationFrame(peekOff.raf); peekLoop();
+  gpk.className = 'gpk';
+  gpk.innerHTML = `<span class="gpk-c" aria-hidden="true"><span class="gpk-h">${ddHead()}</span></span><span class="gpk-b">${esc(say || LL('在这里，点它就行', 'Right here — just tap it'))}</span>`;
+  el._obs = null; gpk.hidden = false; GPK = el; cancelAnimationFrame(peekOff.raf); peekLoop();
   return true;
 }
 function waitEl(get, cb, n = 0) { const el = get(); if (el && el.getBoundingClientRect().width > 0) return cb(el); if (n > 30) return cb(null); setTimeout(() => waitEl(get, cb, n + 1), 80); }
@@ -7149,6 +7200,7 @@ function portal(id) {
 const _goTo = goTo;
 goTo = function (sel) {
   if (sel.startsWith('portal:')) return portal(sel.slice(7));
+  if (sel.startsWith('open:')) return doOpen(sel.slice(5));
   if (sel.startsWith('cmd:')) { const c = CMDS.find(x => x.id === sel.slice(4)); if (c) { if (CUR !== 'ai') nav('ai'); runCmd(c, ''); } return; }
   if (sel.startsWith('guide:')) return guideStart(sel.slice(6));
   if (sel.startsWith('qday:')) return backTo({ k: 'day', id: +sel.slice(5) });
@@ -7194,7 +7246,7 @@ dcur.innerHTML = '<svg viewBox="0 0 24 24"><path d="M5 3l14 7.5-6.2 1.6L10 18z"/
 let DCX = innerWidth / 2, DCY = innerHeight - 90;
 function dodoTap(el, cb) {
   if (!el) { cb(); return; }
-  el.scrollIntoView({ block: 'center', behavior: 'auto' });
+  safeInto(el, { block: 'center', behavior: 'auto' });
   const r = el.getBoundingClientRect(), x = r.left + Math.min(r.width / 2, 60), y = r.top + r.height / 2;
   dcur.hidden = false; dcur.classList.remove('tap'); dcur.style.transition = 'none'; dcur.style.transform = `translate(${DCX}px,${DCY}px)`;
   void dcur.offsetWidth; dcur.style.transition = RM ? 'none' : ''; dcur.style.transform = `translate(${x}px,${y}px)`; DCX = x; DCY = y;
@@ -7344,7 +7396,97 @@ answerCtx = function (ctx) {
     `You quoted “${esc(ctx.label)}”, as currently shown on the page. Ask how it is made up, or use /pnl or /profit for a chart.`);
   return _answerCtx(ctx);
 };
-window.__r67 = { CMDS, PORTALS, FLOWS, runCmd: (id, arg) => runCmd(CMDS.find(c => c.id === id), arg || ''), portal, guideStart, guideStop, GD, PS, backTo, addRefs, openSettings, PREF, ACTM };
+
+/* ===================== r73 · Dodo 直接打开（后台操作） =====================
+   「帮我打开 X」/「/打开 X」/ Telegram、Discord 远程消息 → 程序直接打开，不探头、不让你点。
+   传送门（/前往）照旧：带你到按钮旁边；只有 /指引 才一步步引导你点。 */
+const secOpen = k => () => { openSettings('acct'); SEC.open = k; SEC.err = ''; if (k !== 'mail') SEC.code = ''; secRender(k === 'pw' ? '#secPw0' : k === 'mail' ? '#secMail' : null); };
+const OPENS = [
+  { id: 'password', zh: '修改密码', en: 'Change password', kw: 'mima password 密码 改密码 修改密码', open: secOpen('pw'), el: () => $('#secPwF') },
+  { id: 'email', zh: '修改邮箱', en: 'Change email', kw: 'youxiang email mail 邮箱 换邮箱', open: secOpen('mail'), el: () => $('#secBox .tfa-box') },
+  { id: 'devices', zh: '登录设备', en: 'Signed-in devices', kw: 'shebei devices device 设备 登录设备', open: secOpen('dev'), el: () => $('#secBox .sec-dev') },
+  { id: 'bind', zh: '绑定币安', en: 'Bind Binance', kw: 'bangding binance api key 绑定 币安 连接', open: () => openBind(), el: () => $('#bnF') },
+  { id: 'settings', zh: '设置', en: 'Settings', kw: 'shezhi settings preferences 设置 偏好', open: () => openSettings('pref'), el: () => $('#stg') },
+  { id: 'account', zh: '个人资料', en: 'Profile', kw: 'gerenziliao profile account me 账户 账号 我的 资料 安全', open: () => openSettings('acct'), el: () => $('#stg') },
+  { id: 'theme', zh: '昼夜外观', en: 'Day / night', kw: 'waiguan theme dark night 夜间 外观 主题 昼夜', open: () => openSettings('pref'), el: () => $('#stg [data-thm]')?.closest('.seg') },
+  { id: 'lang', zh: '切换语言', en: 'Language', kw: 'yuyan language english 中文 语言', open: () => openSettings('pref'), el: () => $('#stg [data-lang]')?.closest('.seg') },
+  { id: 'privacy', zh: '隐私', en: 'Privacy', kw: 'yinsi privacy 隐私', open: () => openSettings('priv'), el: () => $('#stg') },
+  { id: 'dodoset', zh: 'Dodo 设置', en: 'Dodo settings', kw: 'dodo shezhi 代办 操作方式 dodo设置', open: () => openSettings('dodo'), el: () => $('#stg') },
+  { id: 'dashboard', zh: '总览', en: 'Overview', kw: 'zonglan overview home dashboard 首页 主页 收益曲线', open: () => nav('dashboard') },
+  { id: 'trades', zh: '交易记录', en: 'Trades', kw: 'jiaoyi trades orders history 交易 订单 记录', open: () => nav('trades') },
+  { id: 'wallet', zh: '钱包', en: 'Wallet', kw: 'qianbao wallet assets 资产 余额', open: () => nav('wallet') },
+  { id: 'notify', zh: '通知设置', en: 'Notifications', kw: 'tongzhi notify notifications 通知 提醒', open: () => nav('notify') },
+  { id: 'export', zh: '导出交易', en: 'Export trades', kw: 'daochu export csv 下载 导出', open: () => { const b = document.createElement('button'); b.type = 'button'; b.hidden = true; b.setAttribute('data-texport', ''); document.body.appendChild(b); b.click(); b.remove(); } },
+  { id: 'blog', zh: '资源', en: 'Resources', kw: 'ziyuan boke blog 博客 文章 资源中心', open: () => setTimeout(() => { location.href = '../../blog/?from=app'; }, window.__r73NoLeave ? 1e9 : 900) },
+];
+CMDS.splice(CMDS.findIndex(c => c.id === 'go'), 0, { id: 'open', zh: '打开', en: 'open', dz: '直接打开，不用你点', de: 'Open it for me', kw: 'dakai open 打开 直接 帮我打开', sub: 'open' });
+function SUBL(k) { return k === 'go' ? PORTALS : k === 'open' ? OPENS : FLOWS; }
+const MODAL_IDS = /^(password|email|devices|bind|settings|account|theme|lang|privacy|dodoset)$/;
+function doOpen(o) {
+  if (typeof o === 'string') o = OPENS.find(x => x.id === o); if (!o) return null;
+  if (guideOn()) guideStop();
+  peekOff(); $$('.r67-hl').forEach(x => x.classList.remove('r67-hl'));
+  if ($('#modal.on') && !MODAL_IDS.test(o.id)) closeDlg();
+  o.open();
+  if (o.el) waitEl(o.el, el => { if (!el) return; el.classList.remove('r73-open'); void el.offsetWidth; el.classList.add('r73-open'); setTimeout(() => el.classList.remove('r73-open'), 1500); });
+  return o;
+}
+function buildOpen(arg) {
+  const o = arg ? matchList(OPENS, arg)[0] : null, ch = hasData() ? [eqLine()] : [vzE('e_acct')];
+  if (!o) return { a: R(arg ? `没找到「${esc(arg)}」，这些我都能直接打开：` : '想打开哪个？点一下我就直接打开：', arg ? `Couldn’t find “${esc(arg)}”. I can open any of these directly:` : 'What should I open? Tap one and I’ll open it:',
+    [cmdGoList('open'), ...ch], [['也可以直接说：帮我打开 修改密码', 'Or just say: open change password'], ['在 Telegram / Discord 里说也一样，后台直接打开', 'Works the same from Telegram / Discord']], null) };
+  return { o, a: R(`好，已经帮你打开「${o.zh}」。`, `Done — “${o.en}” is open.`, ch,
+    [['Dodo 直接替你打开，不用自己点', 'Dodo opened it for you — no tapping needed'], ['想让 Dodo 带你到按钮旁边，用 /前往；想一步步做，用 /指引', 'Use /go to be taken to the button, or /guide for step-by-step']], ['open:' + o.id, '再打开一次']) };
+}
+/* 自然语言：「帮我打开 修改密码」「打开交易记录」「open settings」 */
+function openIntent(t) {
+  t = String(t || '').trim();
+  let m = /^(?:请|麻烦)?(?:你)?(?:帮我|替我|给我)?(?:直接)?(?:打开|开一下|调出|进入|切到|切换到|去)(?:一下)?\s*(.+)$/.exec(t)
+    || /^(?:please\s+)?(?:(?:can|could)\s+you\s+)?(?:open|show me|take me to|go to|bring up)\s+(?:the\s+|my\s+)?(.+?)$/i.exec(t);
+  if (!m) return null;
+  let x = m[1].replace(/[。．.!！?？~～]+$/, '').replace(/(吧|呗|一下|下)$/, '').replace(/^(我的|那个|一下)/, '').trim();
+  const cands = [x, x.replace(/(页面|页|弹窗|窗口|界面|设置页)$/, ''), x.replace(/\s*(page|screen|dialog|window)$/i, '')].filter(Boolean);
+  for (const c of cands) { const o = matchList(OPENS, c)[0]; if (o) return o; }
+  return null;
+}
+const KNOW_OPEN = /(远程|telegram|discord|tg).*(打开|操作|控制)|(dodo|你).*(能|可以|会).*(打开|操作|代办)|后台操作|直接打开/i;
+function knowOpen() {
+  return R('可以。跟我说「帮我打开 X」或用 /打开 X，我直接在后台把它打开，不用你自己点；在 Telegram、Discord 里跟 Dodo 说同样的话，后台也会直接打开。',
+    'Yes. Say “open X” or use /open X and I open it directly — no tapping needed. Saying the same thing to Dodo on Telegram or Discord opens it here too.',
+    [cmdGoList('open')],
+    [['直接打开：修改密码、绑定币安、设置、交易记录、导出交易等', 'Opens directly: change password, bind Binance, settings, trades, export and more'], ['/前往 仍然可以带你到按钮旁边，Dodo 在那里探头', '/go still takes you to the button, where Dodo peeks out'], ['只有 /指引 会一步步带你点', 'Only /guide walks you through tapping step by step']], ['cmd:open', '/打开']);
+}
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'askForm' || asking) return; const v = $('#askIn').value.trim(); if (!v || v.startsWith('/')) return;
+  const o = openIntent(v), k = !o && KNOW_OPEN.test(v);
+  if (!o && !k) return;
+  e.preventDefault(); e.stopPropagation();
+  const inp = $('#askIn'); inp.value = ''; popClose(); syncSend();
+  if (k) { ask(v, knowOpen()); return; }
+  ask(v, buildOpen(o.zh).a).then(() => setTimeout(() => doOpen(o), RM ? 0 : 300));
+}, true);
+/* 远程（Telegram / Discord）：机器人收到「帮我打开 X」或「/打开 X」后调用这里，后台直接打开 */
+function remoteParse(t) {
+  t = String(t || '').trim(); const p = parse(t);
+  if (p) { const c = findCmd(p.tok) || matchList(CMDS, p.tok)[0], a = (p.rest || '').trim();
+    if (c && c.id === 'open') return { o: a ? matchList(OPENS, a)[0] : null };
+    if (c && c.id === 'go') { const x = a ? matchList(PORTALS, a)[0] : null; return x ? { p: x } : { o: x ? null : (a ? matchList(OPENS, a)[0] : null) }; }
+    if (c && c.id === 'guide') { const f = a ? matchList(FLOWS, a)[0] : null; return { f }; }
+    return {}; }
+  return { o: openIntent(t) };
+}
+window.tdRemote = function (text, from) {
+  const src = /discord/i.test(from || '') ? 'Discord' : 'Telegram', r = remoteParse(text);
+  if (r.p) { portal(r.p.id); toast(LL(`来自 ${src}：Dodo 带你到「${r.p.zh}」`, `From ${src}: Dodo took you to “${r.p.en}”`)); return { ok: true, kind: 'portal', id: r.p.id, reply: LL(`已在后台带到「${r.p.zh}」`, `Took you to “${r.p.en}”`) }; }
+  if (r.f) { guideStart(r.f.id); toast(LL(`来自 ${src}：开始「${r.f.zh}」指引`, `From ${src}: started “${r.f.en}” guide`)); return { ok: true, kind: 'guide', id: r.f.id, reply: LL(`后台已开始「${r.f.zh}」指引`, `Started the “${r.f.en}” guide`) }; }
+  if (!r.o) return { ok: false, reply: LL('没听懂要打开什么，可以说「帮我打开 修改密码」或发 /打开', 'Not sure what to open — try “open change password” or /open') };
+  doOpen(r.o); toast(LL(`来自 ${src}：Dodo 已打开「${r.o.zh}」`, `From ${src}: Dodo opened “${r.o.en}”`));
+  return { ok: true, kind: 'open', id: r.o.id, reply: LL(`已在后台打开「${r.o.zh}」`, `Opened “${r.o.en}” in your dashboard`) };
+};
+try { const bc = new BroadcastChannel('td-remote'); bc.onmessage = e => { const d = e.data || {}; if (d.re) return; const r = tdRemote(d.text, d.from); if (d.id) bc.postMessage(Object.assign({ re: d.id }, r)); }; } catch (e) { }
+addEventListener('storage', e => { if (e.key !== 'td.remote' || !e.newValue) return; try { const d = JSON.parse(e.newValue); tdRemote(d.text, d.from); } catch (_) { } });
+
+window.__r67 = { OPENS, doOpen, openIntent, CMDS, PORTALS, FLOWS, runCmd: (id, arg) => runCmd(CMDS.find(c => c.id === id), arg || ''), portal, guideStart, guideStop, GD, PS, backTo, addRefs, openSettings, PREF, ACTM };
 
 /* ---------- 交易页：导出 CSV（传送门 / 指引的目标） ---------- */
 document.addEventListener('click', e => {

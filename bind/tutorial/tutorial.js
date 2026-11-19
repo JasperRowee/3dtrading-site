@@ -328,28 +328,51 @@
     if (!st || !st.peeks || OKV) { stage.removeAttribute('aria-description'); return; }
     st.peeks.forEach(function (k, i) {
       var e = document.createElement('div'); e.className = 'dpk'; e.style.animationDelay = (i * 140) + 'ms';
-      e.innerHTML = '<img src="../assets/dodo.svg" alt=""><span class="dpb">' + esc(k[L()]) + '</span>';
+      /* r73 (Jasper: Dodo 探头要从按钮背后探出大半个头，和后台 Dodo 页顶部导航那只一样) */
+      e.innerHTML = '<span class="dpc"><span class="dph">' + dHead('dpkG' + i) + '</span></span><span class="dpb">' + esc(k[L()]) + '</span>';
       PK.appendChild(e); PK.list.push({ e: e, t: k.t });
     });
     stage.setAttribute('aria-description', st.peeks.map(function (k) { return k[L()]; }).join('；'));
   }
+  function dHead(g) {
+    return '<svg viewBox="0 0 64 64" aria-hidden="true"><rect x="3" y="3" width="58" height="58" rx="16" fill="#1fbfa2"/><rect x="1" y="1" width="58" height="57" rx="16" fill="url(#' + g + ')"/><defs><linearGradient id="' + g + '" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#62f3d9"/><stop offset="1" stop-color="#27d3b3"/></linearGradient></defs><circle cx="30" cy="42.6" r="16" fill="rgba(0,0,0,.08)"/><circle cx="30" cy="41" r="16" fill="#f5f0e1"/><circle cx="32" cy="41" r="8" fill="#141416"/><rect x="28.4" y="39" width="2.2" height="4.4" fill="#ef4444"/><rect x="33.4" y="37.8" width="2.2" height="6" fill="#22c55e"/><circle cx="35.6" cy="37.4" r="1.9" fill="#fff"/></svg>';
+  }
   function peekPlace() {
     if (!PK.list || !PK.list.length) return;
     if (OKV) { PK.innerHTML = ''; PK.list = []; return; }
-    var VW = window.innerWidth, sr = stage.getBoundingClientRect(), top0 = sr.top, VH = window.innerHeight - tc.offsetHeight, M = 8, ph = phone(), boxes = [];
+    var VW = window.innerWidth, sr = stage.getBoundingClientRect(), top0 = sr.top, VH = window.innerHeight - tc.offsetHeight, M = 8, boxes = [];
     if (tkCard && !tkCard.hidden) { var cr = tkCard.getBoundingClientRect(); boxes.push({ x: cr.left, y: cr.top, w: cr.width, h: cr.height, card: 1 }); }
+    function ovA(x, y, w, h, o) { return Math.max(0, Math.min(x + w, o.right) - Math.max(x, o.left) - 2) * Math.max(0, Math.min(y + h, o.bottom) - Math.max(y, o.top) - 2); }
+    var ctl = [].slice.call(stage.querySelectorAll('input, button, textarea, [data-t]')).concat(tkCard && !tkCard.hidden ? [tkCard] : []);
     PK.list.forEach(function (p) {
       var el = document.querySelector(p.t), r = el && el.getBoundingClientRect();
       if (!r || !r.width || r.bottom < top0 + 10 || r.top > VH - 10) { p.e.classList.add('off'); return; }
       p.e.classList.remove('off');
-      var w = p.e.offsetWidth, h = p.e.offsetHeight, x, y;
-      /* sit just above the target's top-right corner, the Dodo peeking over its edge; desktop prefers the right side */
-      if (!ph && r.right + 10 + w <= VW - M && p.t !== '#tkCard') { x = r.right + 10; y = r.top + Math.min(r.height / 2, 22) - h / 2; }
-      else { x = r.right - w; y = r.top - h + 6; }
-      x = Math.max(M, Math.min(x, VW - w - M)); y = Math.max(top0 + M, Math.min(y, VH - h - M));
-      boxes.forEach(function (b) { if (x < b.x + b.w && x + w > b.x && y < b.y + b.h && y + h > b.y) y = b.card ? b.y - h - 4 : b.y + b.h + 4; });
-      boxes.push({ x: x, y: y, w: w, h: h });
-      p.e.style.transform = 'translate(' + Math.round(x) + 'px,' + Math.round(y) + 'px)';
+      /* r73: the Dodo's head comes up from behind the target's top edge (the hidden part is clipped off), the line sits beside it.
+         Candidates: from the top edge (line beside the head) → from the top edge with the line hanging down beside it (tight gaps on phones)
+         → hanging from the bottom edge; head near the right end or the left end; line to the right or left. First one that hits no
+         other control / target / Dodo wins. */
+      var c = p.e.querySelector('.dpc'), cw = c ? c.offsetWidth : 40, ch = c ? c.offsetHeight : 28, w, h;
+      var obs = ctl.filter(function (e) { return e !== el && !e.contains(el) && !el.contains(e); }).map(function (e) { return e.getBoundingClientRect(); })
+        .filter(function (o) { return o.width && Math.abs(o.top - r.top) < 260; })
+        .concat(boxes.map(function (b) { return { left: b.x, top: b.y, right: b.x + b.w, bottom: b.y + b.h }; }));
+      var own = [].slice.call(el.querySelectorAll('*')).filter(function (e) { return !e.children.length && e.textContent.trim(); }).map(function (e) { return e.getBoundingClientRect(); });
+      var fld = el.matches('input, textarea') || !!el.querySelector('input, textarea'); /* 输入框：挂进去的气泡不能盖住要粘贴的地方 */
+      var ins = Math.min(14, r.width / 6), cands = [];
+      ['up', 'in', 'dn'].forEach(function (m) {
+        p.e.classList.toggle('dn', m === 'dn'); p.e.classList.toggle('in', m === 'in'); w = p.e.offsetWidth; h = p.e.offsetHeight;
+        var y = m === 'dn' ? r.bottom - 1 : m === 'in' ? r.top - ch + 1 : r.top - h + 1;
+        if (y < top0 + M || y + h > VH - M) return;
+        [r.right - cw - ins, r.left + ins].forEach(function (hx) { [false, true].forEach(function (lf) {
+          var x = lf ? hx + cw - w : hx; if (x < M || x + w > VW - M) return;
+          var a = 0; obs.forEach(function (o) { a += ovA(x, y, w, h, o); }); if (m === 'in') { own.forEach(function (o) { a += ovA(x, y, w, h, o); }); if (fld) a += 3 * ovA(x, y, w, h, { left: r.left, top: r.top, right: r.left + r.width * .75, bottom: r.bottom }); }
+          cands.push({ m: m, x: x, y: y, w: w, h: h, lf: lf, a: a }); }); });
+      });
+      var pick = cands.filter(function (k) { return k.a < 40; })[0] || cands.sort(function (q, z) { return q.a - z.a; })[0];
+      if (!pick) { p.e.classList.remove('dn', 'in'); w = p.e.offsetWidth; h = p.e.offsetHeight; pick = { m: 'up', x: Math.max(M, Math.min(r.right - cw - ins, VW - w - M)), y: Math.max(top0 + M, r.top - h + 1), w: w, h: h, lf: false }; }
+      p.e.classList.toggle('dn', pick.m === 'dn'); p.e.classList.toggle('in', pick.m === 'in'); p.e.classList.toggle('lf', pick.lf);
+      boxes.push({ x: pick.x, y: pick.y, w: pick.w, h: pick.h });
+      p.e.style.transform = 'translate(' + Math.round(pick.x) + 'px,' + Math.round(pick.y) + 'px)';
     });
   }
   stage.addEventListener('scroll', peekPlace, { passive: true });

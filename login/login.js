@@ -33,7 +33,7 @@
       'auth.ag4': '费用与结算规则：待定稿。',
       'auth.r1': '资金留存在本人子账户，不代表交易不会亏损。', 'auth.r2': '账面余额增加不等于净权益翻倍。', 'auth.r3': '历史表现与条件测算不代表未来收益。', 'auth.r4': '退出须按四步标准流程执行。',
       'auth.r5': '参与条件以 3dtrading 当前方案说明为准（此前方案：参与资金不低于 20 万 USDT、币安账户达到 VIP2）。注册时不再填写资金规模和风格，但接入前仍按实际要求核对，不因注册而免除。',
-      'auth.goLogin': '登录', 'auth.goReg': '同意并注册',
+      'auth.goLogin': '登录', 'auth.goReg': '同意并注册', 'auth.next': '下一步', 'auth.rs1': '验证邮箱', 'auth.rs2': '设置密码', 'auth.rsChange': '修改邮箱',
       'auth.fine': '本机演示：账号只存在这台浏览器（密码只存加盐哈希），没有连接真实服务器；邮箱验证码不会真的发邮件。',
       'auth.e.email': '请输入有效的邮箱地址。', 'auth.e.pw': '请输入密码。', 'auth.e.pwRule': '密码至少 8 位，并同时包含字母和数字。',
       'auth.e.pw2': '两次输入的密码不一致。', 'auth.e.agree': '请先勾选同意合作服务协议与风险披露。',
@@ -60,7 +60,7 @@
       'auth.ag4': 'Fees and settlement: to be finalised.',
       'auth.r1': 'Keeping funds in my own sub-account does not eliminate trading loss risk.', 'auth.r2': 'A larger gross balance does not mean net equity has doubled.', 'auth.r3': 'Past and modelled figures do not guarantee future returns.', 'auth.r4': 'Exits follow the 4-step standard unwinding protocol.',
       'auth.r5': 'Eligibility follows the current 3dtrading plan (previously: at least 200,000 USDT committed and a Binance account at VIP2). Capital range and style are no longer asked at sign-up, but eligibility is still checked before connecting; signing up does not waive it.',
-      'auth.goLogin': 'Log in', 'auth.goReg': 'Agree and sign up',
+      'auth.goLogin': 'Log in', 'auth.goReg': 'Agree and sign up', 'auth.next': 'Next', 'auth.rs1': 'Verify email', 'auth.rs2': 'Set a password', 'auth.rsChange': 'Change email',
       'auth.fine': 'Local demo: the account lives only in this browser (only a salted hash of the password), no real server is contacted, and no email is actually sent.',
       'auth.e.email': 'Enter a valid email address.', 'auth.e.pw': 'Enter your password.', 'auth.e.pwRule': 'Use at least 8 characters with both letters and numbers.',
       'auth.e.pw2': 'The passwords do not match.', 'auth.e.agree': 'Please tick to accept the Service Terms & Risk Disclosure.',
@@ -130,6 +130,8 @@
   var mode = qm === 'register' || qm === 'login' ? qm : (Object.keys(accounts()).length || get('seen') ? 'login' : 'register');
   var card = $('#card'), form = $('#f'), go = $('#go'), email = $('#email'), pw = $('#pw'), pw2 = $('#pw2'), agree = $('#agree'), code = $('#code'), sendc = $('#sendc');
   var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  /* r73 · sign-up in two steps. RS.ok = the email whose code was already verified (the code is single-use). */
+  var RS = { s: 1, ok: '' };
 
   function ink() {
     var b = $('#tabs [aria-selected=true]'), i = $('#tabs .ink'); if (!b || !i) return;
@@ -141,7 +143,11 @@
     form.setAttribute('aria-labelledby', mode === 'login' ? 't-login' : 't-register');
     $('#ft').textContent = t(mode === 'login' ? 'auth.loginT' : 'auth.regT');
     $('#fs').textContent = t(mode === 'login' ? 'auth.loginS' : 'auth.regS');
-    $('#goT').textContent = t(mode === 'login' ? 'auth.goLogin' : 'auth.goReg');
+    $('#goT').textContent = t(mode === 'login' ? 'auth.goLogin' : RS.s === 1 ? 'auth.next' : 'auth.goReg');
+    card.dataset.rs = mode === 'register' ? String(RS.s) : '';
+    $('#rsN').textContent = RS.s + '/2'; $('#rsL').textContent = t(RS.s === 1 ? 'auth.rs1' : 'auth.rs2');
+    $('#rstep').dataset.s = String(RS.s); $('#rsEv').textContent = RS.ok || email.value.trim();
+    code.setAttribute('enterkeyhint', 'go');
     pw.setAttribute('autocomplete', mode === 'login' ? 'current-password' : 'new-password');
     /* r59 (MWG autofill-sign-in-form): the phone keyboard's Enter key says what happens next */
     pw.setAttribute('enterkeyhint', mode === 'login' ? 'go' : 'next');
@@ -199,7 +205,9 @@
     if (el === code) return fieldErr('#fCode', '#mCode', /^\d{6}$/.test(v.trim()) ? null : 'auth.e.code');
     return true;
   }
-  function chain() { return mode === 'login' ? [email, pw] : [email, code, pw, pw2, agree]; }
+  function chain() { return mode === 'login' ? [email, pw] : RS.s === 1 ? [email, code] : [pw, pw2, agree]; }
+  function rsGo(n) { RS.s = n; clearErr(); renderMode(); emit('td:session'); setTimeout(function () { (n === 2 ? pw : (RS.ok ? email : email)).focus(); }, 30); }
+  $('#rsBack').addEventListener('click', function () { rsGo(1); });
   function filled(el) { return el === agree ? el.checked : !!el.value; }
   form.addEventListener('keydown', function (e) {
     if (e.key !== 'Enter' || e.isComposing || e.shiftKey || e.altKey || e.metaKey || e.ctrlKey) return;
@@ -267,10 +275,29 @@
     }
     var em = email.value.trim().toLowerCase(), p = pw.value, ok = true, first = null;
     function bad(sel, msg, k, el) { fieldErr(sel, msg, k); ok = false; if (!first) first = el; }
+    /* r73 · step ① checks the email + code, then moves on; step ② only the password + agreement */
+    if (mode === 'register' && RS.s === 1) {
+      if (!EMAIL.test(em)) bad('#fEmail', '#mEmail', 'auth.e.email', email);
+      else if (RS.ok !== em && !/^\d{6}$/.test(code.value.trim())) bad('#fCode', '#mCode', AU.codeState() ? 'auth.e.code' : 'auth.e.codeNone', code);
+      emit('td:session');
+      if (!ok) { first.focus(); return; }
+      if (AU.account(em)) { alertMsg('auth.e.exists'); emit('td:session'); return; }
+      if (RS.ok !== em) {
+        var cr1 = AU.verifyCode(em, code.value);
+        if (cr1 !== 'ok') {
+          var st1 = AU.codeState(), k1 = codeErr(cr1);
+          fieldErr('#fCode', '#mCode', null); $('#fCode').classList.add('err'); $('#mCode').textContent = tv(k1, { n: st1 ? 5 - st1.tries : 0 });
+          if (cr1 === 'expired' || cr1 === 'locked') { CD.c = ''; renderCode(); }
+          code.focus(); emit('td:session'); return;
+        }
+        CD.c = ''; code.value = ''; renderCode(); RS.ok = em;
+      }
+      rsGo(2); return;
+    }
+    if (mode === 'register') { if (!RS.ok) { rsGo(1); return; } em = RS.ok; }
     if (!EMAIL.test(em)) bad('#fEmail', '#mEmail', 'auth.e.email', email);
     if (mode === 'login') { if (!p) bad('#fPw', '#mPw', 'auth.e.pw', pw); }
     else {
-      if (!/^\d{6}$/.test(code.value.trim())) bad('#fCode', '#mCode', AU.codeState() ? 'auth.e.code' : 'auth.e.codeNone', code);
       if (!rule(p)) bad('#fPw', '#mPw', 'auth.e.pwRule', pw);
       if (pw2.value !== p || !pw2.value) bad('#fPw2', '#mPw2', 'auth.e.pw2', pw2);
       if (!agree.checked) bad('#fAgree', '#mAgree', 'auth.e.agree', agree);
@@ -279,7 +306,7 @@
     if (!ok) { first.focus(); return; }
     if (mode === 'register') {
       if (AU.account(em)) { alertMsg('auth.e.exists'); emit('td:session'); return; }
-      var cr = AU.verifyCode(em, code.value);
+      var cr = 'ok'; /* r73: the code was verified in step ① */
       if (cr !== 'ok') {
         var st = AU.codeState(); var k = codeErr(cr);
         fieldErr('#fCode', '#mCode', null); $('#fCode').classList.add('err'); $('#mCode').textContent = tv(k, { n: st ? 5 - st.tries : 0 });

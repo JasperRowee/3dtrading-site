@@ -16,7 +16,7 @@ addEventListener('pagereveal',function(e){var v=e.viewTransition;if(v)[v.ready,v
 <link rel="icon" type="image/svg+xml" href="assets/dodo.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/dodo-180.png">
 <style>/* r62 · the website <-> log-in fade opts in here, inline, so it is known before login.css arrives (the copy in login.css stays) */@view-transition{navigation:auto}</style>
-<link rel="stylesheet" href="login.css?v=r68">
+<link rel="stylesheet" href="login.css?v=r73">
 </head>
 <body>
 <div class="scene" id="scene" aria-hidden="true"><canvas id="space"></canvas><canvas id="gx"></canvas><canvas id="orb"></canvas></div>
@@ -51,6 +51,9 @@ addEventListener('pagereveal',function(e){var v=e.viewTransition;if(v)[v.ready,v
         <form id="f" novalidate role="tabpanel" aria-labelledby="t-login">
           <h2 id="ft"></h2>
           <p class="sub" id="fs"></p>
+          <!-- r73 · sign-up in two steps: ① email + code → ② password + agreement -->
+          <div class="rstep" id="rstep" data-only="register" aria-live="polite"><span class="rsn" id="rsN">1/2</span><span class="rsl" id="rsL"></span><span class="rsbar" aria-hidden="true"><i></i><i></i></span></div>
+          <div class="rsem" id="rsEm" data-only="register"><span class="rsev" id="rsEv"></span><button type="button" class="link" id="rsBack" data-i18n="auth.rsChange">修改邮箱</button></div>
           <div class="note bad" id="alert" role="alert"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5v.01"/></svg><span id="alertT"></span></div>
 
           <div class="fld" id="fEmail"><label class="lab" for="email"><span data-i18n="auth.email">邮箱</span></label>
@@ -115,9 +118,9 @@ addEventListener('pageswap', function (e) { var v = e.viewTransition; if (!v) re
   try { u = new URL(e.activation && e.activation.entry && e.activation.entry.url || '', location.href).pathname; } catch (x) {}
   if (!/\/(site|login)\/(index\.html)?$/.test(u)) v.skipTransition(); });</script>
 <script src="/3dtrading-site/dashboard/account/td-auth.js?v=r58"></script>
-<script src="login.js?v=r66"></script>
+<script src="login.js?v=r73"></script>
 <script src="planet.js?v=r72"></script>
-<script type="module" src="space.js?v=r63"></script>
+<script type="module" src="space.js?v=r73"></script>
 <script>/* r62 · 返回官网 (logo): the form fades, the camera flies straight at the planet (the website's line, its motion law) until the
    shell covers the screen; the website carries on from there, in through the shell, to the step you left (r62.site.at, else 01).
    Arrival (?via=…) is dropped from the address so a reload is plain. */
